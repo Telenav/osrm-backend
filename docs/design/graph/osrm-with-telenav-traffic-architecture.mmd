@@ -17,7 +17,7 @@ OSRM_Traffic_Updater["OSRMTrafficUpdater"]
 style OSRM_Traffic_Updater fill:#acbfff,stroke-dasharray: 5, 5
 end
 
-OSRM_Traffic_Updater -- RPC --- TrafficProxy["TrafficProxy"]
+OSRM_Traffic_Updater -- RPC --> TrafficProxy["TrafficProxy"]
 subgraph Traffic Containers
 TrafficProxy
 style TrafficProxy fill:#acbfff,stroke-dasharray: 5, 5
