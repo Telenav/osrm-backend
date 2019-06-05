@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"time"
+	"os"
 
 	"github.com/Telenav/osrm-backend/traffic_updater/go/gen-go/proxy"
 	"github.com/apache/thrift/lib/go/thrift"
@@ -11,6 +12,13 @@ import (
 
 func dumpFlowsToCsv(csv_file string, flows []*proxy.Flow) {
 
+	f, err := os.OpenFile(csv_file, os.O_RDWR|os.O_CREATE, 0755)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer f.Close()
+	
 	for i, flow := range flows {
 		osrmTrafficLine := fmt.Sprintf("%d,%d,%f\n", flow.FromId, flow.ToId, flow.Speed)
 
@@ -20,8 +28,14 @@ func dumpFlowsToCsv(csv_file string, flows []*proxy.Flow) {
 			fmt.Printf("[ %d ] %s\n", i, osrmTrafficLine)
 		}
 
-		// TODO: write to csv
+		// write to csv
+		_, err := f.WriteString(osrmTrafficLine)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 	}
+    fmt.Printf("total wrote to %s count: %d\n", csv_file, len(flows))
 }
 
 func main() {
