@@ -11,6 +11,17 @@ import (
 
 func dumpFlowsToCsv(csv_file string, flows []*proxy.Flow) {
 
+	for i, flow := range flows {
+		osrmTrafficLine := fmt.Sprintf("%d,%d,%f\n", flow.FromId, flow.ToId, flow.Speed)
+
+		// print first 10 lines for debug
+		if i < 10 { 
+			fmt.Printf("[ %d ] %v\n", i, flow)
+			fmt.Printf("[ %d ] %s\n", i, osrmTrafficLine)
+		}
+
+		// TODO: write to csv
+	}
 }
 
 func main() {
@@ -56,7 +67,7 @@ func main() {
 	afterGotFlowTime := time.Now()
 	fmt.Printf("get flows time used: %f seconds\n", afterGotFlowTime.Sub(startTime).Seconds())
 
-	// TODO: dump to csv
+	// dump to csv
 	fmt.Println("dump flows to: ")
 	dumpFlowsToCsv("traffic.csv", flows)
 	endTime := time.Now()
