@@ -5,10 +5,24 @@ import (
 	"fmt"
 	"time"
 	"os"
+	"flag"
+	"strconv"
 
 	"github.com/Telenav/osrm-backend/traffic_updater/go/gen-go/proxy"
 	"github.com/apache/thrift/lib/go/thrift"
 )
+
+var flags struct {
+	port int
+	ip string
+	csvFile string
+}
+
+func init() {
+	flag.IntVar(&flags.port, "p", 6666, "traffic proxy listening port")
+	flag.StringVar(&flags.ip, "c", "127.0.0.1", "traffic proxy ip address")
+	flag.StringVar(&flags.csvFile, "f", "traffic.csv", "OSRM traffic csv file")
+}
 
 func dumpFlowsToCsv(csv_file string, flows []*proxy.Flow) {
 
@@ -39,13 +53,15 @@ func dumpFlowsToCsv(csv_file string, flows []*proxy.Flow) {
 }
 
 func main() {
+	flag.Parse()
 
 	var transport thrift.TTransport
 	var err error
 
 	// make socket
-	fmt.Println("connect traffic proxy ")
-	transport, err = thrift.NewTSocket("127.0.0.1:6666")
+	targetServer := flags.ip + ":" + strconv.Itoa(flags.port)
+	fmt.Println("connect traffic proxy " + targetServer)
+	transport, err = thrift.NewTSocket(targetServer)
 	if err != nil {
 		fmt.Println("Error opening socket:", err)
 		return
@@ -59,6 +75,7 @@ func main() {
 	}
 	defer transport.Close()
 	if err := transport.Open(); err != nil {
+		fmt.Println("Error opening transport:", err)
 		return
 	}
 
@@ -83,7 +100,7 @@ func main() {
 
 	// dump to csv
 	fmt.Println("dump flows to: ")
-	dumpFlowsToCsv("traffic.csv", flows)
+	dumpFlowsToCsv(flags.csvFile, flows)
 	endTime := time.Now()
 	fmt.Printf("dump csv time used: %f seconds\n", endTime.Sub(afterGotFlowTime).Seconds())
 
