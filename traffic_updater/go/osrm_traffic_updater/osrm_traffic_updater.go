@@ -99,7 +99,7 @@ func main() {
 	fmt.Printf("get flows time used: %f seconds\n", afterGotFlowTime.Sub(startTime).Seconds())
 
 	// dump to csv
-	fmt.Println("dump flows to: ")
+	fmt.Println("dump flows to: " + flags.csvFile)
 	dumpFlowsToCsv(flags.csvFile, flows)
 	endTime := time.Now()
 	fmt.Printf("dump csv time used: %f seconds\n", endTime.Sub(afterGotFlowTime).Seconds())
