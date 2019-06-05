@@ -3,11 +3,15 @@ package main
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/Telenav/osrm-backend/traffic_updater/go/gen-go/proxy"
 	"github.com/apache/thrift/lib/go/thrift"
 )
 
+func dumpFlowsToCsv(csv_file string, flows []*proxy.Flow) {
+
+}
 
 func main() {
 
@@ -40,6 +44,7 @@ func main() {
 	client := proxy.NewProxyServiceClient(thrift.NewTStandardClient(protocol, protocol))
 
 	// get flows
+	startTime := time.Now()
 	fmt.Println("getting flows")
 	var defaultCtx = context.Background()
 	flows, err := client.GetAllFlows(defaultCtx)
@@ -48,6 +53,13 @@ func main() {
 		return
 	}
 	fmt.Printf("got flows count: %d\n", len(flows))
+	afterGotFlowTime := time.Now()
+	fmt.Printf("get flows time used: %f seconds\n", afterGotFlowTime.Sub(startTime).Seconds())
 
 	// TODO: dump to csv
+	fmt.Println("dump flows to: ")
+	dumpFlowsToCsv("traffic.csv", flows)
+	endTime := time.Now()
+	fmt.Printf("dump csv time used: %f seconds\n", endTime.Sub(afterGotFlowTime).Seconds())
+
 }
