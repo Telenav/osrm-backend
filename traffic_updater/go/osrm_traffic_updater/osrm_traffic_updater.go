@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Telenav/osrm-backend/traffic_updater/gen-go/proxy"
+	"github.com/Telenav/osrm-backend/traffic_updater/go/gen-go/proxy"
 	"github.com/apache/thrift/lib/go/thrift"
 )
 
