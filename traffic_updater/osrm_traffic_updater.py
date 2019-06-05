@@ -9,6 +9,20 @@ from thrift.transport import TSocket
 from thrift.transport import TTransport
 from thrift.protocol import TCompactProtocol
 
+def dump_flows_to_csv(csv_file, flows):
+    i = 0
+    for flow in flows:
+        osrm_csv_str_line = str(flow.fromId) + "," + str(flow.toId) + "," + str(flow.speed)
+        if i < 10:  # print first 10 lines
+            print "[ " + str(i) + " ] " + str(flow)
+            print "[ " + str(i) + " ] " + osrm_csv_str_line
+        
+        #TODO: append to csv file
+
+        i += 1
+
+    
+
 def main():
     # Make socket
     transport = TSocket.TSocket('localhost', 6666)
@@ -36,7 +50,7 @@ def main():
     print "get flows time used: " + str(after_get_flow_time - start_time) + " seconds"
 
     # Dump to OSRM csv format
-    print "TODO: dump to osrm csv"
+    dump_flows_to_csv("traffic.csv", flows)    
 
     end_time = time.clock()
     print "dump csv time used: " + str(end_time - after_get_flow_time) + " seconds"
