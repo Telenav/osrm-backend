@@ -10,17 +10,32 @@ from thrift.transport import TTransport
 from thrift.protocol import TCompactProtocol
 
 def dump_flows_to_csv(csv_file, flows):
-    i = 0
-    for flow in flows:
-        osrm_csv_str_line = str(flow.fromId) + "," + str(flow.toId) + "," + str(flow.speed)
-        if i < 10:  # print first 10 lines
-            print "[ " + str(i) + " ] " + str(flow)
-            print "[ " + str(i) + " ] " + osrm_csv_str_line
-        
-        #TODO: append to csv file
+    with open(csv_file, "wb") as writer:
+        i = 0
+        lines_buff = []
+        lines_count_per_write = 1000
+        total_wrote_count = 0
 
-        i += 1
+        for flow in flows:
+            osrm_csv_str_line = str(flow.fromId) + "," + str(flow.toId) + "," + str(flow.speed) + "\n"
+            lines_buff.append(osrm_csv_str_line)
+            if i < 10:  # print first 10 lines
+                print "[ " + str(i) + " ] " + str(flow)
+                print "[ " + str(i) + " ] " + osrm_csv_str_line        
 
+            # append to csv file
+            if len(lines_buff) >= lines_count_per_write:
+                writer.writelines(lines_buff)
+                total_wrote_count += len(lines_buff)
+                lines_buff = []
+
+            i += 1
+
+        if len(lines_buff) > 0:
+            writer.writelines(lines_buff)
+            total_wrote_count += len(lines_buff)
+            lines_buff = []
+    print "total wrote to " + csv_file + " count: " + str(total_wrote_count)
     
 
 def main():
