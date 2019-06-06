@@ -44,6 +44,7 @@ $ ./bin/osrm_traffic_updater -h
 Usage of ./bin/osrm_traffic_updater:
   -c string
         traffic proxy ip address (default "127.0.0.1")
+  -d    use high precision speeds, i.e. decimal (default true)
   -f string
         OSRM traffic csv file (default "traffic.csv")
   -p int
