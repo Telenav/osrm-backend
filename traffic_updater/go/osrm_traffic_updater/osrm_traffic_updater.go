@@ -51,6 +51,8 @@ func dumpFlowsToCsv(csv_file string, flows []*proxy.Flow) {
 			return
 		}
 	}
+	writer.Flush()
+	f.Sync()
     fmt.Printf("total wrote to %s count: %d\n", csv_file, len(flows))
 }
 
