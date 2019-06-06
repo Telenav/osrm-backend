@@ -1,21 +1,21 @@
 package main
 
 import (
-	"context"
-	"fmt"
-	"time"
-	"os"
-	"flag"
-	"strconv"
 	"bufio"
+	"context"
+	"flag"
+	"fmt"
+	"os"
+	"strconv"
+	"time"
 
 	"github.com/Telenav/osrm-backend/traffic_updater/go/gen-go/proxy"
 	"github.com/apache/thrift/lib/go/thrift"
 )
 
 var flags struct {
-	port int
-	ip string
+	port    int
+	ip      string
 	csvFile string
 }
 
@@ -34,12 +34,12 @@ func dumpFlowsToCsv(csv_file string, flows []*proxy.Flow) {
 	}
 	defer f.Close()
 	writer := bufio.NewWriter(f)
-	
+
 	for i, flow := range flows {
 		osrmTrafficLine := fmt.Sprintf("%d,%d,%f\n", flow.FromId, flow.ToId, flow.Speed)
 
 		// print first 10 lines for debug
-		if i < 10 { 
+		if i < 10 {
 			fmt.Printf("[ %d ] %v\n", i, flow)
 			fmt.Printf("[ %d ] %s\n", i, osrmTrafficLine)
 		}
@@ -53,7 +53,7 @@ func dumpFlowsToCsv(csv_file string, flows []*proxy.Flow) {
 	}
 	writer.Flush()
 	f.Sync()
-    fmt.Printf("total wrote to %s count: %d\n", csv_file, len(flows))
+	fmt.Printf("total wrote to %s count: %d\n", csv_file, len(flows))
 }
 
 func main() {
