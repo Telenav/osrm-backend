@@ -14,15 +14,17 @@ import (
 )
 
 var flags struct {
-	port    int
-	ip      string
-	csvFile string
+	port          int
+	ip            string
+	csvFile       string
+	highPrecision bool
 }
 
 func init() {
 	flag.IntVar(&flags.port, "p", 6666, "traffic proxy listening port")
 	flag.StringVar(&flags.ip, "c", "127.0.0.1", "traffic proxy ip address")
 	flag.StringVar(&flags.csvFile, "f", "traffic.csv", "OSRM traffic csv file")
+	flag.BoolVar(&flags.highPrecision, "d", true, "use high precision speeds, i.e. decimal")
 }
 
 func dumpFlowsToCsv(csv_file string, flows []*proxy.Flow) {
@@ -36,7 +38,12 @@ func dumpFlowsToCsv(csv_file string, flows []*proxy.Flow) {
 	writer := bufio.NewWriter(f)
 
 	for i, flow := range flows {
-		osrmTrafficLine := fmt.Sprintf("%d,%d,%f\n", flow.FromId, flow.ToId, flow.Speed)
+		var osrmTrafficLine string
+		if flags.highPrecision {
+			osrmTrafficLine = fmt.Sprintf("%d,%d,%f\n", flow.FromId, flow.ToId, flow.Speed)
+		} else {
+			osrmTrafficLine = fmt.Sprintf("%d,%d,%d\n", flow.FromId, flow.ToId, int(flow.Speed))
+		}
 
 		// print first 10 lines for debug
 		if i < 10 {
