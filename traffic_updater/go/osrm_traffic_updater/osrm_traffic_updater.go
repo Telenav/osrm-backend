@@ -29,6 +29,15 @@ func init() {
 
 func dumpFlowsToCsv(csv_file string, flows []*proxy.Flow) {
 
+	if _, err := os.Stat(csv_file); err == nil {
+		// csv_file exists, remove it
+		rmErr := os.Remove(csv_file)
+		if rmErr != nil {
+			fmt.Println(rmErr)
+			return
+		}
+	}
+
 	f, err := os.OpenFile(csv_file, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		fmt.Println(err)
