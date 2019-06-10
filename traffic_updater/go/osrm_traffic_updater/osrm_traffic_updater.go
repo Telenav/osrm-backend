@@ -27,18 +27,18 @@ func init() {
 	flag.BoolVar(&flags.highPrecision, "d", true, "use high precision speeds, i.e. decimal")
 }
 
-func dumpFlowsToCsv(csv_file string, flows []*proxy.Flow) {
+func dumpFlowsToCsv(csvFile string, flows []*proxy.Flow) {
 
-	if _, err := os.Stat(csv_file); err == nil {
-		// csv_file exists, remove it
-		rmErr := os.Remove(csv_file)
+	if _, err := os.Stat(csvFile); err == nil {
+		// csvFile exists, remove it
+		rmErr := os.Remove(csvFile)
 		if rmErr != nil {
 			fmt.Println(rmErr)
 			return
 		}
 	}
 
-	f, err := os.OpenFile(csv_file, os.O_RDWR|os.O_CREATE, 0755)
+	f, err := os.OpenFile(csvFile, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -69,7 +69,7 @@ func dumpFlowsToCsv(csv_file string, flows []*proxy.Flow) {
 	}
 	writer.Flush()
 	f.Sync()
-	fmt.Printf("total wrote to %s count: %d\n", csv_file, len(flows))
+	fmt.Printf("total wrote to %s count: %d\n", csvFile, len(flows))
 }
 
 func main() {
