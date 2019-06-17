@@ -16,7 +16,7 @@ elif [ "$1" = 'compile_mapdata' ]; then
     if [ ! -f $DATA_PATH/$2.osm.pbf ]; then
       curl $3 > $DATA_PATH/$2.osm.pbf
     fi
-    ./osrm-extract $DATA_PATH/$2.osm.pbf -p profile.lua
+    ./osrm-extract $DATA_PATH/$2.osm.pbf -p profiles/car.lua
     ./osrm-partition $DATA_PATH/$2.osrm
     ./osrm-customize $DATA_PATH/$2.osrm
   fi  
