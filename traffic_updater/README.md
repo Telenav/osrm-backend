@@ -30,8 +30,8 @@ optional arguments:
 ## Go Implementation
 ### Requirements
 - `go version go1.12.5 linux/amd64`
-- `thrift 0.11.0`
-    - clone `thrift` from `github.com/apache/thrift`, then checkout branch `0.11.0`
+- `thrift 0.12.0`
+    - clone `thrift` from `github.com/apache/thrift`, then checkout branch `0.12.0`
 - change `thrift` imports in generated codes `gen-go/proxy` 
     - `git.apache.org/thrift.git/lib/go/thrift` -> `github.com/apache/thrift/lib/go/thrift`
 
