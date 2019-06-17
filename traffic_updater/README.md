@@ -6,26 +6,7 @@ We have implemented both `Python` and `Go` version. Both of them have same funct
     - `Python` Implementation: about `210 seconds`    
 
 ## Python Implementation
-### Requirements
-- `python 2.7`
-    - `pip install -U pip`
-    - `pip install thrift` (`thrift 0.11.0`)
-
-### Usage
-```bash
-$ cd traffic_updater/python
-$ python osrm_traffic_updater.py -h
-usage: osrm_traffic_updater.py [-h] [-p PORT] [-c IP] [-f CSV_FILE]
-
-OSRM traffic updater against traffic proxy.
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -p PORT, --port PORT  traffic proxy listening port (default: 6666)
-  -c IP, --ip IP        traffic proxy ip address (default: 127.0.0.1)
-  -f CSV_FILE, --csv_file CSV_FILE
-                        OSRM traffic csv file (default: traffic.csv)
-```
+The `python` based implementation has been deprecated due to bad performance. See [Python Implementation Codes](https://github.com/Telenav/osrm-backend/blob/b4eb73f2d307fd4dbd8b8610bbc2a68c3b6ab1ae/traffic_updater/python/osrm_traffic_updater.py#L57) if you'd like to see code details.     
 
 ## Go Implementation
 ### Requirements
