@@ -5,6 +5,9 @@ We have implemented both `Python` and `Go` version. Both of them have same funct
     - `Go` Implementation: about `9 seconds`
     - `Python` Implementation: about `210 seconds`    
 
+## RPC Protocol
+See [proxy.thrift](proxy.thrift) for details.    
+
 ## Python Implementation
 The `python` based implementation has been deprecated due to bad performance. See [Deprecated Python Implementation Codes](https://github.com/Telenav/osrm-backend/blob/b4eb73f2d307fd4dbd8b8610bbc2a68c3b6ab1ae/traffic_updater/python/osrm_traffic_updater.py#L57) if you'd like to see code details.     
 
