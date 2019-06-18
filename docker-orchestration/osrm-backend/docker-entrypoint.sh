@@ -27,6 +27,7 @@ elif [ "$1" = 'compile_mapdata' ]; then
 
   PBF_FILE_URL=${2}
   KEEP_COMPILED_DATA=${3:-"false"}
+  GENERATE_DATA_PACKAGE=${4:-"false"}
 
   curl ${PBF_FILE_URL} > $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}.osm.pbf
   ${BUILD_PATH}/osrm-extract $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}.osm.pbf -p ${BUILD_PATH}/profiles/car.lua ${OSRM_EXTRA_COMMAND}
@@ -37,8 +38,15 @@ elif [ "$1" = 'compile_mapdata' ]; then
   rm -f $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}.osm.pbf
   rm -f $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}.osrm
 
-  #TODO: package and publish compiled mapdata 
-
+  # package and publish compiled mapdata 
+  if [ ${GENERATE_DATA_PACKAGE} == "true" ]; then
+    cd ${DATA_PATH}
+    tar -zcf ${MAPDATA_NAME_WITH_SUFFIX}.tar.gz *
+    
+    SAVE_DATA_PACKAGE_PATH=/save-data
+    mkdir -p ${SAVE_DATA_PACKAGE_PATH}
+    mv ${DATA_PATH}/${MAPDATA_NAME_WITH_SUFFIX}.tar.gz ${SAVE_DATA_PACKAGE_PATH}/
+  fi
 
   # rm compiled data if not needed
   if [ ${KEEP_COMPILED_DATA} != "true" ]; then
