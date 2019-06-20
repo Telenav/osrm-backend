@@ -29,8 +29,12 @@ elif [ "$1" = 'compile_mapdata' ]; then
   KEEP_COMPILED_DATA=${3:-"false"}
   GENERATE_DATA_PACKAGE=${4:-"false"}
 
+  # use PBF file name + IMAGE_TAG as data_version which can be returned in each JSON response
   DATA_VERSION=`echo ${PBF_FILE_URL} | rev | cut -d / -f 1 | rev`
-  echo ${DATA_VERSION}
+  if [ x${IMAGE_TAG} != x ]; then
+    DATA_VERSION=${DATA_VERSION}--compiled-by-${IMAGE_TAG}
+  fi
+  echo ${DATA_VERSION} 
 
   curl ${PBF_FILE_URL} > $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}.osm.pbf
   ${BUILD_PATH}/osrm-extract $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}.osm.pbf -p ${BUILD_PATH}/profiles/car.lua -d ${DATA_VERSION} ${OSRM_EXTRA_COMMAND}
