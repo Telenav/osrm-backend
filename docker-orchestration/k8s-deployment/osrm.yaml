@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: osrm-backend
-          image: ${TELENAV_OSRM_BACKEND_DOCKER_IMAGE}
+          image: TELENAV_OSRM_BACKEND_DOCKER_IMAGE
           imagePullPolicy: IfNotPresent
           args: ["routed_startup"]
           ports:
