@@ -2,6 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: osrm
+  namespace: routing-osrm
 spec:
   replicas: 1
   strategy:
@@ -12,8 +13,10 @@ spec:
   template:
     metadata:
       labels:
-        app: osrm
+        app: routing
     spec:
+      nodeSelector:
+        routing-osrm/role: routing-osrm
       containers:
         - name: osrm-backend
           image: TELENAV_OSRM_BACKEND_DOCKER_IMAGE
