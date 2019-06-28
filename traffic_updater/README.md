@@ -40,7 +40,7 @@ Usage of ./bin/osrm_traffic_updater:
 # wayid2nodeids_extractor
 Extract wayid to nodeids mapping from PBF
 
-###Usage
+### Usage
 ```bash
 $ cd $GOPATH
 $ go install github.com/Telenav/osrm-backend/traffic_updater/go/wayid2nodeid_extractor
