@@ -72,8 +72,8 @@ func wayid2nodeids(infile io.Reader, outfile io.Writer) {
 				wayid = trimNavigableWaySuffix(wayid)
 
 				// Transform
-				//str := convertWayObj2IdMappingString(v, wayid)
-				str := convertWayObj2MockSpeed(v, wayid)
+				str := convertWayObj2IdMappingString(v, wayid)
+				//str := convertWayObj2MockSpeed(v, wayid)
 
 				_, err := loader.WriteString(str)
 				if err != nil {
