@@ -5,7 +5,7 @@ Use kubernetes rolling update deployment strategy for timed replace container wi
 ```bash
 
 # NOTE: prepare your image and fill into osrm.yaml
-$ sed -i "" "s#TELENAV_OSRM_BACKEND_DOCKER_IMAGE#<your image>#g" ./osrm.yaml
+$ sed -i "s#TELENAV_OSRM_BACKEND_DOCKER_IMAGE#<your image>#g" ./osrm.yaml
 
 # create deployment
 $ kubectl create -f osrm.yaml  
