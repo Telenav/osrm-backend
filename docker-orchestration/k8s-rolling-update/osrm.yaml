@@ -21,7 +21,7 @@ spec:
         - name: osrm-backend
           image: TELENAV_OSRM_BACKEND_DOCKER_IMAGE
           imagePullPolicy: IfNotPresent
-          command: ["/bin/sh", "-c", "/docker-entrypoint.sh routed_startup 10.189.100.132 >>/osrm-logs/$(date -u +%Y%m%d)-${HOSTNAME}.log 2>&1"]
+          command: ["/bin/sh", "-c", "export LOG_FILE=/osrm-logs/$(date -u +%Y%m%dT%H%M%S)-${HOSTNAME}.log; /docker-entrypoint.sh routed_startup 10.189.100.132 2>&1 | while read LINE; do echo \"[$(date \"+%Y-%m-%dT%H:%M:%S %Z\")] ${LINE}\">>${LOG_FILE}; done;"]
           volumeMounts:
           - mountPath: "/osrm-logs"
             name: osrm-logs-volume
