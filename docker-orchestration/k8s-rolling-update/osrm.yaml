@@ -21,7 +21,10 @@ spec:
         - name: osrm-backend
           image: TELENAV_OSRM_BACKEND_DOCKER_IMAGE
           imagePullPolicy: IfNotPresent
-          args: ["routed_startup"]
+          command: ["/bin/sh", "-c", "/docker-entrypoint.sh routed_startup 10.189.102.81 >>/osrm-logs/$(date -u +%Y%m%d)-${HOSTNAME}.log 2>&1"]
+          volumeMounts:
+          - mountPath: "/osrm-logs"
+            name: osrm-logs-volume
           ports:
           - containerPort: 5000
             protocol: TCP 
@@ -31,3 +34,7 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 5
             failureThreshold: 1000
+      volumes:
+        - name: osrm-logs-volume
+          persistentVolumeClaim:
+            claimName: osrm-logs-pvc
