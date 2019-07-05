@@ -36,5 +36,6 @@ spec:
             failureThreshold: 1000
       volumes:
         - name: osrm-logs-volume
-          persistentVolumeClaim:
-            claimName: osrm-logs-pvc
+          nfs:
+            server: fs-3941ca92.efs.us-west-2.amazonaws.com
+            path: /
