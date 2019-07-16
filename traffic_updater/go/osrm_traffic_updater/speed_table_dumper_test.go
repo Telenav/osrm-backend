@@ -26,7 +26,7 @@ func TestSpeedTableDumper1(t *testing.T) {
 	// construct mock traffic
 	var flows []*proxy.Flow
 	flows = loadMockTraffic("./testdata/mock-traffic.csv", flows)
-	wayid2speed := make(map[uint64]int)
+	wayid2speed := make(map[int64]int)
 	flows2map(flows, wayid2speed)
 
 	dumpSpeedTable4Customize(wayid2speed, sources, "./testdata/target.csv")
@@ -35,14 +35,14 @@ func TestSpeedTableDumper1(t *testing.T) {
 }
 
 func TestGenerateSingleRecord1(t *testing.T) {
-	str := generateSingleRecord(12345, 54321, 33)
+	str := generateSingleRecord(12345, 54321, 33, true)
 	if strings.Compare(str, "12345,54321,33\n") != 0 {
 		t.Error("Test GenerateSingleRecord failed.\n")
 	}
 }
 
 func TestGenerateSingleRecord2(t *testing.T) {
-	str := generateSingleRecord(12345, 54321, -33)
+	str := generateSingleRecord(12345, 54321, 33, false)
 	if strings.Compare(str, "54321,12345,33\n") != 0 {
 		t.Error("Test GenerateSingleRecord failed.\n")
 	}
@@ -72,9 +72,9 @@ func loadMockTraffic(trafficPath string, flows []*proxy.Flow) []*proxy.Flow {
 			}
 		}
 
-		var wayid uint64
+		var wayid int64
 		var speed int64
-		if wayid, err = strconv.ParseUint(row[0], 10, 64); err != nil {
+		if wayid, err = strconv.ParseInt(row[0], 10, 64); err != nil {
 			fmt.Printf("#Error during decoding wayid, row = %v\n", row)
 		}
 		if speed, err = strconv.ParseInt(row[1], 10, 32); err != nil {
@@ -82,7 +82,7 @@ func loadMockTraffic(trafficPath string, flows []*proxy.Flow) []*proxy.Flow {
 		}
 
 		var flow proxy.Flow
-		flow.WayId = (int64)(wayid)
+		flow.WayId = wayid
 		flow.Speed = (float64)(speed)
 		flows = append(flows, &flow)
 	}

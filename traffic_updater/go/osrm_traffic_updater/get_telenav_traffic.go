@@ -10,7 +10,7 @@ import (
 	"github.com/apache/thrift/lib/go/thrift"
 )
 
-func getTrafficFlow(ip string, port int, m map[uint64]int, c chan<- bool) {
+func getTrafficFlow(ip string, port int, m map[int64]int, c chan<- bool) {
 	var transport thrift.TTransport
 	var err error
 
@@ -69,9 +69,9 @@ func getTrafficFlow(ip string, port int, m map[uint64]int, c chan<- bool) {
 	return
 }
 
-func flows2map(flows []*proxy.Flow, m map[uint64]int) {
+func flows2map(flows []*proxy.Flow, m map[int64]int) {
 	for _, flow := range flows {
-		wayid := (uint64)(flow.WayId)
+		wayid := flow.WayId
 		m[wayid] = int(flow.Speed)
 	}
 }

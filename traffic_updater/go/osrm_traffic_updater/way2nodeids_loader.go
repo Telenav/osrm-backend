@@ -40,8 +40,8 @@ func load(mappingPath string, data chan<- string) {
 
 
 // input data format
-// wayid1, n1, (n2 - n1), (n3 - n2)...
-// (wayid2 - wayid1), (n10 - n1), (n11 - n10), (n12 - n11) ...
+// wayid1, n1, n2
+// wayid2, n3, n4, n5
 func convert(data <-chan string, sources [TASKNUM]chan string) {
 	for i := range sources {
 		defer close(sources[i])

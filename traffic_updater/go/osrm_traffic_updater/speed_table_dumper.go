@@ -14,7 +14,7 @@ import (
 var tasksWg sync.WaitGroup
 var dumpFinishedWg sync.WaitGroup
 
-func dumpSpeedTable4Customize(wayid2speed map[uint64]int, sources [TASKNUM]chan string, outputPath string) {
+func dumpSpeedTable4Customize(wayid2speed map[int64]int, sources [TASKNUM]chan string, outputPath string) {
 	startTime := time.Now()
 
 	if len(wayid2speed) == 0 {
@@ -30,7 +30,7 @@ func dumpSpeedTable4Customize(wayid2speed map[uint64]int, sources [TASKNUM]chan 
 	fmt.Printf("Processing time for dumpSpeedTable4Customize takes %f seconds\n", endTime.Sub(startTime).Seconds())
 }
 
-func startTasks(wayid2speed map[uint64]int, sources [TASKNUM]chan string, sink chan<- string) {
+func startTasks(wayid2speed map[int64]int, sources [TASKNUM]chan string, sink chan<- string) {
 	tasksWg.Add(TASKNUM)
 	for i := 0; i < TASKNUM; i++ {
 		go task(wayid2speed, sources[i], sink)
@@ -48,7 +48,7 @@ func wait4AllTasksFinished(sink chan string) {
 	dumpFinishedWg.Wait()
 }
 
-func task(wayid2speed map[uint64]int, source <-chan string, sink chan<- string) {
+func task(wayid2speed map[int64]int, source <-chan string, sink chan<- string) {
 	var err error
 	for str := range source {
 		elements := strings.Split(str, ",")
@@ -62,7 +62,10 @@ func task(wayid2speed map[uint64]int, source <-chan string, sink chan<- string) 
 			continue
 		}
 
-		if speed, ok:= wayid2speed[wayid]; ok {
+		speedFwd, okFwd := wayid2speed[(int64)(wayid)]
+		speedBwd, okBwd := wayid2speed[(int64)(-wayid)]
+
+		if okFwd || okBwd {
 			var nodes []string = elements[1:]
 			for i := 0; (i + 1) < len(nodes); i++ {
 				var n1, n2 uint64
@@ -74,22 +77,28 @@ func task(wayid2speed map[uint64]int, source <-chan string, sink chan<- string) 
 					fmt.Printf("#Error during decoding nodeid, row = %v\n", elements)
 					continue
 				}
-				sink <- generateSingleRecord(n1, n2, speed)
+				if okFwd {
+					sink <- generateSingleRecord(n1, n2, speedFwd, true)
+				}
+				if okBwd {
+					sink <- generateSingleRecord(n1, n2, speedBwd, false)
+				}
+				
 			}
 		}
+
 	}
 	tasksWg.Done() 
 }
 
 // format
-// if speed >= 0, means traffic for forward, generate: from, to, speed
-// if speed < 0, means traffic for backward, generate: to, from, abs(speed)
-// To be confirm: When speed = 0, do we need to ban both directions?
-func generateSingleRecord(from, to uint64, speed int) (string){
-	if (speed >= 0) {
+// if dir = true, means traffic for forward, generate: from, to, speed
+// if dir = false, means this speed is for backward flow, generate: to, from, speed
+func generateSingleRecord(from, to uint64, speed int, dir bool) (string){
+	if dir {
 		return fmt.Sprintf("%d,%d,%d\n", from, to, speed)
 	} else {
-		return fmt.Sprintf("%d,%d,%d\n", to, from, -speed)
+		return fmt.Sprintf("%d,%d,%d\n", to, from, speed)
 	}
 }
 

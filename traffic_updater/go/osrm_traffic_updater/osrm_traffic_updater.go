@@ -28,7 +28,7 @@ func main() {
 	flag.Parse()
 
 	isFlowDoneChan := make(chan bool, 1)
-	wayid2speed := make(map[uint64]int)
+	wayid2speed := make(map[int64]int)
 	go getTrafficFlow(flags.ip, flags.port, wayid2speed, isFlowDoneChan)
 
 	var sources [TASKNUM]chan string
