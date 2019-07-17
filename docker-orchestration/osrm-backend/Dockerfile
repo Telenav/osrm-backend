@@ -27,6 +27,11 @@ RUN cd /workspace/osrm-backend && \
   go install && \
   cd ../../../ \
   ;fi && \
+  if [ -d "traffic_updater/go/snappy_command" ]; then \
+  cd traffic_updater/go/snappy_command && \
+  go install && \
+  cd ../../../ \
+  ;fi && \
   ls -lh /workspace/go/bin
 
 
