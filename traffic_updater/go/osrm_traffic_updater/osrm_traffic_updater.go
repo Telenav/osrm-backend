@@ -39,7 +39,9 @@ func main() {
 
 	isFlowDone := wait4PreConditions(isFlowDoneChan)
 	if isFlowDone {
-		dumpSpeedTable4Customize(wayid2speed, sources, flags.csvFile)
+		var ds dumperStatistic
+		dumpSpeedTable4Customize(wayid2speed, sources, flags.csvFile, &ds)
+		ds.output()
 	}
 }
 

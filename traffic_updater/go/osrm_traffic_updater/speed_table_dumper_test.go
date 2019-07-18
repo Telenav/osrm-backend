@@ -29,15 +29,23 @@ func TestSpeedTableDumper1(t *testing.T) {
 	wayid2speed := make(map[int64]int)
 	flows2map(flows, wayid2speed)
 
-	dumpSpeedTable4Customize(wayid2speed, sources, "./testdata/target.csv")
+	var ds dumperStatistic
+	dumpSpeedTable4Customize(wayid2speed, sources, "./testdata/target.csv", &ds)
 
 	compareFileContentUnstable("./testdata/target.csv", "./testdata/expect.csv", t)
+	validateStatistic(&ds, t)
 }
 
 func TestGenerateSingleRecord1(t *testing.T) {
 	str := generateSingleRecord(12345, 54321, 33, true)
 	if strings.Compare(str, "12345,54321,33\n") != 0 {
 		t.Error("Test GenerateSingleRecord failed.\n")
+	}
+}
+
+func validateStatistic(ds *dumperStatistic, t *testing.T) {
+	if (ds.wayCnt != 4) || (ds.nodeCnt != 9) || (ds.fwdRecordCnt != 4) || (ds.bwdRecordCnt != 3) || (ds.wayMatchedCnt != 4) || (ds.nodeMatchedCnt != 9) {
+		t.Error("TestLoadWay2Nodeids failed with incorrect statistic.\n")
 	}
 }
 
