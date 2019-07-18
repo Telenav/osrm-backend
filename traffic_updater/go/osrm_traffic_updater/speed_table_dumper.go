@@ -25,7 +25,7 @@ func dumpSpeedTable4Customize(wayid2speed map[int64]int, sources [TASKNUM]chan s
 	sink := make(chan string)
 	startTasks(wayid2speed, sources, sink, ds)
 	startDump(outputPath, sink)
-	wait4AllTasksFinished(sink)
+	wait4AllTasksFinished(sink, ds)
 
 	endTime := time.Now()
 	fmt.Printf("Processing time for dumpSpeedTable4Customize takes %f seconds\n", endTime.Sub(startTime).Seconds())
@@ -44,9 +44,10 @@ func startDump(outputPath string, sink <-chan string) {
 	go write(outputPath, sink)
 }
 
-func wait4AllTasksFinished(sink chan string) {
+func wait4AllTasksFinished(sink chan string, ds *dumperStatistic) {
 	tasksWg.Wait()
 	close(sink)
+	ds.Close()
 	dumpFinishedWg.Wait()
 }
 
@@ -97,7 +98,7 @@ func task(wayid2speed map[int64]int, source <-chan string, sink chan<- string, d
 		}
 	}
 
-	ds.update(wayCnt, nodeCnt, fwdRecordCnt, bwdRecordCnt, wayMatched, nodeMatched)
+	ds.Update(wayCnt, nodeCnt, fwdRecordCnt, bwdRecordCnt, wayMatched, nodeMatched)
 	tasksWg.Done() 
 }
 
