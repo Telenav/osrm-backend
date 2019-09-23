@@ -13,8 +13,6 @@ import (
 	"testing"
 )
 
-//TODO: should not involve proxy.Flow in this test
-/*
 func TestSpeedTableDumper1(t *testing.T) {
 	// load result into sources
 	var sources [TASKNUM]chan string
@@ -24,10 +22,8 @@ func TestSpeedTableDumper1(t *testing.T) {
 	go loadWay2NodeidsTable("./testdata/id-mapping.csv.snappy", sources)
 
 	// construct mock traffic
-	var flows []*proxy.Flow
-	flows = loadMockTraffic("./testdata/mock-traffic.csv", flows)
 	wayid2speed := make(map[int64]int)
-	flows2map(flows, wayid2speed)
+	loadMockTrafficFlow2Map(wayid2speed)
 
 	var ds dumperStatistic
 	ds.Init(TASKNUM)
@@ -36,7 +32,6 @@ func TestSpeedTableDumper1(t *testing.T) {
 	compareFileContentUnstable("./testdata/target.csv", "./testdata/expect.csv", t)
 	validateStatistic(&ds, t)
 }
-*/
 
 func TestGenerateSingleRecord1(t *testing.T) {
 	str := generateSingleRecord(12345, 54321, 33, true)
@@ -59,49 +54,13 @@ func validateStatistic(ds *dumperStatistic, t *testing.T) {
 	}
 }
 
-//TODO: should not involve proxy.Flow in this test
-/*
-func loadMockTraffic(trafficPath string, flows []*proxy.Flow) []*proxy.Flow {
-	// load mock traffic file
-	mockfile, err := os.Open(trafficPath)
-	defer mockfile.Close()
-	if err != nil {
-		log.Fatal(err)
-		fmt.Printf("Open pbf file of %v failed.\n", trafficPath)
-		return nil
-	}
-	fmt.Printf("Open pbf file of %s succeed.\n", trafficPath)
-
-	csvr := csv.NewReader(mockfile)
-	for {
-		row, err := csvr.Read()
-		if err != nil {
-			if err == io.EOF {
-				err = nil
-				break
-			} else {
-				fmt.Printf("Error during decoding mock traffic, err = %v\n", err)
-				return nil
-			}
-		}
-
-		var wayid int64
-		var speed int64
-		if wayid, err = strconv.ParseInt(row[0], 10, 64); err != nil {
-			fmt.Printf("#Error during decoding wayid, row = %v\n", row)
-		}
-		if speed, err = strconv.ParseInt(row[1], 10, 32); err != nil {
-			fmt.Printf("#Error during decoding speed, row = %v\n", row)
-		}
-
-		var flow proxy.Flow
-		flow.WayId = wayid
-		flow.Speed = (float64)(speed)
-		flows = append(flows, &flow)
-	}
-	return flows
+func loadMockTrafficFlow2Map(wayid2speed map[int64]int) {
+	wayid2speed[24418325] = 81
+	wayid2speed[-24418332] = 87
+	wayid2speed[24418332] = 87
+	wayid2speed[24418343] = 47
+	wayid2speed[-24418344] = 59
 }
-*/
 
 type tNodePair struct {
 	f, t uint64
