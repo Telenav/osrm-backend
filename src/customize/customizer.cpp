@@ -99,22 +99,37 @@ auto LoadAndUpdateEdgeExpandedGraph(const CustomizationConfig &config,
     return edge_based_graph;
 }
 
-std::vector<CellMetric> customizeFilteredMetrics(const partitioner::MultiLevelEdgeBasedGraph &graph,
+bool customizeFilteredMetrics(const partitioner::MultiLevelEdgeBasedGraph &graph,
                                                  const partitioner::CellStorage &storage,
                                                  const CellCustomizer &customizer,
                                                  const std::vector<std::vector<bool>> &node_filters,
-                                                 const CellUpdateRecord &cell_update_record)
+                                                 const CellUpdateRecord &cell_update_record,
+                                                 std::vector<CellMetric>& metrics,
+                                                 bool incremental)
 {
-    std::vector<CellMetric> metrics;
-
-    for (auto filter : node_filters)
+    if (metrics.size() != node_filters.size())
     {
-        auto metric = storage.MakeMetric();
-        customizer.Customize(graph, storage, filter, metric, cell_update_record);
-        metrics.push_back(std::move(metric));
+        util::Log() << "Error: Under incremental mod, metrics array is compatible with nodefilter array.";
+        util::Log() << "metrics.size() = " << metrics.size() << " node_filters.size() = " << node_filters.size()<< std::endl;
+        return false;
     }
 
-    return metrics;
+    for (size_t i = 0; i < metrics.size(); ++i)
+    {
+        if (incremental)
+        {
+            customizer.Customize(graph, storage, node_filters[i], metrics[i], cell_update_record);
+        }
+        else
+        {
+            auto metric = storage.MakeMetric();
+            customizer.Customize(graph, storage, node_filters[i], metric, cell_update_record);
+            metrics[i] = std::move(metric);
+            //metrics.push_back(std::move(metric));
+        }
+    }
+
+    return true;
 }
 
 }
@@ -133,6 +148,7 @@ int Customizer::Run(const CustomizationConfig &config)
     std::vector<EdgeDuration> node_durations; // TODO: remove when durations are optional
     std::vector<EdgeDistance> node_distances; // TODO: remove when distances are optional
     std::uint32_t connectivity_checksum = 0;
+
     util::ConcurrentSet<NodeID> node_updated(config.updater_config.incremental);
     auto graph = LoadAndUpdateEdgeExpandedGraph(
         config, mlp, node_weights, node_durations, node_distances, connectivity_checksum, node_updated);
@@ -154,15 +170,47 @@ int Customizer::Run(const CustomizationConfig &config)
 
     util::Log() << "Loading partition data took " << TIMER_SEC(loading_data) << " seconds";
 
-    TIMER_START(cell_customize);
+    std::vector<CellMetric> metrics;
+    for (auto mask : properties.excludable_classes)
+    {
+        if (mask != extractor::INAVLID_CLASS_DATA)
+        {
+            metrics.push_back(CellMetric());
+        }
+    }
 
-    // @condition check  @todo
+    if (config.updater_config.incremental)
+    {
+        TIMER_START(reading_mld_data);
+        if (boost::filesystem::exists(config.GetPath(".osrm.cell_metrics")))
+        {
+            std::unordered_map<std::string, std::vector<CellMetric>> previous_metric_exclude_classes = {
+            {properties.GetWeightName(), std::move(metrics)},
+            };
+            customizer::files::readCellMetrics(config.GetPath(".osrm.cell_metrics"), previous_metric_exclude_classes);
+            metrics = std::move(previous_metric_exclude_classes[properties.GetWeightName()]);
+        }
+        else
+        {
+            util::Log() << "Incremental mode must have valid cell_metrics.";
+            return -1;
+        }
+        TIMER_STOP(reading_mld_data);
+        util::Log() << "MLD customization reading took " << TIMER_SEC(reading_mld_data) << " seconds";
+    }
+
+    TIMER_START(cell_customize);
     CellUpdateRecord cell_update_record(mlp, config.updater_config.incremental);
     cell_update_record.Collect(node_updated);
     util::Log() << cell_update_record.Statistic();
 
     auto filter = util::excludeFlagsToNodeFilter(graph.GetNumberOfNodes(), node_data, properties);
-    auto metrics = customizeFilteredMetrics(graph, storage, CellCustomizer{mlp}, filter, cell_update_record);
+    auto metrics_succeed = customizeFilteredMetrics(graph, storage, CellCustomizer{mlp}, filter, cell_update_record, metrics, config.updater_config.incremental);
+    if (!metrics_succeed) 
+    {
+        util::Log() << "Critical error in metrics table generation!" << std::endl;
+        return -1;
+    }
     TIMER_STOP(cell_customize);
     util::Log() << "Cells customization took " << TIMER_SEC(cell_customize) << " seconds";
 
