@@ -54,7 +54,7 @@ public:
             return true;
         }
 
-        if (l < 1 || (l - 1) >= cellsets.size()) 
+        if (l < 1 || (l - 1) >= static_cast<LevelID>(cellsets.size())) 
         {
             printf("Incorrect level be passed.\n");
             return false;
@@ -95,11 +95,11 @@ public:
 
             ss << "of (";
             int sumOfCells = 0;
-            for (std::size_t level = 1; level < partition.GetNumberOfLevels(); ++level)
+            for (LevelID level = 1; level < partition.GetNumberOfLevels(); ++level)
             {
                 ss << partition.GetNumberOfCells(level);
                 sumOfCells += partition.GetNumberOfCells(level);
-                if (level != partition.GetNumberOfLevels() - 1)
+                if (level != (partition.GetNumberOfLevels() - 1))
                 {
                     ss << ",";
                 }
