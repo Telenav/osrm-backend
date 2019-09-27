@@ -77,7 +77,6 @@ func getTrafficFlowsIncidentsByGRPC(f trafficProxyFlags, wayIds []int64) (*proxy
 	client := proxy.NewTrafficServiceClient(conn)
 
 	// get flows
-	log.Printf("getting flows,incidents for %d wayIds\n", len(wayIds))
 	var req proxy.TrafficRequest
 	req.TrafficSource = new(proxy.TrafficSource)
 	req.TrafficSource.Region = f.region
@@ -85,11 +84,13 @@ func getTrafficFlowsIncidentsByGRPC(f trafficProxyFlags, wayIds []int64) (*proxy
 	req.TrafficSource.MapProvider = f.mapProvider
 	req.TrafficType = append(req.TrafficType, proxy.TrafficType_FLOW, proxy.TrafficType_INCIDENT)
 	if len(wayIds) > 0 {
+		log.Printf("getting flows,incidents for %d wayIds\n", len(wayIds))
 		var trafficWayIdsRequest proxy.TrafficRequest_TrafficWayIdsRequest
 		trafficWayIdsRequest.TrafficWayIdsRequest = new(proxy.TrafficWayIdsRequest)
 		trafficWayIdsRequest.TrafficWayIdsRequest.WayIds = wayIds
 		req.RequestOneof = &trafficWayIdsRequest
 	} else {
+		log.Printf("getting all flows,incidents\n")
 		trafficAllRequest := new(proxy.TrafficRequest_TrafficAllRequest)
 		trafficAllRequest.TrafficAllRequest = new(proxy.TrafficAllRequest)
 		req.RequestOneof = trafficAllRequest
