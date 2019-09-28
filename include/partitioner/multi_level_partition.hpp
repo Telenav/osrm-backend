@@ -94,6 +94,8 @@ template <storage::Ownership Ownership> class MultiLevelPartitionImpl final
     // returns the index of the cell the vertex is contained at level l
     CellID GetCell(LevelID l, NodeID node) const
     {
+        if (node > partition.size() || l > GetNumberOfLevels()) 
+            return INVALID_CELL_ID;
         auto p = partition[node];
         auto lidx = LevelIDToIndex(l);
         auto masked = p & level_data->lidx_to_mask[lidx];
