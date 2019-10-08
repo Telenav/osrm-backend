@@ -109,8 +109,8 @@ bool customizeFilteredMetrics(const partitioner::MultiLevelEdgeBasedGraph &graph
 {
     if (metrics.size() != node_filters.size())
     {
-        util::Log() << "Error: Under incremental mod, metrics array is compatible with nodefilter array.";
-        util::Log() << "metrics.size() = " << metrics.size() << " node_filters.size() = " << node_filters.size()<< std::endl;
+        util::Log(logERROR) << "Under incremental mod, metrics array is compatible with nodefilter array.";
+        util::Log(logERROR) << "metrics.size() = " << metrics.size() << " node_filters.size() = " << node_filters.size()<< std::endl;
         return false;
     }
 

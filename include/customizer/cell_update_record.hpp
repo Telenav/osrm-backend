@@ -2,9 +2,9 @@
 #define OSRM_CELLS_UPDATED_RECORD_HPP
 
 #include "tbb/concurrent_unordered_set.h"
-#include "partitioner/multi_level_partition.hpp"
 #include "util/concurrent_set.hpp"
-
+#include "util/log.hpp"
+#include "partitioner/multi_level_partition.hpp"
 
 #include <vector>
 #include <unordered_set>
@@ -37,11 +37,11 @@ public:
             return;
         }
 
-        for (auto iter : node_updated)
+        for (const auto& n : node_updated)
         {
             for (std::size_t level = 1; level < partition.GetNumberOfLevels(); ++level)
             {
-                cellsets[level-1].insert(partition.GetCell(level, iter));
+                cellsets[level-1].insert(partition.GetCell(level, n));
             }
         }
     }
@@ -56,7 +56,8 @@ public:
 
         if (l < 1 || (l - 1) >= static_cast<LevelID>(cellsets.size())) 
         {
-            printf("Incorrect level be passed.\n");
+            util::Log(logERROR) << "Incorrect level be passed to" 
+                                << typeid(*this).name() << "::" << __func__;
             return false;
         }
         return (cellsets[l-1].find(c) != cellsets[l-1].end());
