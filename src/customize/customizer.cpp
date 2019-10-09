@@ -78,7 +78,7 @@ auto LoadAndUpdateEdgeExpandedGraph(const CustomizationConfig &config,
                                     std::vector<EdgeDuration> &node_durations,
                                     std::vector<EdgeDistance> &node_distances,
                                     std::uint32_t &connectivity_checksum,
-                                    util::ConcurrentSet<NodeID> &node_updated)
+                                    updater::NodeSetPtr node_updated)
 {
     updater::Updater updater(config.updater_config);
 
@@ -149,14 +149,24 @@ int Customizer::Run(const CustomizationConfig &config)
     std::vector<EdgeDistance> node_distances; // TODO: remove when distances are optional
     std::uint32_t connectivity_checksum = 0;
 
-    util::ConcurrentSet<NodeID> node_updated(config.updater_config.incremental);
+    updater::NodeSetPtr node_updated = config.updater_config.incremental ? std::make_shared<updater::NodeSet>() : nullptr;
     auto graph = LoadAndUpdateEdgeExpandedGraph(
         config, mlp, node_weights, node_durations, node_distances, connectivity_checksum, node_updated);
     BOOST_ASSERT(graph.GetNumberOfNodes() == node_weights.size());
     std::for_each(node_weights.begin(), node_weights.end(), [](auto &w) { w &= 0x7fffffff; });
     util::Log() << "Loaded edge based graph: " << graph.GetNumberOfEdges() << " edges, "
                 << graph.GetNumberOfNodes() << " nodes";
-    util::Log() << node_updated.Statistic();
+    
+    if (config.updater_config.incremental && node_updated)
+    {
+        double percentage = 0;
+        if (0 != graph.GetNumberOfNodes())
+        {
+            percentage = (double)(node_updated->size() * 100) / graph.GetNumberOfNodes();
+        }
+        util::Log() << "Collect " << node_updated->size() << " updated nodes, "
+                    << "about " << percentage << "% of total nodes in graph.";
+    }
 
     partitioner::CellStorage storage;
     partitioner::files::readCells(config.GetPath(".osrm.cells"), storage);
@@ -201,7 +211,10 @@ int Customizer::Run(const CustomizationConfig &config)
 
     TIMER_START(cell_customize);
     CellUpdateRecord cell_update_record(mlp, config.updater_config.incremental);
-    cell_update_record.Collect(node_updated);
+    {
+        updater::NodeSetViewerPtr node_updated_viewer = std::move(node_updated); 
+        cell_update_record.Collect(node_updated_viewer); 
+    }
     util::Log() << cell_update_record.Statistic();
 
     auto filter = util::excludeFlagsToNodeFilter(graph.GetNumberOfNodes(), node_data, properties);

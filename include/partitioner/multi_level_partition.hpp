@@ -94,6 +94,8 @@ template <storage::Ownership Ownership> class MultiLevelPartitionImpl final
     // returns the index of the cell the vertex is contained at level l
     CellID GetCell(LevelID l, NodeID node) const
     {
+        // GetCell could be called with original node id from OSM data,
+        // which might not has related cellid 
         if (node > partition.size() || l > GetNumberOfLevels()) 
             return INVALID_CELL_ID;
         auto p = partition[node];

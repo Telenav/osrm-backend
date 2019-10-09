@@ -1,13 +1,14 @@
 #ifndef OSRM_CELLS_UPDATED_RECORD_HPP
 #define OSRM_CELLS_UPDATED_RECORD_HPP
 
-#include "tbb/concurrent_unordered_set.h"
-#include "util/concurrent_set.hpp"
 #include "util/log.hpp"
+#include "updater/updater.hpp"
 #include "partitioner/multi_level_partition.hpp"
 
+#include "tbb/concurrent_unordered_set.h"
 #include <vector>
 #include <unordered_set>
+#include <iomanip>
 
 namespace osrm
 {
@@ -30,14 +31,14 @@ public:
         cellsets = std::move(tmp);
     }
 
-    void Collect(const util::ConcurrentSet<NodeID> &node_updated)
+    void Collect(updater::NodeSetViewerPtr node_updated)
     {
-        if (!isIncremental)
+        if (!isIncremental || !node_updated)
         {
             return;
         }
 
-        for (const auto& n : node_updated)
+        for (const auto& n : *node_updated)
         {
             for (std::size_t level = 1; level < partition.GetNumberOfLevels(); ++level)
             {

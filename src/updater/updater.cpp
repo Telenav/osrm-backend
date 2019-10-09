@@ -26,7 +26,6 @@
 #include "util/timezones.hpp"
 #include "util/timing_util.hpp"
 #include "util/typedefs.hpp"
-#include "util/concurrent_set.hpp"
 
 #include <boost/assert.hpp>
 #include <boost/filesystem/fstream.hpp>
@@ -146,10 +145,13 @@ void checkWeightsConsistency(
 
 static const constexpr std::size_t LUA_SOURCE = 0;
 
-void recordsUpdatedNodes(util::ConcurrentSet<NodeID> &node_updated, const NodeID n)
+void recordsUpdatedNodes(NodeSetPtr node_updated, const NodeID n)
 {
-    node_updated.Add(n);
-}
+    if (node_updated)
+    {
+       node_updated->insert(n);
+    }
+ }
 
 tbb::concurrent_vector<GeometryID>
 updateSegmentData(const UpdaterConfig &config,
@@ -158,7 +160,7 @@ updateSegmentData(const UpdaterConfig &config,
                   extractor::SegmentDataContainer &segment_data,
                   std::vector<util::Coordinate> &coordinates,
                   extractor::PackedOSMIDs &osm_node_ids,
-                  util::ConcurrentSet<NodeID> &node_updated)
+                  NodeSetPtr node_updated)
 {
     // vector to count used speeds for logging
     // size offset by one since index 0 is used for speeds not from external file
@@ -442,7 +444,7 @@ updateTurnPenalties(const UpdaterConfig &config,
                     std::vector<TurnPenalty> &turn_weight_penalties,
                     std::vector<TurnPenalty> &turn_duration_penalties,
                     extractor::PackedOSMIDs osm_node_ids,
-                    util::ConcurrentSet<NodeID> &node_updated)
+                    NodeSetPtr node_updated)
 {
     const auto weight_multiplier = profile_properties.GetWeightMultiplier();
 
@@ -545,7 +547,7 @@ EdgeID
 Updater::LoadAndUpdateEdgeExpandedGraph(std::vector<extractor::EdgeBasedEdge> &edge_based_edge_list,
                                         std::vector<EdgeWeight> &node_weights,
                                         std::uint32_t &connectivity_checksum,
-                                        util::ConcurrentSet<NodeID> &node_updated) const
+                                        NodeSetPtr node_updated) const
 {
     std::vector<EdgeDuration> node_durations(node_weights.size());
     return LoadAndUpdateEdgeExpandedGraph(
@@ -557,7 +559,7 @@ Updater::LoadAndUpdateEdgeExpandedGraph(std::vector<extractor::EdgeBasedEdge> &e
                                         std::vector<EdgeWeight> &node_weights,
                                         std::vector<EdgeDuration> &node_durations,
                                         std::uint32_t &connectivity_checksum,
-                                        util::ConcurrentSet<NodeID> &node_updated) const
+                                        NodeSetPtr node_updated) const
 {
     TIMER_START(load_edges);
 

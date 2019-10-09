@@ -118,9 +118,9 @@ BOOST_AUTO_TEST_CASE(cell_update_record_test_check)
 
     BOOST_REQUIRE_EQUAL(mlp.GetNumberOfLevels(), 3);
 
-    ConcurrentSet<NodeID> ss(true);
-    ss.Add(2);
-    ss.Add(3);
+    updater::NodeSetPtr ss = std::make_shared<updater::NodeSet>();
+    ss->insert(2);
+    ss->insert(3);
     CellUpdateRecord cr(mlp, true);
     cr.Collect(ss);
 
@@ -173,11 +173,12 @@ BOOST_AUTO_TEST_CASE(cell_update_record_with_cost_update)
                                    {2, 4, 1}, {3, 5, 1}, {5, 3, 1}, {4, 5, 1}};
     auto graph2 = makeGraph(mlp, edges2);
 
-    ConcurrentSet<NodeID> ss(true);
-    ss.Add(2);
-    ss.Add(3);
+    updater::NodeSetPtr ss = std::make_shared<updater::NodeSet>();
+    ss->insert(2);
+    ss->insert(3);
+    updater::NodeSetViewerPtr sViewer = std::move(ss);
     CellUpdateRecord cr2(mlp, true);
-    cr2.Collect(ss);
+    cr2.Collect(sViewer);
     customizer.Customize(graph2, storage_rec, node_filter, metric_rec, cr2);
     // verify customization result
     CHECK_EQUAL_RANGE(cell_1_0.GetOutWeight(0), 1);
