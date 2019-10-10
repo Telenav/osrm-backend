@@ -145,7 +145,7 @@ void checkWeightsConsistency(
 
 static const constexpr std::size_t LUA_SOURCE = 0;
 
-void recordsUpdatedNodes(NodeSetPtr node_updated, const NodeID n)
+void recordsUpdatedNodes(NodeSetPtr& node_updated, const NodeID n)
 {
     if (node_updated)
     {
