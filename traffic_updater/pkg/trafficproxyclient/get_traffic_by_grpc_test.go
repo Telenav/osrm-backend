@@ -1,4 +1,4 @@
-package main
+package trafficproxyclient
 
 import (
 	"bufio"
@@ -10,6 +10,17 @@ import (
 
 	proxy "github.com/Telenav/osrm-backend/traffic_updater/pkg/gen-trafficproxy"
 )
+
+func quickViewFlows(flows []*proxy.FlowResponse, viewCount int) {
+	for i := 0; i < viewCount && i < len(flows); i++ {
+		log.Printf("--->quickViewFlows %d: %v\n", i, flows[i])
+	}
+}
+func quickViewIncidents(incidents []*proxy.IncidentResponse, viewCount int) {
+	for i := 0; i < viewCount && i < len(incidents); i++ {
+		log.Printf("--->quickViewIncidents %d: %v\n", i, incidents[i])
+	}
+}
 
 func saveTrafficDataFromGRPC(targetPath string, trafficData proxy.TrafficResponse) {
 	startTime := time.Now()
@@ -55,7 +66,7 @@ func TestGetAllTrafficDataByGRPC(t *testing.T) {
 		t.Skip("skipping test in short mode.")
 	}
 
-	trafficData, err := getTrafficFlowsIncidentsByGRPC(flags.trafficProxyFlags, nil)
+	trafficData, err := GetFlowsIncidents(nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -73,7 +84,7 @@ func TestGetTrafficDataForWaysByGRPC(t *testing.T) {
 	var wayIds []int64
 	wayIds = append(wayIds, 829733412, 104489539)
 
-	trafficData, err := getTrafficFlowsIncidentsByGRPC(flags.trafficProxyFlags, wayIds)
+	trafficData, err := GetFlowsIncidents(wayIds)
 	if err != nil {
 		t.Error(err)
 	}
@@ -89,7 +100,7 @@ func TestGetDeltaTrafficDataByGRPCStreaming(t *testing.T) {
 	trafficDataChan := make(chan proxy.TrafficResponse)
 
 	go func() {
-		err := getDeltaTrafficFlowsIncidentsByGRPCStreaming(flags.trafficProxyFlags, trafficDataChan)
+		err := NewStreamingDeltaFlowsIncidents(trafficDataChan)
 		if err != nil {
 			t.Errorf("getDeltaTrafficFlowsIncidentsByGRPCStreaming failed, err: %v", err)
 		}

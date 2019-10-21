@@ -5,28 +5,17 @@ import (
 	"fmt"
 	"log"
 	"time"
+
+	proxy "github.com/Telenav/osrm-backend/traffic_updater/pkg/gen-trafficproxy"
+	"github.com/Telenav/osrm-backend/traffic_updater/pkg/trafficproxyclient"
 )
 
-type trafficProxyFlags struct {
-	port            int
-	ip              string
-	region          string
-	trafficProvider string
-	mapProvider     string
-}
-
 var flags struct {
-	trafficProxyFlags trafficProxyFlags
-	mappingFile       string
-	csvFile           string
+	mappingFile string
+	csvFile     string
 }
 
 func init() {
-	flag.IntVar(&flags.trafficProxyFlags.port, "p", 10086, "traffic proxy listening port")
-	flag.StringVar(&flags.trafficProxyFlags.ip, "c", "127.0.0.1", "traffic proxy ip address")
-	flag.StringVar(&flags.trafficProxyFlags.region, "region", "na", "region")
-	flag.StringVar(&flags.trafficProxyFlags.trafficProvider, "traffic", "", "traffic data provider")
-	flag.StringVar(&flags.trafficProxyFlags.mapProvider, "map", "", "map data provider")
 	flag.StringVar(&flags.mappingFile, "m", "wayid2nodeids.csv", "OSRM way id to node ids mapping table")
 	flag.StringVar(&flags.csvFile, "f", "traffic.csv", "OSRM traffic csv file")
 }
@@ -46,7 +35,7 @@ func main() {
 	isFlowDoneChan := make(chan bool, 1)
 	wayid2speed := make(map[int64]int)
 	go func() {
-		trafficData, err := getTrafficFlowsIncidentsByGRPC(flags.trafficProxyFlags, nil)
+		trafficData, err := trafficproxyclient.GetFlowsIncidents(nil)
 		if err != nil {
 			log.Println(err)
 			isFlowDoneChan <- false
@@ -88,4 +77,27 @@ loop:
 		}
 	}
 	return isFlowDone
+}
+
+func trafficData2map(trafficData proxy.TrafficResponse, m map[int64]int) {
+	startTime := time.Now()
+	defer func() {
+		log.Printf("Processing time for building traffic map takes %f seconds\n", time.Now().Sub(startTime).Seconds())
+	}()
+
+	var fwdCnt, bwdCnt uint64
+	for _, flow := range trafficData.FlowResponses {
+		wayid := flow.Flow.WayId
+		m[wayid] = int(flow.Flow.Speed)
+
+		if wayid > 0 {
+			fwdCnt++
+		} else {
+			bwdCnt++
+		}
+	}
+
+	//TODO: support incidents
+
+	log.Printf("Load map[wayid] to speed with %d items, %d forward and %d backward.\n", (fwdCnt + bwdCnt), fwdCnt, bwdCnt)
 }
