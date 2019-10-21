@@ -1,10 +1,8 @@
 
 # binaries
-go/osrm_traffic_updater/osrm_traffic_updater
-go/wayid2nodeid_extractor/wayid2nodeid_extractor
-go/snappy_command/snappy_command
+cmd/osrm-traffic-updater/osrm-traffic-updater
+cmd/snappy/snappy
+cmd/wayid2nodeid-extractor/wayid2nodeid-extractor
 
-*.py[cod]
 
-traffic.csv
-*/traffic.csv
+

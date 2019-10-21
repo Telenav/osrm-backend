@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Telenav/osrm-backend/traffic_updater/go/grpc/proxy"
+	proxy "github.com/Telenav/osrm-backend/traffic_updater/pkg/gen-trafficproxy"
 	"google.golang.org/grpc"
 )
 

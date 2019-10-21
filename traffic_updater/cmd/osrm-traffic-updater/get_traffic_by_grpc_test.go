@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Telenav/osrm-backend/traffic_updater/go/grpc/proxy"
+	proxy "github.com/Telenav/osrm-backend/traffic_updater/pkg/gen-trafficproxy"
 )
 
 func saveTrafficDataFromGRPC(targetPath string, trafficData proxy.TrafficResponse) {
