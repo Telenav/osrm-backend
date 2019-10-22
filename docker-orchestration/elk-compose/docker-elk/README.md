@@ -1,6 +1,6 @@
 # ELK Stack
 
-Specify your log location in .env file and change DATA_PATH there
+Specify your input log location in .env file and change DATA_PATH there
 ```
 // change "/Users/xunliu/Desktop/git/elastic-example/data/" to your data location
 DATA_PATH=/Users/xunliu/Desktop/go/src/github.com/Telenav/logs/
@@ -23,7 +23,7 @@ http://localhost:5601
 // password: changeme
 ```
 
-If you need one component specific logs, you could use
+If you need component specific logs, you could use
 ```
 docker-compose logs | grep logstash
 ```
