@@ -16,22 +16,9 @@ RUN mkdir -p osrm-backend/build && \
   cp /workspace/osrm-backend/build/osrm* /osrm-build/ && \
   cp -r /workspace/osrm-backend/profiles /osrm-build/
 
-RUN cd /workspace/osrm-backend && \
-  if [ -d "traffic_updater/go/osrm_traffic_updater" ]; then \
-  cd traffic_updater/go/osrm_traffic_updater && \
-  go install && \
-  cd ../../../ \
-  ;fi && \
-  if [ -d "traffic_updater/go/wayid2nodeid_extractor" ]; then \
-  cd traffic_updater/go/wayid2nodeid_extractor && \
-  go install && \
-  cd ../../../ \
-  ;fi && \
-  if [ -d "traffic_updater/go/snappy_command" ]; then \
-  cd traffic_updater/go/snappy_command && \
-  go install && \
-  cd ../../../ \
-  ;fi && \
+RUN cd /workspace/osrm-backend/traffic_updater && \
+  go test -short ./... && \
+  go install ./... && \
   ls -lh /workspace/go/bin
 
 
