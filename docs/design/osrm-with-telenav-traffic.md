@@ -24,7 +24,7 @@ There'll be two optional strategies for this processing:
 - customize **blocking-only(blocking incidents and flows almost 0)** into OSRM data
 
 ### Architecture   
-![](./graph/osrm-with-telenav-traffic-architecture.mmd.png)
+![](./graph/customize-traffic-into-data.mmg.png)
 
 - [new tool] osrm-traffic-updater
   - It's used to pull live traffic data from `traffic-proxy` by `RPC`, then convert contents to `OSRM` required `csv` format and then dump to file.
@@ -33,7 +33,7 @@ There'll be two optional strategies for this processing:
   - It's a traffic side service provides live traffic data by `RPC`.
 
 ### OSRM with Customize Traffic Container Startup Flow
-![](./graph/osrm-with-traffic-startup-flow-chart.mmd.png)
+![](./graph/customize-traffic-container-startup-flow-chart.mmd.png)
 
 ### Deployment Pipeline, Customize Traffic Per x Minutes 
 ![](./graph/osrm-release-deployment-pipeline.mmd.png)
