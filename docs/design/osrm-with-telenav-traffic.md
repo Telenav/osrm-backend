@@ -4,6 +4,8 @@
     - [OSRM with Customize Traffic Container Startup Flow](#osrm-with-customize-traffic-container-startup-flow)
     - [Deployment Pipeline, Customize Traffic Per x Minutes](#deployment-pipeline-customize-traffic-per-x-minutes)
   - [Alternatives Ranking](#alternatives-ranking)
+    - [Architecture](#architecture-1)
+    - [Sequence](#sequence)
 
 # OSRM with Telenav Traffic
 There'll be two parts when we apply telenav traffic to OSRM. We can combine them to achieve better quality.        
@@ -40,12 +42,17 @@ There'll be two optional strategies for this processing:
 
 
 ## Alternatives Ranking
-The OSRM project discusses it a lot, see details in [#76](https://github.com/Telenav/osrm-backend/issues/76#issue-511198359).    
-The idea is:     
+
+The idea is adding a ranking proxy service(we name it `osrm-ranking`) at the front of `osrm-routed`, then dynamic apply traffic for each route request:     
   - calculate `N` alternatives
   - calculate `weight/duration` for these `N` alternatives 
   - ranking by `weight` to get best one(or several)
 
-We possible to achieve dynamic live traffic & historical speed applying by this method.      
+OSRM project discusses it a lot, see more details in [#76](https://github.com/Telenav/osrm-backend/issues/76#issue-511198359).    
+We possible to achieve dynamic **live traffic & historical speed** applying by this method.      
 
+### Architecture
+![](./graph/alternatives-ranking-architecture.mmd.png)
+
+### Sequence
 ![](./graph/osrm-alternatives-ranking-with-traffic-pipeline.mmd.svg)

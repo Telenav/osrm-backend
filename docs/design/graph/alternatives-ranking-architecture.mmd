@@ -1,0 +1,23 @@
+%% Call below command to convert .mmd to .png
+%%  Adjust -w or -H if necessary
+%% mmdc -p puppeteer-config.json -i alternatives-ranking-architecture.mmd -o alternatives-ranking-architecture.mmd.png
+
+graph TD
+
+Title[Alternatives Ranking]
+Title-->User
+style Title fill:#FFF,stroke:#FFF
+linkStyle 0 stroke:#FFF,stroke-width:0;
+
+User["User"] -- request --> OSRM_Ranking["osrm-ranking"]
+OSRM_Ranking --> TrafficProxy["traffic-proxy"]
+
+subgraph OSRM Containers
+OSRM_Ranking --> OSRM_Routed["osrm-routed"]
+end
+
+
+subgraph Traffic Containers
+TrafficProxy
+style TrafficProxy fill:#acbfff,stroke-dasharray: 5, 5
+end
