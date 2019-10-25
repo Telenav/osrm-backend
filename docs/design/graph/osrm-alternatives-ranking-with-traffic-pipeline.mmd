@@ -1,0 +1,27 @@
+
+sequenceDiagram
+    participant U as User
+    participant Ranking as osrm-ranking
+    participant Proxy as traffic-proxy
+    participant Routed as osrm-routed
+
+    opt historical speed
+    Ranking ->> Ranking: Load historical speed
+    end
+
+    opt live traffic
+    Ranking ->>+ Proxy: Set up streaming delta channel
+    Proxy ->>- Ranking: Continously send delta traffic
+    Ranking ->>+ Proxy: Full region traffic request
+    Proxy ->>- Ranking: Full region traffic
+    Ranking ->> Ranking: Merge delta/full live traffic
+    end
+
+    U ->>+ Ranking: route N request(normally N=1)
+    Ranking ->>+ Routed: route request with M(M>N) alternatives
+    Routed ->>- Ranking: calculated M routes
+    Ranking ->> Ranking: Calculate M routes' weight/duration <br/> with live traffic and historical speed
+    Ranking ->> Ranking: Ranking M routes by weight
+    Ranking ->>- U: return best N routes
+
+

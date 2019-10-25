@@ -4,7 +4,7 @@
 
 graph LR
 
-Title[<u>OSRM with Telenav Traffic Architecture</u>]
+Title[Customize Traffic]
 Title-->User
 style Title fill:#FFF,stroke:#FFF
 linkStyle 0 stroke:#FFF,stroke-width:0;
@@ -12,7 +12,7 @@ linkStyle 0 stroke:#FFF,stroke-width:0;
 User["User"] -- request --> OSRM_ROUTED["osrm-routed"]
 
 subgraph OSRM Containers
-OSRM_Traffic_Updater["OSRMTrafficUpdater"] 
+OSRM_Traffic_Updater["osrm-traffic-updater"] 
 OSRM_Customize["osrm-customize"]
 OSRM_ROUTED
 
@@ -23,7 +23,7 @@ end
 
 
 
-OSRM_Traffic_Updater -- RPC --> TrafficProxy["TrafficProxy"]
+OSRM_Traffic_Updater -- RPC --> TrafficProxy["traffic-proxy"]
 subgraph Traffic Containers
 TrafficProxy
 style TrafficProxy fill:#acbfff,stroke-dasharray: 5, 5
