@@ -100,7 +100,7 @@ func TestGetDeltaTrafficDataByGRPCStreaming(t *testing.T) {
 	trafficDataChan := make(chan proxy.TrafficResponse)
 
 	go func() {
-		err := NewStreamingDeltaFlowsIncidents(trafficDataChan)
+		err := getStreamingDeltaFlowsIncidents(trafficDataChan)
 		if err != nil {
 			t.Errorf("getDeltaTrafficFlowsIncidentsByGRPCStreaming failed, err: %v", err)
 		}

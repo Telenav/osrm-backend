@@ -9,8 +9,8 @@ import (
 	proxy "github.com/Telenav/osrm-backend/traffic_updater/pkg/gen-trafficproxy"
 )
 
-// NewStreamingDeltaFlowsIncidents set up a new channel for traffic flows and incidents streaming delta.
-func NewStreamingDeltaFlowsIncidents(out chan<- proxy.TrafficResponse) error {
+// getStreamingDeltaFlowsIncidents set up a new channel for traffic flows and incidents streaming delta.
+func getStreamingDeltaFlowsIncidents(out chan<- proxy.TrafficResponse) error {
 	defer close(out)
 
 	// make RPC client
