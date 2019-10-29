@@ -16,7 +16,7 @@ RUN mkdir -p osrm-backend/build && \
   cp /workspace/osrm-backend/build/osrm* /osrm-build/ && \
   cp -r /workspace/osrm-backend/profiles /osrm-build/
 
-RUN cd /workspace/osrm-backend/traffic_updater && \
+RUN cd /workspace/osrm-backend/integration && \
   go test -short -v ./... && \
   go install ./... && \
   ls -lh /workspace/go/bin
