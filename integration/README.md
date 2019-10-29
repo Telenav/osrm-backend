@@ -1,19 +1,15 @@
-# OSRM Traffic Updater
-The **OSRM Traffic Updater** is designed for pull traffic data from **Traffic Proxy(Telenav)** then dump to OSRM required `traffic.csv`. Refer to [OSRM with Telenav Traffic Design](../docs/design/osrm-with-telenav-traffic.md) and [OSRM Traffic](https://github.com/Project-OSRM/osrm-backend/wiki/Traffic) for more details.        
+# OSRM Integration
+All OSRM integration related codes will be organized together in this folder, e.g. traffic integration, command line tools, etc. Mostly they're `Go` codes, require at least `go1.13`. 
 
-## RPC Protocol
-See [proxy.proto](proxy.proto) for details.    
+## osrm-traffic-updater
+Command line tool [cmd/osrm-traffic-updater](cmd/osrm-traffic-updater/) is designed for pull traffic data from **traffic-proxy(Telenav)** then dump to OSRM required `traffic.csv` for `osrm-customize`. Refer to [OSRM with Telenav Traffic Design](doc/osrm-with-telenav-traffic.md) and [OSRM Traffic](https://github.com/Project-OSRM/osrm-backend/wiki/Traffic) for more details.        
 
-## Requirements
-- `go1.13`
+- RPC Protocol
+[proxy.proto](proxy.proto)
 
-## Tools
 
-### osrm-traffic-updater
-Pull telenav traffic from `traffic-proxy` and generate OSRM required `traffic.csv` for `osrm-customize`.    
+## wayid2nodeids_extractor
+Command line tool for extract wayid to nodeids mapping from PBF. Code in [cmd/wayid2nodeid-extractor](cmd/wayid2nodeid-extractor/).        
 
-### wayid2nodeids_extractor
-Extract wayid to nodeids mapping from PBF.
-
-### snappy
-Command line tool for [snappy](github.com/golang/snappy) compression.    
+## snappy
+Command line tool for [snappy](github.com/golang/snappy) compression. Code in [cmd/snappy](cmd/snappy/).      
