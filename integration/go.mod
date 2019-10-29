@@ -1,4 +1,4 @@
-module github.com/Telenav/osrm-backend/traffic_updater
+module github.com/Telenav/osrm-backend/integration
 
 go 1.13
 
@@ -9,4 +9,4 @@ require (
 	google.golang.org/grpc v1.22.0
 )
 
-replace github.com/Telenav/osrm-backend/traffic_updater/pkg/gen-trafficproxy => ./pkg/gen-trafficproxy
+replace github.com/Telenav/osrm-backend/integration/pkg/gen-trafficproxy => ./pkg/gen-trafficproxy

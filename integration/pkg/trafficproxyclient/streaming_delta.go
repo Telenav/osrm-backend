@@ -6,7 +6,7 @@ import (
 	"io"
 	"log"
 
-	proxy "github.com/Telenav/osrm-backend/traffic_updater/pkg/gen-trafficproxy"
+	proxy "github.com/Telenav/osrm-backend/integration/pkg/gen-trafficproxy"
 )
 
 // getStreamingDeltaFlowsIncidents set up a new channel for traffic flows and incidents streaming delta.

@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	proxy "github.com/Telenav/osrm-backend/traffic_updater/pkg/gen-trafficproxy"
+	proxy "github.com/Telenav/osrm-backend/integration/pkg/gen-trafficproxy"
 )
 
 func quickViewFlows(flows []*proxy.FlowResponse, viewCount int) {

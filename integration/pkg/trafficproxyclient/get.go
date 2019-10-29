@@ -7,7 +7,7 @@ import (
 	"log"
 	"time"
 
-	proxy "github.com/Telenav/osrm-backend/traffic_updater/pkg/gen-trafficproxy"
+	proxy "github.com/Telenav/osrm-backend/integration/pkg/gen-trafficproxy"
 )
 
 // GetFlowsIncidents return flows and incidents for wayIds or full region.

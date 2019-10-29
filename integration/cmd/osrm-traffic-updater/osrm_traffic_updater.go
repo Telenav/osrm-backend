@@ -6,8 +6,8 @@ import (
 	"log"
 	"time"
 
-	proxy "github.com/Telenav/osrm-backend/traffic_updater/pkg/gen-trafficproxy"
-	"github.com/Telenav/osrm-backend/traffic_updater/pkg/trafficproxyclient"
+	proxy "github.com/Telenav/osrm-backend/integration/pkg/gen-trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxyclient"
 )
 
 var flags struct {
