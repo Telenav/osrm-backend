@@ -97,7 +97,24 @@ func trafficData2map(trafficData proxy.TrafficResponse, m map[int64]int) {
 		}
 	}
 
-	//TODO: support incidents
+	var blockingIncidentCnt, blockingIncidentAffectedWaysCnt int64
+	for _, incident := range trafficData.IncidentResponses {
+		if incident.Incident.IsBlocking { // only use blocking incidents
+			blockingIncidentCnt++
+			blockingIncidentAffectedWaysCnt += int64(len(incident.Incident.AffectedWayIds))
 
-	log.Printf("Load map[wayid] to speed with %d items, %d forward and %d backward.\n", (fwdCnt + bwdCnt), fwdCnt, bwdCnt)
+			for _, wayid := range incident.Incident.AffectedWayIds {
+				m[wayid] = 0
+
+				if wayid > 0 {
+					fwdCnt++
+				} else {
+					bwdCnt++
+				}
+			}
+		}
+	}
+
+	log.Printf("Load map[wayid] to speed with %d items, %d forward and %d backward. Blocking incidents %d, affected ways %d.\n",
+		(fwdCnt + bwdCnt), fwdCnt, bwdCnt, blockingIncidentCnt, blockingIncidentAffectedWaysCnt)
 }
