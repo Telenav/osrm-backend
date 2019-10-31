@@ -89,9 +89,14 @@ func trafficData2map(trafficData proxy.TrafficResponse, m map[int64]int) {
 	}()
 
 	var fwdCnt, bwdCnt uint64
+	var blockingFlowCnt int64
 	for _, flow := range trafficData.FlowResponses {
-		if flags.blockingOnly && flow.Flow.Speed >= blockingSpeedThreshold {
-			continue
+		if flow.Flow.Speed < blockingSpeedThreshold {
+			blockingFlowCnt++
+		} else {
+			if flags.blockingOnly { // ignore non-blocking flows
+				continue
+			}
 		}
 
 		wayid := flow.Flow.WayId
@@ -122,6 +127,6 @@ func trafficData2map(trafficData proxy.TrafficResponse, m map[int64]int) {
 		}
 	}
 
-	log.Printf("Load map[wayid] to speed with %d items, %d forward and %d backward. Blocking incidents %d, affected ways %d.\n",
-		(fwdCnt + bwdCnt), fwdCnt, bwdCnt, blockingIncidentCnt, blockingIncidentAffectedWaysCnt)
+	log.Printf("Load map[wayid] to speed with %d items, %d forward and %d backward. Blocking flows %d. Blocking incidents %d, affected ways %d.\n",
+		(fwdCnt + bwdCnt), fwdCnt, bwdCnt, blockingFlowCnt, blockingIncidentCnt, blockingIncidentAffectedWaysCnt)
 }
