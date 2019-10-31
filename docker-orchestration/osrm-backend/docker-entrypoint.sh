@@ -11,7 +11,7 @@ _sig() {
   kill -TERM $child 2>/dev/null
 }
 
-if [ "$1" = 'routed_startup' ]; then
+if [ "$1" = 'routed_startup' ] || [ "$1" = 'routed_blocking_traffic_startup' ]; then
   trap _sig SIGKILL SIGTERM SIGHUP SIGINT EXIT
 
   TRAFFIC_FILE=traffic.csv
@@ -19,9 +19,12 @@ if [ "$1" = 'routed_startup' ]; then
   REGION=${3}
   MAP_PROVIDER=${4}
   TRAFFIC_PROVIDER=${5}
+  if [ "$1" = 'routed_blocking_traffic_startup' ]; then
+    BLOCKING_ONLY="-blocking-only"
+  fi 
 
   cd ${DATA_PATH}
-  ${BUILD_PATH}/osrm-traffic-updater -c ${TRAFFIC_PROXY_IP} -m ${WAYID2NODEIDS_MAPPING_FILE_COMPRESSED} -f ${TRAFFIC_FILE} -map ${MAP_PROVIDER} -traffic ${TRAFFIC_PROVIDER} -region ${REGION}
+  ${BUILD_PATH}/osrm-traffic-updater -c ${TRAFFIC_PROXY_IP} -m ${WAYID2NODEIDS_MAPPING_FILE_COMPRESSED} -f ${TRAFFIC_FILE} -map ${MAP_PROVIDER} -traffic ${TRAFFIC_PROVIDER} -region ${REGION} ${BLOCKING_ONLY}
   ls -lh
   ${BUILD_PATH}/osrm-customize ${MAPDATA_NAME_WITH_SUFFIX}.osrm  --segment-speed-file ${TRAFFIC_FILE} ${OSRM_EXTRA_COMMAND}
   ${BUILD_PATH}/osrm-routed ${MAPDATA_NAME_WITH_SUFFIX}.osrm ${OSRM_ROUTED_STARTUP_COMMAND} &
