@@ -24,7 +24,7 @@ func init() {
 
 const TASKNUM = 128
 const CACHEDOBJECTS = 4000000
-const blockingSpeedThreshold = 1 // this it's blocking if flow speed smaller than this threshold.
+const blockingSpeedThreshold = 1 // Think it's blocking if flow speed smaller than this threshold.
 
 func main() {
 	flag.Parse()
