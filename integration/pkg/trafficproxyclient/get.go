@@ -13,11 +13,16 @@ import (
 // GetFlowsIncidents return flows and incidents for wayIds or full region.
 func GetFlowsIncidents(wayIds []int64) (*proxy.TrafficResponse, error) {
 	var outTrafficResponse proxy.TrafficResponse
+	forStr := "all"
+	if len(wayIds) > 0 {
+		forStr = fmt.Sprintf("%d wayIds", len(wayIds))
+	}
 
 	startTime := time.Now()
 	defer func() {
-		log.Printf("Processing time for getting traffic flows,incidents(%d,%d) for %d wayIds takes %f seconds\n",
-			len(outTrafficResponse.FlowResponses), len(outTrafficResponse.IncidentResponses), len(wayIds), time.Now().Sub(startTime).Seconds())
+		log.Printf("Processing time for getting traffic flows,incidents(%d,%d) for %s takes %f seconds\n",
+			len(outTrafficResponse.FlowResponses), len(outTrafficResponse.IncidentResponses),
+			forStr, time.Now().Sub(startTime).Seconds())
 	}()
 
 	// make RPC client
@@ -35,6 +40,7 @@ func GetFlowsIncidents(wayIds []int64) (*proxy.TrafficResponse, error) {
 	client := proxy.NewTrafficServiceClient(conn)
 
 	// get flows
+	log.Printf("getting flows,incidents for %s\n", forStr)
 	var req proxy.TrafficRequest
 	req.TrafficSource = new(proxy.TrafficSource)
 	req.TrafficSource.Region = flags.Region
@@ -42,13 +48,11 @@ func GetFlowsIncidents(wayIds []int64) (*proxy.TrafficResponse, error) {
 	req.TrafficSource.MapProvider = flags.MapProvider
 	req.TrafficType = append(req.TrafficType, proxy.TrafficType_FLOW, proxy.TrafficType_INCIDENT)
 	if len(wayIds) > 0 {
-		log.Printf("getting flows,incidents for %d wayIds\n", len(wayIds))
 		var trafficWayIdsRequest proxy.TrafficRequest_TrafficWayIdsRequest
 		trafficWayIdsRequest.TrafficWayIdsRequest = new(proxy.TrafficWayIdsRequest)
 		trafficWayIdsRequest.TrafficWayIdsRequest.WayIds = wayIds
 		req.RequestOneof = &trafficWayIdsRequest
 	} else {
-		log.Printf("getting all flows,incidents\n")
 		trafficAllRequest := new(proxy.TrafficRequest_TrafficAllRequest)
 		trafficAllRequest.TrafficAllRequest = new(proxy.TrafficAllRequest)
 		req.RequestOneof = trafficAllRequest
