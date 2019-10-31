@@ -11,17 +11,20 @@ import (
 )
 
 var flags struct {
-	mappingFile string
-	csvFile     string
+	mappingFile  string
+	csvFile      string
+	blockingOnly bool
 }
 
 func init() {
 	flag.StringVar(&flags.mappingFile, "m", "wayid2nodeids.csv", "OSRM way id to node ids mapping table")
 	flag.StringVar(&flags.csvFile, "f", "traffic.csv", "OSRM traffic csv file")
+	flag.BoolVar(&flags.blockingOnly, "blocking-only", false, "Only use blocking only live traffic, i.e. flow speed < 1 km/h or blocking incident.")
 }
 
 const TASKNUM = 128
 const CACHEDOBJECTS = 4000000
+const blockingSpeedThreshold = 1 // this it's blocking if flow speed smaller than this threshold.
 
 func main() {
 	flag.Parse()
@@ -87,6 +90,10 @@ func trafficData2map(trafficData proxy.TrafficResponse, m map[int64]int) {
 
 	var fwdCnt, bwdCnt uint64
 	for _, flow := range trafficData.FlowResponses {
+		if flags.blockingOnly && flow.Flow.Speed >= blockingSpeedThreshold {
+			continue
+		}
+
 		wayid := flow.Flow.WayId
 		m[wayid] = int(flow.Flow.Speed)
 
