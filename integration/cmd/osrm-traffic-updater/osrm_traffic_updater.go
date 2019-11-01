@@ -91,7 +91,7 @@ func trafficData2map(trafficData proxy.TrafficResponse, m map[int64]int) {
 	var fwdCnt, bwdCnt uint64
 	var blockingFlowCnt int64
 	for _, flow := range trafficData.FlowResponses {
-		if flow.Flow.Speed < blockingSpeedThreshold {
+		if flow.Flow.Speed < blockingSpeedThreshold || flow.Flow.TrafficLevel == proxy.TrafficLevel_CLOSED {
 			blockingFlowCnt++
 		} else {
 			if flags.blockingOnly { // ignore non-blocking flows
