@@ -24,12 +24,22 @@ func main() {
 			if glog.V(3) { // verbose debug only
 				glog.Infoln(flow)
 			}
+
+			if flags.blockingOnly && !flow.Flow.IsBlocking() {
+				continue // ignore non-blocking flow
+			}
+
 			fmt.Println(flow.Flow.CSVString())
 		}
 		for _, incident := range trafficResp.IncidentResponses {
 			if glog.V(3) { // verbose debug only
 				glog.Infoln(incident)
 			}
+
+			if flags.blockingOnly && !incident.Incident.IsBlocking {
+				continue // ignore non-blocking incident
+			}
+
 			fmt.Println(incident.Incident.CSVString())
 		}
 

@@ -19,7 +19,7 @@ var flags struct {
 func init() {
 	flag.StringVar(&flags.mappingFile, "m", "wayid2nodeids.csv", "OSRM way id to node ids mapping table")
 	flag.StringVar(&flags.csvFile, "f", "traffic.csv", "OSRM traffic csv file")
-	flag.BoolVar(&flags.blockingOnly, "blocking-only", false, "Only use blocking only live traffic, i.e. flow speed < 1 km/h or blocking incident.")
+	flag.BoolVar(&flags.blockingOnly, "blocking-only", false, "Only use blocking only(blocking flow or blocking incident) live traffic.")
 }
 
 const TASKNUM = 128
