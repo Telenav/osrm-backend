@@ -8,8 +8,8 @@ func TestFlowCSVString(t *testing.T) {
 		f Flow
 		s string
 	}{
-		{Flow{WayId: 829733412, Speed: 20.280001, TrafficLevel: 7}, "829733412,20.280001,7"},
-		{Flow{WayId: -129639168, Speed: 31.389999, TrafficLevel: 7}, "-129639168,31.389999,7"},
+		{Flow{WayId: 829733412, Speed: 20.280001, TrafficLevel: TrafficLevel_FREE_FLOW}, "829733412,20.280001,7"},
+		{Flow{WayId: -129639168, Speed: 31.389999, TrafficLevel: TrafficLevel_FREE_FLOW}, "-129639168,31.389999,7"},
 	}
 
 	for _, c := range cases {
