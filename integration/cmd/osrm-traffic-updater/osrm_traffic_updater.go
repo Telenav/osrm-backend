@@ -24,7 +24,6 @@ func init() {
 
 const TASKNUM = 128
 const CACHEDOBJECTS = 4000000
-const blockingSpeedThreshold = 1 // Think it's blocking if flow speed smaller than this threshold.
 
 func main() {
 	flag.Parse()
@@ -91,7 +90,7 @@ func trafficData2map(trafficData proxy.TrafficResponse, m map[int64]int) {
 	var fwdCnt, bwdCnt uint64
 	var blockingFlowCnt int64
 	for _, flow := range trafficData.FlowResponses {
-		if flow.Flow.Speed < blockingSpeedThreshold || flow.Flow.TrafficLevel == proxy.TrafficLevel_CLOSED {
+		if trafficproxyclient.IsBlockingFlow(flow.Flow) {
 			blockingFlowCnt++
 		} else {
 			if flags.blockingOnly { // ignore non-blocking flows
@@ -111,7 +110,7 @@ func trafficData2map(trafficData proxy.TrafficResponse, m map[int64]int) {
 
 	var blockingIncidentCnt, blockingIncidentAffectedWaysCnt int64
 	for _, incident := range trafficData.IncidentResponses {
-		if incident.Incident.IsBlocking { // only use blocking incidents
+		if trafficproxyclient.IsBlockingIncident(incident.Incident) { // only use blocking incidents
 			blockingIncidentCnt++
 			blockingIncidentAffectedWaysCnt += int64(len(incident.Incident.AffectedWayIds))
 
