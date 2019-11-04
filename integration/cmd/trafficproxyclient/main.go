@@ -30,7 +30,7 @@ func main() {
 			if glog.V(3) { // verbose debug only
 				glog.Infoln(incident)
 			}
-			fmt.Println(incident.Incident.String())
+			fmt.Println(incident.Incident.CSVString())
 		}
 
 		return
