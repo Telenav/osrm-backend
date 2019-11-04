@@ -7,6 +7,7 @@ import (
 	"log"
 
 	proxy "github.com/Telenav/osrm-backend/integration/pkg/gen-trafficproxy"
+	"github.com/golang/glog"
 )
 
 // getStreamingDeltaFlowsIncidents set up a new channel for traffic flows and incidents streaming delta.
@@ -38,6 +39,7 @@ func getStreamingDeltaFlowsIncidents(out chan<- proxy.TrafficResponse) error {
 	trafficDeltaStreamRequest.TrafficStreamingDeltaRequest.StreamingRule.MaxTime = 5
 	req.RequestOneof = trafficDeltaStreamRequest
 
+	glog.V(2).Infof("rpc request: %v", req)
 	stream, err := client.GetTrafficData(ctx, &req)
 	if err != nil {
 		return fmt.Errorf("GetTrafficData failed, err: %v", err)

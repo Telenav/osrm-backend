@@ -55,6 +55,7 @@ func GetFlowsIncidents(wayIds []int64) (*proxy.TrafficResponse, error) {
 		req.RequestOneof = trafficAllRequest
 	}
 
+	glog.V(2).Infof("rpc request: %v", req)
 	stream, err := client.GetTrafficData(ctx, &req)
 	if err != nil {
 		return nil, fmt.Errorf("GetTrafficData failed, err: %v", err)

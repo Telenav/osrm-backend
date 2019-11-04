@@ -4,9 +4,9 @@ import proxy "github.com/Telenav/osrm-backend/integration/pkg/gen-trafficproxy"
 
 func newTrafficSource() *proxy.TrafficSource {
 	t := proxy.TrafficSource{}
-	t.Region = flags.Region
-	t.TrafficProvider = flags.TrafficProvider
-	t.MapProvider = flags.MapProvider
+	t.Region = flags.region
+	t.TrafficProvider = flags.trafficProvider
+	t.MapProvider = flags.mapProvider
 	return &t
 }
 

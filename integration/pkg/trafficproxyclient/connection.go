@@ -16,7 +16,7 @@ const (
 func NewGRPCConnection() (*grpc.ClientConn, error) {
 
 	// make RPC client
-	targetServer := flags.IP + ":" + strconv.Itoa(flags.Port)
+	targetServer := flags.ip + ":" + strconv.Itoa(flags.port)
 	glog.Infoln("dialing traffic proxy " + targetServer)
 	conn, err := grpc.Dial(targetServer, grpc.WithInsecure(), grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(maxMsgSize)))
 	if err != nil {
