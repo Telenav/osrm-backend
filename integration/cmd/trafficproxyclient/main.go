@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 
 	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxyclient"
 	"github.com/golang/glog"
@@ -23,12 +24,13 @@ func main() {
 			if glog.V(3) { // verbose debug only
 				glog.Infoln(flow)
 			}
-
+			fmt.Println(flow.Flow.CSVString())
 		}
 		for _, incident := range trafficResp.IncidentResponses {
 			if glog.V(3) { // verbose debug only
 				glog.Infoln(incident)
 			}
+			fmt.Println(incident.Incident.String())
 		}
 
 		return
