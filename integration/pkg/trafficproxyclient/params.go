@@ -1,8 +1,15 @@
 package trafficproxyclient
 
-import proxy "github.com/Telenav/osrm-backend/integration/pkg/gen-trafficproxy"
+import (
+	"time"
 
-func newTrafficSource() *proxy.TrafficSource {
+	proxy "github.com/Telenav/osrm-backend/integration/pkg/gen-trafficproxy"
+)
+
+// params is used to group request parameters together.
+type params struct{}
+
+func (p params) newTrafficSource() *proxy.TrafficSource {
 	t := proxy.TrafficSource{}
 	t.Region = flags.region
 	t.TrafficProvider = flags.trafficProvider
@@ -10,7 +17,7 @@ func newTrafficSource() *proxy.TrafficSource {
 	return &t
 }
 
-func newTrafficType() []proxy.TrafficType {
+func (p params) newTrafficType() []proxy.TrafficType {
 	t := []proxy.TrafficType{}
 	if flags.flow {
 		t = append(t, proxy.TrafficType_FLOW)
@@ -19,4 +26,15 @@ func newTrafficType() []proxy.TrafficType {
 		t = append(t, proxy.TrafficType_INCIDENT)
 	}
 	return t
+}
+
+func (p params) newStreamingRule() *proxy.TrafficStreamingDeltaRequest_StreamingRule {
+	var r proxy.TrafficStreamingDeltaRequest_StreamingRule
+	r.MaxSize = 1000
+	r.MaxTime = 5
+	return &r
+}
+
+func (p params) rpcGetTimeout() time.Duration {
+	return flags.rpcGetTimeout
 }

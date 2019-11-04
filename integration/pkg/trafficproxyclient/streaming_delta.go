@@ -30,13 +30,11 @@ func getStreamingDeltaFlowsIncidents(out chan<- proxy.TrafficResponse) error {
 	// get flows via stream
 	log.Println("getting delta traffic flows,incidents via stream")
 	var req proxy.TrafficRequest
-	req.TrafficSource = newTrafficSource()
-	req.TrafficType = newTrafficType()
+	req.TrafficSource = params{}.newTrafficSource()
+	req.TrafficType = params{}.newTrafficType()
 	trafficDeltaStreamRequest := new(proxy.TrafficRequest_TrafficStreamingDeltaRequest)
 	trafficDeltaStreamRequest.TrafficStreamingDeltaRequest = new(proxy.TrafficStreamingDeltaRequest)
-	trafficDeltaStreamRequest.TrafficStreamingDeltaRequest.StreamingRule = new(proxy.TrafficStreamingDeltaRequest_StreamingRule)
-	trafficDeltaStreamRequest.TrafficStreamingDeltaRequest.StreamingRule.MaxSize = 1000
-	trafficDeltaStreamRequest.TrafficStreamingDeltaRequest.StreamingRule.MaxTime = 5
+	trafficDeltaStreamRequest.TrafficStreamingDeltaRequest.StreamingRule = params{}.newStreamingRule()
 	req.RequestOneof = trafficDeltaStreamRequest
 
 	glog.V(2).Infof("rpc request: %v", req)

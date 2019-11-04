@@ -33,7 +33,7 @@ func GetFlowsIncidents(wayIds []int64) (*proxy.TrafficResponse, error) {
 	defer conn.Close()
 
 	// prepare context
-	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), params{}.rpcGetTimeout())
 	defer cancel()
 
 	// new proxy client
@@ -42,8 +42,8 @@ func GetFlowsIncidents(wayIds []int64) (*proxy.TrafficResponse, error) {
 	// get flows
 	glog.Infof("getting flows,incidents for %s\n", forStr)
 	var req proxy.TrafficRequest
-	req.TrafficSource = newTrafficSource()
-	req.TrafficType = newTrafficType()
+	req.TrafficSource = params{}.newTrafficSource()
+	req.TrafficType = params{}.newTrafficType()
 	if len(wayIds) > 0 {
 		var trafficWayIdsRequest proxy.TrafficRequest_TrafficWayIdsRequest
 		trafficWayIdsRequest.TrafficWayIdsRequest = new(proxy.TrafficWayIdsRequest)

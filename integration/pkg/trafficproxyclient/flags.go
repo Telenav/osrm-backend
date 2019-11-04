@@ -1,6 +1,9 @@
 package trafficproxyclient
 
-import "flag"
+import (
+	"flag"
+	"time"
+)
 
 var flags struct {
 	port            int
@@ -10,6 +13,7 @@ var flags struct {
 	mapProvider     string
 	flow            bool
 	incident        bool
+	rpcGetTimeout   time.Duration
 }
 
 func init() {
@@ -20,4 +24,5 @@ func init() {
 	flag.StringVar(&flags.mapProvider, "map", "", "map data provider")
 	flag.BoolVar(&flags.flow, "flow", true, "Enable traffic flow.")
 	flag.BoolVar(&flags.incident, "incident", true, "Enable traffic incident.")
+	flag.DurationVar(&flags.rpcGetTimeout, "gettimeout", 60*time.Second, "Timeout for getting via RPC.")
 }
