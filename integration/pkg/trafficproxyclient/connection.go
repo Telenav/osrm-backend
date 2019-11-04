@@ -2,9 +2,9 @@ package trafficproxyclient
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 
+	"github.com/golang/glog"
 	"google.golang.org/grpc"
 )
 
@@ -17,7 +17,7 @@ func NewGRPCConnection() (*grpc.ClientConn, error) {
 
 	// make RPC client
 	targetServer := flags.IP + ":" + strconv.Itoa(flags.Port)
-	log.Println("dialing traffic proxy " + targetServer)
+	glog.Infoln("dialing traffic proxy " + targetServer)
 	conn, err := grpc.Dial(targetServer, grpc.WithInsecure(), grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(maxMsgSize)))
 	if err != nil {
 		return nil, fmt.Errorf("fail to dial traffic proxy %s, err %v", targetServer, err)

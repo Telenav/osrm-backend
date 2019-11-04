@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"time"
 
 	proxy "github.com/Telenav/osrm-backend/integration/pkg/gen-trafficproxy"
+	"github.com/golang/glog"
 )
 
 // GetFlowsIncidents return flows and incidents for wayIds or full region.
@@ -20,7 +20,7 @@ func GetFlowsIncidents(wayIds []int64) (*proxy.TrafficResponse, error) {
 
 	startTime := time.Now()
 	defer func() {
-		log.Printf("Processing time for getting traffic flows,incidents(%d,%d) for %s takes %f seconds\n",
+		glog.Infof("Processing time for getting traffic flows,incidents(%d,%d) for %s takes %f seconds\n",
 			len(outTrafficResponse.FlowResponses), len(outTrafficResponse.IncidentResponses),
 			forStr, time.Now().Sub(startTime).Seconds())
 	}()
@@ -40,7 +40,7 @@ func GetFlowsIncidents(wayIds []int64) (*proxy.TrafficResponse, error) {
 	client := proxy.NewTrafficServiceClient(conn)
 
 	// get flows
-	log.Printf("getting flows,incidents for %s\n", forStr)
+	glog.Infof("getting flows,incidents for %s\n", forStr)
 	var req proxy.TrafficRequest
 	req.TrafficSource = new(proxy.TrafficSource)
 	req.TrafficSource.Region = flags.Region
@@ -71,7 +71,7 @@ func GetFlowsIncidents(wayIds []int64) (*proxy.TrafficResponse, error) {
 		if err != nil {
 			return nil, fmt.Errorf("stream recv failed, err: %v", err)
 		}
-		log.Printf("[VERBOSE] received traffic data from stream, got flows count: %d, incidents count: %d\n", len(resp.FlowResponses), len(resp.IncidentResponses))
+		glog.V(2).Infof("received traffic data from stream, got flows count: %d, incidents count: %d\n", len(resp.FlowResponses), len(resp.IncidentResponses))
 		outTrafficResponse.FlowResponses = append(outTrafficResponse.FlowResponses, resp.FlowResponses...)
 		outTrafficResponse.IncidentResponses = append(outTrafficResponse.IncidentResponses, resp.IncidentResponses...)
 	}
