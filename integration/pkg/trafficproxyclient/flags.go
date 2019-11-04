@@ -9,6 +9,8 @@ type Flags struct {
 	Region          string
 	TrafficProvider string
 	MapProvider     string
+	flow            bool
+	incident        bool
 }
 
 var flags Flags
@@ -19,4 +21,6 @@ func init() {
 	flag.StringVar(&flags.Region, "region", "na", "region")
 	flag.StringVar(&flags.TrafficProvider, "traffic", "", "traffic data provider")
 	flag.StringVar(&flags.MapProvider, "map", "", "map data provider")
+	flag.BoolVar(&flags.flow, "flow", true, "Enable traffic flow.")
+	flag.BoolVar(&flags.incident, "incident", true, "Enable traffic incident.")
 }

@@ -29,11 +29,8 @@ func getStreamingDeltaFlowsIncidents(out chan<- proxy.TrafficResponse) error {
 	// get flows via stream
 	log.Println("getting delta traffic flows,incidents via stream")
 	var req proxy.TrafficRequest
-	req.TrafficSource = new(proxy.TrafficSource)
-	req.TrafficSource.Region = flags.Region
-	req.TrafficSource.TrafficProvider = flags.TrafficProvider
-	req.TrafficSource.MapProvider = flags.MapProvider
-	req.TrafficType = append(req.TrafficType, proxy.TrafficType_FLOW, proxy.TrafficType_INCIDENT)
+	req.TrafficSource = newTrafficSource()
+	req.TrafficType = newTrafficType()
 	trafficDeltaStreamRequest := new(proxy.TrafficRequest_TrafficStreamingDeltaRequest)
 	trafficDeltaStreamRequest.TrafficStreamingDeltaRequest = new(proxy.TrafficStreamingDeltaRequest)
 	trafficDeltaStreamRequest.TrafficStreamingDeltaRequest.StreamingRule = new(proxy.TrafficStreamingDeltaRequest_StreamingRule)

@@ -42,11 +42,8 @@ func GetFlowsIncidents(wayIds []int64) (*proxy.TrafficResponse, error) {
 	// get flows
 	glog.Infof("getting flows,incidents for %s\n", forStr)
 	var req proxy.TrafficRequest
-	req.TrafficSource = new(proxy.TrafficSource)
-	req.TrafficSource.Region = flags.Region
-	req.TrafficSource.TrafficProvider = flags.TrafficProvider
-	req.TrafficSource.MapProvider = flags.MapProvider
-	req.TrafficType = append(req.TrafficType, proxy.TrafficType_FLOW, proxy.TrafficType_INCIDENT)
+	req.TrafficSource = newTrafficSource()
+	req.TrafficType = newTrafficType()
 	if len(wayIds) > 0 {
 		var trafficWayIdsRequest proxy.TrafficRequest_TrafficWayIdsRequest
 		trafficWayIdsRequest.TrafficWayIdsRequest = new(proxy.TrafficWayIdsRequest)
