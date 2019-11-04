@@ -3,7 +3,7 @@ package proxy
 import (
 	"bytes"
 	"encoding/csv"
-	fmt "fmt"
+	"fmt"
 	"strconv"
 	"strings"
 )
