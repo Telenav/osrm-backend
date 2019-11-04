@@ -90,7 +90,7 @@ func trafficData2map(trafficData proxy.TrafficResponse, m map[int64]int) {
 	var fwdCnt, bwdCnt uint64
 	var blockingFlowCnt int64
 	for _, flow := range trafficData.FlowResponses {
-		if trafficproxyclient.IsBlockingFlow(flow.Flow) {
+		if flow.Flow.IsBlocking() {
 			blockingFlowCnt++
 		} else {
 			if flags.blockingOnly { // ignore non-blocking flows
@@ -110,7 +110,7 @@ func trafficData2map(trafficData proxy.TrafficResponse, m map[int64]int) {
 
 	var blockingIncidentCnt, blockingIncidentAffectedWaysCnt int64
 	for _, incident := range trafficData.IncidentResponses {
-		if trafficproxyclient.IsBlockingIncident(incident.Incident) { // only use blocking incidents
+		if incident.Incident.IsBlocking { // only use blocking incidents
 			blockingIncidentCnt++
 			blockingIncidentAffectedWaysCnt += int64(len(incident.Incident.AffectedWayIds))
 
