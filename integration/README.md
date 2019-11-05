@@ -13,3 +13,26 @@ Command line tool for extract wayid to nodeids mapping from PBF. Code in [cmd/wa
 
 ## snappy
 Command line tool for [snappy](github.com/golang/snappy) compression. Code in [cmd/snappy](cmd/snappy/).      
+## trafficproxy-cli 
+Command line tool for querying traffic from `trafficproxy`. Code in [cmd/trafficproxy-cli](cmd/trafficproxy-cli/).       
+Typical usage:    
+
+```bash
+# 1. get traffic for ways 
+$ trafficproxy-cli -c ${TARGET_IP} -map ${MAP} -traffic ${TRAFFIC} -ways 829733412,-104489539,-129639168
+
+# 2. get all traffic 
+$ trafficproxy-cli -c ${TARGET_IP} -map ${MAP} -traffic ${TRAFFIC} -mode getall -stdout=false -dumpfile test 
+
+# 3. steaming delta traffic 
+$ trafficproxy-cli -c ${TARGET_IP} -map ${MAP} -traffic ${TRAFFIC} -mode delta -stdout=false -dumpfile test
+
+# if want to see more running log by shell, append `-alsologtostderr` in command-line
+# if want to see more running log by log files, append `-log_dir=.` in command-line
+$ trafficproxy-cli -alsologtostderr ...
+$ trafficproxy-cli -log_dir=. ...
+
+# for more options, see help
+$ trafficproxy-cli -h
+
+```
