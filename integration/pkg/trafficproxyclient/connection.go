@@ -12,8 +12,8 @@ const (
 	maxMsgSize = 1024 * 1024 * 1024
 )
 
-// NewGRPCConnection create a new GRPC connection to target traffic proxy.
-func NewGRPCConnection() (*grpc.ClientConn, error) {
+// newGRPCConnection create a new GRPC connection to target traffic proxy.
+func newGRPCConnection() (*grpc.ClientConn, error) {
 
 	// make RPC client
 	targetServer := flags.ip + ":" + strconv.Itoa(flags.port)

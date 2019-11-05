@@ -26,7 +26,7 @@ func GetFlowsIncidents(wayIds []int64) (*proxy.TrafficResponse, error) {
 	}()
 
 	// make RPC client
-	conn, err := NewGRPCConnection()
+	conn, err := newGRPCConnection()
 	if err != nil {
 		return nil, err
 	}

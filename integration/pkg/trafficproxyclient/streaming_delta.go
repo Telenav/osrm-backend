@@ -14,7 +14,7 @@ func StreamingDeltaFlowsIncidents(out chan<- proxy.TrafficResponse) error {
 	defer close(out)
 
 	// make RPC client
-	conn, err := NewGRPCConnection()
+	conn, err := newGRPCConnection()
 	if err != nil {
 		return err
 	}
