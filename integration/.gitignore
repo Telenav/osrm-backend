@@ -4,5 +4,6 @@ cmd/osrm-traffic-updater/osrm-traffic-updater
 cmd/snappy/snappy
 cmd/wayid2nodeid-extractor/wayid2nodeid-extractor
 cmd/trafficproxy-cli/trafficproxy-cli
-
+cmd/trafficproxy-cli/*_flows.csv
+cmd/trafficproxy-cli/*_incidents.csv
 
