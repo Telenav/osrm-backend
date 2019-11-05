@@ -3,6 +3,6 @@
 cmd/osrm-traffic-updater/osrm-traffic-updater
 cmd/snappy/snappy
 cmd/wayid2nodeid-extractor/wayid2nodeid-extractor
-cmd/trafficproxyclient/trafficproxyclient
+cmd/trafficproxy-cli/trafficproxy-cli
 
 
