@@ -12,11 +12,12 @@ const (
 )
 
 var flags struct {
-	rpcMode      string
-	wayIDsFlag   wayIDsFlag
-	blockingOnly bool
-	dumpFile     string
-	stdout       bool
+	rpcMode          string
+	wayIDsFlag       wayIDsFlag
+	blockingOnly     bool
+	dumpFile         string
+	stdout           bool
+	humanFriendlyCSV bool
 }
 
 func init() {
@@ -25,4 +26,5 @@ func init() {
 	flag.BoolVar(&flags.blockingOnly, "blocking-only", false, "Only use blocking only(blocking flow or blocking incident) live traffic.")
 	flag.StringVar(&flags.dumpFile, "dumpfile", "", "Dump file name of flows,incidents. Flows,incident will be dumped to files(xxx_flows.csv,xxx_incidents.csv) if this option is not empty.")
 	flag.BoolVar(&flags.stdout, "stdout", true, "Dump flows,incidents to stdout.")
+	flag.BoolVar(&flags.humanFriendlyCSV, "humanfriendly", false, "Human friendly contents in csv, i.e. prefer string instead of integer/boolean as much as possible in csv files. E.g. TrafficLevel, IncidentType, IncidentSeverity, IsBlocking.")
 }

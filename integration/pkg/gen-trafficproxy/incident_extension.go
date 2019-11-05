@@ -8,15 +8,17 @@ import (
 	"strings"
 )
 
-// CSVString represents Flow as defined CSV format.
-// I.e. 'wayID,Speed,TrafficLevel'
-func (f *Flow) CSVString() string {
-	return fmt.Sprintf("%d,%f,%s", f.WayId, f.Speed, f.TrafficLevel)
-}
-
 // CSVString represents Incident as defined CSV format.
 func (i *Incident) CSVString() string {
+	return i.csvString(false)
+}
 
+// HumanFriendlyCSVString represents Incident as defined CSV format, but prefer human friendly string instead of integer/boolean.
+func (i *Incident) HumanFriendlyCSVString() string {
+	return i.csvString(true)
+}
+
+func (i *Incident) csvString(humanFriendly bool) string {
 	records := []string{}
 	records = append(records, i.IncidentId)
 
@@ -26,11 +28,25 @@ func (i *Incident) CSVString() string {
 	}
 	records = append(records, strings.Join(affectedWayIDsString, ","))
 
-	records = append(records, i.IncidentType.String(), i.IncidentSeverity.String())
+	if humanFriendly {
+		records = append(records, i.IncidentType.String(), i.IncidentSeverity.String())
+	} else {
+		records = append(records, strconv.Itoa(int(i.IncidentType)), strconv.Itoa(int(i.IncidentSeverity)))
+	}
+
 	records = append(records, fmt.Sprintf("%f", i.IncidentLocation.Lat), fmt.Sprintf("%f", i.IncidentLocation.Lon))
 	records = append(records, i.Description, i.FirstCrossStreet, i.SecondCrossStreet, i.StreetName)
 	records = append(records, strconv.Itoa(int(i.EventCode)), strconv.Itoa(int(i.AlertCEventQuantifier)))
-	records = append(records, strconv.FormatBool(i.IsBlocking))
+
+	if humanFriendly {
+		records = append(records, strconv.FormatBool(i.IsBlocking))
+	} else {
+		isBlockingInteger := 0
+		if i.IsBlocking {
+			isBlockingInteger = 1
+		}
+		records = append(records, strconv.Itoa(isBlockingInteger))
+	}
 
 	var buff bytes.Buffer
 	w := csv.NewWriter(&buff)

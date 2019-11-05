@@ -5,17 +5,31 @@ import "testing"
 func TestFlowCSVString(t *testing.T) {
 
 	cases := []struct {
-		f Flow
-		s string
+		f                      Flow
+		csvString              string
+		humanFriendlyCSVString string
 	}{
-		{Flow{WayId: 829733412, Speed: 20.280001, TrafficLevel: TrafficLevel_FREE_FLOW}, "829733412,20.280001,7"},
-		{Flow{WayId: -129639168, Speed: 31.389999, TrafficLevel: TrafficLevel_FREE_FLOW}, "-129639168,31.389999,7"},
+		{
+			Flow{WayId: 829733412, Speed: 20.280001, TrafficLevel: TrafficLevel_FREE_FLOW},
+			"829733412,20.280001,7",
+			"829733412,20.280001,FREE_FLOW",
+		},
+		{
+			Flow{WayId: -129639168, Speed: 31.389999, TrafficLevel: TrafficLevel_FREE_FLOW},
+			"-129639168,31.389999,7",
+			"-129639168,31.389999,FREE_FLOW",
+		},
 	}
 
 	for _, c := range cases {
-		s := c.f.CSVString()
-		if s != c.s {
-			t.Errorf("flow: %v, expect csv string %s, but got %s", c.f, c.s, s)
+		cs := c.f.CSVString()
+		if cs != c.csvString {
+			t.Errorf("flow: %v, expect csv string %s, but got %s", c.f, c.csvString, cs)
+		}
+
+		hs := c.f.HumanFriendlyCSVString()
+		if hs != c.humanFriendlyCSVString {
+			t.Errorf("flow: %v, expect human friendly csv string %s, but got %s", c.f, c.humanFriendlyCSVString, hs)
 		}
 	}
 
@@ -24,8 +38,9 @@ func TestFlowCSVString(t *testing.T) {
 func TestIncidentCSVString(t *testing.T) {
 
 	cases := []struct {
-		incident Incident
-		s        string
+		incident               Incident
+		s                      string
+		humanFriendlyCSVString string
 	}{
 		{
 			Incident{
@@ -42,6 +57,7 @@ func TestIncidentCSVString(t *testing.T) {
 				AlertCEventQuantifier: 0,
 				IsBlocking:            false,
 			},
+			"TTI-f47b8dba-59a3-372d-9cec-549eb252e2d5-TTR46312939215361-1,\"100663296,-1204020275,100663296,-1204020274,100663296,-916744017,100663296,-1204020245,100663296,-1194204646,100663296,-1204394608,100663296,-1194204647,100663296,-129639168,100663296,-1194204645\",5,1,44.181220,-117.135840,\"Construction on I-84 EB near MP 359, Drive with caution.\",,,I-84 E,500,0,0",
 			"TTI-f47b8dba-59a3-372d-9cec-549eb252e2d5-TTR46312939215361-1,\"100663296,-1204020275,100663296,-1204020274,100663296,-916744017,100663296,-1204020245,100663296,-1194204646,100663296,-1204394608,100663296,-1194204647,100663296,-129639168,100663296,-1194204645\",MISCELLANEOUS,CRITICAL,44.181220,-117.135840,\"Construction on I-84 EB near MP 359, Drive with caution.\",,,I-84 E,500,0,false",
 		},
 	}

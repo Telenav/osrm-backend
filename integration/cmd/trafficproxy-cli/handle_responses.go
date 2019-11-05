@@ -15,6 +15,7 @@ type responseHandler struct {
 	writeToStdout      bool
 	writeToFile        bool
 	dumpFileNamePrefix string
+	humanFriendlyCSV   bool
 }
 
 func newResponseHandler() responseHandler {
@@ -27,6 +28,7 @@ func newResponseHandler() responseHandler {
 	} else {
 		h.writeToFile = false
 	}
+	h.humanFriendlyCSV = flags.humanFriendlyCSV
 	return h
 }
 
@@ -47,11 +49,18 @@ func (r responseHandler) handleFlowResponses(flowResponses []*proxy.FlowResponse
 			continue // ignore non-blocking flow
 		}
 
+		var csvString string
+		if r.humanFriendlyCSV {
+			csvString = flow.Flow.HumanFriendlyCSVString()
+		} else {
+			csvString = flow.Flow.CSVString()
+		}
+
 		if r.writeToStdout {
-			fmt.Println(flow.Flow.CSVString())
+			fmt.Println(csvString)
 		}
 		if r.writeToFile {
-			contentChan <- flow.Flow.CSVString()
+			contentChan <- csvString
 		}
 	}
 
@@ -78,11 +87,18 @@ func (r responseHandler) handleIncidentResponses(incidentResponses []*proxy.Inci
 			continue // ignore non-blocking incident
 		}
 
+		var csvString string
+		if r.humanFriendlyCSV {
+			csvString = incident.Incident.HumanFriendlyCSVString()
+		} else {
+			csvString = incident.Incident.CSVString()
+		}
+
 		if r.writeToStdout {
-			fmt.Println(incident.Incident.CSVString())
+			fmt.Println(csvString)
 		}
 		if r.writeToFile {
-			contentChan <- incident.Incident.CSVString()
+			contentChan <- csvString
 		}
 	}
 
