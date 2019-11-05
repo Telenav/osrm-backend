@@ -11,6 +11,7 @@ import (
 
 func main() {
 	flag.Parse()
+	defer glog.Flush()
 
 	if flags.rpcMode == rpcModeGetWays {
 		if len(flags.wayIDs) == 0 {

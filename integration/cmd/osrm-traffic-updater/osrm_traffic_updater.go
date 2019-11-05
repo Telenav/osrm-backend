@@ -8,6 +8,7 @@ import (
 
 	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxyclient"
+	"github.com/golang/glog"
 )
 
 var flags struct {
@@ -27,6 +28,7 @@ const CACHEDOBJECTS = 4000000
 
 func main() {
 	flag.Parse()
+	defer glog.Flush()
 
 	startTime := time.Now()
 	defer func() {
