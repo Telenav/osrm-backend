@@ -1,13 +1,14 @@
-package main
+package wayidsflag
 
 import (
 	"strconv"
 	"strings"
 )
 
-type wayIDsFlag []int64
+// WayIDs defines an wayIDs structure which also possible to work with flag package.
+type WayIDs []int64
 
-func (w wayIDsFlag) String() string {
+func (w WayIDs) String() string {
 	s := []string{}
 	for _, wayID := range w {
 		s = append(s, strconv.FormatInt(wayID, 10))
@@ -15,7 +16,8 @@ func (w wayIDsFlag) String() string {
 	return strings.Join(s, ",")
 }
 
-func (w *wayIDsFlag) Set(value string) error {
+// Set sets the value of the named command-line flag.
+func (w *WayIDs) Set(value string) error {
 	if len(value) == 0 {
 		return nil
 	}

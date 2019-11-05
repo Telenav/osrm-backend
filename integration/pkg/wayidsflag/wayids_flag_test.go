@@ -1,4 +1,4 @@
-package main
+package wayidsflag
 
 import (
 	"fmt"
@@ -8,13 +8,13 @@ import (
 
 func TestWayIDsFlagString(t *testing.T) {
 	cases := []struct {
-		wayIDsFlag wayIDsFlag
+		wayIDsFlag WayIDs
 		s          string
 	}{
-		{wayIDsFlag{}, ""},
-		{wayIDsFlag{829733412}, "829733412"},
-		{wayIDsFlag{-104489539}, "-104489539"},
-		{wayIDsFlag{829733412, -104489539}, "829733412,-104489539"},
+		{WayIDs{}, ""},
+		{WayIDs{829733412}, "829733412"},
+		{WayIDs{-104489539}, "-104489539"},
+		{WayIDs{829733412, -104489539}, "829733412,-104489539"},
 	}
 
 	for _, c := range cases {
@@ -27,20 +27,20 @@ func TestWayIDsFlagString(t *testing.T) {
 
 func TestWayIDsFlagSet(t *testing.T) {
 	cases := []struct {
-		wayIDsFlag wayIDsFlag
+		wayIDsFlag WayIDs
 		s          string
 		err        error
 	}{
-		{wayIDsFlag{}, "", nil},
-		{wayIDsFlag{829733412}, "+829733412", nil},
-		{wayIDsFlag{829733412}, "829733412", nil},
-		{wayIDsFlag{-104489539}, "-104489539", nil},
-		{wayIDsFlag{829733412, -104489539}, "829733412,-104489539", nil},
-		{wayIDsFlag{}, "a", fmt.Errorf("error")},
+		{WayIDs{}, "", nil},
+		{WayIDs{829733412}, "+829733412", nil},
+		{WayIDs{829733412}, "829733412", nil},
+		{WayIDs{-104489539}, "-104489539", nil},
+		{WayIDs{829733412, -104489539}, "829733412,-104489539", nil},
+		{WayIDs{}, "a", fmt.Errorf("error")},
 	}
 
 	for _, c := range cases {
-		wayIDsFlagValue := wayIDsFlag{}
+		wayIDsFlagValue := WayIDs{}
 		err := wayIDsFlagValue.Set(c.s)
 		if err != nil && c.err != nil {
 			continue

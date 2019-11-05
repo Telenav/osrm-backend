@@ -11,12 +11,12 @@ func main() {
 	flag.Parse()
 
 	if flags.rpcMode == rpcModeGetWays {
-		if len(flags.wayIDsFlag) == 0 {
+		if len(flags.wayIDs) == 0 {
 			glog.Error("please provide wayIDs for 'getways' mode by '-ways xxx', e.g. '-ways 829733412,-104489539'")
 			return
 		}
 
-		trafficResp, err := trafficproxyclient.GetFlowsIncidents(flags.wayIDsFlag)
+		trafficResp, err := trafficproxyclient.GetFlowsIncidents(flags.wayIDs)
 		if err != nil {
 			glog.Error(err)
 			return
