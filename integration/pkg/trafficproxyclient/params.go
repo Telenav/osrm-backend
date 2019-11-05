@@ -3,7 +3,7 @@ package trafficproxyclient
 import (
 	"time"
 
-	proxy "github.com/Telenav/osrm-backend/integration/pkg/gen-trafficproxy"
+	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 )
 
 // params is used to group request parameters together.

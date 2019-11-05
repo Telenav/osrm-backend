@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	proxy "github.com/Telenav/osrm-backend/integration/pkg/gen-trafficproxy"
+	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 	"github.com/golang/glog"
 )
 
