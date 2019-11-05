@@ -9,9 +9,9 @@ import (
 )
 
 // CSVString represents Flow as defined CSV format.
-// I.e. 'wayID,Speed,int(TrafficLevel)'
+// I.e. 'wayID,Speed,TrafficLevel'
 func (f *Flow) CSVString() string {
-	return fmt.Sprintf("%d,%f,%d", f.WayId, f.Speed, int32(f.TrafficLevel))
+	return fmt.Sprintf("%d,%f,%s", f.WayId, f.Speed, f.TrafficLevel)
 }
 
 // CSVString represents Incident as defined CSV format.
