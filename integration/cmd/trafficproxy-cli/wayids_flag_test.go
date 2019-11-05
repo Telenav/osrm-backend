@@ -11,10 +11,10 @@ func TestWayIDsFlagString(t *testing.T) {
 		wayIDsFlag wayIDsFlag
 		s          string
 	}{
-		{wayIDsFlag{[]int64{}}, ""},
-		{wayIDsFlag{[]int64{829733412}}, "829733412"},
-		{wayIDsFlag{[]int64{-104489539}}, "-104489539"},
-		{wayIDsFlag{[]int64{829733412, -104489539}}, "829733412,-104489539"},
+		{wayIDsFlag{}, ""},
+		{wayIDsFlag{829733412}, "829733412"},
+		{wayIDsFlag{-104489539}, "-104489539"},
+		{wayIDsFlag{829733412, -104489539}, "829733412,-104489539"},
 	}
 
 	for _, c := range cases {
@@ -32,11 +32,11 @@ func TestWayIDsFlagSet(t *testing.T) {
 		err        error
 	}{
 		{wayIDsFlag{}, "", nil},
-		{wayIDsFlag{[]int64{829733412}}, "+829733412", nil},
-		{wayIDsFlag{[]int64{829733412}}, "829733412", nil},
-		{wayIDsFlag{[]int64{-104489539}}, "-104489539", nil},
-		{wayIDsFlag{[]int64{829733412, -104489539}}, "829733412,-104489539", nil},
-		{wayIDsFlag{[]int64{}}, "a", fmt.Errorf("error")},
+		{wayIDsFlag{829733412}, "+829733412", nil},
+		{wayIDsFlag{829733412}, "829733412", nil},
+		{wayIDsFlag{-104489539}, "-104489539", nil},
+		{wayIDsFlag{829733412, -104489539}, "829733412,-104489539", nil},
+		{wayIDsFlag{}, "a", fmt.Errorf("error")},
 	}
 
 	for _, c := range cases {

@@ -5,13 +5,11 @@ import (
 	"strings"
 )
 
-type wayIDsFlag struct {
-	wayIDs []int64
-}
+type wayIDsFlag []int64
 
-func (w *wayIDsFlag) String() string {
+func (w wayIDsFlag) String() string {
 	s := []string{}
-	for _, wayID := range w.wayIDs {
+	for _, wayID := range w {
 		s = append(s, strconv.FormatInt(wayID, 10))
 	}
 	return strings.Join(s, ",")
@@ -24,7 +22,7 @@ func (w *wayIDsFlag) Set(value string) error {
 
 	for _, way := range strings.Split(value, ",") {
 		if wayID, err := strconv.ParseInt(way, 10, 64); err == nil {
-			w.wayIDs = append(w.wayIDs, wayID)
+			*w = append(*w, wayID)
 		} else {
 			return err
 		}
