@@ -33,6 +33,9 @@ func newResponseHandler() responseHandler {
 }
 
 func (r responseHandler) handleFlowResponses(flowResponses []*proxy.FlowResponse) {
+	if len(flowResponses) == 0 {
+		return
+	}
 
 	contentChan := make(chan string)
 	waitDoneChan := make(chan struct{})
@@ -71,6 +74,9 @@ func (r responseHandler) handleFlowResponses(flowResponses []*proxy.FlowResponse
 }
 
 func (r responseHandler) handleIncidentResponses(incidentResponses []*proxy.IncidentResponse) {
+	if len(incidentResponses) == 0 {
+		return
+	}
 
 	contentChan := make(chan string)
 	waitDoneChan := make(chan struct{})
@@ -119,14 +125,15 @@ func (r responseHandler) dumpToCSVFile(fileTag string, sink <-chan string, done 
 	}()
 
 	// open file
-	outfile, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, 0755)
+	//outfile, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, 0755)
+	outfile, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0755)
 	defer outfile.Close()
 	defer outfile.Sync()
 	if err != nil {
 		glog.Error(err)
 		return
 	}
-	glog.Infof("open output file of %s succeed.\n", filePath)
+	glog.V(1).Infof("open output file of %s succeed.\n", filePath)
 
 	// write contents
 	w := bufio.NewWriter(outfile)

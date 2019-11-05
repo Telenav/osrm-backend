@@ -34,7 +34,12 @@ func (i *Incident) csvString(humanFriendly bool) string {
 		records = append(records, strconv.Itoa(int(i.IncidentType)), strconv.Itoa(int(i.IncidentSeverity)))
 	}
 
-	records = append(records, fmt.Sprintf("%f", i.IncidentLocation.Lat), fmt.Sprintf("%f", i.IncidentLocation.Lon))
+	if i.IncidentLocation == nil {
+		records = append(records, "", "")
+	} else {
+		records = append(records, fmt.Sprintf("%f", i.IncidentLocation.Lat), fmt.Sprintf("%f", i.IncidentLocation.Lon))
+	}
+
 	records = append(records, i.Description, i.FirstCrossStreet, i.SecondCrossStreet, i.StreetName)
 	records = append(records, strconv.Itoa(int(i.EventCode)), strconv.Itoa(int(i.AlertCEventQuantifier)))
 

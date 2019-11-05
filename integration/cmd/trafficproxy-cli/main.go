@@ -43,7 +43,8 @@ func main() {
 		h.handleIncidentResponses(trafficResp.IncidentResponses)
 		return
 	} else if flags.rpcMode == rpcModeStreamingDelta {
-		//TODO:
+
+		streamingDeltaReceive()
 		return
 	}
 

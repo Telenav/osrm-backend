@@ -30,8 +30,8 @@ func (p params) newTrafficType() []proxy.TrafficType {
 
 func (p params) newStreamingRule() *proxy.TrafficStreamingDeltaRequest_StreamingRule {
 	var r proxy.TrafficStreamingDeltaRequest_StreamingRule
-	r.MaxSize = 1000
-	r.MaxTime = 5
+	r.MaxSize = int32(flags.streamingDeltaMaxSize)
+	r.MaxTime = int32(flags.streamingDeltaMaxTime.Seconds())
 	return &r
 }
 
