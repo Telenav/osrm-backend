@@ -1,4 +1,4 @@
-package main
+package trafficdumper
 
 import (
 	"bufio"
@@ -10,37 +10,16 @@ import (
 	"github.com/golang/glog"
 )
 
-type responseHandler struct {
-	blockingOnly       bool
-	writeToStdout      bool
-	writeToFile        bool
-	dumpFileNamePrefix string
-	humanFriendlyCSV   bool
-}
-
-func newResponseHandler() responseHandler {
-	h := responseHandler{}
-	h.blockingOnly = flags.blockingOnly
-	h.writeToStdout = flags.stdout
-	if len(flags.dumpFile) > 0 {
-		h.writeToFile = true
-		h.dumpFileNamePrefix = flags.dumpFile
-	} else {
-		h.writeToFile = false
-	}
-	h.humanFriendlyCSV = flags.humanFriendlyCSV
-	return h
-}
-
-func (r responseHandler) handleFlowResponses(flowResponses []*proxy.FlowResponse) {
+// DumpFlowResponses dump flows to file/stdout.
+func (h Handler) DumpFlowResponses(flowResponses []*proxy.FlowResponse) {
 	if len(flowResponses) == 0 {
 		return
 	}
 
 	contentChan := make(chan string)
 	waitDoneChan := make(chan struct{})
-	if r.writeToFile {
-		go r.dumpToCSVFile("_flows", contentChan, waitDoneChan)
+	if h.writeToFile {
+		go h.dumpToCSVFile("_flows", contentChan, waitDoneChan)
 	}
 
 	for _, flow := range flowResponses {
@@ -48,40 +27,41 @@ func (r responseHandler) handleFlowResponses(flowResponses []*proxy.FlowResponse
 			glog.Infoln(flow)
 		}
 
-		if r.blockingOnly && !flow.Flow.IsBlocking() {
+		if h.blockingOnly && !flow.Flow.IsBlocking() {
 			continue // ignore non-blocking flow
 		}
 
 		var csvString string
-		if r.humanFriendlyCSV {
+		if h.humanFriendlyCSV {
 			csvString = flow.Flow.HumanFriendlyCSVString()
 		} else {
 			csvString = flow.Flow.CSVString()
 		}
 
-		if r.writeToStdout {
+		if h.writeToStdout {
 			fmt.Println(csvString)
 		}
-		if r.writeToFile {
+		if h.writeToFile {
 			contentChan <- csvString
 		}
 	}
 
-	if r.writeToFile {
+	if h.writeToFile {
 		close(contentChan)
 		<-waitDoneChan
 	}
 }
 
-func (r responseHandler) handleIncidentResponses(incidentResponses []*proxy.IncidentResponse) {
+// DumpIncidentResponses dump incidents to file/stdout.
+func (h Handler) DumpIncidentResponses(incidentResponses []*proxy.IncidentResponse) {
 	if len(incidentResponses) == 0 {
 		return
 	}
 
 	contentChan := make(chan string)
 	waitDoneChan := make(chan struct{})
-	if r.writeToFile {
-		go r.dumpToCSVFile("_incidents", contentChan, waitDoneChan)
+	if h.writeToFile {
+		go h.dumpToCSVFile("_incidents", contentChan, waitDoneChan)
 	}
 
 	for _, incident := range incidentResponses {
@@ -89,34 +69,34 @@ func (r responseHandler) handleIncidentResponses(incidentResponses []*proxy.Inci
 			glog.Infoln(incident)
 		}
 
-		if r.blockingOnly && !incident.Incident.IsBlocking {
+		if h.blockingOnly && !incident.Incident.IsBlocking {
 			continue // ignore non-blocking incident
 		}
 
 		var csvString string
-		if r.humanFriendlyCSV {
+		if h.humanFriendlyCSV {
 			csvString = incident.Incident.HumanFriendlyCSVString()
 		} else {
 			csvString = incident.Incident.CSVString()
 		}
 
-		if r.writeToStdout {
+		if h.writeToStdout {
 			fmt.Println(csvString)
 		}
-		if r.writeToFile {
+		if h.writeToFile {
 			contentChan <- csvString
 		}
 	}
 
-	if r.writeToFile {
+	if h.writeToFile {
 		close(contentChan)
 		<-waitDoneChan
 	}
 }
 
-func (r responseHandler) dumpToCSVFile(fileTag string, sink <-chan string, done chan<- struct{}) {
+func (h Handler) dumpToCSVFile(fileTag string, sink <-chan string, done chan<- struct{}) {
 	defer close(done)
-	filePath := r.dumpFileNamePrefix + fileTag + ".csv"
+	filePath := h.dumpFileNamePrefix + fileTag + ".csv"
 	startTime := time.Now()
 	var dumpedLines int64
 	defer func() {
