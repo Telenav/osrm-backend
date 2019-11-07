@@ -1,13 +1,17 @@
 package trafficdumper
 
+import "time"
+
 // Handler holds flags and methods for dumping traffic data.
 type Handler struct {
-	blockingOnly       bool
-	writeToStdout      bool
-	writeToFile        bool
-	dumpFileNamePrefix string
-	humanFriendlyCSV   bool
-	dumpFileSplitIndex int
+	blockingOnly                 bool
+	writeToStdout                bool
+	writeToFile                  bool
+	dumpFileNamePrefix           string
+	humanFriendlyCSV             bool
+	streamingDeltaSplitDumpFiles bool
+	dumpFileSplitIndex           int
+	streamingDeltaDumpInterval   time.Duration
 }
 
 // NewHandler creates a new Handler with command-line flags.
@@ -22,5 +26,7 @@ func NewHandler() Handler {
 		h.writeToFile = false
 	}
 	h.humanFriendlyCSV = flags.humanFriendlyCSV
+	h.streamingDeltaSplitDumpFiles = flags.streamingDeltaSplitDumpFiles
+	h.streamingDeltaDumpInterval = flags.streamingDeltaDumpInterval
 	return h
 }
