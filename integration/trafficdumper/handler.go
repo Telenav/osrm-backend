@@ -10,8 +10,8 @@ type Handler struct {
 	dumpFileSplitIndex int
 }
 
-// New creates a new Handler with command-line flags.
-func New() Handler {
+// NewHandler creates a new Handler with command-line flags.
+func NewHandler() Handler {
 	h := Handler{}
 	h.blockingOnly = flags.blockingOnly
 	h.writeToStdout = flags.stdout

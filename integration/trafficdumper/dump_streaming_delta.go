@@ -11,7 +11,7 @@ import (
 // DumpStreamingDelta dumps traffic response from streaming delta channel.
 func DumpStreamingDelta(responseChan <-chan proxy.TrafficResponse) {
 
-	h := New()
+	h := NewHandler()
 	if h.writeToFile && flags.streamingDeltaSplitDumpFiles {
 		h.updateDumpFileNamePrefix()
 	}

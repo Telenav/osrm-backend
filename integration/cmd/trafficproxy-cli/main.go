@@ -29,7 +29,7 @@ func main() {
 			len(trafficResp.FlowResponses), len(trafficResp.IncidentResponses))
 
 		// dump traffic data
-		h := trafficdumper.New()
+		h := trafficdumper.NewHandler()
 		h.DumpFlowResponses(trafficResp.FlowResponses)
 		h.DumpIncidentResponses(trafficResp.IncidentResponses)
 		return
@@ -45,7 +45,7 @@ func main() {
 			len(trafficResp.FlowResponses), len(trafficResp.IncidentResponses))
 
 		// dump traffic data
-		h := trafficdumper.New()
+		h := trafficdumper.NewHandler()
 		h.DumpFlowResponses(trafficResp.FlowResponses)
 		h.DumpIncidentResponses(trafficResp.IncidentResponses)
 		return
