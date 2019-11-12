@@ -65,8 +65,8 @@ total 243M
 $ cd ..
 
 # pull & run
-$ docker pull wangyoucao577/osrm-backend:9__master-telenav__20190618T135121CST
-$ docker run -d -p 5000:5000  "src=$(pwd)/osrm-data,dst=/osrm-data,type=bind" wangyoucao577/osrm-backend:9__master-telenav__20190618T135121CST routed_startup 
+$ docker pull telenavmap/osrm-backend:no.63-20191112-master-telenav-845f953
+$ docker run -d -p 5000:5000  "src=$(pwd)/osrm-data,dst=/osrm-data,type=bind" telenavmap/osrm-backend:no.63-20191112-master-telenav-845f953 routed_startup 
 ```
 
 ## Example By Manual
