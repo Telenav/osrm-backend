@@ -52,10 +52,12 @@ func main() {
 	} else if flags.rpcMode == rpcModeStreamingDelta {
 
 		responseChan := make(chan proxy.TrafficResponse)
+		waitChan := make(chan struct{})
 
 		// async startup dumper
 		go func() {
 			trafficdumper.DumpStreamingDelta(responseChan)
+			waitChan <- struct{}{}
 		}()
 
 		// startup streaming delta
@@ -63,6 +65,8 @@ func main() {
 		if err != nil {
 			glog.Error(err)
 		}
+		close(responseChan)
+		<-waitChan
 		return
 	}
 

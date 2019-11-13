@@ -11,7 +11,6 @@ import (
 
 // StreamingDeltaFlowsIncidents set up a new channel for traffic flows and incidents streaming delta.
 func StreamingDeltaFlowsIncidents(out chan<- proxy.TrafficResponse) error {
-	defer close(out)
 
 	// make RPC client
 	conn, err := newGRPCConnection()
