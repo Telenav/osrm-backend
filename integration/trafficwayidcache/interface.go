@@ -14,6 +14,11 @@ func New() *Cache {
 	return &c
 }
 
+// Clear all cached traffic flows and incidents.
+func (c *Cache) Clear() {
+	//TODO:
+}
+
 // Eat implements trafficproxyclient.Eater inteface.
 func (c *Cache) Eat(r proxy.TrafficResponse) {
 	//TODO:
