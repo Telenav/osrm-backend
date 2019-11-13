@@ -1,6 +1,8 @@
 package trafficproxyclient
 
 import (
+	"time"
+
 	"github.com/golang/glog"
 
 	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
@@ -47,6 +49,7 @@ func (f *Feeder) Run() error {
 	go func() {
 		deltaErr <- StreamingDeltaFlowsIncidents(feeds)
 	}()
+	time.Sleep(100 * time.Millisecond) //wait a while to make sure streaming delta running first
 
 	//get all
 	getAllError := make(chan error)
