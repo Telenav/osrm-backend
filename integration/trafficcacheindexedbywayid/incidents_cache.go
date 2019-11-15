@@ -49,7 +49,6 @@ func (i *incidentsCache) incidentAndAffectedWaysCount() (int, int) {
 
 func (i *incidentsCache) updateIncidents(incidentResponses []*proxy.IncidentResponse) {
 	if len(incidentResponses) == 0 {
-		glog.Warning("empty incident responses")
 		return
 	}
 

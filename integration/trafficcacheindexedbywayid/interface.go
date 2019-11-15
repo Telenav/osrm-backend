@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/golang/glog"
 )
 
 // Cache is used to cache live traffic and provide query interfaces.
@@ -29,6 +30,7 @@ func (c *Cache) Clear() {
 
 // Eat implements trafficproxyclient.Eater inteface.
 func (c *Cache) Eat(r proxy.TrafficResponse) {
+	glog.V(1).Infof("new traffic for cache, flows: %d, incidents: %d", len(r.FlowResponses), len(r.IncidentResponses))
 	c.updateFlows(r.FlowResponses)
 	c.incidentsCache.updateIncidents(r.IncidentResponses)
 }
