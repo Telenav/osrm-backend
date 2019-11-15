@@ -47,7 +47,7 @@ func main() {
 			startTime = currentTime
 
 			if cacheByWay != nil {
-				incidents, waysAffectedByIncidents := cacheByWay.IncidentCount()
+				incidents, waysAffectedByIncidents := cacheByWay.IncidentsAndAffectedWaysCount()
 				glog.Infof("traffic in cache(indexed by wayID), flows: %d, incidents(blocking-only): %d, ways(affected by incidents): %d",
 					cacheByWay.FlowCount(), incidents, waysAffectedByIncidents)
 			}
