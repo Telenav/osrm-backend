@@ -6,8 +6,7 @@ import (
 )
 
 var flags struct {
-	port                  int
-	ip                    string
+	target                string
 	region                string
 	trafficProvider       string
 	mapProvider           string
@@ -19,8 +18,7 @@ var flags struct {
 }
 
 func init() {
-	flag.IntVar(&flags.port, "p", 10086, "target traffic proxy port")
-	flag.StringVar(&flags.ip, "c", "127.0.0.1", "target traffic proxy ip address")
+	flag.StringVar(&flags.target, "c", "127.0.0.1:10086", "target traffic proxy endpoint, format 'ip[:port]'. Default port 10086 will be used if only ip input, i.e '127.0.0.1' is same with '127.0.0.1:10086'.")
 	flag.StringVar(&flags.region, "region", "na", "region")
 	flag.StringVar(&flags.trafficProvider, "traffic", "", "traffic data provider")
 	flag.StringVar(&flags.mapProvider, "map", "", "map data provider")
