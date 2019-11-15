@@ -1,4 +1,4 @@
-package trafficwayidcache
+package trafficcacheindexedbywayid
 
 import (
 	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
