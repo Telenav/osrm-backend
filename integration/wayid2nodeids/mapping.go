@@ -20,21 +20,7 @@ func (m *Mapping) load() error {
 	}
 	glog.V(2).Infof("open wayid2nodeids mapping file %s succeed.\n", m.mappingFile)
 
-	const parseLineTaskCount = 8
-	lineChan := make(chan string, parseLineTaskCount)
-
-	// start task: read from file
-	go func() {
-		scanner := bufio.NewScanner(snappy.NewReader(f))
-		for scanner.Scan() {
-			lineChan <- (scanner.Text())
-		}
-		if err := scanner.Err(); err != nil {
-			glog.Error(err)
-		}
-
-		close(lineChan)
-	}()
+	//// reversely start tasks
 
 	// start task: store IDs to map
 	const storeTaskCount = 2
@@ -47,12 +33,23 @@ func (m *Mapping) load() error {
 	go m.storeEdge2WayID(idsChan[1], waitStoreTaskChan)
 
 	// start task: parse line string to ID slice
+	const parseLineTaskCount = 8
+	lineChan := make(chan string, parseLineTaskCount)
 	waitParseTaskChan := make(chan struct{}, parseLineTaskCount)
 	for i := 0; i < parseLineTaskCount; i++ {
 		go parseLineTask(lineChan, idsChan, waitParseTaskChan)
 	}
 
+	// start task: read from file
+	waitReadDone := make(chan error)
+	go m.readTask(f, lineChan, waitReadDone)
+
 	// wait done
+	readErr := <-waitReadDone
+	if readErr != nil {
+		glog.Warning(readErr)
+	}
+	close(lineChan)
 	for i := 0; i < parseLineTaskCount; i++ {
 		<-waitParseTaskChan
 	}
@@ -66,7 +63,24 @@ func (m *Mapping) load() error {
 	glog.Infof("Load wayID->nodeIDs mapping, total processing time %f seconds, ways count %d.",
 		time.Now().Sub(startTime).Seconds(), len(m.wayID2NodeIDs))
 
-	return nil
+	return readErr
+}
+
+func (m *Mapping) readTask(f *os.File, lineChan chan<- string, done chan<- error) {
+	if f == nil {
+		glog.Fatalf("file %v invalid", f)
+	}
+
+	// start task: read from file
+	scanner := bufio.NewScanner(snappy.NewReader(f))
+	for scanner.Scan() {
+		lineChan <- (scanner.Text())
+	}
+	if err := scanner.Err(); err != nil {
+		glog.Error(err)
+		done <- err
+	}
+	done <- nil
 }
 
 func (m *Mapping) storeWayID2NodeIDs(idsChan <-chan []int64, done chan<- struct{}) {
