@@ -44,6 +44,10 @@ func (m *Mapping) Load() error {
 		for scanner.Scan() {
 			lineChan <- (scanner.Text())
 		}
+		if err := scanner.Err(); err != nil {
+			glog.Errorf("reading standard input: %v", err)
+		}
+
 		close(lineChan)
 	}()
 
