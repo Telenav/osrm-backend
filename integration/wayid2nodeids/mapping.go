@@ -45,7 +45,7 @@ func (m *Mapping) load() error {
 				close(idsChan)
 				break
 			}
-			ids := m.parseLine(line)
+			ids := parseLine(line)
 			if ids == nil {
 				continue
 			}
@@ -85,7 +85,7 @@ func (m *Mapping) load() error {
 	return nil
 }
 
-func (m *Mapping) parseLine(line string) []int64 {
+func parseLine(line string) []int64 {
 
 	elements := strings.Split(line, ",")
 	if len(elements) < 3 { // at least should be one wayID and two NodeIDs
