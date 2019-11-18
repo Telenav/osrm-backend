@@ -69,7 +69,7 @@ func (m *Mapping) Load() error {
 			glog.Warningf("decode wayID failed from %v\n", elements)
 			continue
 		}
-		m.m[wayID] = []int64{}
+		nodeIDs := []int64{}
 		wayCount++
 
 		nodeElements := elements[1:]
@@ -84,9 +84,10 @@ func (m *Mapping) Load() error {
 				glog.Warningf("decode nodeID failed from %s\n", nodeElement)
 				continue
 			}
-			m.m[wayID] = append(m.m[wayID], nodeID)
+			nodeIDs = append(nodeIDs, nodeID)
 			nodeCount++
 		}
+		m.m[wayID] = nodeIDs
 
 	}
 
