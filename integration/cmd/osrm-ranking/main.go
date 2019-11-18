@@ -9,6 +9,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxyclient"
 	"github.com/Telenav/osrm-backend/integration/trafficcacheindexedbyedge"
 	"github.com/Telenav/osrm-backend/integration/trafficcacheindexedbywayid"
+	"github.com/Telenav/osrm-backend/integration/wayid2nodeids"
 
 	"github.com/golang/glog"
 )
@@ -16,6 +17,12 @@ import (
 func main() {
 	flag.Parse()
 	defer glog.Flush()
+
+	wayID2NodeIDsMapping := wayid2nodeids.NewMappingFrom(flags.wayID2NodeIDsMappingFile)
+	if err := wayID2NodeIDsMapping.Load(); err != nil {
+		glog.Error(err)
+		return
+	}
 
 	// prepare traffic cache
 	cacheByWay := trafficcacheindexedbywayid.New()
