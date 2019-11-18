@@ -22,7 +22,8 @@ func (m *Mapping) load() error {
 	}
 	glog.V(2).Infof("open wayid2nodeids mapping file %s succeed.\n", m.mappingFile)
 
-	lineChan := make(chan string)
+	const parseLineTaskCount = 8
+	lineChan := make(chan string, parseLineTaskCount)
 
 	// read from file
 	go func() {
@@ -31,30 +32,38 @@ func (m *Mapping) load() error {
 			lineChan <- (scanner.Text())
 		}
 		if err := scanner.Err(); err != nil {
-			glog.Errorf("reading standard input: %v", err)
+			glog.Error(err)
 		}
 
 		close(lineChan)
 	}()
 
 	idsChan := make(chan []int64)
-	go func() {
-		for {
-			line, ok := <-lineChan
-			if !ok {
-				close(idsChan)
-				break
-			}
-			ids := parseLine(line)
-			if ids == nil {
-				continue
-			}
 
-			idsChan <- ids
-		}
-	}()
+	// parse line string to ID slice
+	waitParseTaskChan := make(chan struct{}, parseLineTaskCount)
+	for i := 0; i < parseLineTaskCount; i++ {
+		go parseLineTask(lineChan, idsChan, waitParseTaskChan)
+	}
 
-	var nodeCount int64
+	// store IDs to map
+	waitStoreTaskChan := make(chan struct{})
+	go m.storeTask(idsChan, waitStoreTaskChan)
+
+	// wait done
+	for i := 0; i < parseLineTaskCount; i++ {
+		<-waitParseTaskChan
+	}
+	close(idsChan)
+	<-waitStoreTaskChan
+
+	glog.Infof("Load wayID->nodeIDs mapping, total processing time %f seconds, ways count %d.",
+		time.Now().Sub(startTime).Seconds(), len(m.wayID2NodeIDs))
+
+	return nil
+}
+
+func (m *Mapping) storeTask(idsChan <-chan []int64, done chan<- struct{}) {
 	for {
 		ids, ok := <-idsChan
 		if !ok {
@@ -68,7 +77,6 @@ func (m *Mapping) load() error {
 
 		wayID := ids[0]
 		nodeIDs := ids[1:]
-		nodeCount += int64(len(nodeIDs))
 
 		m.wayID2NodeIDs[wayID] = nodeIDs // store wayID->NodeID,NodeID,... mapping
 
@@ -76,13 +84,24 @@ func (m *Mapping) load() error {
 			edge := nodebasededge.Edge{FromNode: nodeIDs[i], ToNode: nodeIDs[i+1]}
 			m.edge2WayID[edge] = wayID
 		}
-
 	}
+	done <- struct{}{}
+}
 
-	glog.Infof("Load wayID->nodeIDs mapping, total processing time %f seconds, ways count %d, nodes count %d.",
-		time.Now().Sub(startTime).Seconds(), len(m.wayID2NodeIDs), nodeCount)
+func parseLineTask(lineChan <-chan string, result chan<- []int64, done chan<- struct{}) {
+	for {
+		line, ok := <-lineChan
+		if !ok {
+			break
+		}
 
-	return nil
+		ids := parseLine(line)
+		if ids == nil {
+			continue
+		}
+		result <- ids
+	}
+	done <- struct{}{}
 }
 
 func parseLine(line string) []int64 {
