@@ -23,7 +23,7 @@ func (m *Mapping) load() error {
 	const parseLineTaskCount = 8
 	lineChan := make(chan string, parseLineTaskCount)
 
-	// read from file
+	// start task: read from file
 	go func() {
 		scanner := bufio.NewScanner(snappy.NewReader(f))
 		for scanner.Scan() {
@@ -36,24 +36,32 @@ func (m *Mapping) load() error {
 		close(lineChan)
 	}()
 
-	idsChan := make(chan []int64)
+	// start task: store IDs to map
+	const storeTaskCount = 2
+	idsChan := []chan []int64{}
+	for i := 0; i < storeTaskCount; i++ {
+		idsChan = append(idsChan, make(chan []int64))
+	}
+	waitStoreTaskChan := make(chan struct{}, storeTaskCount)
+	go m.storeWayID2NodeIDs(idsChan[0], waitStoreTaskChan)
+	go m.storeEdge2WayID(idsChan[1], waitStoreTaskChan)
 
-	// parse line string to ID slice
+	// start task: parse line string to ID slice
 	waitParseTaskChan := make(chan struct{}, parseLineTaskCount)
 	for i := 0; i < parseLineTaskCount; i++ {
 		go parseLineTask(lineChan, idsChan, waitParseTaskChan)
 	}
 
-	// store IDs to map
-	waitStoreTaskChan := make(chan struct{})
-	go m.storeTask(idsChan, waitStoreTaskChan)
-
 	// wait done
 	for i := 0; i < parseLineTaskCount; i++ {
 		<-waitParseTaskChan
 	}
-	close(idsChan)
-	<-waitStoreTaskChan
+	for i := range idsChan {
+		close(idsChan[i])
+	}
+	for i := 0; i < storeTaskCount; i++ {
+		<-waitStoreTaskChan
+	}
 
 	glog.Infof("Load wayID->nodeIDs mapping, total processing time %f seconds, ways count %d.",
 		time.Now().Sub(startTime).Seconds(), len(m.wayID2NodeIDs))
@@ -61,7 +69,7 @@ func (m *Mapping) load() error {
 	return nil
 }
 
-func (m *Mapping) storeTask(idsChan <-chan []int64, done chan<- struct{}) {
+func (m *Mapping) storeWayID2NodeIDs(idsChan <-chan []int64, done chan<- struct{}) {
 	for {
 		ids, ok := <-idsChan
 		if !ok {
@@ -78,9 +86,47 @@ func (m *Mapping) storeTask(idsChan <-chan []int64, done chan<- struct{}) {
 
 		m.wayID2NodeIDs[wayID] = nodeIDs // store wayID->NodeID,NodeID,... mapping
 
+	}
+	done <- struct{}{}
+}
+
+func (m *Mapping) storeEdge2WayID(idsChan <-chan []int64, done chan<- struct{}) {
+	for {
+		ids, ok := <-idsChan
+		if !ok {
+			break
+		}
+
+		if len(ids) < 3 {
+			glog.Errorf("expect at least 3 ids(wayID,nodeID,nodeID) but not enough: %v", ids)
+			continue
+		}
+
+		wayID := ids[0]
+		nodeIDs := ids[1:]
+
 		for i := range nodeIDs[:len(nodeIDs)-1] { // store Edge->wayID mapping
 			edge := nodebasededge.Edge{FromNode: nodeIDs[i], ToNode: nodeIDs[i+1]}
 			m.edge2WayID[edge] = wayID
+		}
+	}
+	done <- struct{}{}
+}
+
+func parseLineTask(lineChan <-chan string, result []chan []int64, done chan<- struct{}) {
+	for {
+		line, ok := <-lineChan
+		if !ok {
+			break
+		}
+
+		ids := parseLine(line)
+		if ids == nil {
+			continue
+		}
+
+		for i := range result {
+			result[i] <- ids
 		}
 	}
 	done <- struct{}{}

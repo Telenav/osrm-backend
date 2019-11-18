@@ -7,22 +7,6 @@ import (
 	"github.com/golang/glog"
 )
 
-func parseLineTask(lineChan <-chan string, result chan<- []int64, done chan<- struct{}) {
-	for {
-		line, ok := <-lineChan
-		if !ok {
-			break
-		}
-
-		ids := parseLine(line)
-		if ids == nil {
-			continue
-		}
-		result <- ids
-	}
-	done <- struct{}{}
-}
-
 func parseLine(line string) []int64 {
 
 	elements := strings.Split(line, ",")
