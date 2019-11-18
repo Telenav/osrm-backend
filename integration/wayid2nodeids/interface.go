@@ -7,21 +7,23 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Telenav/osrm-backend/integration/nodebasededge"
 	"github.com/golang/glog"
 	"github.com/golang/snappy"
 )
 
 // Mapping handles 'wayID->NodeID,NodeID,NodeID,...' mapping.
 type Mapping struct {
-	mappingFile string
-	m           map[int64][]int64
+	mappingFile   string
+	wayID2NodeIDs map[int64][]int64
+	edge2WayID    map[nodebasededge.Edge]int64
 }
 
 // NewMappingFrom creates a new Mapping object for 'wayID->NodeID,NodeID,NodeID,...' mapping.
 // Currently it only supports mapping file compressed by snappy, e.g. 'wayid2nodeids.csv.snappy'.
 func NewMappingFrom(mappingFilePath string) Mapping {
 	m := Mapping{
-		mappingFilePath, map[int64][]int64{},
+		mappingFilePath, map[int64][]int64{}, map[nodebasededge.Edge]int64{},
 	}
 	return m
 }
@@ -87,11 +89,39 @@ func (m *Mapping) Load() error {
 			nodeIDs = append(nodeIDs, nodeID)
 			nodeCount++
 		}
-		m.m[wayID] = nodeIDs
+		m.wayID2NodeIDs[wayID] = nodeIDs // store wayID->NodeID,NodeID,... mapping
 
+		for i := range nodeIDs[1:] { // store Edge->wayID mapping
+			edge := nodebasededge.Edge{FromNode: nodeIDs[i-1], ToNode: nodeIDs[i]}
+			m.edge2WayID[edge] = wayID
+		}
 	}
 
 	glog.Infof("Load wayID->nodeIDs mapping, total processing time %f seconds, ways count %d, nodes count %d.",
 		time.Now().Sub(startTime).Seconds(), wayCount, nodeCount)
 	return nil
+}
+
+// GetNodeIDs gets nodeIDs mapped by wayID.
+func (m Mapping) GetNodeIDs(wayID int64) []int64 {
+	nodeIDs, found := m.wayID2NodeIDs[wayID]
+	if found {
+		return nodeIDs
+	}
+	return nil
+}
+
+// GetWayID returns wayID corresponding to Edge.
+// The second return bool indicates whether it's found or not.
+func (m Mapping) GetWayID(edge nodebasededge.Edge) (int64, bool) {
+
+	if wayID, found := m.edge2WayID[edge]; found {
+		return wayID, true
+	}
+
+	if wayID, found := m.edge2WayID[edge.Reverse()]; found {
+		return -wayID, true
+	}
+
+	return 0, false
 }
