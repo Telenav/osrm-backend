@@ -91,8 +91,8 @@ func (m *Mapping) Load() error {
 		}
 		m.wayID2NodeIDs[wayID] = nodeIDs // store wayID->NodeID,NodeID,... mapping
 
-		for i := range nodeIDs[1:] { // store Edge->wayID mapping
-			edge := nodebasededge.Edge{FromNode: nodeIDs[i-1], ToNode: nodeIDs[i]}
+		for i := range nodeIDs[:len(nodeIDs)-1] { // store Edge->wayID mapping
+			edge := nodebasededge.Edge{FromNode: nodeIDs[i], ToNode: nodeIDs[i+1]}
 			m.edge2WayID[edge] = wayID
 		}
 	}
