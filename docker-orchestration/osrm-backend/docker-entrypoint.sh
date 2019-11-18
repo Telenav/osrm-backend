@@ -12,7 +12,7 @@ _sig() {
 }
 
 if [ "$1" = 'routed_startup' ] || [ "$1" = 'routed_blocking_traffic_startup' ]; then
-  trap _sig SIGKILL SIGTERM SIGHUP SIGINT EXIT
+  #trap _sig SIGKILL SIGTERM SIGHUP SIGINT EXIT
 
   TRAFFIC_FILE=traffic.csv
   TRAFFIC_PROXY_IP=${2:-"10.189.102.81"}
@@ -35,7 +35,7 @@ if [ "$1" = 'routed_startup' ] || [ "$1" = 'routed_blocking_traffic_startup' ]; 
   wait "$child"
 
 elif [ "$1" = 'routed_no_traffic_startup' ]; then
-  trap _sig SIGKILL SIGTERM SIGHUP SIGINT EXIT
+  #trap _sig SIGKILL SIGTERM SIGHUP SIGINT EXIT
 
   cd ${DATA_PATH}
   ${BUILD_PATH}/osrm-routed ${MAPDATA_NAME_WITH_SUFFIX}.osrm ${OSRM_ROUTED_STARTUP_COMMAND} &
@@ -43,7 +43,7 @@ elif [ "$1" = 'routed_no_traffic_startup' ]; then
   wait "$child"
 
 elif [ "$1" = 'compile_mapdata' ]; then
-  trap _sig SIGKILL SIGTERM SIGHUP SIGINT EXIT
+  #trap _sig SIGKILL SIGTERM SIGHUP SIGINT EXIT
 
   PBF_FILE_URL=${2}
   KEEP_COMPILED_DATA=${3:-"false"}
