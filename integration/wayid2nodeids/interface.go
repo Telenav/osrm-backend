@@ -2,16 +2,12 @@ package wayid2nodeids
 
 import (
 	"sync"
-
-	"github.com/Telenav/osrm-backend/integration/nodebasededge"
 )
 
 // Mapping handles 'wayID->NodeID,NodeID,NodeID,...' mapping.
 type Mapping struct {
 	mappingFile   string
 	wayID2NodeIDs map[int64][]int64
-	edge2WayID    map[nodebasededge.Edge]int64
-	nodeIDs       map[int64]struct{}
 
 	ready bool
 	mutex sync.RWMutex
@@ -23,8 +19,6 @@ func NewMappingFrom(mappingFilePath string) *Mapping {
 	m := Mapping{
 		mappingFilePath,
 		map[int64][]int64{},
-		map[nodebasededge.Edge]int64{},
-		map[int64]struct{}{},
 		false,
 		sync.RWMutex{},
 	}
@@ -52,24 +46,6 @@ func (m *Mapping) GetNodeIDs(wayID int64) []int64 {
 		return nodeIDs
 	}
 	return nil
-}
-
-// GetWayID returns wayID corresponding to Edge.
-// The second return bool indicates whether it's found or not.
-func (m *Mapping) GetWayID(edge nodebasededge.Edge) (int64, bool) {
-	if !m.IsReady() {
-		return 0, false
-	}
-
-	if wayID, found := m.edge2WayID[edge]; found {
-		return wayID, true
-	}
-
-	if wayID, found := m.edge2WayID[edge.Reverse()]; found {
-		return -wayID, true
-	}
-
-	return 0, false
 }
 
 // IsReady returns whether the Mapping has been prepared or not.
