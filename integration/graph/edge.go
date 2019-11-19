@@ -1,8 +1,8 @@
-//Package nodebasededge defines NodeBasedEdge structure.
+//Package graph defines a Node Based Graph.
 //more details refer to https://github.com/Telenav/open-source-spec/blob/master/osrm/doc/understanding_osrm_graph_representation.md#terminology
-package nodebasededge
+package graph
 
-//Edge represent NodeBasedEdge structure. It's an directed edge between two nodes.
+//Edge represents NodeBasedEdge structure. It's an directed edge between two nodes.
 //https://github.com/Telenav/open-source-spec/blob/master/osrm/doc/understanding_osrm_graph_representation.md#terminology
 type Edge struct {
 	FromNode int64
