@@ -14,6 +14,10 @@ func TestMappingLoad(t *testing.T) {
 		t.Error(err)
 	}
 
+	if !m.IsReady() {
+		t.Error("expect ready but not")
+	}
+
 	expectWayID2NodeIDsMapping := map[int64][]int64{
 		24418325: []int64{84760891102, 19496208102},
 		24418332: []int64{84762609102, 244183320001101, 84762607102},
