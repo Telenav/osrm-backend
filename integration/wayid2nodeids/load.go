@@ -23,7 +23,7 @@ func (m *Mapping) load() error {
 	//// reversely start tasks
 
 	// start task: store IDs to map
-	const storeTaskCount = 2
+	const storeTaskCount = 3
 	idsChan := []chan []int64{}
 	for i := 0; i < storeTaskCount; i++ {
 		idsChan = append(idsChan, make(chan []int64))
@@ -31,6 +31,7 @@ func (m *Mapping) load() error {
 	waitStoreTaskChan := make(chan struct{}, storeTaskCount)
 	go m.storeWayID2NodeIDs(idsChan[0], waitStoreTaskChan)
 	go m.storeEdge2WayID(idsChan[1], waitStoreTaskChan)
+	go m.storeNodeIDs(idsChan[2], waitStoreTaskChan)
 
 	// start task: parse line string to ID slice
 	const parseLineTaskCount = 8
@@ -60,8 +61,8 @@ func (m *Mapping) load() error {
 		<-waitStoreTaskChan
 	}
 
-	glog.Infof("Load wayID->nodeIDs mapping, total processing time %f seconds, ways count %d.",
-		time.Now().Sub(startTime).Seconds(), len(m.wayID2NodeIDs))
+	glog.Infof("Load wayID->nodeIDs mapping, total processing time %f seconds, loaded ways %d, nodes %d, edges %d.",
+		time.Now().Sub(startTime).Seconds(), len(m.wayID2NodeIDs), len(m.edge2WayID), len(m.nodeIDs))
 
 	return readErr
 }
@@ -122,6 +123,22 @@ func (m *Mapping) storeEdge2WayID(idsChan <-chan []int64, done chan<- struct{}) 
 		for i := range nodeIDs[:len(nodeIDs)-1] { // store Edge->wayID mapping
 			edge := nodebasededge.Edge{FromNode: nodeIDs[i], ToNode: nodeIDs[i+1]}
 			m.edge2WayID[edge] = wayID
+		}
+	}
+	done <- struct{}{}
+}
+
+func (m *Mapping) storeNodeIDs(idsChan <-chan []int64, done chan<- struct{}) {
+	for {
+		ids, ok := <-idsChan
+		if !ok {
+			break
+		}
+
+		nodeIDs := ids[1:]
+
+		for i := range nodeIDs {
+			m.nodeIDs[nodeIDs[i]] = struct{}{}
 		}
 	}
 	done <- struct{}{}

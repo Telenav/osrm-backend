@@ -37,6 +37,22 @@ func TestMappingLoad(t *testing.T) {
 		t.Errorf("expect edge2wayID mapping %v, but got %v", expectEdge2WayIDMapping, m.edge2WayID)
 	}
 
+	expectNodeIDs := map[int64]struct{}{
+		84760891102:     struct{}{},
+		19496208102:     struct{}{},
+		84762609102:     struct{}{},
+		244183320001101: struct{}{},
+		84762607102:     struct{}{},
+		84760849102:     struct{}{},
+		84760850102:     struct{}{},
+		84760846102:     struct{}{},
+		84760858102:     struct{}{},
+	}
+
+	if !reflect.DeepEqual(expectNodeIDs, m.nodeIDs) {
+		t.Errorf("expect nodeIDs set %v, but got %v", expectNodeIDs, m.nodeIDs)
+	}
+
 	// GetNodeIDs
 	getNodesCases := []struct {
 		wayID         int64
