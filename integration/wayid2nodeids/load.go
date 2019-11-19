@@ -26,7 +26,7 @@ func (m *Mapping) load() error {
 	const storeTaskCount = 3
 	idsChan := []chan []int64{}
 	for i := 0; i < storeTaskCount; i++ {
-		idsChan = append(idsChan, make(chan []int64))
+		idsChan = append(idsChan, make(chan []int64, 100))
 	}
 	waitStoreTaskChan := make(chan struct{}, storeTaskCount)
 	go m.storeWayID2NodeIDs(idsChan[0], waitStoreTaskChan)
