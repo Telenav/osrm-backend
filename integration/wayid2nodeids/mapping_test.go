@@ -51,16 +51,16 @@ func TestMappingLoad(t *testing.T) {
 		expectEdges []graph.Edge
 	}{
 		{240000, nil},
-		{24418325, []graph.Edge{graph.Edge{FromNode: 84760891102, ToNode: 19496208102}}},
+		{24418325, []graph.Edge{graph.Edge{From: 84760891102, To: 19496208102}}},
 		{
 			24418332, []graph.Edge{
-				graph.Edge{FromNode: 84762609102, ToNode: 244183320001101},
-				graph.Edge{FromNode: 244183320001101, ToNode: 84762607102}},
+				graph.Edge{From: 84762609102, To: 244183320001101},
+				graph.Edge{From: 244183320001101, To: 84762607102}},
 		},
 		{
 			-24418332, []graph.Edge{
-				graph.Edge{FromNode: 84762607102, ToNode: 244183320001101},
-				graph.Edge{FromNode: 244183320001101, ToNode: 84762609102}},
+				graph.Edge{From: 84762607102, To: 244183320001101},
+				graph.Edge{From: 244183320001101, To: 84762609102}},
 		},
 	}
 	for _, c := range getEdgesCases {

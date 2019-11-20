@@ -60,7 +60,7 @@ func (m *Mapping) GetEdges(wayID int64) []graph.Edge {
 	if found {
 		edges := []graph.Edge{}
 		for i := range nodeIDs[:len(nodeIDs)-1] {
-			edges = append(edges, graph.Edge{FromNode: nodeIDs[i], ToNode: nodeIDs[i+1]})
+			edges = append(edges, graph.Edge{From: graph.NodeID(nodeIDs[i]), To: graph.NodeID(nodeIDs[i+1])})
 		}
 
 		if wayID < 0 {

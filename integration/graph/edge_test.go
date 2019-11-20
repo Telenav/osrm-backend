@@ -13,29 +13,29 @@ func TestReverse(t *testing.T) {
 		{nil, nil},
 		{[]Edge{}, []Edge{}},
 		{
-			[]Edge{Edge{FromNode: 84760891102, ToNode: 19496208102}},
-			[]Edge{Edge{FromNode: 19496208102, ToNode: 84760891102}},
+			[]Edge{Edge{From: 84760891102, To: 19496208102}},
+			[]Edge{Edge{From: 19496208102, To: 84760891102}},
 		},
 		{
 			[]Edge{
-				Edge{FromNode: 84762609102, ToNode: 244183320001101},
-				Edge{FromNode: 244183320001101, ToNode: 84762607102},
+				Edge{From: 84762609102, To: 244183320001101},
+				Edge{From: 244183320001101, To: 84762607102},
 			},
 			[]Edge{
-				Edge{FromNode: 84762607102, ToNode: 244183320001101},
-				Edge{FromNode: 244183320001101, ToNode: 84762609102},
+				Edge{From: 84762607102, To: 244183320001101},
+				Edge{From: 244183320001101, To: 84762609102},
 			},
 		},
 		{
 			[]Edge{
-				Edge{FromNode: 111, ToNode: 84762609102},
-				Edge{FromNode: 84762609102, ToNode: 244183320001101},
-				Edge{FromNode: 244183320001101, ToNode: 84762607102},
+				Edge{From: 111, To: 84762609102},
+				Edge{From: 84762609102, To: 244183320001101},
+				Edge{From: 244183320001101, To: 84762607102},
 			},
 			[]Edge{
-				Edge{FromNode: 84762607102, ToNode: 244183320001101},
-				Edge{FromNode: 244183320001101, ToNode: 84762609102},
-				Edge{FromNode: 84762609102, ToNode: 111},
+				Edge{From: 84762607102, To: 244183320001101},
+				Edge{From: 244183320001101, To: 84762609102},
+				Edge{From: 84762609102, To: 111},
 			},
 		},
 	}

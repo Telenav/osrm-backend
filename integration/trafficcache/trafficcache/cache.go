@@ -1,7 +1,6 @@
 package trafficcache
 
 import (
-	"github.com/Telenav/osrm-backend/integration/graph"
 	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 	"github.com/Telenav/osrm-backend/integration/trafficcache/flowscache"
 	"github.com/Telenav/osrm-backend/integration/trafficcache/incidentscache"
@@ -37,11 +36,11 @@ func (c *Cache) Eat(r proxy.TrafficResponse) {
 }
 
 // QueryFlow returns Live Traffic Flow if exist.
-func (c *Cache) QueryFlow(wayID graph.WayID) *proxy.Flow {
-	return c.Flows.Query(int64(wayID))
+func (c *Cache) QueryFlow(wayID int64) *proxy.Flow {
+	return c.Flows.Query(wayID)
 }
 
 // BlockedByIncident check whether this wayID is on blocking incident.
-func (c *Cache) BlockedByIncident(wayID graph.WayID) bool {
-	return c.Incidents.WayBlockedByIncident(int64(wayID))
+func (c *Cache) BlockedByIncident(wayID int64) bool {
+	return c.Incidents.WayBlockedByIncident(wayID)
 }
