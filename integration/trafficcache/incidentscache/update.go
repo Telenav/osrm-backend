@@ -28,7 +28,7 @@ func (c *Cache) unsafeUpdate(incident *proxy.Incident) {
 	c.incidents[incident.IncidentId] = incident
 	c.unsafeAddWayIDsBlockedByIncidentID(incident.AffectedWayIds, incident.IncidentId)
 	if c.wayID2Edges != nil && c.edgeBlockedByIncidentIDs != nil {
-		c.unsafeAddEdgesBlockedByIncidentID(incidentInCache.AffectedWayIds, incident.IncidentId)
+		c.unsafeAddEdgesBlockedByIncidentID(incident.AffectedWayIds, incident.IncidentId)
 	}
 }
 
