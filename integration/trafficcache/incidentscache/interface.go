@@ -59,8 +59,8 @@ func (c *Cache) Clear() {
 	}
 }
 
-// IsWayBlockedByIncident check whether this wayID is on blocking incident.
-func (c *Cache) IsWayBlockedByIncident(wayID int64) bool {
+// WayBlockedByIncident check whether this wayID is on blocking incident.
+func (c *Cache) WayBlockedByIncident(wayID int64) bool {
 	c.m.RLock()
 	defer c.m.RUnlock()
 
@@ -71,16 +71,37 @@ func (c *Cache) IsWayBlockedByIncident(wayID int64) bool {
 	return false
 }
 
-// IsEdgeBlockedByIncident check whether this Edge is on blocking incident.
-func (c *Cache) IsEdgeBlockedByIncident(edge graph.Edge) bool {
+// EdgeBlockedByIncident check whether this Edge is on blocking incident.
+func (c *Cache) EdgeBlockedByIncident(edge graph.Edge) bool {
 	c.m.RLock()
 	defer c.m.RUnlock()
+	if c.edgeBlockedByIncidentIDs == nil {
+		return false
+	}
 
 	if _, ok := c.edgeBlockedByIncidentIDs[edge]; ok {
 		return true
 	}
 
 	return false
+}
+
+// EdgesBlockedByIncidents check whether this Edge is on blocking incidents.
+// the second return indicates the blocked edge index of input array if exist.
+func (c *Cache) EdgesBlockedByIncidents(edges []graph.Edge) (bool, int) {
+	c.m.RLock()
+	defer c.m.RUnlock()
+	if c.edgeBlockedByIncidentIDs == nil {
+		return false, -1
+	}
+
+	for i := range edges {
+		if _, ok := c.edgeBlockedByIncidentIDs[edges[i]]; ok {
+			return true, i
+		}
+	}
+
+	return false, -1
 }
 
 // Count returns how many incidents in cache.

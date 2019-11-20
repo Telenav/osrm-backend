@@ -35,3 +35,24 @@ func (c *Cache) Eat(r proxy.TrafficResponse) {
 	c.Flows.Update(r.FlowResponses)
 	c.Incidents.Update(r.IncidentResponses)
 }
+
+// QueryFlow returns Live Traffic Flow if exist.
+func (c *Cache) QueryFlow(e graph.Edge) *proxy.Flow {
+	return c.Flows.QueryEdge(e)
+}
+
+// QueryFlows returns Live Traffic Flows if exist.
+func (c *Cache) QueryFlows(e []graph.Edge) []*proxy.Flow {
+	return c.Flows.QueryEdges(e)
+}
+
+// EdgeBlockedByIncident check whether this Edge is on blocking incident.
+func (c *Cache) EdgeBlockedByIncident(e graph.Edge) bool {
+	return c.Incidents.EdgeBlockedByIncident(e)
+}
+
+// EdgesBlockedByIncidents check whether this Edge is on blocking incidents.
+// the second return indicates the blocked edge index of input array if exist.
+func (c *Cache) EdgesBlockedByIncidents(e []graph.Edge) (bool, int) {
+	return c.Incidents.EdgesBlockedByIncidents(e)
+}
