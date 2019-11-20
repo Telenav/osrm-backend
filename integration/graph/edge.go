@@ -13,3 +13,15 @@ type Edge struct {
 func (e Edge) Reverse() Edge {
 	return Edge{FromNode: e.ToNode, ToNode: e.FromNode}
 }
+
+// ReverseEdges reverses the edges.
+func ReverseEdges(s []Edge) []Edge {
+	if len(s) == 0 {
+		return s
+	}
+
+	for i, j := 0, len(s)-1; i <= j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j].Reverse(), s[i].Reverse()
+	}
+	return s
+}

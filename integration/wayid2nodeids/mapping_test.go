@@ -57,6 +57,11 @@ func TestMappingLoad(t *testing.T) {
 				graph.Edge{FromNode: 84762609102, ToNode: 244183320001101},
 				graph.Edge{FromNode: 244183320001101, ToNode: 84762607102}},
 		},
+		{
+			-24418332, []graph.Edge{
+				graph.Edge{FromNode: 84762607102, ToNode: 244183320001101},
+				graph.Edge{FromNode: 244183320001101, ToNode: 84762609102}},
+		},
 	}
 	for _, c := range getEdgesCases {
 		gotEdges := m.GetEdges(c.wayID)

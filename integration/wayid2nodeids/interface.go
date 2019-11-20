@@ -56,11 +56,15 @@ func (m *Mapping) GetEdges(wayID int64) []graph.Edge {
 		return nil
 	}
 
-	nodeIDs, found := m.wayID2NodeIDs[wayID]
+	nodeIDs, found := m.wayID2NodeIDs[absInt64(wayID)]
 	if found {
 		edges := []graph.Edge{}
 		for i := range nodeIDs[:len(nodeIDs)-1] {
 			edges = append(edges, graph.Edge{FromNode: nodeIDs[i], ToNode: nodeIDs[i+1]})
+		}
+
+		if wayID < 0 {
+			return graph.ReverseEdges(edges)
 		}
 		return edges
 	}
