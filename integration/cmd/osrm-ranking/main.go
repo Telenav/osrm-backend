@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxyclient"
-	"github.com/Telenav/osrm-backend/integration/trafficcache/trafficcache"
 	"github.com/Telenav/osrm-backend/integration/trafficcache/trafficcacheindexedbyedge"
 	"github.com/Telenav/osrm-backend/integration/wayid2nodeids"
 
@@ -25,18 +24,16 @@ func main() {
 	}
 
 	// prepare traffic cache
-	cacheByWay := trafficcache.New()
-	cacheByEdge := trafficcacheindexedbyedge.New(wayID2NodeIDsMapping)
+	trafficCache := trafficcacheindexedbyedge.New(wayID2NodeIDsMapping)
 	feeder := trafficproxyclient.NewFeeder()
-	feeder.RegisterEaters(cacheByWay, cacheByEdge)
+	feeder.RegisterEaters(trafficCache)
 	go func() {
 		for {
 			err := feeder.Run()
 			if err != nil {
 				glog.Warning(err)
 			}
-			cacheByWay.Clear()
-			cacheByEdge.Clear()
+			trafficCache.Clear()
 			time.Sleep(5 * time.Second) // try again later
 		}
 	}()
@@ -53,15 +50,9 @@ func main() {
 			}
 			startTime = currentTime
 
-			if cacheByWay != nil {
-				glog.Infof("traffic in cache(indexed by wayID), [flows] %d, [incidents] blocking-only %d, affectedways %d",
-					cacheByWay.Flows.Count(), cacheByWay.Incidents.Count(), cacheByWay.Incidents.AffectedWaysCount())
-			}
-			if cacheByEdge != nil {
-				glog.Infof("traffic in cache(indexed by Edge), [flows] %d affectedways %d, [incidents] blocking-only %d, affectedways %d affectededges %d",
-					cacheByEdge.Flows.Count(), cacheByEdge.Flows.AffectedWaysCount(),
-					cacheByEdge.Incidents.Count(), cacheByEdge.Incidents.AffectedWaysCount(), cacheByEdge.Incidents.AffectedEdgesCount())
-			}
+			glog.Infof("traffic in cache(indexed by Edge), [flows] %d affectedways %d, [incidents] blocking-only %d, affectedways %d affectededges %d",
+				trafficCache.Flows.Count(), trafficCache.Flows.AffectedWaysCount(),
+				trafficCache.Incidents.Count(), trafficCache.Incidents.AffectedWaysCount(), trafficCache.Incidents.AffectedEdgesCount())
 		}
 	}()
 
