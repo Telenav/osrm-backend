@@ -2,6 +2,8 @@ package wayid2nodeids
 
 import (
 	"sync"
+
+	"github.com/Telenav/osrm-backend/integration/graph"
 )
 
 // Mapping handles 'wayID->NodeID,NodeID,NodeID,...' mapping.
@@ -44,6 +46,23 @@ func (m *Mapping) GetNodeIDs(wayID int64) []int64 {
 	nodeIDs, found := m.wayID2NodeIDs[wayID]
 	if found {
 		return nodeIDs
+	}
+	return nil
+}
+
+// GetEdges gets Edges mapped by wayID.
+func (m *Mapping) GetEdges(wayID int64) []graph.Edge {
+	if !m.IsReady() {
+		return nil
+	}
+
+	nodeIDs, found := m.wayID2NodeIDs[wayID]
+	if found {
+		edges := []graph.Edge{}
+		for i := range nodeIDs[:len(nodeIDs)-1] {
+			edges = append(edges, graph.Edge{FromNode: nodeIDs[i], ToNode: nodeIDs[i+1]})
+		}
+		return edges
 	}
 	return nil
 }

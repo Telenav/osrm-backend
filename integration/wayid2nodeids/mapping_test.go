@@ -3,6 +3,8 @@ package wayid2nodeids
 import (
 	"reflect"
 	"testing"
+
+	"github.com/Telenav/osrm-backend/integration/graph"
 )
 
 func TestMappingLoad(t *testing.T) {
@@ -42,4 +44,25 @@ func TestMappingLoad(t *testing.T) {
 			t.Errorf("expect nodeIDs %v for wayID %d, but got %v", c.expectNodeIDs, c.wayID, gotNodeIDs)
 		}
 	}
+
+	// GetEdges
+	getEdgesCases := []struct {
+		wayID       int64
+		expectEdges []graph.Edge
+	}{
+		{240000, nil},
+		{24418325, []graph.Edge{graph.Edge{FromNode: 84760891102, ToNode: 19496208102}}},
+		{
+			24418332, []graph.Edge{
+				graph.Edge{FromNode: 84762609102, ToNode: 244183320001101},
+				graph.Edge{FromNode: 244183320001101, ToNode: 84762607102}},
+		},
+	}
+	for _, c := range getEdgesCases {
+		gotEdges := m.GetEdges(c.wayID)
+		if !reflect.DeepEqual(gotEdges, c.expectEdges) {
+			t.Errorf("expect edges %v for wayID %d, but got %v", c.expectEdges, c.wayID, gotEdges)
+		}
+	}
+
 }
