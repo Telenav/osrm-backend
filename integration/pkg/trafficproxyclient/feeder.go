@@ -1,6 +1,7 @@
 package trafficproxyclient
 
 import (
+	"sync"
 	"time"
 
 	"github.com/golang/glog"
@@ -93,8 +94,14 @@ func (f *Feeder) feed(in <-chan proxy.TrafficResponse) {
 			break
 		}
 
+		var wg sync.WaitGroup
 		for _, e := range f.e {
-			e.Eat(resp)
+			wg.Add(1)
+			go func(e Eater) {
+				e.Eat(resp)
+				wg.Done()
+			}(e)
 		}
+		wg.Wait()
 	}
 }
