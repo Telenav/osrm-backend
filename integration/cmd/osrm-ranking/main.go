@@ -20,7 +20,7 @@ func main() {
 
 	wayID2NodeIDsMapping := wayid2nodeids.NewMappingFrom(flags.wayID2NodeIDsMappingFile)
 	if err := wayID2NodeIDsMapping.Load(); err != nil {
-		glog.Fatal(err)
+		glog.Error(err)
 		return
 	}
 

@@ -21,7 +21,7 @@ func main() {
 	if flags.indexedByEdge {
 		wayID2NodeIDsMapping := wayid2nodeids.NewMappingFrom(flags.wayID2NodeIDsMappingFile)
 		if err := wayID2NodeIDsMapping.Load(); err != nil {
-			glog.Fatal(err)
+			glog.Error(err)
 			return
 		}
 		cacheByEdge = trafficcacheindexedbyedge.New(wayID2NodeIDsMapping)
