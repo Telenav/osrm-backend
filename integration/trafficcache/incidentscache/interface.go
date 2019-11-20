@@ -6,6 +6,7 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/graph"
 	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/wayidsmap"
 	"github.com/golang/glog"
 )
 
@@ -16,7 +17,7 @@ type Cache struct {
 	wayIDBlockedByIncidentIDs map[int64]map[string]struct{} // wayID -> IncidentID,IncidentID,...
 
 	// optional
-	wayID2Edges              graph.WayID2EdgesMapping
+	wayID2Edges              wayidsmap.Way2Edges
 	edgeBlockedByIncidentIDs map[graph.Edge]map[string]struct{} // edge -> IncidentID,IncidentID,...
 }
 
@@ -32,7 +33,7 @@ func New() *Cache {
 }
 
 // NewWithEdgeIndexing creates a new Cache object to store incidents in memory, with also Edge indexing support.
-func NewWithEdgeIndexing(wayID2Edges graph.WayID2EdgesMapping) *Cache {
+func NewWithEdgeIndexing(wayID2Edges wayidsmap.Way2Edges) *Cache {
 	if wayID2Edges == nil {
 		glog.Fatal("empty wayID2Edges")
 		return nil

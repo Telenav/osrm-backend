@@ -70,7 +70,7 @@ func (c *Cache) unsafeAddWayIDsBlockedByIncidentID(wayIDs []int64, incidentID st
 
 func (c *Cache) unsafeDeleteEdgesBlockedByIncidentID(wayIDs []int64, incidentID string) {
 	for _, wayID := range wayIDs {
-		edges := c.wayID2Edges.GetEdges(wayID)
+		edges := c.wayID2Edges.WayID2Edges(wayID)
 
 		for _, edge := range edges {
 			if incidentIDs, ok := c.edgeBlockedByIncidentIDs[edge]; ok {
@@ -82,7 +82,7 @@ func (c *Cache) unsafeDeleteEdgesBlockedByIncidentID(wayIDs []int64, incidentID 
 
 func (c *Cache) unsafeAddEdgesBlockedByIncidentID(wayIDs []int64, incidentID string) {
 	for _, wayID := range wayIDs {
-		edges := c.wayID2Edges.GetEdges(wayID)
+		edges := c.wayID2Edges.WayID2Edges(wayID)
 
 		for _, edge := range edges {
 			if incidentIDs, ok := c.edgeBlockedByIncidentIDs[edge]; ok {

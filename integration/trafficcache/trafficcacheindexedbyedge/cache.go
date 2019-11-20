@@ -5,6 +5,7 @@ import (
 	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 	"github.com/Telenav/osrm-backend/integration/trafficcache/flowscacheindexedbyedge"
 	"github.com/Telenav/osrm-backend/integration/trafficcache/incidentscache"
+	"github.com/Telenav/osrm-backend/integration/wayidsmap"
 	"github.com/golang/glog"
 )
 
@@ -15,7 +16,7 @@ type Cache struct {
 }
 
 // New creates a new Cache instance.
-func New(wayID2Edges graph.WayID2EdgesMapping) *Cache {
+func New(wayID2Edges wayidsmap.Way2Edges) *Cache {
 	c := Cache{
 		flowscacheindexedbyedge.New(wayID2Edges),
 		incidentscache.NewWithEdgeIndexing(wayID2Edges),

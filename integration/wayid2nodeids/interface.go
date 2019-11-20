@@ -37,8 +37,8 @@ func (m *Mapping) Load() error {
 	return m.load()
 }
 
-// GetNodeIDs gets nodeIDs mapped by wayID.
-func (m *Mapping) GetNodeIDs(wayID int64) []int64 {
+// WayID2NodeIDs gets nodeIDs mapped by wayID.
+func (m *Mapping) WayID2NodeIDs(wayID int64) []int64 {
 	if !m.IsReady() {
 		return nil
 	}
@@ -50,8 +50,8 @@ func (m *Mapping) GetNodeIDs(wayID int64) []int64 {
 	return nil
 }
 
-// GetEdges gets Edges mapped by wayID.
-func (m *Mapping) GetEdges(wayID int64) []graph.Edge {
+// WayID2Edges gets Edges mapped by wayID.
+func (m *Mapping) WayID2Edges(wayID int64) []graph.Edge {
 	if !m.IsReady() {
 		return nil
 	}
@@ -60,7 +60,7 @@ func (m *Mapping) GetEdges(wayID int64) []graph.Edge {
 	if found {
 		edges := []graph.Edge{}
 		for i := range nodeIDs[:len(nodeIDs)-1] {
-			edges = append(edges, graph.Edge{From: graph.NodeID(nodeIDs[i]), To: graph.NodeID(nodeIDs[i+1])})
+			edges = append(edges, graph.Edge{From: nodeIDs[i], To: nodeIDs[i+1]})
 		}
 
 		if wayID < 0 {

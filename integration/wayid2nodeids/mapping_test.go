@@ -39,7 +39,7 @@ func TestMappingLoad(t *testing.T) {
 		{24418332, []int64{84762609102, 244183320001101, 84762607102}},
 	}
 	for _, c := range getNodesCases {
-		gotNodeIDs := m.GetNodeIDs(c.wayID)
+		gotNodeIDs := m.WayID2NodeIDs(c.wayID)
 		if !reflect.DeepEqual(gotNodeIDs, c.expectNodeIDs) {
 			t.Errorf("expect nodeIDs %v for wayID %d, but got %v", c.expectNodeIDs, c.wayID, gotNodeIDs)
 		}
@@ -64,7 +64,7 @@ func TestMappingLoad(t *testing.T) {
 		},
 	}
 	for _, c := range getEdgesCases {
-		gotEdges := m.GetEdges(c.wayID)
+		gotEdges := m.WayID2Edges(c.wayID)
 		if !reflect.DeepEqual(gotEdges, c.expectEdges) {
 			t.Errorf("expect edges %v for wayID %d, but got %v", c.expectEdges, c.wayID, gotEdges)
 		}

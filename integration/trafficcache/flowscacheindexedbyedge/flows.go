@@ -3,6 +3,8 @@ package flowscacheindexedbyedge
 import (
 	"sync"
 
+	"github.com/Telenav/osrm-backend/integration/wayidsmap"
+
 	"github.com/Telenav/osrm-backend/integration/graph"
 	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 	"github.com/golang/glog"
@@ -13,11 +15,11 @@ type Cache struct {
 	m              sync.RWMutex
 	flows          map[graph.Edge]*proxy.Flow
 	affectedWayIDs map[int64]struct{}
-	wayID2Edges    graph.WayID2EdgesMapping
+	wayID2Edges    wayidsmap.Way2Edges
 }
 
 // New creates a new cache to store flows in memory.
-func New(wayID2Edges graph.WayID2EdgesMapping) *Cache {
+func New(wayID2Edges wayidsmap.Way2Edges) *Cache {
 	if wayID2Edges == nil {
 		glog.Fatal("empty wayID2Edges")
 		return nil
@@ -88,14 +90,14 @@ func (c *Cache) Update(flowResp []*proxy.FlowResponse) {
 
 	for _, f := range flowResp {
 		if f.Action == proxy.Action_UPDATE || f.Action == proxy.Action_ADD { //TODO: Action_ADD will be removed soon
-			edges := c.wayID2Edges.GetEdges(f.Flow.WayId)
+			edges := c.wayID2Edges.WayID2Edges(f.Flow.WayId)
 			for _, e := range edges {
 				c.flows[e] = f.Flow
 			}
 			c.affectedWayIDs[f.Flow.WayId] = struct{}{}
 			continue
 		} else if f.Action == proxy.Action_DELETE {
-			edges := c.wayID2Edges.GetEdges(f.Flow.WayId)
+			edges := c.wayID2Edges.WayID2Edges(f.Flow.WayId)
 			for _, e := range edges {
 				delete(c.flows, e)
 			}
