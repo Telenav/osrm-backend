@@ -5,6 +5,7 @@ cmd/snappy/snappy
 cmd/wayid2nodeid-extractor/wayid2nodeid-extractor
 cmd/trafficproxy-cli/trafficproxy-cli
 cmd/osrm-ranking/osrm-ranking
+cmd/trafficcache-parallel-test/trafficcache-parallel-test
 
 # test files
 cmd/trafficproxy-cli/*_flows.csv
