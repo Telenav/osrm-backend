@@ -6,29 +6,23 @@ import (
 
 	"github.com/golang/glog"
 
+	"github.com/Telenav/osrm-backend/integration/pkg/trafficeater"
 	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 )
 
-// Eater is the interface that wraps the basic Eat method.
-type Eater interface {
-
-	// Eat consumes traffic responses.
-	Eat(proxy.TrafficResponse)
-}
-
 // Feeder will continuesly feed traffic flows and incidents.
 type Feeder struct {
-	e []Eater
+	e []trafficeater.Eater
 }
 
 // NewFeeder creates a new traffic flows and incidents Feeder.
 func NewFeeder() *Feeder {
-	tf := Feeder{[]Eater{}}
+	tf := Feeder{[]trafficeater.Eater{}}
 	return &tf
 }
 
 // RegisterEaters add eaters for this feeder.
-func (f *Feeder) RegisterEaters(e ...Eater) {
+func (f *Feeder) RegisterEaters(e ...trafficeater.Eater) {
 	f.e = append(f.e, e...)
 }
 
@@ -97,7 +91,7 @@ func (f *Feeder) feed(in <-chan proxy.TrafficResponse) {
 		var wg sync.WaitGroup
 		for _, e := range f.e {
 			wg.Add(1)
-			go func(e Eater) {
+			go func(e trafficeater.Eater) {
 				e.Eat(resp)
 				wg.Done()
 			}(e)

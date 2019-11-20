@@ -29,7 +29,7 @@ func (c *Cache) Clear() {
 	c.Incidents.Clear()
 }
 
-// Eat implements trafficproxyclient.Eater inteface.
+// Eat implements trafficeater.Eater inteface.
 func (c *Cache) Eat(r proxy.TrafficResponse) {
 	glog.V(1).Infof("new traffic for cache, flows: %d, incidents: %d", len(r.FlowResponses), len(r.IncidentResponses))
 	c.Flows.Update(r.FlowResponses)
