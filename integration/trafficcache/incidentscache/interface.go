@@ -4,6 +4,7 @@ package incidentscache
 import (
 	"sync"
 
+	"github.com/Telenav/osrm-backend/integration/graph"
 	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 	"github.com/golang/glog"
 )
@@ -13,14 +14,36 @@ type Cache struct {
 	m                         sync.RWMutex
 	incidents                 map[string]*proxy.Incident
 	wayIDBlockedByIncidentIDs map[int64]map[string]struct{} // wayID -> IncidentID,IncidentID,...
+
+	// optional
+	wayID2Edges              graph.WayID2EdgesMapping
+	edgeBlockedByIncidentIDs map[graph.Edge]map[string]struct{} // edge -> IncidentID,IncidentID,...
 }
 
 // New creates a new Cache object to store incidents in memory.
-func New() Cache {
-	return Cache{
+func New() *Cache {
+	return &Cache{
 		sync.RWMutex{},
 		map[string]*proxy.Incident{},
 		map[int64]map[string]struct{}{},
+		nil,
+		nil,
+	}
+}
+
+// NewWithEdgeIndexing creates a new Cache object to store incidents in memory, with also Edge indexing support.
+func NewWithEdgeIndexing(wayID2Edges graph.WayID2EdgesMapping) *Cache {
+	if wayID2Edges == nil {
+		glog.Fatal("empty wayID2Edges")
+		return nil
+	}
+
+	return &Cache{
+		sync.RWMutex{},
+		map[string]*proxy.Incident{},
+		map[int64]map[string]struct{}{},
+		wayID2Edges,
+		map[graph.Edge]map[string]struct{}{},
 	}
 }
 
@@ -31,6 +54,9 @@ func (c *Cache) Clear() {
 
 	c.incidents = map[string]*proxy.Incident{}
 	c.wayIDBlockedByIncidentIDs = map[int64]map[string]struct{}{}
+	if c.edgeBlockedByIncidentIDs != nil {
+		c.edgeBlockedByIncidentIDs = map[graph.Edge]map[string]struct{}{}
+	}
 }
 
 // IsWayBlockedByIncident check whether this wayID is on blocking incident.
@@ -39,6 +65,18 @@ func (c *Cache) IsWayBlockedByIncident(wayID int64) bool {
 	defer c.m.RUnlock()
 
 	if _, ok := c.wayIDBlockedByIncidentIDs[wayID]; ok {
+		return true
+	}
+
+	return false
+}
+
+// IsEdgeBlockedByIncident check whether this Edge is on blocking incident.
+func (c *Cache) IsEdgeBlockedByIncident(edge graph.Edge) bool {
+	c.m.RLock()
+	defer c.m.RUnlock()
+
+	if _, ok := c.edgeBlockedByIncidentIDs[edge]; ok {
 		return true
 	}
 
@@ -59,12 +97,11 @@ func (c *Cache) AffectedWaysCount() int {
 	return len(c.wayIDBlockedByIncidentIDs)
 }
 
-// IncidentsAndAffectedWaysCount returns how many incidents in cache and how many ways affected by these incidents.
-func (c *Cache) IncidentsAndAffectedWaysCount() (int, int) {
+// AffectedEdgesCount returns how many edges affected by these incidents in cache.
+func (c *Cache) AffectedEdgesCount() int {
 	c.m.RLock()
 	defer c.m.RUnlock()
-
-	return len(c.incidents), len(c.wayIDBlockedByIncidentIDs)
+	return len(c.edgeBlockedByIncidentIDs)
 }
 
 // Update updates incidents in cache.

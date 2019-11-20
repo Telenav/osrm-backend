@@ -21,9 +21,15 @@ func (c *Cache) unsafeUpdate(incident *proxy.Incident) {
 	incidentInCache, foundIncidentInCache := c.incidents[incident.IncidentId]
 	if foundIncidentInCache {
 		c.unsafeDeleteWayIDsBlockedByIncidentID(incidentInCache.AffectedWayIds, incidentInCache.IncidentId)
+		if c.wayID2Edges != nil && c.edgeBlockedByIncidentIDs != nil {
+			c.unsafeDeleteEdgesBlockedByIncidentID(incidentInCache.AffectedWayIds, incidentInCache.IncidentId)
+		}
 	}
 	c.incidents[incident.IncidentId] = incident
 	c.unsafeAddWayIDsBlockedByIncidentID(incident.AffectedWayIds, incident.IncidentId)
+	if c.wayID2Edges != nil && c.edgeBlockedByIncidentIDs != nil {
+		c.unsafeAddEdgesBlockedByIncidentID(incidentInCache.AffectedWayIds, incidentInCache.IncidentId)
+	}
 }
 
 func (c *Cache) unsafeDelete(incident *proxy.Incident) {
@@ -35,6 +41,9 @@ func (c *Cache) unsafeDelete(incident *proxy.Incident) {
 	incidentInCache, foundIncidentInCache := c.incidents[incident.IncidentId]
 	if foundIncidentInCache {
 		c.unsafeDeleteWayIDsBlockedByIncidentID(incidentInCache.AffectedWayIds, incidentInCache.IncidentId)
+		if c.wayID2Edges != nil && c.edgeBlockedByIncidentIDs != nil {
+			c.unsafeDeleteEdgesBlockedByIncidentID(incidentInCache.AffectedWayIds, incidentInCache.IncidentId)
+		}
 		delete(c.incidents, incident.IncidentId)
 	}
 }
@@ -55,6 +64,34 @@ func (c *Cache) unsafeAddWayIDsBlockedByIncidentID(wayIDs []int64, incidentID st
 		}
 		c.wayIDBlockedByIncidentIDs[wayID] = map[string]struct{}{
 			incidentID: struct{}{},
+		}
+	}
+}
+
+func (c *Cache) unsafeDeleteEdgesBlockedByIncidentID(wayIDs []int64, incidentID string) {
+	for _, wayID := range wayIDs {
+		edges := c.wayID2Edges.GetEdges(wayID)
+
+		for _, edge := range edges {
+			if incidentIDs, ok := c.edgeBlockedByIncidentIDs[edge]; ok {
+				delete(incidentIDs, incidentID)
+			}
+		}
+	}
+}
+
+func (c *Cache) unsafeAddEdgesBlockedByIncidentID(wayIDs []int64, incidentID string) {
+	for _, wayID := range wayIDs {
+		edges := c.wayID2Edges.GetEdges(wayID)
+
+		for _, edge := range edges {
+			if incidentIDs, ok := c.edgeBlockedByIncidentIDs[edge]; ok {
+				incidentIDs[incidentID] = struct{}{} //will do nothing if it's already exist
+				continue
+			}
+			c.edgeBlockedByIncidentIDs[edge] = map[string]struct{}{
+				incidentID: struct{}{},
+			}
 		}
 	}
 }
