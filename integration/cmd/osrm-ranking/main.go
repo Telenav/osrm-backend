@@ -69,10 +69,8 @@ func main() {
 	})
 
 	//start ranking service
-	osrmRanking := ranking.New(flags.osrmBackendEndpoint)
-	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		osrmRanking.ServeHTTP(w, req)
-	})
+	rankingService := ranking.New(flags.osrmBackendEndpoint, trafficCache)
+	mux.Handle("/", rankingService)
 
 	listening := ":" + strconv.Itoa(flags.listenPort)
 	glog.Infof("Listening on %s", listening)

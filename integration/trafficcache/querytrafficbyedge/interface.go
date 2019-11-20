@@ -1,4 +1,4 @@
-package inquirerbyedge
+package querytrafficbyedge
 
 import (
 	"github.com/Telenav/osrm-backend/integration/graph"
