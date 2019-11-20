@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxyclient"
-	"github.com/Telenav/osrm-backend/integration/trafficcacheindexedbyedge"
-	"github.com/Telenav/osrm-backend/integration/trafficcacheindexedbywayid"
+	"github.com/Telenav/osrm-backend/integration/trafficcache/trafficcache"
+	"github.com/Telenav/osrm-backend/integration/trafficcache/trafficcacheindexedbyedge"
 	"github.com/Telenav/osrm-backend/integration/wayid2nodeids"
 
 	"github.com/golang/glog"
@@ -20,13 +20,13 @@ func main() {
 
 	wayID2NodeIDsMapping := wayid2nodeids.NewMappingFrom(flags.wayID2NodeIDsMappingFile)
 	if err := wayID2NodeIDsMapping.Load(); err != nil {
-		glog.Error(err)
+		glog.Fatal(err)
 		return
 	}
 
 	// prepare traffic cache
-	cacheByWay := trafficcacheindexedbywayid.New()
-	cacheByEdge := trafficcacheindexedbyedge.New()
+	cacheByWay := trafficcache.New()
+	cacheByEdge := trafficcacheindexedbyedge.New(wayID2NodeIDsMapping)
 	feeder := trafficproxyclient.NewFeeder()
 	feeder.RegisterEaters(cacheByWay, cacheByEdge)
 	go func() {
@@ -54,12 +54,13 @@ func main() {
 			startTime = currentTime
 
 			if cacheByWay != nil {
-				incidents, waysAffectedByIncidents := cacheByWay.IncidentsAndAffectedWaysCount()
-				glog.Infof("traffic in cache(indexed by wayID), flows: %d, incidents(blocking-only): %d, ways(affected by incidents): %d",
-					cacheByWay.FlowCount(), incidents, waysAffectedByIncidents)
+				glog.Infof("traffic in cache(indexed by wayID), [flows] %d, [incidents] blocking-only %d, affectedways %d",
+					cacheByWay.Flows.Count(), cacheByWay.Incidents.Count(), cacheByWay.Incidents.AffectedWaysCount())
 			}
 			if cacheByEdge != nil {
-				//TODO:
+				glog.Infof("traffic in cache(indexed by Edge), [flows] %d affectedways %d, [incidents] blocking-only %d, affectedways %d affectededges %d",
+					cacheByEdge.Flows.Count(), cacheByEdge.Flows.AffectedWaysCount(),
+					cacheByEdge.Incidents.Count(), cacheByEdge.Incidents.AffectedWaysCount(), cacheByEdge.Incidents.AffectedEdgesCount())
 			}
 		}
 	}()

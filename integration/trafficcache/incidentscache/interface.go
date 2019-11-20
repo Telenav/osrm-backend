@@ -83,8 +83,8 @@ func (c *Cache) IsEdgeBlockedByIncident(edge graph.Edge) bool {
 	return false
 }
 
-// IncidentCount returns how many incidents in cache.
-func (c *Cache) IncidentCount() int {
+// Count returns how many incidents in cache.
+func (c *Cache) Count() int {
 	c.m.RLock()
 	defer c.m.RUnlock()
 	return len(c.incidents)
