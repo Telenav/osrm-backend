@@ -2,11 +2,13 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxyclient"
+	"github.com/Telenav/osrm-backend/integration/ranking"
 	"github.com/Telenav/osrm-backend/integration/trafficcache/trafficcacheindexedbyedge"
 	"github.com/Telenav/osrm-backend/integration/wayid2nodeids"
 
@@ -56,9 +58,21 @@ func main() {
 		}
 	}()
 
-	//start ranking service
+	//start http listening
 	mux := http.NewServeMux()
-	//TODO:
+
+	mux.HandleFunc("/monitor/", func(w http.ResponseWriter, req *http.Request) {
+		//TODO:
+
+		w.WriteHeader(http.StatusNotImplemented)
+		fmt.Fprintf(w, "Not implemented")
+	})
+
+	//start ranking service
+	osrmRanking := ranking.New(flags.osrmBackendEndpoint)
+	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+		osrmRanking.ServeHTTP(w, req)
+	})
 
 	listening := ":" + strconv.Itoa(flags.listenPort)
 	glog.Infof("Listening on %s", listening)
