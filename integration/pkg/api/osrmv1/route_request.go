@@ -3,21 +3,70 @@
 package osrmv1
 
 import (
+	"fmt"
 	"net/url"
+	"strconv"
+	"strings"
+
+	"github.com/golang/glog"
 
 	"github.com/Telenav/osrm-backend/integration/pkg/api"
 )
 
 // RouteRequest represent OSRM api v1 route request parameters.
 type RouteRequest struct {
+	Service     string
+	Version     string
+	Profile     string
 	Coordinates Coordinates
 
+	// Route service query parameters
+	Alternatives string
+	Steps        bool
+	Annotations  string
+
 	//TODO: other parameters
+
 }
 
 // NewRouteRequest create an empty RouteRequest.
 func NewRouteRequest() *RouteRequest {
-	return &RouteRequest{Coordinates{}}
+	return &RouteRequest{
+		Service:      "route",
+		Version:      "v1",
+		Profile:      "driving",
+		Coordinates:  Coordinates{},
+		Alternatives: AlternativesDefaultValue,
+		Steps:        StepsDefaultValue,
+		Annotations:  AnnotationsDefaultValue,
+	}
+}
+
+// ParseRouteRequestURI parse Request URI to RouteRequest.
+func ParseRouteRequestURI(requestURI string) (*RouteRequest, error) {
+
+	u, err := url.Parse(requestURI)
+	if err != nil {
+		return nil, err
+	}
+
+	return ParseRouteRequestURL(u)
+}
+
+// ParseRouteRequestURL parse Request URL to RouteRequest.
+func ParseRouteRequestURL(url *url.URL) (*RouteRequest, error) {
+	if url == nil {
+		return nil, fmt.Errorf("empty URL input")
+	}
+
+	routeReq := NewRouteRequest()
+
+	if err := routeReq.parsePath(url.Path); err != nil {
+		return nil, err
+	}
+	routeReq.parseQuery(url.Query())
+
+	return routeReq, nil
 }
 
 // QueryValues convert RouteRequest to url.Values.
@@ -25,9 +74,16 @@ func (r *RouteRequest) QueryValues() (v url.Values) {
 
 	v = make(url.Values)
 
-	// pre-defined parameters in our scenario
-	//v.Add("generate_hints", "false")
-	//v.Add("overview", "full")
+	if r.Alternatives != AlternativesDefaultValue {
+		v.Add(KeyAlternatives, r.Alternatives)
+	}
+	if r.Steps != StepsDefaultValue {
+		v.Add(KeySteps, strconv.FormatBool(r.Steps))
+	}
+	if r.Annotations != AnnotationsDefaultValue {
+		v.Add(KeyAnnotations, r.Annotations)
+	}
+
 	return
 }
 
@@ -55,5 +111,91 @@ func (r *RouteRequest) RequestURI() string {
 }
 
 func (r *RouteRequest) pathPrefix() string {
-	return "/route/v1/driving/"
+	//i.e. "/route/v1/driving/"
+	return api.Slash + r.Service + api.Slash + r.Version + api.Slash + r.Profile + api.Slash
+}
+
+func (r *RouteRequest) parsePath(path string) error {
+	p := path
+	p = strings.TrimPrefix(p, api.Slash)
+	p = strings.TrimSuffix(p, api.Slash)
+
+	s := strings.Split(p, api.Slash)
+	if len(s) < 4 {
+		return fmt.Errorf("invalid path values %v parsed from %s", s, path)
+	}
+	r.Service = s[0]
+	r.Version = s[1]
+	r.Profile = s[2]
+
+	var err error
+	if r.Coordinates, err = ParseCoordinates(s[3]); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *RouteRequest) parseQuery(values url.Values) {
+
+	if v := values.Get(KeyAlternatives); len(v) > 0 {
+		if alternatives, err := parseAlternatives(v); err == nil {
+			r.Alternatives = alternatives
+		}
+	}
+
+	if v := values.Get(KeySteps); len(v) > 0 {
+		if b, err := strconv.ParseBool(v); err == nil {
+			r.Steps = b
+		} else {
+			glog.Warning(err)
+		}
+	}
+
+	if v := values.Get(KeyAnnotations); len(v) > 0 {
+		if annotations, err := parseAnnotations(v); err == nil {
+			r.Annotations = annotations
+		}
+	}
+
+}
+
+func parseAlternatives(s string) (string, error) {
+
+	if _, err := strconv.ParseBool(s); err == nil {
+		return s, nil
+	}
+	if _, err := strconv.ParseUint(s, 10, 32); err == nil {
+		return s, nil
+	}
+
+	err := fmt.Errorf("invalid alternatives value: %s", s)
+	glog.Warning(err)
+	return "", err
+}
+
+func parseAnnotations(s string) (string, error) {
+
+	validAnnotationsValues := map[string]struct{}{
+		AnnotationsValueTrue:        struct{}{},
+		AnnotationsValueFalse:       struct{}{},
+		AnnotationsValueNodes:       struct{}{},
+		AnnotationsValueDistance:    struct{}{},
+		AnnotationsValueDuration:    struct{}{},
+		AnnotationsValueDataSources: struct{}{},
+		AnnotationsValueWeight:      struct{}{},
+		AnnotationsValueSpeed:       struct{}{},
+	}
+
+	splits := strings.Split(s, api.Comma)
+	for _, split := range splits {
+		if _, found := validAnnotationsValues[split]; !found {
+
+			err := fmt.Errorf("invalid annotations value: %s", s)
+			glog.Warning(err)
+			return "", err
+		}
+	}
+
+	return s, nil
 }
