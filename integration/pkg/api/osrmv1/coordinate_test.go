@@ -66,6 +66,7 @@ func TestParseCoordinates(t *testing.T) {
 			continue //right
 		} else if (err != nil && !c.expectFail) || (err == nil && c.expectFail) {
 			t.Errorf("parse %s expect fail %t, but got err %v", c.s, c.expectFail, err)
+			continue
 		}
 
 		if !reflect.DeepEqual(coordinates, c.expect) {
