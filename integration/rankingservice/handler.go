@@ -1,4 +1,4 @@
-package ranking
+package rankingservice
 
 import (
 	"encoding/json"

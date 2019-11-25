@@ -1,4 +1,4 @@
-package ranking
+package rankingservice
 
 import "github.com/Telenav/osrm-backend/integration/pkg/api/osrmv1"
 

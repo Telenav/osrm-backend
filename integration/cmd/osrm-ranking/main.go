@@ -9,7 +9,7 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/pkg/backend"
 	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxyclient"
-	"github.com/Telenav/osrm-backend/integration/ranking"
+	"github.com/Telenav/osrm-backend/integration/rankingservice"
 	"github.com/Telenav/osrm-backend/integration/trafficcache/trafficcacheindexedbyedge"
 	"github.com/Telenav/osrm-backend/integration/wayid2nodeids"
 
@@ -70,7 +70,7 @@ func main() {
 	})
 
 	//start ranking service
-	rankingService := ranking.New(flags.osrmBackendEndpoint, backend.Timeout(), trafficCache)
+	rankingService := rankingservice.New(flags.osrmBackendEndpoint, backend.Timeout(), trafficCache)
 	mux.Handle("/route/v1/driving/", rankingService)
 
 	listening := ":" + strconv.Itoa(flags.listenPort)
