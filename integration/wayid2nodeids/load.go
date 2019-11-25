@@ -10,6 +10,8 @@ import (
 )
 
 func (m *Mapping) load() error {
+	glog.Infof("Loading wayID->nodeIDs mapping from file %s", m.mappingFile)
+
 	startTime := time.Now()
 
 	f, err := os.Open(m.mappingFile)
@@ -50,7 +52,7 @@ func (m *Mapping) load() error {
 	close(idsChan)
 	<-waitStoreTaskChan
 
-	glog.Infof("Load wayID->nodeIDs mapping, total processing time %f seconds, loaded ways %d.",
+	glog.Infof("Loaded wayID->nodeIDs mapping, total processing time %f seconds, loaded ways %d.",
 		time.Now().Sub(startTime).Seconds(), len(m.wayID2NodeIDs))
 
 	return readErr
