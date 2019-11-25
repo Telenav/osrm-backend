@@ -1,5 +1,7 @@
 
 # binaries
+cmd/__debug_bin
+cmd/*/__debug_bin
 cmd/osrm-traffic-updater/osrm-traffic-updater
 cmd/snappy/snappy
 cmd/wayid2nodeid-extractor/wayid2nodeid-extractor
