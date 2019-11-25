@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrmv1"
+	"github.com/Telenav/osrm-backend/integration/rankingstrategy/rankbyduration"
 
 	"github.com/Telenav/osrm-backend/integration/trafficcache/querytrafficbyedge"
 	"github.com/golang/glog"
@@ -59,8 +60,11 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if osrmResponse.Code == osrmv1.CodeOK {
-		// ranking and pick up the best one
-		osrmResponse.Routes = h.ranking(osrmResponse.Routes, 1)
+		// update speeds,durations,datasources by traffic
+		osrmResponse.Routes = h.updateRoutesByTraffic(osrmResponse.Routes)
+
+		// rank
+		osrmResponse.Routes = rankbyduration.Rank(osrmResponse.Routes)
 	}
 
 	// return
