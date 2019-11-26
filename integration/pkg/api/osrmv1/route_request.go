@@ -110,6 +110,12 @@ func (r *RouteRequest) RequestURI() string {
 	return s
 }
 
+// AlternativesNumber returns alternatives as number value.
+func (r *RouteRequest) AlternativesNumber() int {
+	_, n, _ := parseAlternatives(r.Alternatives)
+	return n
+}
+
 func (r *RouteRequest) pathPrefix() string {
 	//i.e. "/route/v1/driving/"
 	return api.Slash + r.Service + api.Slash + r.Version + api.Slash + r.Profile + api.Slash
@@ -139,7 +145,7 @@ func (r *RouteRequest) parsePath(path string) error {
 func (r *RouteRequest) parseQuery(values url.Values) {
 
 	if v := values.Get(KeyAlternatives); len(v) > 0 {
-		if alternatives, err := parseAlternatives(v); err == nil {
+		if alternatives, _, err := parseAlternatives(v); err == nil {
 			r.Alternatives = alternatives
 		}
 	}
@@ -160,18 +166,21 @@ func (r *RouteRequest) parseQuery(values url.Values) {
 
 }
 
-func parseAlternatives(s string) (string, error) {
+func parseAlternatives(s string) (string, int, error) {
 
-	if _, err := strconv.ParseBool(s); err == nil {
-		return s, nil
+	if n, err := strconv.ParseUint(s, 10, 32); err == nil {
+		return s, int(n), nil
 	}
-	if _, err := strconv.ParseUint(s, 10, 32); err == nil {
-		return s, nil
+	if b, err := strconv.ParseBool(s); err == nil {
+		if b {
+			return s, 2, nil // true : 2
+		}
+		return s, 1, nil // false : 1
 	}
 
 	err := fmt.Errorf("invalid alternatives value: %s", s)
 	glog.Warning(err)
-	return "", err
+	return "", 1, err // use value 1 if fail
 }
 
 func parseAnnotations(s string) (string, error) {

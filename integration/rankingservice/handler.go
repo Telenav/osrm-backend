@@ -47,7 +47,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// modify
-	originalAlternatives := osrmRequest.Alternatives
+	originalAlternativesNum := osrmRequest.AlternativesNumber()
 	originalAnnotations := osrmRequest.Annotations
 	osrmRequest.Alternatives = "3" //TODO: re-compile data to support more
 	osrmRequest.Annotations = osrmv1.AnnotationsValueTrue
@@ -69,7 +69,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		osrmResponse.Routes = rankbyduration.Rank(osrmResponse.Routes)
 
 		// pick up
-		osrmResponse.Routes = pickupRoutes(osrmResponse.Routes, parseAlternativesNumber(originalAlternatives))
+		osrmResponse.Routes = pickupRoutes(osrmResponse.Routes, originalAlternativesNum)
 
 		// cleanup annotations if necessary
 		cleanupAnnotations(osrmResponse.Routes, originalAnnotations)

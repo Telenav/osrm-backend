@@ -180,20 +180,21 @@ func TestParseAlternatives(t *testing.T) {
 	cases := []struct {
 		s          string
 		expect     string
+		expectNum  int
 		expectFail bool
 	}{
-		{"true", "true", false},
-		{"false", "false", false},
-		{"false", "false", false},
-		{"0", "0", false},
-		{"5", "5", false},
-		{"100", "100", false},
-		{"111111111", "111111111", false},
-		{"-1", "", true},
+		{"true", "true", 2, false},
+		{"false", "false", 1, false},
+		{"0", "0", 0, false}, // same as false
+		{"1", "1", 1, false},
+		{"5", "5", 5, false},
+		{"100", "100", 100, false},
+		{"111111111", "111111111", 111111111, false},
+		{"-1", "", 1, true},
 	}
 
 	for _, c := range cases {
-		alternatives, err := parseAlternatives(c.s)
+		alternatives, num, err := parseAlternatives(c.s)
 		if err != nil && c.expectFail {
 			continue //right
 		} else if (err != nil && !c.expectFail) || (err == nil && c.expectFail) {
@@ -201,8 +202,8 @@ func TestParseAlternatives(t *testing.T) {
 			continue
 		}
 
-		if !reflect.DeepEqual(alternatives, c.expect) {
-			t.Errorf("parse %s, expect %v, but got %v", c.s, c.expect, alternatives)
+		if alternatives != c.expect || num != c.expectNum {
+			t.Errorf("parse %s, expect %s %d, but got %s %d", c.s, c.expect, c.expectNum, alternatives, num)
 		}
 	}
 }
