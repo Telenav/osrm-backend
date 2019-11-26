@@ -40,8 +40,8 @@ func (c *Cache) Clear() {
 	c.affectedWayIDs = map[int64]struct{}{}
 }
 
-// QueryEdge returns Live Traffic Flow for Edge if exist.
-func (c *Cache) QueryEdge(edge graph.Edge) *proxy.Flow {
+// QueryByEdge returns Live Traffic Flow for Edge if exist.
+func (c *Cache) QueryByEdge(edge graph.Edge) *proxy.Flow {
 	c.m.RLock()
 	defer c.m.RUnlock()
 
@@ -52,8 +52,8 @@ func (c *Cache) QueryEdge(edge graph.Edge) *proxy.Flow {
 	return nil
 }
 
-// QueryEdges returns Live Traffic Flows for Edges if exist.
-func (c *Cache) QueryEdges(edges []graph.Edge) []*proxy.Flow {
+// QueryByEdges returns Live Traffic Flows for Edges if exist.
+func (c *Cache) QueryByEdges(edges []graph.Edge) []*proxy.Flow {
 	c.m.RLock()
 	defer c.m.RUnlock()
 

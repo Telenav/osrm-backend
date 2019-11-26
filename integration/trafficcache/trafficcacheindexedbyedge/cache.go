@@ -39,12 +39,12 @@ func (c *Cache) Eat(r proxy.TrafficResponse) {
 
 // QueryFlow returns Live Traffic Flow if exist.
 func (c *Cache) QueryFlow(e graph.Edge) *proxy.Flow {
-	return c.Flows.QueryEdge(e)
+	return c.Flows.QueryByEdge(e)
 }
 
 // QueryFlows returns Live Traffic Flows if exist.
 func (c *Cache) QueryFlows(e []graph.Edge) []*proxy.Flow {
-	return c.Flows.QueryEdges(e)
+	return c.Flows.QueryByEdges(e)
 }
 
 // EdgeBlockedByIncident check whether this Edge is on blocking incident.

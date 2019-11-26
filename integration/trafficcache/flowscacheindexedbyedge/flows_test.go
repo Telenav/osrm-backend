@@ -41,12 +41,12 @@ func TestFlowsCache(t *testing.T) {
 		graph.Edge{From: 123456789023, To: 123456789002},
 	}
 	for i := range inCacheEdges {
-		r := cache.QueryEdge(inCacheEdges[i])
+		r := cache.QueryByEdge(inCacheEdges[i])
 		if !reflect.DeepEqual(r, presetFlows[i]) {
 			t.Errorf("Query Flow for Edge %v, expect %v but got %v", inCacheEdges[i], presetFlows[i], r)
 		}
 	}
-	gotFlows := cache.QueryEdges(inCacheEdges)
+	gotFlows := cache.QueryByEdges(inCacheEdges)
 	if len(gotFlows) != len(inCacheEdges) {
 		t.Errorf("Query Flow on Edges %v, expect flows count %d but got %d", inCacheEdges, len(inCacheEdges), len(gotFlows))
 	}
@@ -59,7 +59,7 @@ func TestFlowsCache(t *testing.T) {
 		graph.Edge{From: 123456789001, To: 123456789002},
 	}
 	for _, e := range notInCacheEdges {
-		r := cache.QueryEdge(e)
+		r := cache.QueryByEdge(e)
 		if r != nil {
 			t.Errorf("Query Flow on Edge %v, expect nil but got %v", e, r)
 		}
