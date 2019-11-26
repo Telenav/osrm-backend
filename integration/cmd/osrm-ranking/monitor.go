@@ -8,7 +8,7 @@ import (
 type monitorContents struct {
 	UpTime                       jsonDuration                  `json:"uptime"`
 	TrafficCacheMonitorContents  *trafficCacheMonitorContents  `json:"traffic_cache"`
-	WayID2NodeIDsMonitorContents *wayID2NodeIDsMonitorContents `json:"wayids2nodeids"`
+	WayID2NodeIDsMonitorContents *wayID2NodeIDsMonitorContents `json:"wayid2nodeids"`
 }
 
 type trafficCacheMonitorContents struct {
