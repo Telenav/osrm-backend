@@ -1,6 +1,7 @@
 package wayid2nodeids
 
 import (
+	"math"
 	"sync"
 
 	"github.com/Telenav/osrm-backend/integration/graph"
@@ -56,7 +57,8 @@ func (m *Mapping) WayID2Edges(wayID int64) []graph.Edge {
 		return nil
 	}
 
-	nodeIDs, found := m.wayID2NodeIDs[absInt64(wayID)]
+	absWayID := int64(math.Abs(float64(wayID)))
+	nodeIDs, found := m.wayID2NodeIDs[absWayID]
 	if found {
 		edges := []graph.Edge{}
 		for i := range nodeIDs[:len(nodeIDs)-1] {
