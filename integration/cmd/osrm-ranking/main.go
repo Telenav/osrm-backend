@@ -1,8 +1,8 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -18,6 +18,11 @@ import (
 func main() {
 	flag.Parse()
 	defer glog.Flush()
+
+	// monitor
+	upClock := time.Now()
+	monitorContents := newMonitorContents()
+	monitorContents.TrafficCacheMonitorContents.Name = "traffic cache(indexed by edge)"
 
 	wayID2NodeIDsMapping := wayid2nodeids.NewMappingFrom(flags.wayID2NodeIDsMappingFile)
 	if err := wayID2NodeIDsMapping.Load(); err != nil {
@@ -39,33 +44,28 @@ func main() {
 			time.Sleep(5 * time.Second) // try again later
 		}
 	}()
-
-	// monitor
-	go func() {
-
-		startTime := time.Now()
-		for {
-			currentTime := time.Now()
-			if currentTime.Sub(startTime) < flags.monitorInterval {
-				time.Sleep(time.Second)
-				continue
-			}
-			startTime = currentTime
-
-			glog.Infof("traffic in cache(indexed by Edge), [flows] %d affectedways %d, [incidents] blocking-only %d, affectedways %d affectededges %d",
-				trafficCache.Flows.Count(), trafficCache.Flows.AffectedWaysCount(),
-				trafficCache.Incidents.Count(), trafficCache.Incidents.AffectedWaysCount(), trafficCache.Incidents.AffectedEdgesCount())
-		}
-	}()
-
 	//start http listening
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/monitor/", func(w http.ResponseWriter, req *http.Request) {
-		//TODO:
+		monitorContents.UpTime = jsonDuration(time.Now().Sub(upClock))
 
-		w.WriteHeader(http.StatusNotImplemented)
-		fmt.Fprintf(w, "Not implemented")
+		// update wayid2nodeids contents
+		monitorContents.WayID2NodeIDsMonitorContents.IsReady = wayID2NodeIDsMapping.IsReady()
+		monitorContents.WayID2NodeIDsMonitorContents.Ways = wayID2NodeIDsMapping.WayIDsCount()
+
+		// update traffic cache contents
+		monitorContents.TrafficCacheMonitorContents.Flows = trafficCache.Flows.Count()
+		monitorContents.TrafficCacheMonitorContents.FlowsAffectedWays = trafficCache.Flows.AffectedWaysCount()
+		monitorContents.TrafficCacheMonitorContents.Incidents = trafficCache.Incidents.Count()
+		monitorContents.TrafficCacheMonitorContents.IncidentsAffectedWays = trafficCache.Incidents.AffectedWaysCount()
+		monitorContents.TrafficCacheMonitorContents.IncidentsAffectedEdges = trafficCache.Incidents.AffectedEdgesCount()
+		glog.Infof("monitor %s, [flows] %d affectedways %d, [incidents] blocking-only %d, affectedways %d affectededges %d",
+			monitorContents.TrafficCacheMonitorContents.Name, monitorContents.TrafficCacheMonitorContents.Flows, monitorContents.TrafficCacheMonitorContents.FlowsAffectedWays,
+			monitorContents.TrafficCacheMonitorContents.Incidents, monitorContents.TrafficCacheMonitorContents.IncidentsAffectedWays, monitorContents.TrafficCacheMonitorContents.IncidentsAffectedEdges)
+
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(monitorContents)
 	})
 
 	//start ranking service

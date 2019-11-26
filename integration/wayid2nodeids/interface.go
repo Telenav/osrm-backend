@@ -80,3 +80,10 @@ func (m *Mapping) IsReady() bool {
 	}
 	return false
 }
+
+// WayIDsCount returns how many ways cached.
+func (m *Mapping) WayIDsCount() int {
+	m.mutex.RLock()
+	defer m.mutex.RUnlock()
+	return len(m.wayID2NodeIDs)
+}
