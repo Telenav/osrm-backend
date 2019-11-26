@@ -24,6 +24,7 @@ func main() {
 	monitorContents := newMonitorContents()
 	monitorContents.TrafficCacheMonitorContents.Name = "traffic cache(indexed by edge)"
 
+	// wayid2nodeids mapping
 	wayID2NodeIDsMapping := wayid2nodeids.NewMappingFrom(flags.wayID2NodeIDsMappingFile)
 	if err := wayID2NodeIDsMapping.Load(); err != nil {
 		glog.Error(err)
@@ -44,9 +45,9 @@ func main() {
 			time.Sleep(5 * time.Second) // try again later
 		}
 	}()
+
 	//start http listening
 	mux := http.NewServeMux()
-
 	mux.HandleFunc("/monitor/", func(w http.ResponseWriter, req *http.Request) {
 		monitorContents.UpTime = jsonDuration(time.Now().Sub(upClock))
 
@@ -72,6 +73,7 @@ func main() {
 	rankingService := rankingservice.New(flags.osrmBackendEndpoint, trafficCache)
 	mux.Handle("/route/v1/driving/", rankingService)
 
+	// listen
 	listening := ":" + strconv.Itoa(flags.listenPort)
 	glog.Infof("Listening on %s", listening)
 	glog.Fatal(http.ListenAndServe(listening, mux))
