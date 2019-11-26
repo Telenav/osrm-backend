@@ -14,10 +14,10 @@ type monitorContents struct {
 type trafficCacheMonitorContents struct {
 	Name                   string `json:"name"`
 	Flows                  int64  `json:"flows"`
-	FlowsAffectedWays      int64  `json:"flows affected ways"`
+	FlowsAffectedWays      int64  `json:"flows_affected_ways"`
 	Incidents              int    `json:"incidents"`
-	IncidentsAffectedWays  int    `json:"incidents affected ways"`
-	IncidentsAffectedEdges int    `json:"incidents affected edges"`
+	IncidentsAffectedWays  int    `json:"incidents_affected_ways"`
+	IncidentsAffectedEdges int    `json:"incidents_affected_edges"`
 }
 
 type wayID2NodeIDsMonitorContents struct {
