@@ -26,7 +26,7 @@ type RouteLeg struct {
 	Weight     float64      `json:"weight"`
 	Summary    string       `json:"summary"`
 	Steps      []*RouteStep `json:"steps,omitempty"`
-	Annotation Annotation   `json:"annotation"`
+	Annotation *Annotation  `json:"annotation,omitempty"`
 }
 
 // RouteStep A step consists of a maneuver such as a turn or merge, followed by a distance of travel along a single way to the subsequent step.
@@ -55,10 +55,10 @@ type Annotation struct {
 	Nodes       []int64   `json:"nodes,omitempty"`
 	Weight      []float64 `json:"weight,omitempty"`
 	Speed       []float64 `json:"speed,omitempty"`
-	Metadata    Metadata  `json:"metadata,omitempty"`
+	Metadata    *Metadata `json:"metadata,omitempty"`
 }
 
 // Metadata related to other annotations
 type Metadata struct {
-	DataSourceNames []string `json:"datasource_names"`
+	DataSourceNames []string `json:"datasource_names,omitempty"`
 }

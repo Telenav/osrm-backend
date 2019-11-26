@@ -47,8 +47,10 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// modify
-	osrmRequest.Alternatives = "3" //TODO: improve
-	osrmRequest.Annotations = "true"
+	originalAlternatives := osrmRequest.Alternatives
+	originalAnnotations := osrmRequest.Annotations
+	osrmRequest.Alternatives = "3" //TODO: re-compile data to support more
+	osrmRequest.Annotations = osrmv1.AnnotationsValueTrue
 
 	// route against backend OSRM
 	osrmResponse, osrmHTTPStatus, err := h.routeByOSRM(osrmRequest)
@@ -65,6 +67,12 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 		// rank
 		osrmResponse.Routes = rankbyduration.Rank(osrmResponse.Routes)
+
+		// pick up
+		osrmResponse.Routes = pickupRoutes(osrmResponse.Routes, parseAlternativesNumber(originalAlternatives))
+
+		// cleanup annotations if necessary
+		cleanupAnnotations(osrmResponse.Routes, originalAnnotations)
 	}
 
 	// return
