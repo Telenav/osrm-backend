@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
+	"strconv"
 
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrmv1"
 	"github.com/Telenav/osrm-backend/integration/rankingstrategy/rankbyduration"
@@ -17,11 +17,10 @@ import (
 type Handler struct {
 	trafficInquirer querytrafficbyedge.Inquirer
 	osrmBackend     string
-	backendTimeout  time.Duration
 }
 
 // New creates a new handler for ranking.
-func New(osrmBackend string, backendTimeout time.Duration, trafficInquirer querytrafficbyedge.Inquirer) *Handler {
+func New(osrmBackend string, trafficInquirer querytrafficbyedge.Inquirer) *Handler {
 	if trafficInquirer == nil {
 		glog.Fatal("nil traffic inquirer")
 		return nil
@@ -30,7 +29,6 @@ func New(osrmBackend string, backendTimeout time.Duration, trafficInquirer query
 	return &Handler{
 		trafficInquirer,
 		osrmBackend,
-		backendTimeout,
 	}
 }
 
@@ -49,7 +47,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	// modify
 	originalAlternativesNum := osrmRequest.AlternativesNumber()
 	originalAnnotations := osrmRequest.Annotations
-	osrmRequest.Alternatives = "3" //TODO: re-compile data to support more
+	osrmRequest.Alternatives = strconv.FormatUint(uint64(flags.alternatives), 10)
 	osrmRequest.Annotations = osrmv1.AnnotationsValueTrue
 
 	// route against backend OSRM

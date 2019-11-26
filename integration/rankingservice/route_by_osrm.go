@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrmv1"
+	"github.com/Telenav/osrm-backend/integration/pkg/backend"
 	"github.com/golang/glog"
 )
 
@@ -17,7 +18,7 @@ func (h *Handler) routeByOSRM(osrmRequest *osrmv1.RouteRequest) (*osrmv1.RouteRe
 	osrmRequestURL := "http://" + h.osrmBackend + osrmRequest.RequestURI()
 	glog.Infof("osrm request to backend: %s", osrmRequestURL)
 
-	clt := http.Client{Timeout: h.backendTimeout}
+	clt := http.Client{Timeout: backend.Timeout()}
 	resp, err := clt.Get(osrmRequestURL)
 	if err != nil {
 		return nil, http.StatusInternalServerError, fmt.Errorf("route request %s agianst OSRM failed, err %v", osrmRequestURL, err)
