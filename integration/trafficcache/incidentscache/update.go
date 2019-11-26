@@ -52,6 +52,9 @@ func (c *Cache) unsafeDeleteWayIDsBlockedByIncidentID(wayIDs []int64, incidentID
 	for _, wayID := range wayIDs {
 		if incidentIDs, ok := c.wayIDBlockedByIncidentIDs[wayID]; ok {
 			delete(incidentIDs, incidentID)
+			if len(incidentIDs) == 0 { // the wayID doesn't blocked by incident anymore
+				delete(c.wayIDBlockedByIncidentIDs, wayID)
+			}
 		}
 	}
 }
@@ -75,6 +78,9 @@ func (c *Cache) unsafeDeleteEdgesBlockedByIncidentID(wayIDs []int64, incidentID 
 		for _, edge := range edges {
 			if incidentIDs, ok := c.edgeBlockedByIncidentIDs[edge]; ok {
 				delete(incidentIDs, incidentID)
+				if len(incidentIDs) == 0 { // the edge doesn't blocked by incident anymore
+					delete(c.edgeBlockedByIncidentIDs, edge)
+				}
 			}
 		}
 	}
