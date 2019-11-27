@@ -18,7 +18,7 @@ Command line tool for [snappy](github.com/golang/snappy) compression. Code in [c
 Update `duration/weight` by traffic for many `alternatives`, then pick up best as result.     
 - design [OSRM with Telenav Traffic Design - Alternatives Ranking](doc/osrm-with-telenav-traffic.md)     
 - code [cmd/osrm-ranking](cmd/osrm-ranking)    
-
+- monitor API: `/monitor`, e.g. `http://localhost:8080/monitor`     
 
 ## trafficproxy-cli 
 Command line tool for querying traffic from `trafficproxy`. Code in [cmd/trafficproxy-cli](cmd/trafficproxy-cli/).       
