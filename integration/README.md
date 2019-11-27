@@ -12,7 +12,14 @@ Command line tool [cmd/osrm-traffic-updater](cmd/osrm-traffic-updater/) is desig
 Command line tool for extract wayid to nodeids mapping from PBF. Code in [cmd/wayid2nodeid-extractor](cmd/wayid2nodeid-extractor/).        
 
 ## snappy
-Command line tool for [snappy](github.com/golang/snappy) compression. Code in [cmd/snappy](cmd/snappy/).      
+Command line tool for [snappy](github.com/golang/snappy) compression. Code in [cmd/snappy](cmd/snappy/).  
+
+## osrm-ranking 
+Update `duration/weight` by traffic for many `alternatives`, then pick up best as result.     
+- design [OSRM with Telenav Traffic Design - Alternatives Ranking](doc/osrm-with-telenav-traffic.md)     
+- code [cmd/osrm-ranking](cmd/osrm-ranking)    
+
+
 ## trafficproxy-cli 
 Command line tool for querying traffic from `trafficproxy`. Code in [cmd/trafficproxy-cli](cmd/trafficproxy-cli/).       
 Typical usage:    
@@ -36,3 +43,7 @@ $ trafficproxy-cli -log_dir=. ...
 $ trafficproxy-cli -h
 
 ```
+
+## trafficcache-parallel-test
+Command line tool for traffic cache test. There could be two type of traffic caches, i.e. indexed by wayID and indexed by Edge. This tool possible to run them in parallel and do some comparison test. Code in [cmd/trafficcache-parallel-test](cmd/trafficcache-parallel-test/).          
+
