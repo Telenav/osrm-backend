@@ -47,7 +47,7 @@ elif [ "$1" = 'compile_mapdata' ]; then
 
   PBF_FILE_URL=${2}
   IS_TELENAV_PBF=${3:-"false"}
-  DATA_VERSION=${4:"unset"}
+  DATA_VERSION=${4:-"unset"}
 
   curl -sSL -f ${PBF_FILE_URL} > $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}.osm.pbf
   ${BUILD_PATH}/osrm-extract $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}.osm.pbf -p ${BUILD_PATH}/profiles/car.lua -d ${DATA_VERSION} ${OSRM_EXTRA_COMMAND}
