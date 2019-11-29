@@ -65,6 +65,7 @@ elif [ "$1" = 'compile_mapdata' ]; then
   # export compiled mapdata to mounted path for publishing 
   SAVE_DATA_PACKAGE_PATH=/save-data
   mv ${DATA_PATH}/* ${SAVE_DATA_PACKAGE_PATH}/
+  chmod 777 ${SAVE_DATA_PACKAGE_PATH}/*
 
 else
   exec "$@"
