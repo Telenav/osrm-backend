@@ -46,9 +46,7 @@ elif [ "$1" = 'compile_mapdata' ]; then
   #trap _sig SIGKILL SIGTERM SIGHUP SIGINT EXIT
 
   PBF_FILE_URL=${2}
-  KEEP_COMPILED_DATA=${3:-"false"}
-  GENERATE_DATA_PACKAGE=${4:-"false"}
-  IS_TELENAV_PBF=${5:-"false"}
+  IS_TELENAV_PBF=${3:-"false"}
 
   # use PBF file name + IMAGE_TAG as data_version which can be returned in each JSON response
   DATA_VERSION=`echo ${PBF_FILE_URL} | rev | cut -d / -f 1 | rev`
@@ -65,26 +63,14 @@ elif [ "$1" = 'compile_mapdata' ]; then
   ${BUILD_PATH}/snappy -i $DATA_PATH/${WAYID2NODEIDS_MAPPING_FILE} -o $DATA_PATH/${WAYID2NODEIDS_MAPPING_FILE_COMPRESSED}
   ls -lh $DATA_PATH/
 
-  # clean source pbf and temp .osrm
+  # clean source pbf and temp files
   rm -f $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}.osm.pbf
   rm -f $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}.osrm
   rm -f $DATA_PATH/${WAYID2NODEIDS_MAPPING_FILE}
 
-  # package and publish compiled mapdata 
-  if [ ${GENERATE_DATA_PACKAGE} == "true" ]; then
-    cd ${DATA_PATH}
-    tar -zcf ${MAPDATA_NAME_WITH_SUFFIX}.tar.gz *
-    
-    SAVE_DATA_PACKAGE_PATH=/save-data
-    mkdir -p ${SAVE_DATA_PACKAGE_PATH}
-    mv ${DATA_PATH}/${MAPDATA_NAME_WITH_SUFFIX}.tar.gz ${SAVE_DATA_PACKAGE_PATH}/
-    cp ${DATA_PATH}/${WAYID2NODEIDS_MAPPING_FILE_COMPRESSED} ${SAVE_DATA_PACKAGE_PATH}/
-  fi
-
-  # rm compiled data if not needed
-  if [ ${KEEP_COMPILED_DATA} != "true" ]; then
-    rm -f $DATA_PATH/*
-  fi
+  # export compiled mapdata to mounted path for publishing 
+  SAVE_DATA_PACKAGE_PATH=/save-data
+  mv ${DATA_PATH}/* ${SAVE_DATA_PACKAGE_PATH}/
 
 else
   exec "$@"
