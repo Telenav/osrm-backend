@@ -78,6 +78,7 @@ elif [ "$1" = 'compile_mapdata' ]; then
     SAVE_DATA_PACKAGE_PATH=/save-data
     mkdir -p ${SAVE_DATA_PACKAGE_PATH}
     mv ${DATA_PATH}/${MAPDATA_NAME_WITH_SUFFIX}.tar.gz ${SAVE_DATA_PACKAGE_PATH}/
+    cp ${DATA_PATH}/${WAYID2NODEIDS_MAPPING_FILE_COMPRESSED} ${SAVE_DATA_PACKAGE_PATH}/
   fi
 
   # rm compiled data if not needed
