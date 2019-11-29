@@ -11,7 +11,7 @@ $ docker pull telenavmap/osrm-backend-dev
 Image within built osrm binaries(`osrm-extract/osrm-partition/osrm-customize/...`) and running dependencies. It can be used to **compile data** or **startup routed**.      
 
 ```bash
-$ docker push telenavmap/osrm-backend 
+$ docker pull telenavmap/osrm-backend 
 ```
 
 See details in [osrm-backend docker](./osrm-backend/)

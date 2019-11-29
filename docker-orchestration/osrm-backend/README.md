@@ -4,7 +4,7 @@ Image within built osrm binaries(`osrm-extract/osrm-partition/osrm-customize/...
 ## Image
 
 ```bash
-$ docker push telenavmap/osrm-backend 
+$ docker pull telenavmap/osrm-backend 
 ```
 
 ## Run 
