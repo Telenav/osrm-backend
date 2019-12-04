@@ -23,8 +23,9 @@ docker run -d --link osrm-api:api --name osrm-ca-front --restart=always -p 8080:
 ```
 
 Notes:  
-- docker run --link combines two docker container together.
+- docker run --link combines two docker container together.  
   Latter we could try with [docker bridge network](https://docs.docker.com/network/bridge/)
+- Default routing requests are made against the backend at http://localhost:5000
 
 <br/>
 Visit OSRM front end with
