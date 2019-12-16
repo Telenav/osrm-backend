@@ -6,6 +6,8 @@ import (
 	"io"
 	"os"
 
+	"github.com/Telenav/osrm-backend/integration/osrmfiles/osrmtype"
+
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/meta"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/querynode"
 
@@ -15,9 +17,13 @@ import (
 
 // Contents represents `.osrm` file structure.
 type Contents struct {
-	Fingerprint fingerprint.Fingerprint
-	NodesMeta   meta.Num
-	Nodes       querynode.Nodes
+	Fingerprint       fingerprint.Fingerprint
+	NodesMeta         meta.Num
+	Nodes             querynode.Nodes
+	BarriersMeta      meta.Num
+	Barriers          osrmtype.NodeIDs
+	TrafficLightsMeta meta.Num
+	TrafficLights     osrmtype.NodeIDs
 
 	//TODO:
 
@@ -73,6 +79,9 @@ func (c *Contents) PrintSummary() {
 	glog.Infof("Loaded from %s\n", c.filePath)
 	glog.Infof("  %s\n", &c.Fingerprint)
 	glog.Infof("  nodes meta %d count %d\n", c.NodesMeta, len(c.Nodes))
+	glog.Infof("  barriers meta %d count %d\n", c.BarriersMeta, len(c.Barriers))
+	glog.Infof("  traffic_lights meta %d count %d\n", c.TrafficLightsMeta, len(c.TrafficLights))
+
 }
 
 func new() *Contents {
@@ -83,6 +92,10 @@ func new() *Contents {
 	c.writers["osrm_fingerprint.meta"] = &c.Fingerprint
 	c.writers["/extractor/nodes.meta"] = &c.NodesMeta
 	c.writers["/extractor/nodes"] = &c.Nodes
+	c.writers["/extractor/barriers.meta"] = &c.BarriersMeta
+	c.writers["/extractor/barriers"] = &c.Barriers
+	c.writers["/extractor/traffic_lights.meta"] = &c.TrafficLightsMeta
+	c.writers["/extractor/traffic_lights"] = &c.TrafficLights
 
 	return &c
 }
@@ -93,6 +106,30 @@ func (c *Contents) validate() error {
 	}
 	if uint64(c.NodesMeta) != uint64(len(c.Nodes)) {
 		return fmt.Errorf("nodes meta not match, count in meta %d, but actual nodes count %d", c.NodesMeta, len(c.Nodes))
+	}
+	if uint64(c.BarriersMeta) != uint64(len(c.Barriers)) {
+		return fmt.Errorf("barriers meta not match, count in meta %d, but actual barriers count %d", c.BarriersMeta, len(c.Barriers))
+	}
+	if uint64(c.TrafficLightsMeta) != uint64(len(c.TrafficLights)) {
+		return fmt.Errorf("traffic_lights meta not match, count in meta %d, but actual traffic_lights count %d", c.TrafficLightsMeta, len(c.TrafficLights))
+	}
+
+	// check relationship between nodes and barriers/traffic_lights
+	// https://github.com/Telenav/open-source-spec/blob/master/osrm/doc/osrm-toolchain-files/map.osrm.md
+	if uint64(c.NodesMeta) > uint64(osrmtype.MaxValidNodeID) {
+		return fmt.Errorf("too big nodes meta %d, osrm NodeID will overflow", c.NodesMeta)
+	}
+	if len(c.Barriers) > 0 {
+		maxBarrierNodeID := c.Barriers[len(c.Barriers)-1]
+		if uint64(c.NodesMeta) <= uint64(maxBarrierNodeID) {
+			return fmt.Errorf("too big barrier NodeID %d for nodes meta %d", maxBarrierNodeID, c.NodesMeta)
+		}
+	}
+	if len(c.TrafficLights) > 0 {
+		maxTrafficLightNodeID := c.TrafficLights[len(c.TrafficLights)-1]
+		if uint64(c.NodesMeta) <= uint64(maxTrafficLightNodeID) {
+			return fmt.Errorf("too big traffic_light NodeID %d for nodes meta %d", maxTrafficLightNodeID, c.NodesMeta)
+		}
 	}
 
 	return nil
