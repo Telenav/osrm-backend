@@ -74,13 +74,25 @@ func Load(file string) (*Contents, error) {
 	return contents, nil
 }
 
-// PrintSummary prints summary of current contents.
-func (c *Contents) PrintSummary() {
+// PrintSummary prints summary and head lines of current contents.
+func (c *Contents) PrintSummary(head int) {
 	glog.Infof("Loaded from %s\n", c.filePath)
 	glog.Infof("  %s\n", &c.Fingerprint)
+
 	glog.Infof("  nodes meta %d count %d\n", c.NodesMeta, len(c.Nodes))
+	for i := 0; i < head && i < len(c.Nodes); i++ {
+		glog.Infof("    node[%d] %v", i, c.Nodes[i])
+	}
+
 	glog.Infof("  barriers meta %d count %d\n", c.BarriersMeta, len(c.Barriers))
+	for i := 0; i < head && i < len(c.Barriers); i++ {
+		glog.Infof("    barrier[%d] %v", i, c.Barriers[i])
+	}
+
 	glog.Infof("  traffic_lights meta %d count %d\n", c.TrafficLightsMeta, len(c.TrafficLights))
+	for i := 0; i < head && i < len(c.TrafficLights); i++ {
+		glog.Infof("    traffic_lights[%d] %v", i, c.TrafficLights[i])
+	}
 
 }
 

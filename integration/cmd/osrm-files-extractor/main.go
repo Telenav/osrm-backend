@@ -16,7 +16,7 @@ func main() {
 		glog.Error(err)
 		return
 	}
-	if flags.printSummary {
-		contents.PrintSummary()
+	if flags.printSummary >= 0 {
+		contents.PrintSummary(flags.printSummary)
 	}
 }
