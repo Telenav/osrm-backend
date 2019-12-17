@@ -15,7 +15,7 @@ func TestNodeBasedEdgesWrite(t *testing.T) {
 		{
 			[]byte{
 				0x00, 0x00, 0x00, 0x00, 0x84, 0x70, 0x07, 0x00, 0x18, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00,
-				0x73, 0x25, 0x5b, 0x42, 0xff, 0xff, 0xff, 0x7f, 0xce, 0xad, 0x00, 0x00, 0xa1, 0x01, 0x02, 0x00,
+				0x73, 0x25, 0x5b, 0x42, 0xff, 0xff, 0xff, 0x7f, 0xce, 0xad, 0x00, 0x00, 0x21, 0x01, 0x02, 0x00,
 			},
 			NodeBasedEdges{
 				NodeBasedEdge{
@@ -26,7 +26,60 @@ func TestNodeBasedEdgesWrite(t *testing.T) {
 					Distance:       54.7865715,
 					GeometryID:     GeometryID{math.MaxUint32 >> 1, false},
 					AnnotationData: 44494,
-					//TODO: NodeBasedEdgeClassification
+					Flags: NodeBasedEdgeClassification{
+						Forward:    true,
+						Backward:   false,
+						IsSplit:    false,
+						Roundabout: false,
+						Circular:   false,
+						Startpoint: true,
+						Restricted: false,
+						RoadClassification: RoadClassification{
+							MotowayClass:      true,
+							LinkClass:         false,
+							MaybeIgnored:      false,
+							RoadPriorityClass: RoadPriorityClassMotoway,
+							NumberOfLanes:     2,
+						},
+						HighwayTurnClassification: 0,
+						AccessTurnClassification:  0,
+					},
+				},
+			},
+		},
+		{
+			[]byte{
+				0x00, 0x00, 0x00, 0x00, 0x84, 0x70, 0x07, 0x00, 0x18, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00,
+				0x73, 0x25, 0x5b, 0x42, 0xff, 0xff, 0xff, 0x7f, 0xce, 0xad, 0x00, 0x00, 0x21, 0x01, 0x02, 0x00,
+				0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, // redundant bytes
+			},
+			NodeBasedEdges{
+				NodeBasedEdge{
+					Source:         0,
+					Target:         487556,
+					Weight:         24,
+					Duration:       24,
+					Distance:       54.7865715,
+					GeometryID:     GeometryID{math.MaxUint32 >> 1, false},
+					AnnotationData: 44494,
+					Flags: NodeBasedEdgeClassification{
+						Forward:    true,
+						Backward:   false,
+						IsSplit:    false,
+						Roundabout: false,
+						Circular:   false,
+						Startpoint: true,
+						Restricted: false,
+						RoadClassification: RoadClassification{
+							MotowayClass:      true,
+							LinkClass:         false,
+							MaybeIgnored:      false,
+							RoadPriorityClass: RoadPriorityClassMotoway,
+							NumberOfLanes:     2,
+						},
+						HighwayTurnClassification: 0,
+						AccessTurnClassification:  0,
+					},
 				},
 			},
 		},
