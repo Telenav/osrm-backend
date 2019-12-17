@@ -24,6 +24,8 @@ type Contents struct {
 	Barriers          osrmtype.NodeIDs
 	TrafficLightsMeta meta.Num
 	TrafficLights     osrmtype.NodeIDs
+	EdgesMeta         meta.Num
+	Edges             osrmtype.NodeBasedEdges
 
 	//TODO:
 
@@ -94,6 +96,11 @@ func (c *Contents) PrintSummary(head int) {
 		glog.Infof("    traffic_lights[%d] %v", i, c.TrafficLights[i])
 	}
 
+	glog.Infof("  edges meta %d count %d\n", c.EdgesMeta, len(c.Edges))
+	for i := 0; i < head && i < len(c.Edges); i++ {
+		glog.Infof("    edges[%d] %v", i, c.Edges[i])
+	}
+
 }
 
 func new() *Contents {
@@ -108,6 +115,8 @@ func new() *Contents {
 	c.writers["/extractor/barriers"] = &c.Barriers
 	c.writers["/extractor/traffic_lights.meta"] = &c.TrafficLightsMeta
 	c.writers["/extractor/traffic_lights"] = &c.TrafficLights
+	c.writers["/extractor/edges.meta"] = &c.EdgesMeta
+	c.writers["/extractor/edges"] = &c.Edges
 
 	return &c
 }
@@ -124,6 +133,9 @@ func (c *Contents) validate() error {
 	}
 	if uint64(c.TrafficLightsMeta) != uint64(len(c.TrafficLights)) {
 		return fmt.Errorf("traffic_lights meta not match, count in meta %d, but actual traffic_lights count %d", c.TrafficLightsMeta, len(c.TrafficLights))
+	}
+	if uint64(c.EdgesMeta) != uint64(len(c.Edges)) {
+		return fmt.Errorf("edges meta not match, count in meta %d, but actual edges count %d", c.EdgesMeta, len(c.Edges))
 	}
 
 	// check relationship between nodes and barriers/traffic_lights
