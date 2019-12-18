@@ -10,14 +10,14 @@ import (
 // Terminology: https://github.com/Telenav/open-source-spec/blob/master/osrm/doc/understanding_osrm_graph_representation.md#terminology
 // C++ Implementation: https://github.com/Telenav/osrm-backend/blob/6283c6074066f98e6d4a9f774f21ea45407c0d52/include/extractor/node_based_edge.hpp#L92
 type NodeBasedEdge struct {
-	Source         NodeID                      // 4 bytes in .osrm file
-	Target         NodeID                      // 4 bytes in .osrm file
-	Weight         EdgeWeight                  // 4 bytes in .osrm file
-	Duration       EdgeDuration                // 4 bytes in .osrm file
-	Distance       EdgeDistance                // 4 bytes in .osrm file
-	GeometryID                                 // 4 bytes in .osrm file
-	AnnotationData AnnotationID                // 4 bytes in .osrm file
-	Flags          NodeBasedEdgeClassification // 4 bytes in .osrm file
+	Source       NodeID                      // 4 bytes in .osrm file
+	Target       NodeID                      // 4 bytes in .osrm file
+	Weight       EdgeWeight                  // 4 bytes in .osrm file
+	Duration     EdgeDuration                // 4 bytes in .osrm file
+	Distance     EdgeDistance                // 4 bytes in .osrm file
+	GeometryID                               // 4 bytes in .osrm file
+	AnnotationID                             // 4 bytes in .osrm file
+	Flags        NodeBasedEdgeClassification // 4 bytes in .osrm file
 }
 
 // NodeBasedEdges represents vector of NodeBasedEdge.
@@ -79,7 +79,7 @@ func (n *NodeBasedEdges) Write(p []byte) (int, error) {
 		if err := edge.GeometryID.tryParse(writeP[20:]); err != nil {
 			return writeLen, err
 		}
-		edge.AnnotationData = AnnotationID(binary.LittleEndian.Uint32(writeP[24:]))
+		edge.AnnotationID = AnnotationID(binary.LittleEndian.Uint32(writeP[24:]))
 		if err := edge.Flags.tryParse(writeP[28:]); err != nil {
 			return writeLen, err
 		}

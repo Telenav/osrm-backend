@@ -19,13 +19,13 @@ func TestNodeBasedEdgesWrite(t *testing.T) {
 			},
 			NodeBasedEdges{
 				NodeBasedEdge{
-					Source:         0,
-					Target:         487556,
-					Weight:         24,
-					Duration:       24,
-					Distance:       54.7865715,
-					GeometryID:     GeometryID{math.MaxUint32 >> 1, false},
-					AnnotationData: 44494,
+					Source:       0,
+					Target:       487556,
+					Weight:       24,
+					Duration:     24,
+					Distance:     54.7865715,
+					GeometryID:   GeometryID{math.MaxUint32 >> 1, false},
+					AnnotationID: 44494,
 					Flags: NodeBasedEdgeClassification{
 						Forward:    true,
 						Backward:   false,
@@ -55,13 +55,13 @@ func TestNodeBasedEdgesWrite(t *testing.T) {
 			},
 			NodeBasedEdges{
 				NodeBasedEdge{
-					Source:         0,
-					Target:         487556,
-					Weight:         24,
-					Duration:       24,
-					Distance:       54.7865715,
-					GeometryID:     GeometryID{math.MaxUint32 >> 1, false},
-					AnnotationData: 44494,
+					Source:       0,
+					Target:       487556,
+					Weight:       24,
+					Duration:     24,
+					Distance:     54.7865715,
+					GeometryID:   GeometryID{math.MaxUint32 >> 1, false},
+					AnnotationID: 44494,
 					Flags: NodeBasedEdgeClassification{
 						Forward:    true,
 						Backward:   false,
