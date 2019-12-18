@@ -39,7 +39,26 @@ type NodeBasedEdgeClassification struct {
 	AccessTurnClassification  uint8 // 4 bits in .osrm file
 }
 
-const nodeBasedEdgeBytes = 32 // 4 * 8
+// NodeBasedEdgeAnnotation is annotative data, used in parts in guidance generation, in parts during navigation (classes) but
+// mostly for annotation of edges. The entry can be shared between multiple edges and usually
+// describes features present on OSM ways. This is the place to put specific data that you want to
+// see as part of the API output but that does not influence navigation.
+// C++ Implemnetation: https://github.com/Telenav/osrm-backend/blob/6283c6074066f98e6d4a9f774f21ea45407c0d52/include/extractor/node_based_edge.hpp#L66
+type NodeBasedEdgeAnnotation struct {
+	NameID                 // 4 bytes in .osrm file
+	LaneDescriptionID      // 2 bytes in .osrm file
+	ClassData              // 1 byte in .osrm file
+	TravelMode             // 4 bits in .osrm file
+	IsLeftHandDriving bool // 1 bit in .osrm file
+}
+
+// NodeBasedEdgeAnnotations represents vector of NodeBasedEdgeAnnotation.
+type NodeBasedEdgeAnnotations []NodeBasedEdgeAnnotation
+
+const (
+	nodeBasedEdgeBytes           = 32 // 4 * 8
+	nodeBasedEdgeAnnotationBytes = 8
+)
 
 func (n *NodeBasedEdges) Write(p []byte) (int, error) {
 
@@ -108,4 +127,31 @@ func (n *NodeBasedEdgeClassification) tryParse(p []byte) error {
 	n.AccessTurnClassification = (p[3] & 0xF0) >> 4
 
 	return nil
+}
+
+func (n *NodeBasedEdgeAnnotations) Write(p []byte) (int, error) {
+
+	var writeLen int
+	writeP := p
+	for {
+		if len(writeP) < nodeBasedEdgeAnnotationBytes {
+			break
+		}
+
+		var annotation NodeBasedEdgeAnnotation
+		annotation.NameID = NameID(binary.LittleEndian.Uint32(writeP))
+		annotation.LaneDescriptionID = LaneDescriptionID(binary.LittleEndian.Uint16(writeP[4:]))
+		annotation.ClassData = ClassData(writeP[6])
+		annotation.TravelMode = TravelMode(writeP[7] & 0x0F)
+		if writeP[7]&0x10 > 0 {
+			annotation.IsLeftHandDriving = true
+		}
+
+		*n = append(*n, annotation)
+
+		writeP = writeP[nodeBasedEdgeAnnotationBytes:]
+		writeLen += nodeBasedEdgeAnnotationBytes
+	}
+
+	return writeLen, nil
 }

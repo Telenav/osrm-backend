@@ -26,8 +26,8 @@ type Contents struct {
 	TrafficLights     osrmtype.NodeIDs
 	EdgesMeta         meta.Num
 	Edges             osrmtype.NodeBasedEdges
-
-	//TODO:
+	AnnotationsMeta   meta.Num
+	Annotations       osrmtype.NodeBasedEdgeAnnotations
 
 	// for internal implementation
 	writers  map[string]io.Writer
@@ -101,6 +101,11 @@ func (c *Contents) PrintSummary(head int) {
 		glog.Infof("    edges[%d] %v", i, c.Edges[i])
 	}
 
+	glog.Infof("  annotations meta %d count %d\n", c.AnnotationsMeta, len(c.Annotations))
+	for i := 0; i < head && i < len(c.Annotations); i++ {
+		glog.Infof("    annotations[%d] %v", i, c.Annotations[i])
+	}
+
 }
 
 func new() *Contents {
@@ -117,6 +122,8 @@ func new() *Contents {
 	c.writers["/extractor/traffic_lights"] = &c.TrafficLights
 	c.writers["/extractor/edges.meta"] = &c.EdgesMeta
 	c.writers["/extractor/edges"] = &c.Edges
+	c.writers["/extractor/annotations.meta"] = &c.AnnotationsMeta
+	c.writers["/extractor/annotations"] = &c.Annotations
 
 	return &c
 }
@@ -136,6 +143,9 @@ func (c *Contents) validate() error {
 	}
 	if uint64(c.EdgesMeta) != uint64(len(c.Edges)) {
 		return fmt.Errorf("edges meta not match, count in meta %d, but actual edges count %d", c.EdgesMeta, len(c.Edges))
+	}
+	if uint64(c.AnnotationsMeta) != uint64(len(c.Annotations)) {
+		return fmt.Errorf("annotations meta not match, count in meta %d, but actual annotations count %d", c.AnnotationsMeta, len(c.Annotations))
 	}
 
 	// check relationship between nodes and barriers/traffic_lights
