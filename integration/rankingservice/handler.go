@@ -6,7 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/code"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/option"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
 	"github.com/Telenav/osrm-backend/integration/rankingstrategy/rankbyduration"
 
@@ -49,7 +50,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	originalAlternativesNum := osrmRequest.AlternativesNumber()
 	originalAnnotations := osrmRequest.Annotations
 	osrmRequest.Alternatives = strconv.FormatUint(uint64(flags.alternatives), 10)
-	osrmRequest.Annotations = route.AnnotationsValueTrue
+	osrmRequest.Annotations = option.AnnotationsValueTrue
 
 	// route against backend OSRM
 	osrmResponse, osrmHTTPStatus, err := h.routeByOSRM(osrmRequest)
@@ -60,7 +61,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if osrmResponse.Code == osrm.CodeOK {
+	if osrmResponse.Code == code.OK {
 		// update speeds,durations,datasources by traffic
 		osrmResponse.Routes = h.updateRoutesByTraffic(osrmResponse.Routes)
 

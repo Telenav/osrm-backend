@@ -1,6 +1,7 @@
 package rankingservice
 
 import (
+	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/option"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
 )
 
@@ -12,7 +13,7 @@ func pickupRoutes(routes []*route.Route, num int) []*route.Route {
 }
 
 func cleanupAnnotations(routes []*route.Route, annotations string) {
-	if annotations != route.AnnotationsValueFalse {
+	if annotations != option.AnnotationsValueFalse {
 		return // return all annotations even if want some
 	}
 

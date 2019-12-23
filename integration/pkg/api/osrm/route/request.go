@@ -12,6 +12,7 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/pkg/api"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/option"
 )
 
 // Request represent OSRM api v1 route request parameters.
@@ -37,9 +38,9 @@ func NewRequest() *Request {
 		Version:      "v1",
 		Profile:      "driving",
 		Coordinates:  osrm.Coordinates{},
-		Alternatives: AlternativesDefaultValue,
-		Steps:        StepsDefaultValue,
-		Annotations:  AnnotationsDefaultValue,
+		Alternatives: option.AlternativesDefaultValue,
+		Steps:        option.StepsDefaultValue,
+		Annotations:  option.AnnotationsDefaultValue,
 	}
 }
 
@@ -75,14 +76,14 @@ func (r *Request) QueryValues() (v url.Values) {
 
 	v = make(url.Values)
 
-	if r.Alternatives != AlternativesDefaultValue {
-		v.Add(KeyAlternatives, r.Alternatives)
+	if r.Alternatives != option.AlternativesDefaultValue {
+		v.Add(option.KeyAlternatives, r.Alternatives)
 	}
-	if r.Steps != StepsDefaultValue {
-		v.Add(KeySteps, strconv.FormatBool(r.Steps))
+	if r.Steps != option.StepsDefaultValue {
+		v.Add(option.KeySteps, strconv.FormatBool(r.Steps))
 	}
-	if r.Annotations != AnnotationsDefaultValue {
-		v.Add(KeyAnnotations, r.Annotations)
+	if r.Annotations != option.AnnotationsDefaultValue {
+		v.Add(option.KeyAnnotations, r.Annotations)
 	}
 
 	return
@@ -145,13 +146,13 @@ func (r *Request) parsePath(path string) error {
 
 func (r *Request) parseQuery(values url.Values) {
 
-	if v := values.Get(KeyAlternatives); len(v) > 0 {
+	if v := values.Get(option.KeyAlternatives); len(v) > 0 {
 		if alternatives, _, err := parseAlternatives(v); err == nil {
 			r.Alternatives = alternatives
 		}
 	}
 
-	if v := values.Get(KeySteps); len(v) > 0 {
+	if v := values.Get(option.KeySteps); len(v) > 0 {
 		if b, err := strconv.ParseBool(v); err == nil {
 			r.Steps = b
 		} else {
@@ -159,7 +160,7 @@ func (r *Request) parseQuery(values url.Values) {
 		}
 	}
 
-	if v := values.Get(KeyAnnotations); len(v) > 0 {
+	if v := values.Get(option.KeyAnnotations); len(v) > 0 {
 		if annotations, err := parseAnnotations(v); err == nil {
 			r.Annotations = annotations
 		}
@@ -187,14 +188,14 @@ func parseAlternatives(s string) (string, int, error) {
 func parseAnnotations(s string) (string, error) {
 
 	validAnnotationsValues := map[string]struct{}{
-		AnnotationsValueTrue:        struct{}{},
-		AnnotationsValueFalse:       struct{}{},
-		AnnotationsValueNodes:       struct{}{},
-		AnnotationsValueDistance:    struct{}{},
-		AnnotationsValueDuration:    struct{}{},
-		AnnotationsValueDataSources: struct{}{},
-		AnnotationsValueWeight:      struct{}{},
-		AnnotationsValueSpeed:       struct{}{},
+		option.AnnotationsValueTrue:        struct{}{},
+		option.AnnotationsValueFalse:       struct{}{},
+		option.AnnotationsValueNodes:       struct{}{},
+		option.AnnotationsValueDistance:    struct{}{},
+		option.AnnotationsValueDuration:    struct{}{},
+		option.AnnotationsValueDataSources: struct{}{},
+		option.AnnotationsValueWeight:      struct{}{},
+		option.AnnotationsValueSpeed:       struct{}{},
 	}
 
 	splits := strings.Split(s, api.Comma)
