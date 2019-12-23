@@ -1,4 +1,4 @@
-package osrmv1
+package osrm
 
 // Query Parameter Keys
 const (

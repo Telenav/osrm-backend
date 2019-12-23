@@ -1,4 +1,4 @@
-package osrmv1
+package osrm
 
 // RouteResponse represent OSRM api v1 route response.
 type RouteResponse struct {

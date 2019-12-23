@@ -4,29 +4,29 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrmv1"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm"
 )
 
 func TestRank(t *testing.T) {
 	cases := []struct {
-		input  []*osrmv1.Route
-		expect []*osrmv1.Route
+		input  []*osrm.Route
+		expect []*osrm.Route
 	}{
 		{nil, nil},
 		{
-			[]*osrmv1.Route{&osrmv1.Route{Distance: 12345.0, Duration: 100.0, Geometry: "", Weight: 100.0, WeightName: "", Legs: nil}},
-			[]*osrmv1.Route{&osrmv1.Route{Distance: 12345.0, Duration: 100.0, Geometry: "", Weight: 100.0, WeightName: "", Legs: nil}},
+			[]*osrm.Route{&osrm.Route{Distance: 12345.0, Duration: 100.0, Geometry: "", Weight: 100.0, WeightName: "", Legs: nil}},
+			[]*osrm.Route{&osrm.Route{Distance: 12345.0, Duration: 100.0, Geometry: "", Weight: 100.0, WeightName: "", Legs: nil}},
 		},
 		{
-			[]*osrmv1.Route{
-				&osrmv1.Route{Distance: 10000.0, Duration: 200.0, Geometry: "", Weight: 300.0, WeightName: "", Legs: nil},
-				&osrmv1.Route{Distance: 12345.0, Duration: 100.0, Geometry: "", Weight: 100.0, WeightName: "", Legs: nil},
-				&osrmv1.Route{Distance: 22222.0, Duration: 300.0, Geometry: "", Weight: 200.0, WeightName: "", Legs: nil},
+			[]*osrm.Route{
+				&osrm.Route{Distance: 10000.0, Duration: 200.0, Geometry: "", Weight: 300.0, WeightName: "", Legs: nil},
+				&osrm.Route{Distance: 12345.0, Duration: 100.0, Geometry: "", Weight: 100.0, WeightName: "", Legs: nil},
+				&osrm.Route{Distance: 22222.0, Duration: 300.0, Geometry: "", Weight: 200.0, WeightName: "", Legs: nil},
 			},
-			[]*osrmv1.Route{
-				&osrmv1.Route{Distance: 12345.0, Duration: 100.0, Geometry: "", Weight: 100.0, WeightName: "", Legs: nil},
-				&osrmv1.Route{Distance: 10000.0, Duration: 200.0, Geometry: "", Weight: 300.0, WeightName: "", Legs: nil},
-				&osrmv1.Route{Distance: 22222.0, Duration: 300.0, Geometry: "", Weight: 200.0, WeightName: "", Legs: nil},
+			[]*osrm.Route{
+				&osrm.Route{Distance: 12345.0, Duration: 100.0, Geometry: "", Weight: 100.0, WeightName: "", Legs: nil},
+				&osrm.Route{Distance: 10000.0, Duration: 200.0, Geometry: "", Weight: 300.0, WeightName: "", Legs: nil},
+				&osrm.Route{Distance: 22222.0, Duration: 300.0, Geometry: "", Weight: 200.0, WeightName: "", Legs: nil},
 			},
 		},
 	}

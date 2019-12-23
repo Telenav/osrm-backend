@@ -3,10 +3,10 @@ package rankbyduration
 import (
 	"sort"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrmv1"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm"
 )
 
-type rankItems []*osrmv1.Route
+type rankItems []*osrm.Route
 
 func (r rankItems) Len() int {
 	return len(r)
@@ -21,7 +21,7 @@ func (r rankItems) Swap(i, j int) {
 }
 
 // Rank ranks routes by duration.
-func Rank(routes []*osrmv1.Route) []*osrmv1.Route {
+func Rank(routes []*osrm.Route) []*osrm.Route {
 	sort.Sort(rankItems(routes))
 	return routes
 }

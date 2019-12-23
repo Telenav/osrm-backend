@@ -1,4 +1,4 @@
-package osrmv1
+package osrm
 
 // OSRM response code
 // doc: https://github.com/Telenav/osrm-backend/blob/master-telenav/docs/http.md#code

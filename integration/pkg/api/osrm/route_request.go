@@ -1,6 +1,6 @@
-// Package osrmv1 implements OSRM api v1 in Go code.
+// Package osrm implements OSRM api v1 in Go code.
 // doc: https://github.com/Telenav/osrm-backend/blob/master-telenav/docs/http.md
-package osrmv1
+package osrm
 
 import (
 	"fmt"

@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrmv1"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm"
 	"github.com/Telenav/osrm-backend/integration/rankingstrategy/rankbyduration"
 
 	"github.com/Telenav/osrm-backend/integration/trafficcache/querytrafficbyedge"
@@ -36,7 +36,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	glog.Infof("Handle incoming request %s from remote addr %s", req.RequestURI, req.RemoteAddr)
 
 	// parse incoming request
-	osrmRequest, err := osrmv1.ParseRouteRequestURL(req.URL)
+	osrmRequest, err := osrm.ParseRouteRequestURL(req.URL)
 	if err != nil {
 		glog.Warning(err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -48,7 +48,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	originalAlternativesNum := osrmRequest.AlternativesNumber()
 	originalAnnotations := osrmRequest.Annotations
 	osrmRequest.Alternatives = strconv.FormatUint(uint64(flags.alternatives), 10)
-	osrmRequest.Annotations = osrmv1.AnnotationsValueTrue
+	osrmRequest.Annotations = osrm.AnnotationsValueTrue
 
 	// route against backend OSRM
 	osrmResponse, osrmHTTPStatus, err := h.routeByOSRM(osrmRequest)
@@ -59,7 +59,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if osrmResponse.Code == osrmv1.CodeOK {
+	if osrmResponse.Code == osrm.CodeOK {
 		// update speeds,durations,datasources by traffic
 		osrmResponse.Routes = h.updateRoutesByTraffic(osrmResponse.Routes)
 
