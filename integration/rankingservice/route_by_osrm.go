@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
 	"github.com/Telenav/osrm-backend/integration/pkg/backend"
 	"github.com/golang/glog"
 )
 
-func (h *Handler) routeByOSRM(osrmRequest *osrm.RouteRequest) (*osrm.RouteResponse, int, error) {
+func (h *Handler) routeByOSRM(osrmRequest *route.Request) (*route.Response, int, error) {
 	if osrmRequest == nil {
 		return nil, http.StatusBadRequest, fmt.Errorf("empty osrm request")
 	}
@@ -26,7 +26,7 @@ func (h *Handler) routeByOSRM(osrmRequest *osrm.RouteRequest) (*osrm.RouteRespon
 	defer resp.Body.Close()
 
 	// parse OSRM response
-	var routeResponse osrm.RouteResponse
+	var routeResponse route.Response
 	err = json.NewDecoder(resp.Body).Decode(&routeResponse)
 	if err != nil {
 		glog.Warningf("Decode osrm HTTP response body failed, http status %d, err %v.", resp.StatusCode, err)

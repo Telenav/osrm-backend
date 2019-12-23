@@ -1,18 +1,18 @@
 package rankingservice
 
 import (
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
 )
 
-func pickupRoutes(routes []*osrm.Route, num int) []*osrm.Route {
+func pickupRoutes(routes []*route.Route, num int) []*route.Route {
 	if len(routes) <= num {
 		return routes
 	}
 	return routes[:num]
 }
 
-func cleanupAnnotations(routes []*osrm.Route, annotations string) {
-	if annotations != osrm.AnnotationsValueFalse {
+func cleanupAnnotations(routes []*route.Route, annotations string) {
+	if annotations != route.AnnotationsValueFalse {
 		return // return all annotations even if want some
 	}
 

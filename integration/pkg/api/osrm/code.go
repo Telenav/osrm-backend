@@ -12,5 +12,8 @@ const (
 	CodeInvalidValue   = "InvalidValue"   // The successfully parsed query parameters are invalid.
 	CodeNoSegment      = "NoSegment"      // One of the supplied input coordinates could not snap to street segment.
 	CodeTooBig         = "TooBig"         // The request size violates one of the service specific request size restrictions.
-	CodeNoRouteFound   = "NoRoute"        // No route found.
+
+	// Route service extra response code
+	// https://github.com/Telenav/osrm-backend/blob/master-telenav/docs/http.md#route-service
+	CodeNoRouteFound = "NoRoute" // No route found.
 )

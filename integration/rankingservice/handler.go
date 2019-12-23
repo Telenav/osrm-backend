@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
 	"github.com/Telenav/osrm-backend/integration/rankingstrategy/rankbyduration"
 
 	"github.com/Telenav/osrm-backend/integration/trafficcache/querytrafficbyedge"
@@ -36,7 +37,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	glog.Infof("Handle incoming request %s from remote addr %s", req.RequestURI, req.RemoteAddr)
 
 	// parse incoming request
-	osrmRequest, err := osrm.ParseRouteRequestURL(req.URL)
+	osrmRequest, err := route.ParseRequestURL(req.URL)
 	if err != nil {
 		glog.Warning(err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -48,7 +49,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	originalAlternativesNum := osrmRequest.AlternativesNumber()
 	originalAnnotations := osrmRequest.Annotations
 	osrmRequest.Alternatives = strconv.FormatUint(uint64(flags.alternatives), 10)
-	osrmRequest.Annotations = osrm.AnnotationsValueTrue
+	osrmRequest.Annotations = route.AnnotationsValueTrue
 
 	// route against backend OSRM
 	osrmResponse, osrmHTTPStatus, err := h.routeByOSRM(osrmRequest)
