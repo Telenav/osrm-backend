@@ -1,4 +1,4 @@
-package option
+package options
 
 // Common use choice values
 const (

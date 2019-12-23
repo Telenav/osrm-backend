@@ -11,8 +11,8 @@ import (
 	"github.com/golang/glog"
 
 	"github.com/Telenav/osrm-backend/integration/pkg/api"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/option"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/coordinate"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route/options"
 )
 
 // Request represent OSRM api v1 route request parameters.
@@ -20,7 +20,7 @@ type Request struct {
 	Service     string
 	Version     string
 	Profile     string
-	Coordinates osrm.Coordinates
+	Coordinates coordinate.Coordinates
 
 	// Route service query parameters
 	Alternatives string
@@ -37,10 +37,10 @@ func NewRequest() *Request {
 		Service:      "route",
 		Version:      "v1",
 		Profile:      "driving",
-		Coordinates:  osrm.Coordinates{},
-		Alternatives: option.AlternativesDefaultValue,
-		Steps:        option.StepsDefaultValue,
-		Annotations:  option.AnnotationsDefaultValue,
+		Coordinates:  coordinate.Coordinates{},
+		Alternatives: options.AlternativesDefaultValue,
+		Steps:        options.StepsDefaultValue,
+		Annotations:  options.AnnotationsDefaultValue,
 	}
 }
 
@@ -76,14 +76,14 @@ func (r *Request) QueryValues() (v url.Values) {
 
 	v = make(url.Values)
 
-	if r.Alternatives != option.AlternativesDefaultValue {
-		v.Add(option.KeyAlternatives, r.Alternatives)
+	if r.Alternatives != options.AlternativesDefaultValue {
+		v.Add(options.KeyAlternatives, r.Alternatives)
 	}
-	if r.Steps != option.StepsDefaultValue {
-		v.Add(option.KeySteps, strconv.FormatBool(r.Steps))
+	if r.Steps != options.StepsDefaultValue {
+		v.Add(options.KeySteps, strconv.FormatBool(r.Steps))
 	}
-	if r.Annotations != option.AnnotationsDefaultValue {
-		v.Add(option.KeyAnnotations, r.Annotations)
+	if r.Annotations != options.AnnotationsDefaultValue {
+		v.Add(options.KeyAnnotations, r.Annotations)
 	}
 
 	return
@@ -137,7 +137,7 @@ func (r *Request) parsePath(path string) error {
 	r.Profile = s[2]
 
 	var err error
-	if r.Coordinates, err = osrm.ParseCoordinates(s[3]); err != nil {
+	if r.Coordinates, err = coordinate.ParseCoordinates(s[3]); err != nil {
 		return err
 	}
 
@@ -146,13 +146,13 @@ func (r *Request) parsePath(path string) error {
 
 func (r *Request) parseQuery(values url.Values) {
 
-	if v := values.Get(option.KeyAlternatives); len(v) > 0 {
+	if v := values.Get(options.KeyAlternatives); len(v) > 0 {
 		if alternatives, _, err := parseAlternatives(v); err == nil {
 			r.Alternatives = alternatives
 		}
 	}
 
-	if v := values.Get(option.KeySteps); len(v) > 0 {
+	if v := values.Get(options.KeySteps); len(v) > 0 {
 		if b, err := strconv.ParseBool(v); err == nil {
 			r.Steps = b
 		} else {
@@ -160,7 +160,7 @@ func (r *Request) parseQuery(values url.Values) {
 		}
 	}
 
-	if v := values.Get(option.KeyAnnotations); len(v) > 0 {
+	if v := values.Get(options.KeyAnnotations); len(v) > 0 {
 		if annotations, err := parseAnnotations(v); err == nil {
 			r.Annotations = annotations
 		}
@@ -188,14 +188,14 @@ func parseAlternatives(s string) (string, int, error) {
 func parseAnnotations(s string) (string, error) {
 
 	validAnnotationsValues := map[string]struct{}{
-		option.AnnotationsValueTrue:        struct{}{},
-		option.AnnotationsValueFalse:       struct{}{},
-		option.AnnotationsValueNodes:       struct{}{},
-		option.AnnotationsValueDistance:    struct{}{},
-		option.AnnotationsValueDuration:    struct{}{},
-		option.AnnotationsValueDataSources: struct{}{},
-		option.AnnotationsValueWeight:      struct{}{},
-		option.AnnotationsValueSpeed:       struct{}{},
+		options.AnnotationsValueTrue:        struct{}{},
+		options.AnnotationsValueFalse:       struct{}{},
+		options.AnnotationsValueNodes:       struct{}{},
+		options.AnnotationsValueDistance:    struct{}{},
+		options.AnnotationsValueDuration:    struct{}{},
+		options.AnnotationsValueDataSources: struct{}{},
+		options.AnnotationsValueWeight:      struct{}{},
+		options.AnnotationsValueSpeed:       struct{}{},
 	}
 
 	splits := strings.Split(s, api.Comma)
