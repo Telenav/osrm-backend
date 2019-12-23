@@ -114,7 +114,7 @@ func (r *Request) RequestURI() string {
 
 // AlternativesNumber returns alternatives as number value.
 func (r *Request) AlternativesNumber() int {
-	_, n, _ := parseAlternatives(r.Alternatives)
+	_, n, _ := options.ParseAlternatives(r.Alternatives)
 	return n
 }
 
@@ -147,7 +147,7 @@ func (r *Request) parsePath(path string) error {
 func (r *Request) parseQuery(values url.Values) {
 
 	if v := values.Get(options.KeyAlternatives); len(v) > 0 {
-		if alternatives, _, err := parseAlternatives(v); err == nil {
+		if alternatives, _, err := options.ParseAlternatives(v); err == nil {
 			r.Alternatives = alternatives
 		}
 	}
@@ -161,52 +161,9 @@ func (r *Request) parseQuery(values url.Values) {
 	}
 
 	if v := values.Get(options.KeyAnnotations); len(v) > 0 {
-		if annotations, err := parseAnnotations(v); err == nil {
+		if annotations, err := options.ParseAnnotations(v); err == nil {
 			r.Annotations = annotations
 		}
 	}
 
-}
-
-func parseAlternatives(s string) (string, int, error) {
-
-	if n, err := strconv.ParseUint(s, 10, 32); err == nil {
-		return s, int(n), nil
-	}
-	if b, err := strconv.ParseBool(s); err == nil {
-		if b {
-			return s, 2, nil // true : 2
-		}
-		return s, 1, nil // false : 1
-	}
-
-	err := fmt.Errorf("invalid alternatives value: %s", s)
-	glog.Warning(err)
-	return "", 1, err // use value 1 if fail
-}
-
-func parseAnnotations(s string) (string, error) {
-
-	validAnnotationsValues := map[string]struct{}{
-		options.AnnotationsValueTrue:        struct{}{},
-		options.AnnotationsValueFalse:       struct{}{},
-		options.AnnotationsValueNodes:       struct{}{},
-		options.AnnotationsValueDistance:    struct{}{},
-		options.AnnotationsValueDuration:    struct{}{},
-		options.AnnotationsValueDataSources: struct{}{},
-		options.AnnotationsValueWeight:      struct{}{},
-		options.AnnotationsValueSpeed:       struct{}{},
-	}
-
-	splits := strings.Split(s, api.Comma)
-	for _, split := range splits {
-		if _, found := validAnnotationsValues[split]; !found {
-
-			err := fmt.Errorf("invalid annotations value: %s", s)
-			glog.Warning(err)
-			return "", err
-		}
-	}
-
-	return s, nil
 }
