@@ -8,8 +8,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/golang/glog"
-
 	"github.com/Telenav/osrm-backend/integration/pkg/api"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/coordinate"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route/options"
@@ -153,10 +151,8 @@ func (r *Request) parseQuery(values url.Values) {
 	}
 
 	if v := values.Get(options.KeySteps); len(v) > 0 {
-		if b, err := strconv.ParseBool(v); err == nil {
+		if b, err := options.ParseSteps(v); err == nil {
 			r.Steps = b
-		} else {
-			glog.Warning(err)
 		}
 	}
 

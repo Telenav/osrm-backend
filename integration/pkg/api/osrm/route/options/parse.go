@@ -27,6 +27,17 @@ func ParseAlternatives(s string) (string, int, error) {
 	return "", 1, err // use value 1 if fail
 }
 
+// ParseSteps parses route service Steps option.
+func ParseSteps(s string) (bool, error) {
+	b, err := strconv.ParseBool(s)
+	if err != nil {
+		glog.Warning(err)
+		return false, err
+	}
+
+	return b, nil
+}
+
 // ParseAnnotations parses route service Annotations option.
 func ParseAnnotations(s string) (string, error) {
 
