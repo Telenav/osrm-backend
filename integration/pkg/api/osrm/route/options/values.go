@@ -32,3 +32,30 @@ const (
 
 	AnnotationsDefaultValue = AnnotationsValueFalse // default
 )
+
+// Geometries values
+const (
+	GeometriesValuePolyline  = "polyline"
+	GeometriesValuePolyline6 = "polyline6"
+	GeometriesValueGeojson   = "geojson"
+
+	GeometriesDefaultValue = GeometriesValuePolyline
+)
+
+// Overview values
+const (
+	OverviewValueSimplified = "simplified"
+	OverviewValueFull       = "full"
+	OverviewValueFalse      = "false"
+
+	OverviewDefaultValue = OverviewValueSimplified
+)
+
+// ContinueStraight values
+const (
+	ContinueStraightValueDefault = "default"
+	ContinueStraightValueTrue    = ValueTrue
+	ContinueStraightValueFalse   = ValueFalse
+
+	ContinueStraightDefaultValue = ContinueStraightValueDefault
+)

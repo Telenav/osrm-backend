@@ -98,3 +98,90 @@ func TestParseAnnotations(t *testing.T) {
 	}
 
 }
+
+func TestParseGeometries(t *testing.T) {
+
+	cases := []struct {
+		s          string
+		expect     string
+		expectFail bool
+	}{
+		{"polyline", GeometriesValuePolyline, false},
+		{"polyline6", GeometriesValuePolyline6, false},
+		{"geojson", GeometriesValueGeojson, false},
+		{"polyli", "", true},
+		{"", "", true},
+	}
+
+	for _, c := range cases {
+		geometries, err := ParseGeometries(c.s)
+		if err != nil && c.expectFail {
+			continue //right
+		} else if (err != nil && !c.expectFail) || (err == nil && c.expectFail) {
+			t.Errorf("parse %s expect fail %t, but got err %v", c.s, c.expectFail, err)
+			continue
+		}
+
+		if !reflect.DeepEqual(geometries, c.expect) {
+			t.Errorf("parse %s, expect %v, but got %v", c.s, c.expect, geometries)
+		}
+	}
+}
+
+func TestParseOverview(t *testing.T) {
+
+	cases := []struct {
+		s          string
+		expect     string
+		expectFail bool
+	}{
+		{"simplified", OverviewValueSimplified, false},
+		{"full", OverviewValueFull, false},
+		{"false", OverviewValueFalse, false},
+		{"simp", "", true},
+		{"", "", true},
+	}
+
+	for _, c := range cases {
+		overview, err := ParseOverview(c.s)
+		if err != nil && c.expectFail {
+			continue //right
+		} else if (err != nil && !c.expectFail) || (err == nil && c.expectFail) {
+			t.Errorf("parse %s expect fail %t, but got err %v", c.s, c.expectFail, err)
+			continue
+		}
+
+		if !reflect.DeepEqual(overview, c.expect) {
+			t.Errorf("parse %s, expect %v, but got %v", c.s, c.expect, overview)
+		}
+	}
+}
+
+func TestParseContinueStraight(t *testing.T) {
+
+	cases := []struct {
+		s          string
+		expect     string
+		expectFail bool
+	}{
+		{"default", ContinueStraightValueDefault, false},
+		{"false", ContinueStraightValueFalse, false},
+		{"true", ContinueStraightValueTrue, false},
+		{"1", "", true},
+		{"", "", true},
+	}
+
+	for _, c := range cases {
+		continueStraight, err := ParseContinueStraight(c.s)
+		if err != nil && c.expectFail {
+			continue //right
+		} else if (err != nil && !c.expectFail) || (err == nil && c.expectFail) {
+			t.Errorf("parse %s expect fail %t, but got err %v", c.s, c.expectFail, err)
+			continue
+		}
+
+		if !reflect.DeepEqual(continueStraight, c.expect) {
+			t.Errorf("parse %s, expect %v, but got %v", c.s, c.expect, continueStraight)
+		}
+	}
+}

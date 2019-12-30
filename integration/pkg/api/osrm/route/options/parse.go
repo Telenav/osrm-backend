@@ -64,3 +64,51 @@ func ParseAnnotations(s string) (string, error) {
 
 	return s, nil
 }
+
+// ParseGeometries parses route service Geometries option.
+func ParseGeometries(s string) (string, error) {
+	validGeometriesValues := map[string]struct{}{
+		GeometriesValuePolyline:  struct{}{},
+		GeometriesValuePolyline6: struct{}{},
+		GeometriesValueGeojson:   struct{}{},
+	}
+
+	if _, found := validGeometriesValues[s]; !found {
+		err := fmt.Errorf("invalid geometries value: %s", s)
+		glog.Warning(err)
+		return "", err
+	}
+	return s, nil
+}
+
+// ParseOverview parses route service Overview option.
+func ParseOverview(s string) (string, error) {
+	validOverviewValues := map[string]struct{}{
+		OverviewValueSimplified: struct{}{},
+		OverviewValueFull:       struct{}{},
+		OverviewValueFalse:      struct{}{},
+	}
+
+	if _, found := validOverviewValues[s]; !found {
+		err := fmt.Errorf("invalid overview value: %s", s)
+		glog.Warning(err)
+		return "", err
+	}
+	return s, nil
+}
+
+// ParseContinueStraight parses route service ContinueStraight option.
+func ParseContinueStraight(s string) (string, error) {
+	validContinueStraightValues := map[string]struct{}{
+		ContinueStraightValueDefault: struct{}{},
+		ContinueStraightValueFalse:   struct{}{},
+		ContinueStraightValueTrue:    struct{}{},
+	}
+
+	if _, found := validContinueStraightValues[s]; !found {
+		err := fmt.Errorf("invalid continue_straight value: %s", s)
+		glog.Warning(err)
+		return "", err
+	}
+	return s, nil
+}

@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/golang/glog"
+
 	"github.com/Telenav/osrm-backend/integration/pkg/api"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/coordinate"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route/options"
@@ -15,30 +17,39 @@ import (
 
 // Request represent OSRM api v1 route request parameters.
 type Request struct {
+
+	// Path
 	Service     string
 	Version     string
 	Profile     string
 	Coordinates coordinate.Coordinates
 
+	//TODO: generic parameters
+
 	// Route service query parameters
-	Alternatives string
-	Steps        bool
-	Annotations  string
-
-	//TODO: other parameters
-
+	Alternatives     string
+	Steps            bool
+	Annotations      string
+	Geometries       string
+	Overview         string
+	ContinueStraight string
+	Waypoints        coordinate.Indexes
 }
 
 // NewRequest create an empty route Request.
 func NewRequest() *Request {
 	return &Request{
-		Service:      "route",
-		Version:      "v1",
-		Profile:      "driving",
-		Coordinates:  coordinate.Coordinates{},
-		Alternatives: options.AlternativesDefaultValue,
-		Steps:        options.StepsDefaultValue,
-		Annotations:  options.AnnotationsDefaultValue,
+		Service:          "route",
+		Version:          "v1",
+		Profile:          "driving",
+		Coordinates:      coordinate.Coordinates{},
+		Alternatives:     options.AlternativesDefaultValue,
+		Steps:            options.StepsDefaultValue,
+		Annotations:      options.AnnotationsDefaultValue,
+		Geometries:       options.GeometriesDefaultValue,
+		Overview:         options.OverviewDefaultValue,
+		ContinueStraight: options.ContinueStraightDefaultValue,
+		Waypoints:        coordinate.Indexes{},
 	}
 }
 
@@ -54,17 +65,38 @@ func ParseRequestURI(requestURI string) (*Request, error) {
 }
 
 // ParseRequestURL parse Request URL to Request.
-func ParseRequestURL(url *url.URL) (*Request, error) {
-	if url == nil {
+func ParseRequestURL(u *url.URL) (*Request, error) {
+	if u == nil {
 		return nil, fmt.Errorf("empty URL input")
 	}
 
 	req := NewRequest()
 
-	if err := req.parsePath(url.Path); err != nil {
+	if err := req.parsePath(u.Path); err != nil {
 		return nil, err
 	}
-	req.parseQuery(url.Query())
+
+	//NOTE: url.Query() will also use ";" as seprator, which is not expected. So we implements our own version instead.
+	//req.parseQuery(url.Query())
+	p := func(rawQueryString string) url.Values { // slightly ignore error
+		queryStr, err := url.QueryUnescape(rawQueryString)
+		if err != nil {
+			glog.Warning(err)
+			return url.Values{}
+		}
+
+		values := url.Values{}
+		for _, s := range strings.Split(queryStr, api.Ampersand) {
+			keyValues := strings.Split(s, api.EqualTo)
+			if len(keyValues) != 2 {
+				glog.Warningf("invalid query key-value %s", s)
+				continue
+			}
+			values[keyValues[0]] = []string{keyValues[1]}
+		}
+		return values
+	}
+	req.parseQuery(p(u.RawQuery))
 
 	return req, nil
 }
@@ -83,13 +115,31 @@ func (r *Request) QueryValues() (v url.Values) {
 	if r.Annotations != options.AnnotationsDefaultValue {
 		v.Add(options.KeyAnnotations, r.Annotations)
 	}
+	if r.Geometries != options.GeometriesDefaultValue {
+		v.Add(options.KeyGeometries, r.Geometries)
+	}
+	if r.Overview != options.OverviewDefaultValue {
+		v.Add(options.KeyOverview, r.Overview)
+	}
+	if r.ContinueStraight != options.ContinueStraightDefaultValue {
+		v.Add(options.KeyContinueStraight, r.ContinueStraight)
+	}
+	if len(r.Waypoints) > 0 {
+		v.Add(options.KeyWaypoints, r.Waypoints.String())
+	}
 
 	return
 }
 
-// QueryString convert RouteRequest to "URL encoded" form ("bar=baz&foo=quux") .
+// QueryString convert RouteRequest to "URL encoded" form ("bar=baz&foo=quux"), but NOT escape.
 func (r *Request) QueryString() string {
-	return r.QueryValues().Encode()
+	rawQuery := r.QueryValues().Encode()
+	query, err := url.QueryUnescape(rawQuery)
+	if err != nil {
+		glog.Warning(err)
+		return rawQuery // use rawQuery if unescape fail
+	}
+	return query
 }
 
 // RequestURI convert RouteRequest to RequestURI (e.g. "/path?foo=bar").
@@ -159,6 +209,30 @@ func (r *Request) parseQuery(values url.Values) {
 	if v := values.Get(options.KeyAnnotations); len(v) > 0 {
 		if annotations, err := options.ParseAnnotations(v); err == nil {
 			r.Annotations = annotations
+		}
+	}
+
+	if v := values.Get(options.KeyGeometries); len(v) > 0 {
+		if geometries, err := options.ParseGeometries(v); err == nil {
+			r.Geometries = geometries
+		}
+	}
+
+	if v := values.Get(options.KeyOverview); len(v) > 0 {
+		if overview, err := options.ParseOverview(v); err == nil {
+			r.Overview = overview
+		}
+	}
+
+	if v := values.Get(options.KeyContinueStraight); len(v) > 0 {
+		if continueStraight, err := options.ParseContinueStraight(v); err == nil {
+			r.ContinueStraight = continueStraight
+		}
+	}
+
+	if v := values.Get(options.KeyWaypoints); len(v) > 0 {
+		if indexes, err := coordinate.PraseIndexes(v); err == nil {
+			r.Waypoints = indexes
 		}
 	}
 
