@@ -77,26 +77,8 @@ func ParseRequestURL(u *url.URL) (*Request, error) {
 	}
 
 	//NOTE: url.Query() will also use ";" as seprator, which is not expected. So we implements our own version instead.
-	//req.parseQuery(url.Query())
-	p := func(rawQueryString string) url.Values { // slightly ignore error
-		queryStr, err := url.QueryUnescape(rawQueryString)
-		if err != nil {
-			glog.Warning(err)
-			return url.Values{}
-		}
-
-		values := url.Values{}
-		for _, s := range strings.Split(queryStr, api.Ampersand) {
-			keyValues := strings.Split(s, api.EqualTo)
-			if len(keyValues) != 2 {
-				glog.Warningf("invalid query key-value %s", s)
-				continue
-			}
-			values[keyValues[0]] = []string{keyValues[1]}
-		}
-		return values
-	}
-	req.parseQuery(p(u.RawQuery))
+	//req.parseQuery(u.Query())
+	req.parseQuery(api.ParseQueryDiscardError(u.RawQuery))
 
 	return req, nil
 }
