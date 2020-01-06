@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-package proxy;
+package trafficproxy;
+
+option cc_enable_arenas = true;
 
 service TrafficService {
   rpc GetTrafficData(TrafficRequest) returns (stream TrafficResponse) {}
@@ -41,6 +43,7 @@ message TrafficSource {
   string region = 1;
   string trafficProvider = 2;
   string mapProvider = 3;
+  repeated string subregion = 4;    // leave empty if requires full region data
 }
 
 enum TrafficType {
@@ -51,12 +54,14 @@ enum TrafficType {
 message FlowResponse {
   Flow flow = 1;
   Action action = 2;
+  string TrasctionID = 3; // unique ID for tracking the Flow from provider to end user
 }
 
 message Flow {
   sint64 wayId = 1; // positive means forward, negative means backward
-  float speed = 2;  // always >= 0
-  TrafficLevel trafficLevel = 3;
+  float speed = 2;  // unit: meter per second. always >= 0
+  TrafficLevel trafficLevel = 3;  // `trafficLevel==CLOSED` means blocking Flow
+  int64 timestamp = 4; // received timestamp from provider, number of milliseconds since the Epoch
 }
 
 enum TrafficLevel {
@@ -69,7 +74,6 @@ enum TrafficLevel {
 }
 
 enum Action {
-  ADD = 0;
   UPDATE = 1;
   DELETE = 2;
 }
@@ -77,10 +81,11 @@ enum Action {
 message IncidentResponse {
   Incident incident = 1;
   Action action = 2;
+  string TrasctionID = 3; // unique ID for tracking the Flow from provider to end user
 }
 
 message Incident {
-  string incidentId = 1;  // unique id of this incident
+  string incidentId = 1;  // unique ID of this incident
   repeated sint64 affectedWayIds = 2; // positive means forward, negative means backward
   IncidentType incidentType = 3;
   IncidentSeverity incidentSeverity = 4;
@@ -92,6 +97,7 @@ message Incident {
   int32 eventCode = 10;
   int32 alertCEventQuantifier = 11;
   bool isBlocking = 12;
+  int64 timestamp = 13; // received timestamp from provider, number of milliseconds since the Epoch
 }
 
 enum IncidentType {
