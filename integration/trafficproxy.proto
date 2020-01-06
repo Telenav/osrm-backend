@@ -19,8 +19,8 @@ message TrafficRequest {
   }
 
   // timestamp of expected traffic data, number of milliseconds since the Epoch. 
-  // 0 means request live traffic. 
-  // If not 0, only allows trafficAllRequest and trafficWayIdsRequest. 
+  // 0 means request for current(live) traffic data, otherwise request for archived traffic data.
+  // For archived traffic data, only allows trafficAllRequest and trafficWayIdsRequest. 
   int64 timestamp = 6; 
 }
 
