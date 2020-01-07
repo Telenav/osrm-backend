@@ -79,8 +79,8 @@ enum TrafficLevel {
 }
 
 enum Action {
-  UPDATE = 1;
-  DELETE = 2;
+  UPDATE = 0;
+  DELETE = 1;
 }
 
 message IncidentResponse {
