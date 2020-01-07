@@ -14,20 +14,20 @@ message TrafficRequest {
   
   oneof request_oneof {
     TrafficAllRequest trafficAllRequest = 3;
-    TrafficWayIdsRequest trafficWayIdsRequest = 4;
+    TrafficWayIDsRequest trafficWayIDsRequest = 4;
     TrafficStreamingDeltaRequest trafficStreamingDeltaRequest = 5;
   }
 
   // timestamp of expected traffic data, number of milliseconds since the Epoch. 
   // 0 means request for current(live) traffic data, otherwise request for archived traffic data.
-  // For archived traffic data, only allows trafficAllRequest and trafficWayIdsRequest. 
+  // For archived traffic data, only allows trafficAllRequest and trafficWayIDsRequest. 
   int64 timestamp = 6; 
 }
 
 message TrafficAllRequest {}
 
-message TrafficWayIdsRequest {
-  repeated sint64 wayIds = 1; // positive means forward, negative means backward
+message TrafficWayIDsRequest {
+  repeated sint64 wayIDs = 1; // positive means forward, negative means backward
 }
 
 message TrafficStreamingDeltaRequest {
@@ -59,11 +59,11 @@ enum TrafficType {
 message FlowResponse {
   Flow flow = 1;
   Action action = 2;
-  string TrasctionID = 3; // unique ID for tracking the Flow from provider to end user
+  string trasctionID = 3; // unique ID for tracking the Flow from provider to end user
 }
 
 message Flow {
-  sint64 wayId = 1; // positive means forward, negative means backward
+  sint64 wayID = 1; // positive means forward, negative means backward
   float speed = 2;  // unit: meter per second. always >= 0
   TrafficLevel trafficLevel = 3;  // `trafficLevel==CLOSED` means blocking Flow
   int64 timestamp = 4; // received timestamp from provider, number of milliseconds since the Epoch
@@ -86,12 +86,12 @@ enum Action {
 message IncidentResponse {
   Incident incident = 1;
   Action action = 2;
-  string TrasctionID = 3; // unique ID for tracking the Flow from provider to end user
+  string trasctionID = 3; // unique ID for tracking the Flow from provider to end user
 }
 
 message Incident {
-  string incidentId = 1;  // unique ID of this incident
-  repeated sint64 affectedWayIds = 2; // positive means forward, negative means backward
+  string incidentID = 1;  // unique ID of this incident
+  repeated sint64 affectedWayIDs = 2; // positive means forward, negative means backward
   IncidentType incidentType = 3;
   IncidentSeverity incidentSeverity = 4;
   Location incidentLocation = 5;
