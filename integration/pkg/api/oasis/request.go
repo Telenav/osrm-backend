@@ -1,0 +1,168 @@
+package oasis
+
+import (
+	"errors"
+	"fmt"
+	"math"
+	"net/url"
+	"strconv"
+	"strings"
+
+	"github.com/Telenav/osrm-backend/integration/pkg/api"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis/genericoptions"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis/options"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/coordinate"
+	"github.com/golang/glog"
+)
+
+// Request for oasis service
+type Request struct {
+	Service     string
+	Version     string
+	Profile     string
+	Coordinates coordinate.Coordinates
+
+	MaxRange    float64
+	CurrRange   float64
+	PreferLevel float64
+	SafeLevel   float64
+}
+
+// NewRequest create an empty oasis Request.
+func NewRequest() *Request {
+	return &Request{
+		// Path
+		Service:     "oasis",
+		Version:     "v1",
+		Profile:     "earliest",
+		Coordinates: coordinate.Coordinates{},
+
+		// generic options
+		MaxRange:    genericoptions.InvalidMaxRangeValue,
+		CurrRange:   genericoptions.InvalidCurrentRangeValue,
+		PreferLevel: genericoptions.DefaultPreferLevel,
+		SafeLevel:   genericoptions.DefaultSafeLevel,
+	}
+}
+
+// ParseRequestURL parse Request URL to Request.
+func ParseRequestURL(u *url.URL) (*Request, error) {
+	if u == nil {
+		return nil, fmt.Errorf("empty URL input")
+	}
+
+	req := NewRequest()
+
+	if err := req.parsePath(u.Path); err != nil {
+		return nil, err
+	}
+
+	params, err := url.ParseQuery(u.RawQuery)
+	if err != nil {
+		glog.Warning(err)
+		return nil, err
+	}
+
+	if err := req.parseQuery(params); err != nil {
+		glog.Warning(err)
+		return nil, err
+	}
+
+	if err := req.validate(); err != nil {
+		glog.Warning(err)
+		return nil, err
+	}
+
+	return req, nil
+}
+
+func (r *Request) parsePath(path string) error {
+	p := path
+	p = strings.TrimPrefix(p, api.Slash)
+	p = strings.TrimSuffix(p, api.Slash)
+
+	s := strings.Split(p, api.Slash)
+	if len(s) < 4 {
+		return fmt.Errorf("invalid path values %v parsed from %s", s, path)
+	}
+	r.Service = s[0]
+	r.Version = s[1]
+	r.Profile = s[2]
+
+	var err error
+	if r.Coordinates, err = coordinate.ParseCoordinates(s[3]); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *Request) parseQuery(params url.Values) error {
+	for k, v := range params {
+		if len(v) <= 0 {
+			continue
+		}
+
+		var valfloat float64
+		if s, err := strconv.ParseFloat(v[0], 64); err != nil {
+			return err
+		} else {
+			valfloat = float64(s)
+		}
+
+		switch k {
+		case options.KeyMaxRange:
+			r.MaxRange = valfloat
+		case options.KeyCurrRange:
+			r.CurrRange = valfloat
+		case options.KeyPreferLevel:
+			r.PreferLevel = valfloat
+		case options.KeySafeLevel:
+			r.SafeLevel = valfloat
+		}
+	}
+
+	return nil
+}
+
+func (r *Request) validate() error {
+	// MaxRange must be set
+	if floatEquals(r.MaxRange, genericoptions.InvalidMaxRangeValue) || isFloatNegative(r.MaxRange) {
+		return errors.New("Invalid value for " + options.KeyMaxRange + ".")
+	}
+
+	// CurrRange must be set
+	if floatEquals(r.CurrRange, genericoptions.InvalidCurrentRangeValue) || isFloatNegative(r.CurrRange) {
+		return errors.New("Invalid value for " + options.KeyCurrRange + ".")
+	}
+
+	// CurrRange must be smaller or equal to MaxRange
+	if r.CurrRange > r.MaxRange {
+		return errors.New(options.KeyCurrRange + " must be smaller or equal to " + options.KeyMaxRange + ".")
+	}
+
+	// CurrRange must be smaller or equal to MaxRange
+	if r.PreferLevel > r.MaxRange {
+		return errors.New(options.KeyPreferLevel + " must be smaller or equal to " + options.KeyMaxRange + ".")
+	}
+
+	// CurrRange must be smaller or equal to MaxRange
+	if r.SafeLevel > r.MaxRange {
+		return errors.New(options.KeySafeLevel + " must be smaller or equal to " + options.KeyMaxRange + ".")
+	}
+
+	return nil
+}
+
+var epsilon float64 = 0.00000001
+
+func floatEquals(a, b float64) bool {
+	if (a-b) < epsilon && (b-a) < epsilon {
+		return true
+	}
+	return false
+}
+
+func isFloatNegative(a float64) bool {
+	return !floatEquals(math.Abs(a), a)
+}
