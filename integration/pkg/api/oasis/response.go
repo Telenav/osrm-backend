@@ -15,7 +15,7 @@ type Solution struct {
 	Duration       float64          `json:"duration"`
 	Weight         float64          `json:"weight"`
 	WeightName     string           `json:"weight_name"`
-	ChargeStations []*ChargeStation `json:"charge_station"`
+	ChargeStations []*ChargeStation `json:"charge_stations"`
 }
 
 // ChargeStation contains location, time and energy level, could be used as waypoints for routing request
