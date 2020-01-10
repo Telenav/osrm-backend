@@ -166,3 +166,60 @@ func floatEquals(a, b float64) bool {
 func isFloatNegative(a float64) bool {
 	return !floatEquals(math.Abs(a), a)
 }
+
+// RequestURI convert RouteRequest to RequestURI (e.g. "/path?foo=bar").
+// see more in https://golang.org/pkg/net/url/#URL.RequestURI
+func (r *Request) RequestURI() string {
+	s := r.pathPrefix()
+
+	coordinatesStr := r.Coordinates.String()
+	if len(coordinatesStr) > 0 {
+		s += coordinatesStr
+	}
+
+	queryStr := r.QueryString()
+	if len(queryStr) > 0 {
+		s += api.QuestionMark + queryStr
+	}
+
+	return s
+}
+
+func (r *Request) pathPrefix() string {
+	//i.e. "/oasis/v1/earliest/"
+	return api.Slash + r.Service + api.Slash + r.Version + api.Slash + r.Profile + api.Slash
+}
+
+// QueryString convert RouteRequest to "URL encoded" form ("bar=baz&foo=quux"), but NOT escape.
+func (r *Request) QueryString() string {
+	rawQuery := r.QueryValues().Encode()
+	query, err := url.QueryUnescape(rawQuery)
+	if err != nil {
+		glog.Warning(err)
+		return rawQuery // use rawQuery if unescape fail
+	}
+	return query
+}
+
+// QueryValues convert route Request to url.Values.
+func (r *Request) QueryValues() (v url.Values) {
+	v = make(url.Values)
+
+	if r.MaxRange != 0 {
+		v.Add(options.KeyMaxRange, strconv.FormatFloat(r.MaxRange, 'f', -1, 64))
+	}
+
+	if r.CurrRange != 0 {
+		v.Add(options.KeyCurrRange, strconv.FormatFloat(r.CurrRange, 'f', -1, 64))
+	}
+
+	if r.PreferLevel != 0 {
+		v.Add(options.KeyPreferLevel, strconv.FormatFloat(r.PreferLevel, 'f', -1, 64))
+	}
+
+	if r.SafeLevel != 0 {
+		v.Add(options.KeySafeLevel, strconv.FormatFloat(r.SafeLevel, 'f', -1, 64))
+	}
+
+	return
+}
