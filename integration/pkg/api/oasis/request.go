@@ -3,13 +3,11 @@ package oasis
 import (
 	"errors"
 	"fmt"
-	"math"
 	"net/url"
 	"strconv"
 	"strings"
 
 	"github.com/Telenav/osrm-backend/integration/pkg/api"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis/genericoptions"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis/options"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/coordinate"
 	"github.com/golang/glog"
@@ -38,10 +36,10 @@ func NewRequest() *Request {
 		Coordinates: coordinate.Coordinates{},
 
 		// generic options
-		MaxRange:    genericoptions.InvalidMaxRangeValue,
-		CurrRange:   genericoptions.InvalidCurrentRangeValue,
-		PreferLevel: genericoptions.DefaultPreferLevel,
-		SafeLevel:   genericoptions.DefaultSafeLevel,
+		MaxRange:    options.InvalidMaxRangeValue,
+		CurrRange:   options.InvalidCurrentRangeValue,
+		PreferLevel: options.DefaultPreferLevel,
+		SafeLevel:   options.DefaultSafeLevel,
 	}
 }
 
@@ -127,12 +125,12 @@ func (r *Request) parseQuery(params url.Values) error {
 
 func (r *Request) validate() error {
 	// MaxRange must be set
-	if floatEquals(r.MaxRange, genericoptions.InvalidMaxRangeValue) || isFloatNegative(r.MaxRange) {
+	if floatEquals(r.MaxRange, options.InvalidMaxRangeValue) || r.MaxRange < 0 {
 		return errors.New("Invalid value for " + options.KeyMaxRange + ".")
 	}
 
 	// CurrRange must be set
-	if floatEquals(r.CurrRange, genericoptions.InvalidCurrentRangeValue) || isFloatNegative(r.CurrRange) {
+	if floatEquals(r.CurrRange, options.InvalidCurrentRangeValue) || r.CurrRange < 0 {
 		return errors.New("Invalid value for " + options.KeyCurrRange + ".")
 	}
 
@@ -161,10 +159,6 @@ func floatEquals(a, b float64) bool {
 		return true
 	}
 	return false
-}
-
-func isFloatNegative(a float64) bool {
-	return !floatEquals(math.Abs(a), a)
 }
 
 // RequestURI convert RouteRequest to RequestURI (e.g. "/path?foo=bar").
