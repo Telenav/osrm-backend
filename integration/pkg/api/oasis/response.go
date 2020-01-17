@@ -1,6 +1,6 @@
 package oasis
 
-import "github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
+import "github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 
 // Response for oasis service
 type Response struct {
@@ -13,6 +13,7 @@ type Response struct {
 type Solution struct {
 	Distance       float64          `json:"distance"`
 	Duration       float64          `json:"duration"`
+	RemainingRage  float64          `json:"estimate_remaining_range"`
 	Weight         float64          `json:"weight"`
 	WeightName     string           `json:"weight_name"`
 	ChargeStations []*ChargeStation `json:"charge_stations"`
@@ -20,8 +21,9 @@ type Solution struct {
 
 // ChargeStation contains location, time and energy level, could be used as waypoints for routing request
 type ChargeStation struct {
-	route.Waypoint
-	WaitTime    float64 `json:"wait_time"`
-	ChargeTime  float64 `json:"charge_time"`
-	ChargeRange float64 `json:"charge_range"`
+	Address     []*nearbychargestation.Address `json:"address"`
+	WaitTime    float64                        `json:"wait_time"`
+	ChargeTime  float64                        `json:"charge_time"`
+	ChargeRange float64                        `json:"charge_range"`
+	DetailURL   string                         `json:"detail_url"`
 }
