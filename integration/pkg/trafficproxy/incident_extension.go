@@ -53,6 +53,8 @@ func (i *Incident) csvString(humanFriendly bool) string {
 		records = append(records, strconv.Itoa(isBlockingInteger))
 	}
 
+	records = append(records, strconv.Itoa(int(i.Timestamp)))
+
 	var buff bytes.Buffer
 	w := csv.NewWriter(&buff)
 	w.UseCRLF = false
