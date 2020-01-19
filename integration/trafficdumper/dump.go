@@ -6,12 +6,12 @@ import (
 	"os"
 	"time"
 
-	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 	"github.com/golang/glog"
 )
 
 // DumpFlowResponses dump flows to file/stdout.
-func (h Handler) DumpFlowResponses(flowResponses []*proxy.FlowResponse) {
+func (h Handler) DumpFlowResponses(flowResponses []*trafficproxy.FlowResponse) {
 	if len(flowResponses) == 0 {
 		return
 	}
@@ -53,7 +53,7 @@ func (h Handler) DumpFlowResponses(flowResponses []*proxy.FlowResponse) {
 }
 
 // DumpIncidentResponses dump incidents to file/stdout.
-func (h Handler) DumpIncidentResponses(incidentResponses []*proxy.IncidentResponse) {
+func (h Handler) DumpIncidentResponses(incidentResponses []*trafficproxy.IncidentResponse) {
 	if len(incidentResponses) == 0 {
 		return
 	}
