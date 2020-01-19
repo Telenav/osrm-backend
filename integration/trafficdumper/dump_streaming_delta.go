@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"time"
 
-	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 	"github.com/golang/glog"
 )
 
 // DumpStreamingDelta dumps traffic response from streaming delta channel.
-func DumpStreamingDelta(responseChan <-chan proxy.TrafficResponse) {
+func DumpStreamingDelta(responseChan <-chan trafficproxy.TrafficResponse) {
 
 	h := NewHandler()
 	startTime := time.Now()
-	trafficResponse := proxy.TrafficResponse{}
+	trafficResponse := trafficproxy.TrafficResponse{}
 
 	for {
 		resp, ok := <-responseChan

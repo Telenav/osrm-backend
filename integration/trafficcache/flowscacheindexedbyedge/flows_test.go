@@ -5,15 +5,15 @@ import (
 	"testing"
 
 	"github.com/Telenav/osrm-backend/integration/graph"
-	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 )
 
 func TestFlowsCache(t *testing.T) {
 
-	presetFlows := []*proxy.Flow{
-		&proxy.Flow{WayId: -1112859596, Speed: 6.110000, TrafficLevel: proxy.TrafficLevel_SLOW_SPEED},
-		&proxy.Flow{WayId: 119961953, Speed: 10.550000, TrafficLevel: proxy.TrafficLevel_SLOW_SPEED},
-		&proxy.Flow{WayId: -112614307, Speed: 16.110001, TrafficLevel: proxy.TrafficLevel_FREE_FLOW},
+	presetFlows := []*trafficproxy.Flow{
+		&trafficproxy.Flow{WayID: -1112859596, Speed: 6.110000, TrafficLevel: trafficproxy.TrafficLevel_SLOW_SPEED},
+		&trafficproxy.Flow{WayID: 119961953, Speed: 10.550000, TrafficLevel: trafficproxy.TrafficLevel_SLOW_SPEED},
+		&trafficproxy.Flow{WayID: -112614307, Speed: 16.110001, TrafficLevel: trafficproxy.TrafficLevel_FREE_FLOW},
 	}
 
 	wayid2NodeIDsMapping := wayID2NodeIDs{
@@ -25,7 +25,7 @@ func TestFlowsCache(t *testing.T) {
 	cache := New(wayid2NodeIDsMapping)
 
 	// update
-	cache.Update(newFlowResponses(presetFlows, proxy.Action_UPDATE))
+	cache.Update(newFlowResponses(presetFlows, trafficproxy.Action_UPDATE))
 	expectedFlowsIndexedByEdgeCount := int64(12)
 	if cache.Count() != expectedFlowsIndexedByEdgeCount {
 		t.Errorf("expect flows count %d but got %d", expectedFlowsIndexedByEdgeCount, cache.Count())
@@ -68,7 +68,7 @@ func TestFlowsCache(t *testing.T) {
 	// delete
 	deleteCount := 2
 	deleteFlows := presetFlows[:deleteCount]
-	cache.Update(newFlowResponses(deleteFlows, proxy.Action_DELETE))
+	cache.Update(newFlowResponses(deleteFlows, trafficproxy.Action_DELETE))
 	expectedFlowsIndexedByEdgeCount = int64(5)
 	if cache.Count() != expectedFlowsIndexedByEdgeCount {
 		t.Errorf("expect flows count %d but got %d", expectedFlowsIndexedByEdgeCount, cache.Count())
@@ -85,11 +85,11 @@ func TestFlowsCache(t *testing.T) {
 
 }
 
-func newFlowResponses(flows []*proxy.Flow, action proxy.Action) []*proxy.FlowResponse {
+func newFlowResponses(flows []*trafficproxy.Flow, action trafficproxy.Action) []*trafficproxy.FlowResponse {
 
-	flowResponses := []*proxy.FlowResponse{}
+	flowResponses := []*trafficproxy.FlowResponse{}
 	for _, f := range flows {
-		flowResponses = append(flowResponses, &proxy.FlowResponse{Flow: f, Action: action, XXX_NoUnkeyedLiteral: struct{}{}, XXX_unrecognized: nil, XXX_sizecache: 0})
+		flowResponses = append(flowResponses, &trafficproxy.FlowResponse{Flow: f, Action: action, XXX_NoUnkeyedLiteral: struct{}{}, XXX_unrecognized: nil, XXX_sizecache: 0})
 	}
 	return flowResponses
 }

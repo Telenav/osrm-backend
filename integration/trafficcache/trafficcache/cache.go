@@ -1,7 +1,7 @@
 package trafficcache
 
 import (
-	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 	"github.com/Telenav/osrm-backend/integration/trafficcache/flowscache"
 	"github.com/Telenav/osrm-backend/integration/trafficcache/incidentscache"
 	"github.com/golang/glog"
@@ -29,14 +29,14 @@ func (c *Cache) Clear() {
 }
 
 // Eat implements trafficeater.Eater inteface.
-func (c *Cache) Eat(r proxy.TrafficResponse) {
+func (c *Cache) Eat(r trafficproxy.TrafficResponse) {
 	glog.V(1).Infof("new traffic for cache, flows: %d, incidents: %d", len(r.FlowResponses), len(r.IncidentResponses))
 	c.Flows.Update(r.FlowResponses)
 	c.Incidents.Update(r.IncidentResponses)
 }
 
 // QueryFlow returns Live Traffic Flow if exist.
-func (c *Cache) QueryFlow(wayID int64) *proxy.Flow {
+func (c *Cache) QueryFlow(wayID int64) *trafficproxy.Flow {
 	return c.Flows.Query(wayID)
 }
 

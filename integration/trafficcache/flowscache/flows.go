@@ -3,19 +3,19 @@ package flowscache
 import (
 	"sync"
 
-	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 	"github.com/golang/glog"
 )
 
 // Cache stores flows in memory.
 type Cache struct {
 	m     sync.RWMutex
-	flows map[int64]*proxy.Flow
+	flows map[int64]*trafficproxy.Flow
 }
 
 // New creates a new cache to store flows in memory.
 func New() *Cache {
-	return &Cache{sync.RWMutex{}, map[int64]*proxy.Flow{}}
+	return &Cache{sync.RWMutex{}, map[int64]*trafficproxy.Flow{}}
 }
 
 //Clear clear the cache.
@@ -23,11 +23,11 @@ func (c *Cache) Clear() {
 	c.m.Lock()
 	defer c.m.Unlock()
 
-	c.flows = map[int64]*proxy.Flow{}
+	c.flows = map[int64]*trafficproxy.Flow{}
 }
 
 // Query returns Live Traffic Flow if exist.
-func (c *Cache) Query(wayID int64) *proxy.Flow {
+func (c *Cache) Query(wayID int64) *trafficproxy.Flow {
 	c.m.RLock()
 	defer c.m.RUnlock()
 
@@ -46,16 +46,16 @@ func (c *Cache) Count() int64 {
 }
 
 // Update updates flows in cache.
-func (c *Cache) Update(flowResp []*proxy.FlowResponse) {
+func (c *Cache) Update(flowResp []*trafficproxy.FlowResponse) {
 	c.m.Lock()
 	defer c.m.Unlock()
 
 	for _, f := range flowResp {
-		if f.Action == proxy.Action_UPDATE || f.Action == proxy.Action_ADD { //TODO: Action_ADD will be removed soon
-			c.flows[f.Flow.WayId] = f.Flow
+		if f.Action == trafficproxy.Action_UPDATE {
+			c.flows[f.Flow.WayID] = f.Flow
 			continue
-		} else if f.Action == proxy.Action_DELETE {
-			delete(c.flows, f.Flow.WayId)
+		} else if f.Action == trafficproxy.Action_DELETE {
+			delete(c.flows, f.Flow.WayID)
 			continue
 		}
 

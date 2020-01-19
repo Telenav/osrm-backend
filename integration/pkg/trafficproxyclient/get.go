@@ -6,16 +6,16 @@ import (
 	"io"
 	"time"
 
-	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 	"github.com/golang/glog"
 )
 
 // GetFlowsIncidents return flows and incidents for wayIds or full region.
-func GetFlowsIncidents(wayIds []int64) (*proxy.TrafficResponse, error) {
-	var outTrafficResponse proxy.TrafficResponse
+func GetFlowsIncidents(wayIDs []int64) (*trafficproxy.TrafficResponse, error) {
+	var outTrafficResponse trafficproxy.TrafficResponse
 	forStr := "all"
-	if len(wayIds) > 0 {
-		forStr = fmt.Sprintf("%d wayIds", len(wayIds))
+	if len(wayIDs) > 0 {
+		forStr = fmt.Sprintf("%d wayIds", len(wayIDs))
 	}
 
 	startTime := time.Now()
@@ -36,22 +36,22 @@ func GetFlowsIncidents(wayIds []int64) (*proxy.TrafficResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), params{}.rpcGetTimeout())
 	defer cancel()
 
-	// new proxy client
-	client := proxy.NewTrafficServiceClient(conn)
+	// new trafficproxy client
+	client := trafficproxy.NewTrafficServiceClient(conn)
 
 	// get flows
 	glog.Infof("getting flows,incidents for %s\n", forStr)
-	var req proxy.TrafficRequest
+	var req trafficproxy.TrafficRequest
 	req.TrafficSource = params{}.newTrafficSource()
 	req.TrafficType = params{}.newTrafficType()
-	if len(wayIds) > 0 {
-		var trafficWayIdsRequest proxy.TrafficRequest_TrafficWayIdsRequest
-		trafficWayIdsRequest.TrafficWayIdsRequest = new(proxy.TrafficWayIdsRequest)
-		trafficWayIdsRequest.TrafficWayIdsRequest.WayIds = wayIds
+	if len(wayIDs) > 0 {
+		var trafficWayIdsRequest trafficproxy.TrafficRequest_TrafficWayIDsRequest
+		trafficWayIdsRequest.TrafficWayIDsRequest = new(trafficproxy.TrafficWayIDsRequest)
+		trafficWayIdsRequest.TrafficWayIDsRequest.WayIDs = wayIDs
 		req.RequestOneof = &trafficWayIdsRequest
 	} else {
-		trafficAllRequest := new(proxy.TrafficRequest_TrafficAllRequest)
-		trafficAllRequest.TrafficAllRequest = new(proxy.TrafficAllRequest)
+		trafficAllRequest := new(trafficproxy.TrafficRequest_TrafficAllRequest)
+		trafficAllRequest.TrafficAllRequest = new(trafficproxy.TrafficAllRequest)
 		req.RequestOneof = trafficAllRequest
 	}
 

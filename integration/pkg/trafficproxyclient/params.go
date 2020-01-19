@@ -3,33 +3,33 @@ package trafficproxyclient
 import (
 	"time"
 
-	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 )
 
 // params is used to group request parameters together.
 type params struct{}
 
-func (p params) newTrafficSource() *proxy.TrafficSource {
-	t := proxy.TrafficSource{}
+func (p params) newTrafficSource() *trafficproxy.TrafficSource {
+	t := trafficproxy.TrafficSource{}
 	t.Region = flags.region
 	t.TrafficProvider = flags.trafficProvider
 	t.MapProvider = flags.mapProvider
 	return &t
 }
 
-func (p params) newTrafficType() []proxy.TrafficType {
-	t := []proxy.TrafficType{}
+func (p params) newTrafficType() []trafficproxy.TrafficType {
+	t := []trafficproxy.TrafficType{}
 	if flags.flow {
-		t = append(t, proxy.TrafficType_FLOW)
+		t = append(t, trafficproxy.TrafficType_FLOW)
 	}
 	if flags.incident {
-		t = append(t, proxy.TrafficType_INCIDENT)
+		t = append(t, trafficproxy.TrafficType_INCIDENT)
 	}
 	return t
 }
 
-func (p params) newStreamingRule() *proxy.TrafficStreamingDeltaRequest_StreamingRule {
-	var r proxy.TrafficStreamingDeltaRequest_StreamingRule
+func (p params) newStreamingRule() *trafficproxy.TrafficStreamingDeltaRequest_StreamingRule {
+	var r trafficproxy.TrafficStreamingDeltaRequest_StreamingRule
 	r.MaxSize = int32(flags.streamingDeltaMaxSize)
 	r.MaxTime = int32(flags.streamingDeltaMaxTime.Seconds())
 	return &r

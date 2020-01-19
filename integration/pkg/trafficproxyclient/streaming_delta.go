@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"io"
 
-	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 	"github.com/golang/glog"
 )
 
 // StreamingDeltaFlowsIncidents set up a new channel for traffic flows and incidents streaming delta.
-func StreamingDeltaFlowsIncidents(out chan<- proxy.TrafficResponse) error {
+func StreamingDeltaFlowsIncidents(out chan<- trafficproxy.TrafficResponse) error {
 
 	// make RPC client
 	conn, err := newGRPCConnection()
@@ -23,15 +23,15 @@ func StreamingDeltaFlowsIncidents(out chan<- proxy.TrafficResponse) error {
 	ctx := context.Background()
 
 	// new proxy client
-	client := proxy.NewTrafficServiceClient(conn)
+	client := trafficproxy.NewTrafficServiceClient(conn)
 
 	// get flows via stream
 	glog.Info("streaming delta traffic flows,incidents")
-	var req proxy.TrafficRequest
+	var req trafficproxy.TrafficRequest
 	req.TrafficSource = params{}.newTrafficSource()
 	req.TrafficType = params{}.newTrafficType()
-	trafficDeltaStreamRequest := new(proxy.TrafficRequest_TrafficStreamingDeltaRequest)
-	trafficDeltaStreamRequest.TrafficStreamingDeltaRequest = new(proxy.TrafficStreamingDeltaRequest)
+	trafficDeltaStreamRequest := new(trafficproxy.TrafficRequest_TrafficStreamingDeltaRequest)
+	trafficDeltaStreamRequest.TrafficStreamingDeltaRequest = new(trafficproxy.TrafficStreamingDeltaRequest)
 	trafficDeltaStreamRequest.TrafficStreamingDeltaRequest.StreamingRule = params{}.newStreamingRule()
 	req.RequestOneof = trafficDeltaStreamRequest
 

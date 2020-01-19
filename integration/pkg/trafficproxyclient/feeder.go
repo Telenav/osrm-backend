@@ -7,7 +7,7 @@ import (
 	"github.com/golang/glog"
 
 	"github.com/Telenav/osrm-backend/integration/pkg/trafficeater"
-	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 )
 
 // Feeder will continuesly feed traffic flows and incidents.
@@ -30,7 +30,7 @@ func (f *Feeder) RegisterEaters(e ...trafficeater.Eater) {
 // It'll block until `Shutdown` called or some error occurred.
 func (f *Feeder) Run() error {
 
-	feeds := make(chan proxy.TrafficResponse)
+	feeds := make(chan trafficproxy.TrafficResponse)
 
 	// feed eater
 	waitFeedingDone := make(chan struct{})
@@ -81,7 +81,7 @@ func (f *Feeder) Shutdown() {
 	//TODO:
 }
 
-func (f *Feeder) feed(in <-chan proxy.TrafficResponse) {
+func (f *Feeder) feed(in <-chan trafficproxy.TrafficResponse) {
 	for {
 		resp, ok := <-in
 		if !ok {

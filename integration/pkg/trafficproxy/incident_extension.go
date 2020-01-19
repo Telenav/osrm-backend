@@ -1,4 +1,4 @@
-package proxy
+package trafficproxy
 
 import (
 	"bytes"
@@ -20,10 +20,10 @@ func (i *Incident) HumanFriendlyCSVString() string {
 
 func (i *Incident) csvString(humanFriendly bool) string {
 	records := []string{}
-	records = append(records, i.IncidentId)
+	records = append(records, i.IncidentID)
 
 	affectedWayIDsString := []string{}
-	for _, wayID := range i.AffectedWayIds {
+	for _, wayID := range i.AffectedWayIDs {
 		affectedWayIDsString = append(affectedWayIDsString, strconv.FormatInt(wayID, 10))
 	}
 	records = append(records, strings.Join(affectedWayIDsString, ","))

@@ -6,14 +6,14 @@ import (
 	"github.com/Telenav/osrm-backend/integration/wayidsmap"
 
 	"github.com/Telenav/osrm-backend/integration/graph"
-	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 	"github.com/golang/glog"
 )
 
 // Cache stores flows in memory.
 type Cache struct {
 	m              sync.RWMutex
-	flows          map[graph.Edge]*proxy.Flow
+	flows          map[graph.Edge]*trafficproxy.Flow
 	affectedWayIDs map[int64]struct{}
 	wayID2Edges    wayidsmap.Way2Edges
 }
@@ -26,7 +26,7 @@ func New(wayID2Edges wayidsmap.Way2Edges) *Cache {
 	}
 
 	return &Cache{sync.RWMutex{},
-		map[graph.Edge]*proxy.Flow{},
+		map[graph.Edge]*trafficproxy.Flow{},
 		map[int64]struct{}{},
 		wayID2Edges}
 }
@@ -36,12 +36,12 @@ func (c *Cache) Clear() {
 	c.m.Lock()
 	defer c.m.Unlock()
 
-	c.flows = map[graph.Edge]*proxy.Flow{}
+	c.flows = map[graph.Edge]*trafficproxy.Flow{}
 	c.affectedWayIDs = map[int64]struct{}{}
 }
 
 // QueryByEdge returns Live Traffic Flow for Edge if exist.
-func (c *Cache) QueryByEdge(edge graph.Edge) *proxy.Flow {
+func (c *Cache) QueryByEdge(edge graph.Edge) *trafficproxy.Flow {
 	c.m.RLock()
 	defer c.m.RUnlock()
 
@@ -53,11 +53,11 @@ func (c *Cache) QueryByEdge(edge graph.Edge) *proxy.Flow {
 }
 
 // QueryByEdges returns Live Traffic Flows for Edges if exist.
-func (c *Cache) QueryByEdges(edges []graph.Edge) []*proxy.Flow {
+func (c *Cache) QueryByEdges(edges []graph.Edge) []*trafficproxy.Flow {
 	c.m.RLock()
 	defer c.m.RUnlock()
 
-	out := make([]*proxy.Flow, len(edges), len(edges))
+	out := make([]*trafficproxy.Flow, len(edges), len(edges))
 	for i := range edges {
 		v, ok := c.flows[edges[i]]
 		if ok {
@@ -84,24 +84,24 @@ func (c *Cache) AffectedWaysCount() int64 {
 }
 
 // Update updates flows in cache.
-func (c *Cache) Update(flowResp []*proxy.FlowResponse) {
+func (c *Cache) Update(flowResp []*trafficproxy.FlowResponse) {
 	c.m.Lock()
 	defer c.m.Unlock()
 
 	for _, f := range flowResp {
-		if f.Action == proxy.Action_UPDATE || f.Action == proxy.Action_ADD { //TODO: Action_ADD will be removed soon
-			edges := c.wayID2Edges.WayID2Edges(f.Flow.WayId)
+		if f.Action == trafficproxy.Action_UPDATE {
+			edges := c.wayID2Edges.WayID2Edges(f.Flow.WayID)
 			for _, e := range edges {
 				c.flows[e] = f.Flow
 			}
-			c.affectedWayIDs[f.Flow.WayId] = struct{}{}
+			c.affectedWayIDs[f.Flow.WayID] = struct{}{}
 			continue
-		} else if f.Action == proxy.Action_DELETE {
-			edges := c.wayID2Edges.WayID2Edges(f.Flow.WayId)
+		} else if f.Action == trafficproxy.Action_DELETE {
+			edges := c.wayID2Edges.WayID2Edges(f.Flow.WayID)
 			for _, e := range edges {
 				delete(c.flows, e)
 			}
-			delete(c.affectedWayIDs, f.Flow.WayId)
+			delete(c.affectedWayIDs, f.Flow.WayID)
 			continue
 		}
 

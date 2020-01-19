@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	"github.com/Telenav/osrm-backend/integration/graph"
-	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 	"github.com/Telenav/osrm-backend/integration/wayidsmap"
 	"github.com/golang/glog"
 )
@@ -13,7 +13,7 @@ import (
 // Cache stores incidents in memory.
 type Cache struct {
 	m                         sync.RWMutex
-	incidents                 map[string]*proxy.Incident
+	incidents                 map[string]*trafficproxy.Incident
 	wayIDBlockedByIncidentIDs map[int64]map[string]struct{} // wayID -> IncidentID,IncidentID,...
 
 	// optional
@@ -25,7 +25,7 @@ type Cache struct {
 func New() *Cache {
 	return &Cache{
 		sync.RWMutex{},
-		map[string]*proxy.Incident{},
+		map[string]*trafficproxy.Incident{},
 		map[int64]map[string]struct{}{},
 		nil,
 		nil,
@@ -41,7 +41,7 @@ func NewWithEdgeIndexing(wayID2Edges wayidsmap.Way2Edges) *Cache {
 
 	return &Cache{
 		sync.RWMutex{},
-		map[string]*proxy.Incident{},
+		map[string]*trafficproxy.Incident{},
 		map[int64]map[string]struct{}{},
 		wayID2Edges,
 		map[graph.Edge]map[string]struct{}{},
@@ -53,7 +53,7 @@ func (c *Cache) Clear() {
 	c.m.Lock()
 	defer c.m.Unlock()
 
-	c.incidents = map[string]*proxy.Incident{}
+	c.incidents = map[string]*trafficproxy.Incident{}
 	c.wayIDBlockedByIncidentIDs = map[int64]map[string]struct{}{}
 	if c.edgeBlockedByIncidentIDs != nil {
 		c.edgeBlockedByIncidentIDs = map[graph.Edge]map[string]struct{}{}
@@ -127,7 +127,7 @@ func (c *Cache) AffectedEdgesCount() int {
 }
 
 // Update updates incidents in cache.
-func (c *Cache) Update(incidentResponses []*proxy.IncidentResponse) {
+func (c *Cache) Update(incidentResponses []*trafficproxy.IncidentResponse) {
 	if len(incidentResponses) == 0 {
 		return
 	}
@@ -136,10 +136,10 @@ func (c *Cache) Update(incidentResponses []*proxy.IncidentResponse) {
 	defer c.m.Unlock()
 
 	for _, incidentResp := range incidentResponses {
-		if incidentResp.Action == proxy.Action_UPDATE || incidentResp.Action == proxy.Action_ADD { //TODO: Action_ADD will be removed soon
+		if incidentResp.Action == trafficproxy.Action_UPDATE {
 			c.unsafeUpdate(incidentResp.Incident)
 			continue
-		} else if incidentResp.Action == proxy.Action_DELETE {
+		} else if incidentResp.Action == trafficproxy.Action_DELETE {
 			c.unsafeDelete(incidentResp.Incident)
 			continue
 		}

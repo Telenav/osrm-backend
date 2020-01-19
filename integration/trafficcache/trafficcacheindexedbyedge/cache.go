@@ -2,7 +2,7 @@ package trafficcacheindexedbyedge
 
 import (
 	"github.com/Telenav/osrm-backend/integration/graph"
-	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 	"github.com/Telenav/osrm-backend/integration/trafficcache/flowscacheindexedbyedge"
 	"github.com/Telenav/osrm-backend/integration/trafficcache/incidentscache"
 	"github.com/Telenav/osrm-backend/integration/wayidsmap"
@@ -31,19 +31,19 @@ func (c *Cache) Clear() {
 }
 
 // Eat implements trafficeater.Eater inteface.
-func (c *Cache) Eat(r proxy.TrafficResponse) {
+func (c *Cache) Eat(r trafficproxy.TrafficResponse) {
 	glog.V(1).Infof("new traffic for cache, flows: %d, incidents: %d", len(r.FlowResponses), len(r.IncidentResponses))
 	c.Flows.Update(r.FlowResponses)
 	c.Incidents.Update(r.IncidentResponses)
 }
 
 // QueryFlow returns Live Traffic Flow if exist.
-func (c *Cache) QueryFlow(e graph.Edge) *proxy.Flow {
+func (c *Cache) QueryFlow(e graph.Edge) *trafficproxy.Flow {
 	return c.Flows.QueryByEdge(e)
 }
 
 // QueryFlows returns Live Traffic Flows if exist.
-func (c *Cache) QueryFlows(e []graph.Edge) []*proxy.Flow {
+func (c *Cache) QueryFlows(e []graph.Edge) []*trafficproxy.Flow {
 	return c.Flows.QueryByEdges(e)
 }
 

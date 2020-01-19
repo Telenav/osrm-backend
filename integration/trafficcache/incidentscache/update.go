@@ -1,16 +1,16 @@
 package incidentscache
 
 import (
-	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 	"github.com/golang/glog"
 )
 
-func (c *Cache) unsafeUpdate(incident *proxy.Incident) {
+func (c *Cache) unsafeUpdate(incident *trafficproxy.Incident) {
 	if incident == nil {
 		glog.Fatal("empty incident")
 		return
 	}
-	if len(incident.AffectedWayIds) == 0 {
+	if len(incident.AffectedWayIDs) == 0 {
 		glog.Warningf("empty AffectedWayIds in incident %v", incident)
 		return
 	}
@@ -18,33 +18,33 @@ func (c *Cache) unsafeUpdate(incident *proxy.Incident) {
 		return // we only take care of blocking incidents
 	}
 
-	incidentInCache, foundIncidentInCache := c.incidents[incident.IncidentId]
+	incidentInCache, foundIncidentInCache := c.incidents[incident.IncidentID]
 	if foundIncidentInCache {
-		c.unsafeDeleteWayIDsBlockedByIncidentID(incidentInCache.AffectedWayIds, incidentInCache.IncidentId)
+		c.unsafeDeleteWayIDsBlockedByIncidentID(incidentInCache.AffectedWayIDs, incidentInCache.IncidentID)
 		if c.wayID2Edges != nil && c.edgeBlockedByIncidentIDs != nil {
-			c.unsafeDeleteEdgesBlockedByIncidentID(incidentInCache.AffectedWayIds, incidentInCache.IncidentId)
+			c.unsafeDeleteEdgesBlockedByIncidentID(incidentInCache.AffectedWayIDs, incidentInCache.IncidentID)
 		}
 	}
-	c.incidents[incident.IncidentId] = incident
-	c.unsafeAddWayIDsBlockedByIncidentID(incident.AffectedWayIds, incident.IncidentId)
+	c.incidents[incident.IncidentID] = incident
+	c.unsafeAddWayIDsBlockedByIncidentID(incident.AffectedWayIDs, incident.IncidentID)
 	if c.wayID2Edges != nil && c.edgeBlockedByIncidentIDs != nil {
-		c.unsafeAddEdgesBlockedByIncidentID(incident.AffectedWayIds, incident.IncidentId)
+		c.unsafeAddEdgesBlockedByIncidentID(incident.AffectedWayIDs, incident.IncidentID)
 	}
 }
 
-func (c *Cache) unsafeDelete(incident *proxy.Incident) {
+func (c *Cache) unsafeDelete(incident *trafficproxy.Incident) {
 	if incident == nil {
 		glog.Fatal("empty incident")
 		return
 	}
 
-	incidentInCache, foundIncidentInCache := c.incidents[incident.IncidentId]
+	incidentInCache, foundIncidentInCache := c.incidents[incident.IncidentID]
 	if foundIncidentInCache {
-		c.unsafeDeleteWayIDsBlockedByIncidentID(incidentInCache.AffectedWayIds, incidentInCache.IncidentId)
+		c.unsafeDeleteWayIDsBlockedByIncidentID(incidentInCache.AffectedWayIDs, incidentInCache.IncidentID)
 		if c.wayID2Edges != nil && c.edgeBlockedByIncidentIDs != nil {
-			c.unsafeDeleteEdgesBlockedByIncidentID(incidentInCache.AffectedWayIds, incidentInCache.IncidentId)
+			c.unsafeDeleteEdgesBlockedByIncidentID(incidentInCache.AffectedWayIDs, incidentInCache.IncidentID)
 		}
-		delete(c.incidents, incident.IncidentId)
+		delete(c.incidents, incident.IncidentID)
 	}
 }
 

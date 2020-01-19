@@ -1,4 +1,4 @@
-package proxy
+package trafficproxy
 
 import "testing"
 
@@ -10,12 +10,12 @@ func TestFlowCSVString(t *testing.T) {
 		humanFriendlyCSVString string
 	}{
 		{
-			Flow{WayId: 829733412, Speed: 20.280001, TrafficLevel: TrafficLevel_FREE_FLOW},
+			Flow{WayID: 829733412, Speed: 20.280001, TrafficLevel: TrafficLevel_FREE_FLOW},
 			"829733412,20.280001,7",
 			"829733412,20.280001,FREE_FLOW",
 		},
 		{
-			Flow{WayId: -129639168, Speed: 31.389999, TrafficLevel: TrafficLevel_FREE_FLOW},
+			Flow{WayID: -129639168, Speed: 31.389999, TrafficLevel: TrafficLevel_FREE_FLOW},
 			"-129639168,31.389999,7",
 			"-129639168,31.389999,FREE_FLOW",
 		},
@@ -44,8 +44,8 @@ func TestIncidentCSVString(t *testing.T) {
 	}{
 		{
 			Incident{
-				IncidentId:            "TTI-f47b8dba-59a3-372d-9cec-549eb252e2d5-TTR46312939215361-1",
-				AffectedWayIds:        []int64{100663296, -1204020275, 100663296, -1204020274, 100663296, -916744017, 100663296, -1204020245, 100663296, -1194204646, 100663296, -1204394608, 100663296, -1194204647, 100663296, -129639168, 100663296, -1194204645},
+				IncidentID:            "TTI-f47b8dba-59a3-372d-9cec-549eb252e2d5-TTR46312939215361-1",
+				AffectedWayIDs:        []int64{100663296, -1204020275, 100663296, -1204020274, 100663296, -916744017, 100663296, -1204020245, 100663296, -1194204646, 100663296, -1204394608, 100663296, -1194204647, 100663296, -129639168, 100663296, -1194204645},
 				IncidentType:          IncidentType_MISCELLANEOUS,
 				IncidentSeverity:      IncidentSeverity_CRITICAL,
 				IncidentLocation:      &Location{Lat: 44.181220, Lon: -117.135840},

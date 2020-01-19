@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxyclient"
 	"github.com/golang/glog"
 )
@@ -83,7 +83,7 @@ loop:
 	return isFlowDone
 }
 
-func trafficData2map(trafficData proxy.TrafficResponse, m map[int64]int) {
+func trafficData2map(trafficData trafficproxy.TrafficResponse, m map[int64]int) {
 	startTime := time.Now()
 	defer func() {
 		log.Printf("Processing time for building traffic map takes %f seconds\n", time.Now().Sub(startTime).Seconds())
@@ -100,7 +100,7 @@ func trafficData2map(trafficData proxy.TrafficResponse, m map[int64]int) {
 			}
 		}
 
-		wayid := flow.Flow.WayId
+		wayid := flow.Flow.WayID
 		m[wayid] = int(flow.Flow.Speed)
 
 		if wayid > 0 {
@@ -114,9 +114,9 @@ func trafficData2map(trafficData proxy.TrafficResponse, m map[int64]int) {
 	for _, incident := range trafficData.IncidentResponses {
 		if incident.Incident.IsBlocking { // only use blocking incidents
 			blockingIncidentCnt++
-			blockingIncidentAffectedWaysCnt += int64(len(incident.Incident.AffectedWayIds))
+			blockingIncidentAffectedWaysCnt += int64(len(incident.Incident.AffectedWayIDs))
 
-			for _, wayid := range incident.Incident.AffectedWayIds {
+			for _, wayid := range incident.Incident.AffectedWayIDs {
 				m[wayid] = 0
 
 				if wayid > 0 {

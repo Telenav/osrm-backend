@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxyclient"
 	"github.com/Telenav/osrm-backend/integration/trafficdumper"
 	"github.com/golang/glog"
@@ -51,7 +51,7 @@ func main() {
 		return
 	} else if flags.rpcMode == rpcModeStreamingDelta {
 
-		responseChan := make(chan proxy.TrafficResponse)
+		responseChan := make(chan trafficproxy.TrafficResponse)
 		waitChan := make(chan struct{})
 
 		// async startup dumper

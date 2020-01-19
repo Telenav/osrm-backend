@@ -4,17 +4,17 @@ import (
 	"testing"
 
 	"github.com/Telenav/osrm-backend/integration/graph"
-	proxy "github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
 )
 
 func TestIncidentsCache(t *testing.T) {
-	presetIncidents := []*proxy.Incident{
-		&proxy.Incident{
-			IncidentId:            "TTI-f47b8dba-59a3-372d-9cec-549eb252e2d5-TTR46312939215361-1",
-			AffectedWayIds:        []int64{100663296, -1204020275, 100663296, -1204020274, 100663296, -916744017, 100663296, -1204020245, 100663296, -1194204646, 100663296, -1204394608, 100663296, -1194204647, 100663296, -129639168, 100663296, -1194204645},
-			IncidentType:          proxy.IncidentType_MISCELLANEOUS,
-			IncidentSeverity:      proxy.IncidentSeverity_CRITICAL,
-			IncidentLocation:      &proxy.Location{Lat: 44.181220, Lon: -117.135840},
+	presetIncidents := []*trafficproxy.Incident{
+		&trafficproxy.Incident{
+			IncidentID:            "TTI-f47b8dba-59a3-372d-9cec-549eb252e2d5-TTR46312939215361-1",
+			AffectedWayIDs:        []int64{100663296, -1204020275, 100663296, -1204020274, 100663296, -916744017, 100663296, -1204020245, 100663296, -1194204646, 100663296, -1204394608, 100663296, -1194204647, 100663296, -129639168, 100663296, -1194204645},
+			IncidentType:          trafficproxy.IncidentType_MISCELLANEOUS,
+			IncidentSeverity:      trafficproxy.IncidentSeverity_CRITICAL,
+			IncidentLocation:      &trafficproxy.Location{Lat: 44.181220, Lon: -117.135840},
 			Description:           "Construction on I-84 EB near MP 359, Drive with caution.",
 			FirstCrossStreet:      "",
 			SecondCrossStreet:     "",
@@ -23,12 +23,12 @@ func TestIncidentsCache(t *testing.T) {
 			AlertCEventQuantifier: 0,
 			IsBlocking:            false,
 		},
-		&proxy.Incident{
-			IncidentId:            "TTI-6f55a1ca-9a6e-38ef-ac40-0dbd3f5586df-TTR83431311705665-1",
-			AffectedWayIds:        []int64{100663296, 19446119},
-			IncidentType:          proxy.IncidentType_ACCIDENT,
-			IncidentSeverity:      proxy.IncidentSeverity_CRITICAL,
-			IncidentLocation:      &proxy.Location{Lat: 37.592370, Lon: -77.56735040},
+		&trafficproxy.Incident{
+			IncidentID:            "TTI-6f55a1ca-9a6e-38ef-ac40-0dbd3f5586df-TTR83431311705665-1",
+			AffectedWayIDs:        []int64{100663296, 19446119},
+			IncidentType:          trafficproxy.IncidentType_ACCIDENT,
+			IncidentSeverity:      trafficproxy.IncidentSeverity_CRITICAL,
+			IncidentLocation:      &trafficproxy.Location{Lat: 37.592370, Lon: -77.56735040},
 			Description:           "Incident on N PARHAM RD near RIDGE RD, Drive with caution.",
 			FirstCrossStreet:      "",
 			SecondCrossStreet:     "",
@@ -37,12 +37,12 @@ func TestIncidentsCache(t *testing.T) {
 			AlertCEventQuantifier: 0,
 			IsBlocking:            true,
 		},
-		&proxy.Incident{
-			IncidentId:            "mock-1",
-			AffectedWayIds:        []int64{100663296, -1204020275, 100643296},
-			IncidentType:          proxy.IncidentType_ACCIDENT,
-			IncidentSeverity:      proxy.IncidentSeverity_CRITICAL,
-			IncidentLocation:      &proxy.Location{Lat: 37.592370, Lon: -77.56735040},
+		&trafficproxy.Incident{
+			IncidentID:            "mock-1",
+			AffectedWayIDs:        []int64{100663296, -1204020275, 100643296},
+			IncidentType:          trafficproxy.IncidentType_ACCIDENT,
+			IncidentSeverity:      trafficproxy.IncidentSeverity_CRITICAL,
+			IncidentLocation:      &trafficproxy.Location{Lat: 37.592370, Lon: -77.56735040},
 			Description:           "Incident on N PARHAM RD near RIDGE RD, Drive with caution.",
 			FirstCrossStreet:      "",
 			SecondCrossStreet:     "",
@@ -65,8 +65,8 @@ func TestIncidentsCache(t *testing.T) {
 	cacheWithEdgeIndexing := NewWithEdgeIndexing(wayid2NodeIDsMapping)
 
 	// update
-	cache.Update(newIncidentsResponses(presetIncidents, proxy.Action_UPDATE))
-	cacheWithEdgeIndexing.Update(newIncidentsResponses(presetIncidents, proxy.Action_UPDATE))
+	cache.Update(newIncidentsResponses(presetIncidents, trafficproxy.Action_UPDATE))
+	cacheWithEdgeIndexing.Update(newIncidentsResponses(presetIncidents, trafficproxy.Action_UPDATE))
 	expectIncidentsCount := 2
 	if cache.Count() != expectIncidentsCount || cacheWithEdgeIndexing.Count() != expectIncidentsCount {
 		t.Errorf("expect cached incidents count %d but got %d,%d", expectIncidentsCount, cache.Count(), cacheWithEdgeIndexing.Count())
@@ -118,8 +118,8 @@ func TestIncidentsCache(t *testing.T) {
 
 	// delete
 	deleteIncidents := presetIncidents[:2]
-	cache.Update(newIncidentsResponses(deleteIncidents, proxy.Action_DELETE))
-	cacheWithEdgeIndexing.Update(newIncidentsResponses(deleteIncidents, proxy.Action_DELETE))
+	cache.Update(newIncidentsResponses(deleteIncidents, trafficproxy.Action_DELETE))
+	cacheWithEdgeIndexing.Update(newIncidentsResponses(deleteIncidents, trafficproxy.Action_DELETE))
 	expectIncidentsCount = 1
 	if cache.Count() != expectIncidentsCount || cacheWithEdgeIndexing.Count() != expectIncidentsCount {
 		t.Errorf("expect after delete, cached incidents count %d but got %d,%d", expectIncidentsCount, cache.Count(), cacheWithEdgeIndexing.Count())
@@ -148,11 +148,11 @@ func TestIncidentsCache(t *testing.T) {
 
 }
 
-func newIncidentsResponses(incidents []*proxy.Incident, action proxy.Action) []*proxy.IncidentResponse {
+func newIncidentsResponses(incidents []*trafficproxy.Incident, action trafficproxy.Action) []*trafficproxy.IncidentResponse {
 
-	incidentsResponses := []*proxy.IncidentResponse{}
+	incidentsResponses := []*trafficproxy.IncidentResponse{}
 	for _, incident := range incidents {
-		incidentsResponses = append(incidentsResponses, &proxy.IncidentResponse{Incident: incident, Action: action, XXX_NoUnkeyedLiteral: struct{}{}, XXX_unrecognized: nil, XXX_sizecache: 0})
+		incidentsResponses = append(incidentsResponses, &trafficproxy.IncidentResponse{Incident: incident, Action: action, XXX_NoUnkeyedLiteral: struct{}{}, XXX_unrecognized: nil, XXX_sizecache: 0})
 	}
 	return incidentsResponses
 }

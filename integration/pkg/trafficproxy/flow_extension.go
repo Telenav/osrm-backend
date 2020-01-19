@@ -1,4 +1,4 @@
-package proxy
+package trafficproxy
 
 import "fmt"
 
@@ -14,11 +14,11 @@ func (f *Flow) IsBlocking() bool {
 // CSVString represents Flow as defined CSV format.
 // I.e. 'wayID,Speed,TrafficLevel'
 func (f *Flow) CSVString() string {
-	return fmt.Sprintf("%d,%f,%d", f.WayId, f.Speed, f.TrafficLevel)
+	return fmt.Sprintf("%d,%f,%d", f.WayID, f.Speed, f.TrafficLevel)
 }
 
 // HumanFriendlyCSVString represents Flow as defined CSV format, but prefer human friendly string instead of integer.
 // I.e. 'wayID,Speed,TrafficLevel'
 func (f *Flow) HumanFriendlyCSVString() string {
-	return fmt.Sprintf("%d,%f,%s", f.WayId, f.Speed, f.TrafficLevel)
+	return fmt.Sprintf("%d,%f,%s", f.WayID, f.Speed, f.TrafficLevel)
 }
