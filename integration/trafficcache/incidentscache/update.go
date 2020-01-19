@@ -20,6 +20,9 @@ func (c *Cache) unsafeUpdate(incident *trafficproxy.Incident) {
 
 	incidentInCache, foundIncidentInCache := c.incidents[incident.IncidentID]
 	if foundIncidentInCache {
+		if incidentInCache.Timestamp > incident.Timestamp {
+			return // ignore older incident
+		}
 		c.unsafeDeleteWayIDsBlockedByIncidentID(incidentInCache.AffectedWayIDs, incidentInCache.IncidentID)
 		if c.wayID2Edges != nil && c.edgeBlockedByIncidentIDs != nil {
 			c.unsafeDeleteEdgesBlockedByIncidentID(incidentInCache.AffectedWayIDs, incidentInCache.IncidentID)

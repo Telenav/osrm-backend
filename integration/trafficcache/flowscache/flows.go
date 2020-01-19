@@ -52,7 +52,13 @@ func (c *Cache) Update(flowResp []*trafficproxy.FlowResponse) {
 
 	for _, f := range flowResp {
 		if f.Action == trafficproxy.Action_UPDATE {
-			c.flows[f.Flow.WayID] = f.Flow
+			if inCacheFlow, ok := c.flows[f.Flow.WayID]; ok {
+				if inCacheFlow.Timestamp <= f.Flow.Timestamp {
+					c.flows[f.Flow.WayID] = f.Flow // use newer if exist
+				}
+				continue
+			}
+			c.flows[f.Flow.WayID] = f.Flow // store if not exist
 			continue
 		} else if f.Action == trafficproxy.Action_DELETE {
 			delete(c.flows, f.Flow.WayID)

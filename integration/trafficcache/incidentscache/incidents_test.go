@@ -22,6 +22,7 @@ func TestIncidentsCache(t *testing.T) {
 			EventCode:             500,
 			AlertCEventQuantifier: 0,
 			IsBlocking:            false,
+			Timestamp:             1579419488000,
 		},
 		&trafficproxy.Incident{
 			IncidentID:            "TTI-6f55a1ca-9a6e-38ef-ac40-0dbd3f5586df-TTR83431311705665-1",
@@ -36,6 +37,7 @@ func TestIncidentsCache(t *testing.T) {
 			EventCode:             214,
 			AlertCEventQuantifier: 0,
 			IsBlocking:            true,
+			Timestamp:             1579419488000,
 		},
 		&trafficproxy.Incident{
 			IncidentID:            "mock-1",
@@ -50,7 +52,41 @@ func TestIncidentsCache(t *testing.T) {
 			EventCode:             214,
 			AlertCEventQuantifier: 0,
 			IsBlocking:            true,
+			Timestamp:             1579419488000,
 		},
+	}
+
+	updateIncidents := []*trafficproxy.Incident{
+		&trafficproxy.Incident{
+			IncidentID:            "mock-1",
+			AffectedWayIDs:        []int64{100663296, -1204020275, 100643296, 111111111},
+			IncidentType:          trafficproxy.IncidentType_ACCIDENT,
+			IncidentSeverity:      trafficproxy.IncidentSeverity_CRITICAL,
+			IncidentLocation:      &trafficproxy.Location{Lat: 37.592370, Lon: -77.56735040},
+			Description:           "Incident on N PARHAM RD near RIDGE RD, Drive with caution.",
+			FirstCrossStreet:      "",
+			SecondCrossStreet:     "",
+			StreetName:            "N Parham Rd",
+			EventCode:             214,
+			AlertCEventQuantifier: 0,
+			IsBlocking:            true,
+			Timestamp:             1579419500000,
+		}, // newer
+		&trafficproxy.Incident{
+			IncidentID:            "mock-1",
+			AffectedWayIDs:        []int64{100663296, -1204020275, 100643296},
+			IncidentType:          trafficproxy.IncidentType_ACCIDENT,
+			IncidentSeverity:      trafficproxy.IncidentSeverity_CRITICAL,
+			IncidentLocation:      &trafficproxy.Location{Lat: 37.592370, Lon: -77.56735040},
+			Description:           "Incident on N PARHAM RD near RIDGE RD, Drive with caution.",
+			FirstCrossStreet:      "",
+			SecondCrossStreet:     "",
+			StreetName:            "N Parham Rd",
+			EventCode:             214,
+			AlertCEventQuantifier: 0,
+			IsBlocking:            true,
+			Timestamp:             1579419000000,
+		}, // older
 	}
 
 	wayid2NodeIDsMapping := wayID2NodeIDs{
@@ -59,6 +95,7 @@ func TestIncidentsCache(t *testing.T) {
 		19446119:   []int64{123456789021, 123456789002, 123456789023, 123456789024, 123456789025, 123456789026},
 		1204020275: []int64{123456789031, 123456789032, 123456789033, 123456789034},
 		100643296:  []int64{123456789041, 123456789042, 123456789043},
+		111111111:  []int64{11111111101, 1111111102, 1111111103},
 	}
 
 	cache := New()
@@ -116,6 +153,38 @@ func TestIncidentsCache(t *testing.T) {
 		}
 	}
 
+	// update
+	cache.Update(newIncidentsResponses(updateIncidents, trafficproxy.Action_UPDATE))
+	cacheWithEdgeIndexing.Update(newIncidentsResponses(updateIncidents, trafficproxy.Action_UPDATE))
+	if cache.Count() != expectIncidentsCount || cacheWithEdgeIndexing.Count() != expectIncidentsCount {
+		t.Errorf("expect cached incidents count %d but got %d,%d", expectIncidentsCount, cache.Count(), cacheWithEdgeIndexing.Count())
+	}
+	expectAffectedWaysCount = 5 // only store blocked incidents
+	if cache.AffectedWaysCount() != expectAffectedWaysCount || cacheWithEdgeIndexing.AffectedWaysCount() != expectAffectedWaysCount {
+		t.Errorf("expect cached incidents affect ways count %d but got %d,%d", expectAffectedWaysCount, cache.AffectedWaysCount(), cacheWithEdgeIndexing.AffectedWaysCount())
+	}
+	expectAffectedEdgesCount = 14
+	if cacheWithEdgeIndexing.AffectedEdgesCount() != expectAffectedEdgesCount {
+		t.Errorf("expect cached incidents affect edges count %d but got %d", expectAffectedEdgesCount, cacheWithEdgeIndexing.AffectedEdgesCount())
+	}
+
+	// query expect sucess
+	inCacheWayIDs = []int64{111111111} // only check the updated one
+	for _, wayID := range inCacheWayIDs {
+		if !cache.WayBlockedByIncident(wayID) || !cacheWithEdgeIndexing.WayBlockedByIncident(wayID) {
+			t.Errorf("wayID %d, expect blocked by incident but not", wayID)
+		}
+		edges := wayid2NodeIDsMapping.WayID2Edges(wayID)
+		for _, e := range edges {
+			if !cacheWithEdgeIndexing.EdgeBlockedByIncident(e) {
+				t.Errorf("edge %v, expect blocked by incident but not", e)
+			}
+		}
+		if b, i := cacheWithEdgeIndexing.EdgesBlockedByIncidents(edges); !b || i != 0 {
+			t.Errorf("edges %v, expect blocked by incidents but not", edges)
+		}
+	}
+
 	// delete
 	deleteIncidents := presetIncidents[:2]
 	cache.Update(newIncidentsResponses(deleteIncidents, trafficproxy.Action_DELETE))
@@ -124,11 +193,11 @@ func TestIncidentsCache(t *testing.T) {
 	if cache.Count() != expectIncidentsCount || cacheWithEdgeIndexing.Count() != expectIncidentsCount {
 		t.Errorf("expect after delete, cached incidents count %d but got %d,%d", expectIncidentsCount, cache.Count(), cacheWithEdgeIndexing.Count())
 	}
-	expectAffectedWaysCount = 3 // only store blocked incidents
+	expectAffectedWaysCount = 4 // only store blocked incidents
 	if cache.AffectedWaysCount() != expectAffectedWaysCount || cacheWithEdgeIndexing.AffectedWaysCount() != expectAffectedWaysCount {
 		t.Errorf("expect cached incidents affect ways count %d but got %d,%d", expectAffectedWaysCount, cache.AffectedWaysCount(), cacheWithEdgeIndexing.AffectedWaysCount())
 	}
-	expectAffectedEdgesCount = 7
+	expectAffectedEdgesCount = 9
 	if cacheWithEdgeIndexing.AffectedEdgesCount() != expectAffectedEdgesCount {
 		t.Errorf("expect cached incidents affect edges count %d but got %d", expectAffectedEdgesCount, cacheWithEdgeIndexing.AffectedEdgesCount())
 	}

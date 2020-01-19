@@ -92,7 +92,13 @@ func (c *Cache) Update(flowResp []*trafficproxy.FlowResponse) {
 		if f.Action == trafficproxy.Action_UPDATE {
 			edges := c.wayID2Edges.WayID2Edges(f.Flow.WayID)
 			for _, e := range edges {
-				c.flows[e] = f.Flow
+				if inCacheFlow, ok := c.flows[e]; ok {
+					if inCacheFlow.Timestamp <= f.Flow.Timestamp {
+						c.flows[e] = f.Flow // use newer if exist
+					}
+					continue
+				}
+				c.flows[e] = f.Flow // store if not exist
 			}
 			c.affectedWayIDs[f.Flow.WayID] = struct{}{}
 			continue
