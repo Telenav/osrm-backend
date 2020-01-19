@@ -1,6 +1,7 @@
 package trafficproxyclient
 
 import (
+	"strings"
 	"time"
 
 	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
@@ -14,6 +15,12 @@ func (p params) newTrafficSource() *trafficproxy.TrafficSource {
 	t.Region = flags.region
 	t.TrafficProvider = flags.trafficProvider
 	t.MapProvider = flags.mapProvider
+
+	t.Subregion = []string{}
+	if len(flags.subregion) > 0 {
+		subregionStr := strings.TrimSuffix(flags.subregion, ",") // trim last ',' if exist
+		t.Subregion = strings.Split(subregionStr, ",")
+	}
 	return &t
 }
 

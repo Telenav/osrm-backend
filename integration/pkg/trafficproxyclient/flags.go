@@ -8,6 +8,7 @@ import (
 var flags struct {
 	target                string
 	region                string
+	subregion             string
 	trafficProvider       string
 	mapProvider           string
 	flow                  bool
@@ -20,6 +21,7 @@ var flags struct {
 func init() {
 	flag.StringVar(&flags.target, "c", "127.0.0.1:10086", "target traffic proxy endpoint, format 'ip[:port]'. Default port 10086 will be used if only ip input, i.e '127.0.0.1' is same with '127.0.0.1:10086'.")
 	flag.StringVar(&flags.region, "region", "na", "region")
+	flag.StringVar(&flags.subregion, "subregion", "", "subregion. Leave empty if requires full region data, otherwise use ',' split if many, e.g. 'us,ca'")
 	flag.StringVar(&flags.trafficProvider, "traffic", "", "traffic data provider")
 	flag.StringVar(&flags.mapProvider, "map", "", "map data provider")
 	flag.BoolVar(&flags.flow, "flow", true, "Enable traffic flow.")
