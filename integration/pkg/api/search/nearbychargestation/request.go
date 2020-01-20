@@ -26,6 +26,7 @@ type Request struct {
 	Limit        int
 }
 
+// NewRequest create an empty entity Request.
 func NewRequest() *Request {
 	return &Request{
 		// Path

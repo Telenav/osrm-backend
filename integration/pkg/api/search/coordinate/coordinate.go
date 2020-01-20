@@ -8,6 +8,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api"
 )
 
+// Coordinate represents lat/lon of a GPS point.
 type Coordinate struct {
 	Lat float64
 	Lon float64
