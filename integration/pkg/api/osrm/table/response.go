@@ -8,8 +8,8 @@ type Response struct {
 	Message      string         `json:"message,omitempty"`
 	Sources      []*Source      `json:"sources"`
 	Destinations []*Destination `json:"destinations"`
-	Durations    []*Duration    `json:"durations"`
-	Distances    []*Distance    `json:"distances"`
+	Durations    [][]*float64   `json:"durations"`
+	Distances    [][]*float64   `json:"distances"`
 }
 
 // Source represents as way point object.  All sources will be listed in order.
@@ -22,12 +22,12 @@ type Destination struct {
 	route.Waypoint
 }
 
-// Duration gives the travel time from specific source to all other destinations
-type Duration struct {
-	Value []*float64
-}
+// // Duration gives the travel time from specific source to all other destinations
+// type Duration struct {
+// 	_ []*float64
+// }
 
-// Distance gives the travel distance from specific source to all other destinations
-type Distance struct {
-	Value []*float64
-}
+// // Distance gives the travel distance from specific source to all other destinations
+// type Distance struct {
+// 	_ []*float64
+// }
