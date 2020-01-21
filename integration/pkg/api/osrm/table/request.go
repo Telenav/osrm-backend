@@ -32,10 +32,13 @@ func NewRequest() *Request {
 
 	return &Request{
 		// Path
-		Service:     "table",
-		Version:     "v1",
-		Profile:     "driving",
-		Coordinates: coordinate.Coordinates{},
+		Service:      "table",
+		Version:      "v1",
+		Profile:      "driving",
+		Coordinates:  coordinate.Coordinates{},
+		Sources:      genericoptions.Elements{},
+		Destinations: genericoptions.Elements{},
+		Annotations:  "",
 	}
 
 }
@@ -133,7 +136,7 @@ func (r *Request) QueryString() string {
 	return query
 }
 
-// QueryValues convert route Request to url.Values.
+// QueryValues convert table Request to url.Values.
 func (r *Request) QueryValues() (v url.Values) {
 	v = make(url.Values)
 
