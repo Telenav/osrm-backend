@@ -7,7 +7,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/genericoptions"
 )
 
-func TestRouteRequestURI(t *testing.T) {
+func TestTableRequestURI(t *testing.T) {
 	cases := []struct {
 		r      Request
 		expect string

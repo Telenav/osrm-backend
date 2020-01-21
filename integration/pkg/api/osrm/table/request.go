@@ -32,7 +32,7 @@ func NewRequest() *Request {
 
 	return &Request{
 		// Path
-		Service:     "route",
+		Service:     "table",
 		Version:     "v1",
 		Profile:     "driving",
 		Coordinates: coordinate.Coordinates{},
@@ -99,7 +99,7 @@ func (r *Request) parseQuery(values url.Values) {
 	}
 }
 
-// RequestURI convert RouteRequest to RequestURI (e.g. "/path?foo=bar").
+// RequestURI convert TableRequest to RequestURI (e.g. "/path?foo=bar").
 // see more in https://golang.org/pkg/net/url/#URL.RequestURI
 func (r *Request) RequestURI() string {
 	s := r.pathPrefix()
