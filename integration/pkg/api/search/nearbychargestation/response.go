@@ -53,5 +53,5 @@ type EVConnector struct {
 // ConnectorCount contains charge level and related count
 type ConnectorCount struct {
 	Level int `json:"level"`
-	Total int `total:"total"`
+	Total int `json:"total"`
 }

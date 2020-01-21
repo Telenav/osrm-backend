@@ -26,6 +26,10 @@ type Request struct {
 	Limit        int
 }
 
+<<<<<<< HEAD
+=======
+// NewRequest create an empty entity Request.
+>>>>>>> master-telenav
 func NewRequest() *Request {
 	return &Request{
 		// Path
