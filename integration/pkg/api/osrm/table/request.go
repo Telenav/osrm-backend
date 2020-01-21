@@ -32,10 +32,12 @@ func NewRequest() *Request {
 
 	return &Request{
 		// Path
-		Service:      "table",
-		Version:      "v1",
-		Profile:      "driving",
-		Coordinates:  coordinate.Coordinates{},
+		Service:     "table",
+		Version:     "v1",
+		Profile:     "driving",
+		Coordinates: coordinate.Coordinates{},
+
+		// Options
 		Sources:      genericoptions.Elements{},
 		Destinations: genericoptions.Elements{},
 		Annotations:  "",
