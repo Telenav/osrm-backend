@@ -1,0 +1,45 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.deploymentName }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: {{ .Values.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.rollingUpdate.maxUnavailable }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.label }}
+    spec:
+      nodeSelector:
+        routing-osrm/role: routing-osrm
+      containers:
+        - name: osrm-backend
+          image: {{ .Values.osrm.backend.image }}
+          imagePullPolicy: IfNotPresent
+          command: 
+          {{- toYaml .Values.osrm.backend.command | nindent 12 }}
+          resources:
+            requests:
+              memory: {{ .Values.osrm.backend.memory }}
+          volumeMounts:
+          - mountPath: {{ .Values.osrm.backend.mountPath }}
+            name:  {{ .Values.logsVolume.name }}
+          ports:
+          - containerPort: 5000
+            protocol: TCP
+          readinessProbe:
+            tcpSocket:
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 1000
+      volumes:
+        - name: {{ .Values.logsVolume.name }}
+          nfs:
+            server: {{ .Values.logsVolume.nfs.server }}
+            path: {{ .Values.logsVolume.nfs.path }}

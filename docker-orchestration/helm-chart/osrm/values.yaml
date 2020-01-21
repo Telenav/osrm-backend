@@ -1,0 +1,19 @@
+deploymentName: osrm-michigan-osm-deployment
+label: osrm-michigan-osm
+namespace: routing-osrm
+replicas: 1
+rollingUpdate:
+  maxSurge: 1
+  maxUnavailable: 0
+osrm:
+  backend: 
+    image: telenavmap/osrm-backend-within-mapdata:no.86-20200114-master-telenav-e85d5ca-compile27-20200119T171300CST-michigan-latest
+    command: ["/bin/sh", "-c", "export LOG_FILE=/osrm-logs/$(date -u +%Y%m%dT%H%M%S)-${HOSTNAME}.log; /docker-entrypoint.sh routed_no_traffic_startup 2>&1 | while read LINE; do echo \"[$(date \"+%Y-%m-%dT%H:%M:%S %Z\")] ${LINE}\">>${LOG_FILE}; done;" ]
+    memory: 5
+    mountPath: "/osrm-logs"
+logsVolume: 
+  name: osrm-logs-volume
+  nfs:
+    server: fs-3941ca92.efs.us-west-2.amazonaws.com
+    path: /
+
