@@ -21,13 +21,3 @@ type Source struct {
 type Destination struct {
 	route.Waypoint
 }
-
-// // Duration gives the travel time from specific source to all other destinations
-// type Duration struct {
-// 	_ []*float64
-// }
-
-// // Distance gives the travel distance from specific source to all other destinations
-// type Distance struct {
-// 	_ []*float64
-// }
