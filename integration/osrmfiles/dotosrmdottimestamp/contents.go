@@ -1,11 +1,9 @@
 package dotosrmdottimestamp
 
 import (
-	"archive/tar"
 	"bytes"
 	"fmt"
 	"io"
-	"os"
 
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/fingerprint"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/meta"
@@ -23,50 +21,11 @@ type Contents struct {
 	filePath string
 }
 
-// Load `.osrm.timestamp` file to generate a new contents structure.
-func Load(file string) (*Contents, error) {
-	f, err := os.Open(file)
-	defer f.Close()
-	if err != nil {
-		return nil, err
-	}
-	glog.V(2).Infof("open %s succeed.\n", file)
-
-	contents := new()
-
-	// Open and iterate through the files in the archive.
-	tr := tar.NewReader(f)
-	for {
-		hdr, err := tr.Next()
-		if err == io.EOF {
-			break // End of archive
-		}
-		if err != nil {
-			glog.Fatal(err)
-		}
-		glog.V(1).Infof("%s\n", hdr.Name)
-		writer, found := contents.writers[hdr.Name]
-		if !found {
-			glog.Warningf("unrecognized content in tar: %s", hdr.Name)
-			continue
-		}
-
-		if _, err := io.Copy(writer, tr); err != nil {
-			glog.Fatal(err)
-		}
-	}
-
-	// validate loaded contents
-	if err := contents.validate(); err != nil {
-		return nil, err
-	}
-
-	contents.filePath = file
-	return contents, nil
-}
-
-func new() *Contents {
+// New creates an empty Contents for `.osrm.timestamp`.
+func New(file string) *Contents {
 	c := Contents{}
+
+	c.filePath = file
 
 	// init writers
 	c.writers = map[string]io.Writer{}
@@ -77,7 +36,8 @@ func new() *Contents {
 	return &c
 }
 
-func (c *Contents) validate() error {
+// Validate checks whether the contents valid or not.
+func (c *Contents) Validate() error {
 	if !c.Fingerprint.IsValid() {
 		return fmt.Errorf("invalid fingerprint %v", c.Fingerprint)
 	}
@@ -87,12 +47,24 @@ func (c *Contents) validate() error {
 	return nil
 }
 
-// PrintSummary prints summary and head lines of current contents.
+// PrintSummary prints summary and head lines of contents.
 func (c *Contents) PrintSummary(head int) {
-	//TODO:
 	glog.Infof("Loaded from %s\n", c.filePath)
 	glog.Infof("  %s\n", &c.Fingerprint)
 
-	glog.Infof("  timestamp(e.g. data_version) meta %d count %d\n", c.TimestampMeta, c.Timestamp.Len())
-	glog.Infof("  timestamp(e.g. data_version) %v\n", c.Timestamp)
+	glog.Infof("  timestamp(a.k.a. data_version) meta %d count %d\n", c.TimestampMeta, c.Timestamp.Len())
+	if head > 0 {
+		glog.Infof("  timestamp(a.k.a. data_version) %v\n", c.Timestamp.String())
+	}
+}
+
+// FindWriter find io.Writer for the specified name.
+func (c *Contents) FindWriter(name string) (io.Writer, bool) {
+	w, b := c.writers[name]
+	return w, b
+}
+
+// FilePath returns the file path that stores the contents.
+func (c *Contents) FilePath() string {
+	return c.filePath
 }

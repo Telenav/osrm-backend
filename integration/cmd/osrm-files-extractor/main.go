@@ -2,32 +2,75 @@ package main
 
 import (
 	"flag"
+	"strings"
 
+	"github.com/Telenav/osrm-backend/integration/osrmfiles"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/dotosrm"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/dotosrmdottimestamp"
+
 	"github.com/golang/glog"
 )
+
+const (
+	dotOSRMSuffix = ".osrm"
+
+	dotTimestampSuffix        = ".timestamp"
+	dotOSRMDotTimestampSuffix = dotOSRMSuffix + dotTimestampSuffix
+)
+
+// osrmBasefilePath should be 'xxx.osrm'
+func createEmptyOSRMFilesContents(osrmBasefilePath string) map[string]osrmfiles.ContentsOperator {
+
+	m := map[string]osrmfiles.ContentsOperator{}
+	m[dotOSRMSuffix] = dotosrm.New(osrmBasefilePath)
+	m[dotOSRMDotTimestampSuffix] = dotosrmdottimestamp.New(osrmBasefilePath + dotTimestampSuffix)
+
+	return m
+}
 
 func main() {
 	flag.Parse()
 	defer glog.Flush()
 
-	contents, err := dotosrm.Load(flags.filePath)
-	if err != nil {
-		glog.Error(err)
+	suffixIndex := strings.LastIndex(flags.filePath, dotOSRMSuffix)
+	if suffixIndex < 0 {
+		glog.Errorf("file path %s should end by .osrm[.xxx]\n", flags.filePath)
 		return
 	}
-	if flags.printSummary >= 0 {
-		contents.PrintSummary(flags.printSummary)
+	suffix := flags.filePath[suffixIndex:]                       // should be '.osrm' or '.osrm.xxx'
+	baseFilePath := flags.filePath[:suffixIndex] + dotOSRMSuffix // should be xxx.osrm
+
+	// create empty files and contents mapping for loading later
+	osrmContents := createEmptyOSRMFilesContents(baseFilePath)
+
+	if suffix != dotOSRMSuffix || (suffix == dotOSRMSuffix && flags.singleFile) {
+		// only keep the specified contents if want to load single file
+		for k := range osrmContents {
+			if k != suffix {
+				delete(osrmContents, k)
+			}
+		}
 	}
 
-	timestampContents, err := dotosrmdottimestamp.Load(flags.filePath + ".timestamp")
-	if err != nil {
-		glog.Error(err)
+	if len(osrmContents) == 0 {
+		glog.Warningf("nothing need to load for %s", flags.filePath)
 		return
 	}
-	if flags.printSummary >= 0 {
-		timestampContents.PrintSummary(flags.printSummary)
+
+	// load contents and print summary
+	for k, c := range osrmContents {
+		if c == nil {
+			glog.Errorf("nil Contents to load %s", k)
+			continue
+		}
+		if err := osrmfiles.Load(c); err != nil {
+			glog.Error(err)
+			continue
+		}
+
+		if flags.printSummary >= 0 {
+			c.PrintSummary(flags.printSummary)
+		}
 	}
 
 }
