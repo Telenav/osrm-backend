@@ -16,12 +16,13 @@ import (
 // Request for OSRM table service
 // http://project-osrm.org/docs/v5.5.1/api/#table-service
 type Request struct {
+	// Path
 	Service     string
 	Version     string
 	Profile     string
 	Coordinates coordinate.Coordinates
 
-	// options
+	// Options
 	Sources      genericoptions.Elements
 	Destinations genericoptions.Elements
 	Annotations  string
