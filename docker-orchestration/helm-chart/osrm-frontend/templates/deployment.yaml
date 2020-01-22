@@ -1,0 +1,43 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ include "osrm-frontend.fullname" . }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: {{ .Values.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.rollingUpdate.maxUnavailable }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      containers:
+        - name: {{ .Values.osrm.frontend.name }}
+          image: {{ .Values.osrm.frontend.image }}
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: OSRM_BACKEND
+            value: {{ .Values.osrm.frontend.targetBackend }}
+          - name: OSRM_CENTER
+            value: {{ .Values.osrm.frontend.center }}
+          ports:
+          - containerPort: {{ .Values.osrm.frontend.containerPort }}
+            protocol: TCP 
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.osrm.frontend.containerPort }}
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 1000
