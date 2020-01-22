@@ -8,7 +8,6 @@ import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/coordinate"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/genericoptions"
-	routeoption "github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route/options"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/table/options"
 	"github.com/golang/glog"
 )
@@ -41,7 +40,7 @@ func NewRequest() *Request {
 		// Options
 		Sources:      genericoptions.Elements{},
 		Destinations: genericoptions.Elements{},
-		Annotations:  "",
+		Annotations:  options.AnnotationsDefaultValue,
 	}
 
 }
@@ -99,7 +98,7 @@ func (r *Request) parseQuery(values url.Values) {
 	}
 
 	if v := values.Get(options.KeyAnnotations); len(v) > 0 {
-		if annotations, err := routeoption.ParseAnnotations(v); err == nil {
+		if annotations, err := options.ParseAnnotations(v); err == nil {
 			r.Annotations = annotations
 		}
 	}
