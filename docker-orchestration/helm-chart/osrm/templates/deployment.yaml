@@ -1,10 +1,14 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ .Values.deploymentName }}
-  namespace: {{ .Release.Namespace }}
+  name: {{ include "osrm.fullname" . }}
+  labels:
+    app: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -13,19 +17,18 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ .Values.label }}
+        app: {{ .Release.Name }}
     spec:
+    {{- if .Values.nodeSelector }}
       nodeSelector:
-        routing-osrm/role: routing-osrm
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
       containers:
         - name: osrm-backend
           image: {{ .Values.osrm.backend.image }}
           imagePullPolicy: IfNotPresent
           command: 
           {{- toYaml .Values.osrm.backend.command | nindent 12 }}
-          resources:
-            requests:
-              memory: {{ .Values.osrm.backend.memory }}
           volumeMounts:
           - mountPath: {{ .Values.osrm.backend.mountPath }}
             name:  {{ .Values.logsVolume.name }}
@@ -38,6 +41,10 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 5
             failureThreshold: 1000
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
       volumes:
         - name: {{ .Values.logsVolume.name }}
           nfs:
