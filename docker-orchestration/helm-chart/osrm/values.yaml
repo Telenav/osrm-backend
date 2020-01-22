@@ -16,6 +16,9 @@ osrm:
     image: telenavmap/osrm-backend-within-mapdata:no.86-20200114-master-telenav-e85d5ca-compile27-20200119T171300CST-michigan-latest
     command: ["/bin/sh", "-c", "export LOG_FILE=/osrm-logs/$(date -u +%Y%m%dT%H%M%S)-${HOSTNAME}.log; /docker-entrypoint.sh routed_no_traffic_startup 2>&1 | while read LINE; do echo \"[$(date \"+%Y-%m-%dT%H:%M:%S %Z\")] ${LINE}\">>${LOG_FILE}; done;" ]
     mountPath: "/osrm-logs"
+  frontend:
+    image: osrm/osrm-frontend
+    center: '37.398005,-121.975568'
     
 logsVolume: 
   name: osrm-logs-volume

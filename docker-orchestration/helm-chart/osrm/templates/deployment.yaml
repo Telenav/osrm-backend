@@ -41,10 +41,23 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 5
             failureThreshold: 1000
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
+        - name: osrm-frontend
+          image: {{ .Values.osrm.frontend.image }}
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: OSRM_BACKEND
+            value: http://localhost:5000
+          - name: OSRM_CENTER
+            value: {{ .Values.osrm.frontend.center }}
+          ports:
+          - containerPort: 9966
+            protocol: TCP 
+          readinessProbe:
+            tcpSocket:
+              port: 9966
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 1000
       volumes:
         - name: {{ .Values.logsVolume.name }}
           nfs:
