@@ -12,7 +12,7 @@ func main() {
 	mux := http.NewServeMux()
 
 	oasisService := oasis.New(flags.osrmBackendEndpoint)
-	mux.Handle("/oasis", oasisService)
+	mux.Handle("/oasis/v1/earliest/", oasisService)
 
 	// listen
 	listening := ":" + strconv.Itoa(flags.listenPort)

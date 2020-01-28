@@ -139,14 +139,14 @@ func (r *Request) validate() error {
 		return errors.New(options.KeyCurrRange + " must be smaller or equal to " + options.KeyMaxRange + ".")
 	}
 
-	// CurrRange must be smaller or equal to MaxRange
-	if r.PreferLevel > r.MaxRange {
-		return errors.New(options.KeyPreferLevel + " must be smaller or equal to " + options.KeyMaxRange + ".")
+	// PreferLevel must be smaller to MaxRange
+	if r.PreferLevel >= r.MaxRange {
+		return errors.New(options.KeyPreferLevel + " must be smaller to " + options.KeyMaxRange + ".")
 	}
 
-	// CurrRange must be smaller or equal to MaxRange
-	if r.SafeLevel > r.MaxRange {
-		return errors.New(options.KeySafeLevel + " must be smaller or equal to " + options.KeyMaxRange + ".")
+	// SafeLevel must be smaller to MaxRange
+	if r.SafeLevel >= r.MaxRange {
+		return errors.New(options.KeySafeLevel + " must be smaller to " + options.KeyMaxRange + ".")
 	}
 
 	return nil
