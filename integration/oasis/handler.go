@@ -76,7 +76,7 @@ func generateFakeOasisResponse() *oasis.Response {
 	return r
 }
 
-func generateFakeOasisResponseBasedOnRequest(req *oasis.Request) *oasis.Response {
+func generateFakeOasisResponseWithSingleChargeStation(req *oasis.Request) *oasis.Response {
 	fakeSolution1 := new(oasis.Solution)
 	fakeSolution1.Distance = 90000.0
 	fakeSolution1.Duration = 30000.0
@@ -86,10 +86,10 @@ func generateFakeOasisResponseBasedOnRequest(req *oasis.Request) *oasis.Response
 
 	fakeStation1 := new(oasis.ChargeStation)
 	address1 := new(nearbychargestation.Address)
-	LatMedian := (req.Coordinates[0].Lat + req.Coordinates[1].Lat) / 2
-	LonMedian := (req.Coordinates[0].Lon + req.Coordinates[1].Lon) / 2
-	address1.GeoCoordinate = nearbychargestation.Coordinate{Latitude: LatMedian, Longitude: LonMedian}
-	address1.NavCoordinates = append(address1.NavCoordinates, &nearbychargestation.Coordinate{Latitude: LatMedian, Longitude: LonMedian})
+	latMedian := (req.Coordinates[0].Lat + req.Coordinates[1].Lat) / 2
+	lonMedian := (req.Coordinates[0].Lon + req.Coordinates[1].Lon) / 2
+	address1.GeoCoordinate = nearbychargestation.Coordinate{Latitude: latMedian, Longitude: lonMedian}
+	address1.NavCoordinates = append(address1.NavCoordinates, &nearbychargestation.Coordinate{Latitude: latMedian, Longitude: lonMedian})
 	fakeStation1.Address = append(fakeStation1.Address, address1)
 
 	fakeStation1.WaitTime = 0.0
