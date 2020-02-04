@@ -32,7 +32,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(generateFakeOasisResponseBasedOnRequest(oasisRequest))
+	json.NewEncoder(w).Encode(generateFakeOasisResponseWithSingleChargeStation(oasisRequest))
 }
 
 func generateFakeOasisResponse() *oasis.Response {
