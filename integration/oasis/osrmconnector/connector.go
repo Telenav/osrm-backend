@@ -35,6 +35,7 @@ func (oc *OSRMConnector) Request4Table() <-chan TableResponse {
 	return nil
 }
 
+// Stop will stop OSRMConnector
 func (oc *OSRMConnector) Stop() {
 	// todo
 }

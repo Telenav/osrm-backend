@@ -67,7 +67,7 @@ func TestMultiRouteRequest(t *testing.T) {
 	count := 0
 	for r := range all {
 		if r.Resp.Code == "OK" {
-			count += 1
+			count++
 		}
 		if count == 10 {
 			close(all)
