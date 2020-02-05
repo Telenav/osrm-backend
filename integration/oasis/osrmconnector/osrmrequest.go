@@ -2,20 +2,21 @@ package osrmconnector
 
 // osrm request type
 const (
-	OSRMROUTE = iota
-	OSRMTABLE = iota
+	OSRMRoute = iota
+	OSRMTable = iota
 )
 
-type osrmType rune
+type requestType int
 
+// request records input information and response channel
 type request struct {
 	url        string
-	t          osrmType
+	t          requestType
 	routeRespC chan RouteResponse
 	tableRespC chan TableResponse
 }
 
-func newOsrmRequest(url string, t osrmType) *request {
+func newOsrmRequest(url string, t requestType) *request {
 	return &request{
 		url:        url,
 		t:          t,

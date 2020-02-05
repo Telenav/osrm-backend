@@ -31,7 +31,7 @@ func (oc *osrmHTTPClient) submitRouteReq(r *route.Request) <-chan RouteResponse 
 	}
 	url = url + oc.osrmBackendEndpoint + r.RequestURI()
 
-	req := newOsrmRequest(url, OSRMROUTE)
+	req := newOsrmRequest(url, OSRMRoute)
 	oc.requestC <- req
 	return req.routeRespC
 }
@@ -69,7 +69,7 @@ func (oc *osrmHTTPClient) response(m *message) {
 	if m.err != nil || m.resp == nil {
 		glog.Warningf("osrm request %s failed, err %v\n", m.req.url, m.err)
 
-		if m.req.t == OSRMROUTE {
+		if m.req.t == OSRMRoute {
 			routeResp.Err = m.err
 			m.req.routeRespC <- routeResp
 		}
@@ -78,7 +78,7 @@ func (oc *osrmHTTPClient) response(m *message) {
 	}
 	defer m.resp.Body.Close()
 
-	if m.req.t == OSRMROUTE {
+	if m.req.t == OSRMRoute {
 		routeResp.Err = json.NewDecoder(m.resp.Body).Decode(&routeResp.Resp)
 		m.req.routeRespC <- routeResp
 	}

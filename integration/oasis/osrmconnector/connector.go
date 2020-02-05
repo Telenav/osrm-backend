@@ -10,32 +10,32 @@ type RouteResponse struct {
 	Err  error
 }
 
-// OsrmConnector wraps the communication with OSRM server
-type OsrmConnector struct {
-	osrmclient *osrmHTTPClient
+// OSRMConnector wraps the communication with OSRM server
+type OSRMConnector struct {
+	osrmClient *osrmHTTPClient
 }
 
-// NewOsrmConnector create OsrmConnector object
-func NewOsrmConnector(osrmEndpoint string) *OsrmConnector {
-	osrm := &OsrmConnector{
-		osrmclient: newOsrmHTTPClient(osrmEndpoint),
+// NewOSRMConnector create OsrmConnector object
+func NewOSRMConnector(osrmEndpoint string) *OSRMConnector {
+	osrm := &OSRMConnector{
+		osrmClient: newOsrmHTTPClient(osrmEndpoint),
 	}
-	go osrm.osrmclient.start()
+	go osrm.osrmClient.start()
 	return osrm
 }
 
-// Request4Route provide async api to request for route
-func (oc *OsrmConnector) Request4Route(r *route.Request) <-chan RouteResponse {
-	return oc.osrmclient.submitRouteReq(r)
+// Request4Route returns a channel immediately.  Response information could be retrieved from the channel when ready.
+func (oc *OSRMConnector) Request4Route(r *route.Request) <-chan RouteResponse {
+	return oc.osrmClient.submitRouteReq(r)
 }
 
-// Request4Table provide async api to request for table
-func (oc *OsrmConnector) Request4Table() <-chan TableResponse {
+// Request4Table returns a channel immediately.  Response information could be retrieved from the channel when ready.
+func (oc *OSRMConnector) Request4Table() <-chan TableResponse {
 	// todo
 	return nil
 }
 
-func (oc *OsrmConnector) Stop() {
+func (oc *OSRMConnector) Stop() {
 	// todo
 }
 
