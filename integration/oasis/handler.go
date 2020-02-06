@@ -5,78 +5,95 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/Telenav/osrm-backend/integration/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 	"github.com/golang/glog"
 )
 
+// Handler handles oasis request and provide response
 type Handler struct {
-	osrmBackend string
+	osrmConnector *osrmconnector.OSRMConnector
 }
 
+// New creates new Handler object
 func New(osrmBackend string) *Handler {
 	return &Handler{
-		osrmBackend,
+		osrmConnector: osrmconnector.NewOSRMConnector(osrmBackend),
 	}
 }
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	glog.Infof("Handle incoming request %s from remote addr %s", req.RequestURI, req.RemoteAddr)
-	w.WriteHeader(http.StatusOK)
 
-	oasisRequest, err := oasis.ParseRequestURL(req.URL)
-	if err != nil || len(oasisRequest.Coordinates) != 2 {
-		glog.Warning(err)
+	// parse oasis request
+	oasisReq, err := oasis.ParseRequestURL(req.URL)
+	if err != nil || len(oasisReq.Coordinates) != 2 {
+		glog.Error(err)
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintf(w, "%v", err)
 		return
 	}
 
-	json.NewEncoder(w).Encode(generateFakeOasisResponseWithSingleChargeStation(oasisRequest))
+	// check whether has enough energy
+	route, err := h.requestRoute4InputOrigDest(oasisReq)
+	if err != nil {
+		glog.Error(err)
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "%v", err)
+		return
+	}
+
+	b, remainRange, err := hasEnoughEnergy(oasisReq.CurrRange, oasisReq.SafeLevel, route)
+	if err != nil {
+		glog.Error(err)
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "%v", err)
+		return
+	}
+
+	if b {
+		h.generateOASISResponse(w, route, remainRange)
+	} else {
+		generateFakeOASISResponse(w, oasisReq)
+	}
 }
 
-func generateFakeOasisResponse() *oasis.Response {
-	// Fake solution 1
-	fakeSolution1 := new(oasis.Solution)
-	fakeSolution1.Distance = 90.0
-	fakeSolution1.Duration = 300.0
-	fakeSolution1.Weight = 300.0
-	fakeSolution1.RemainingRage = 100000.0
-	fakeSolution1.WeightName = "duration"
+func (h *Handler) requestRoute4InputOrigDest(oasisReq *oasis.Request) (*route.Response, error) {
+	// generate route request
+	req := route.NewRequest()
+	req.Coordinates = oasisReq.Coordinates
 
-	// Information realted with first charge station
-	fakeStation1 := new(oasis.ChargeStation)
-	address1 := new(nearbychargestation.Address)
-	address1.GeoCoordinate = nearbychargestation.Coordinate{Latitude: 37.78509, Longitude: -122.41988}
-	address1.NavCoordinates = append(address1.NavCoordinates, &nearbychargestation.Coordinate{Latitude: 37.78509, Longitude: -122.41988})
-	fakeStation1.Address = append(fakeStation1.Address, address1)
-	fakeStation1.WaitTime = 30.0
-	fakeStation1.ChargeTime = 100.0
-	fakeStation1.ChargeRange = 100.0
-	fakeStation1.DetailURL = "url"
-	fakeSolution1.ChargeStations = append(fakeSolution1.ChargeStations, fakeStation1)
+	// request for route
+	respC := h.osrmConnector.Request4Route(req)
 
-	// Information realted with second charge station
-	fakeStation2 := new(oasis.ChargeStation)
-	address2 := new(nearbychargestation.Address)
-	address2.GeoCoordinate = nearbychargestation.Coordinate{Latitude: 13.40677, Longitude: 52.53333}
-	address2.NavCoordinates = append(address2.NavCoordinates, &nearbychargestation.Coordinate{Latitude: 13.40677, Longitude: 52.53333})
-	fakeStation2.Address = append(fakeStation2.Address, address2)
-	fakeStation2.WaitTime = 100.0
-	fakeStation2.ChargeTime = 100.0
-	fakeStation2.ChargeRange = 100.0
-	fakeStation2.DetailURL = "url"
-	fakeSolution1.ChargeStations = append(fakeSolution1.ChargeStations, fakeStation2)
+	// retrieve route result
+	routeResp := <-respC
+	return routeResp.Resp, routeResp.Err
+}
+
+func (h *Handler) generateOASISResponse(w http.ResponseWriter, routeResp *route.Response, remainRange float64) {
+	w.WriteHeader(http.StatusOK)
+
+	solution := new(oasis.Solution)
+	solution.Distance = routeResp.Routes[0].Distance
+	solution.Duration = routeResp.Routes[0].Duration
+	solution.Weight = routeResp.Routes[0].Weight
+	solution.RemainingRage = remainRange
+	solution.WeightName = routeResp.Routes[0].WeightName
 
 	r := new(oasis.Response)
 	r.Code = "200"
-	r.Message = "Success"
-	r.Solutions = append(r.Solutions, fakeSolution1)
+	r.Message = "Success."
+	r.Solutions = append(r.Solutions, solution)
 
-	return r
+	json.NewEncoder(w).Encode(r)
 }
 
-func generateFakeOasisResponseWithSingleChargeStation(req *oasis.Request) *oasis.Response {
+func generateFakeOASISResponse(w http.ResponseWriter, req *oasis.Request) {
+	w.WriteHeader(http.StatusOK)
+
 	fakeSolution1 := new(oasis.Solution)
 	fakeSolution1.Distance = 90000.0
 	fakeSolution1.Duration = 30000.0
@@ -102,5 +119,6 @@ func generateFakeOasisResponseWithSingleChargeStation(req *oasis.Request) *oasis
 	r.Code = "200"
 	r.Message = "Success."
 	r.Solutions = append(r.Solutions, fakeSolution1)
-	return r
+
+	json.NewEncoder(w).Encode(r)
 }

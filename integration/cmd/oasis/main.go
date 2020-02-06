@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"net/http"
 	"strconv"
 
@@ -9,6 +10,8 @@ import (
 )
 
 func main() {
+	flag.Parse()
+	defer glog.Flush()
 	mux := http.NewServeMux()
 
 	oasisService := oasis.New(flags.osrmBackendEndpoint)

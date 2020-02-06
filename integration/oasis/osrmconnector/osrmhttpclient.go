@@ -33,10 +33,12 @@ func (oc *osrmHTTPClient) submitRouteReq(r *route.Request) <-chan RouteResponse 
 
 	req := newOsrmRequest(url, OSRMRoute)
 	oc.requestC <- req
+	glog.Info("[osrmHTTPClient]Submit route request " + url)
 	return req.routeRespC
 }
 
 func (oc *osrmHTTPClient) start() {
+	glog.Info("osrm connector started.\n")
 	c := make(chan message)
 
 	for {
@@ -57,6 +59,7 @@ type message struct {
 
 func (oc *osrmHTTPClient) send(req *request, c chan<- message) {
 	resp, err := oc.httpclient.Get(req.url)
+	glog.Infof("[osrmHTTPClient] send function succeed with request %s" + req.url)
 	m := message{req: req, resp: resp, err: err}
 	c <- m
 }
@@ -82,6 +85,7 @@ func (oc *osrmHTTPClient) response(m *message) {
 		routeResp.Err = json.NewDecoder(m.resp.Body).Decode(&routeResp.Resp)
 		m.req.routeRespC <- routeResp
 	}
+	glog.Infof("[osrmHTTPClient] Response for request %s" + m.req.url + " is generated.")
 
 	return
 }
