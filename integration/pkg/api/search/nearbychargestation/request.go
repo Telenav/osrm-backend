@@ -24,6 +24,7 @@ type Request struct {
 	Intent       string
 	Locale       string
 	Limit        int
+	Radius       float64
 }
 
 // NewRequest create an empty entity Request.
@@ -43,6 +44,7 @@ func NewRequest() *Request {
 		Intent:       options.AroundIntent,
 		Locale:       options.ENUSLocale,
 		Limit:        options.DefaultLimitValue,
+		Radius:       0.0,
 	}
 }
 
@@ -76,7 +78,7 @@ func (r *Request) QueryString() string {
 }
 
 // QueryValues convert route Request to url.Values.
-// i.e. "api_key=-&api_signature=-&query=-&location=-&intent=-&locale=-&limit=-"
+// i.e. "api_key=-&api_signature=-&query=-&location=-&intent=-&locale=-&limit=-&radius=-"
 func (r *Request) QueryValues() (v url.Values) {
 	v = make(url.Values)
 
@@ -103,6 +105,10 @@ func (r *Request) QueryValues() (v url.Values) {
 
 	if r.Limit > 0 {
 		v.Add(options.KeyLimit, strconv.Itoa(r.Limit))
+	}
+
+	if r.Radius > 0 {
+		v.Add(options.KeyRadius, strconv.FormatFloat(r.Radius, 'f', 6, 64))
 	}
 
 	return

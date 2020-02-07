@@ -10,4 +10,5 @@ const (
 	KeyLimit        = "limit"
 	KeyIntent       = "intent"
 	KeyLocale       = "locale"
+	KeyRadius       = "radius"
 )
