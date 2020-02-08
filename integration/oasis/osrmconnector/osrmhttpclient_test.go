@@ -101,7 +101,6 @@ func TestMixRouteTableRequest(t *testing.T) {
 		if r.URL.EscapedPath() == "/route/v1/driving/" {
 			w.Write(osrmRouteResponseBytes)
 		} else {
-			fmt.Print("====== come to table request here\n")
 			w.Write(osrmTableResponseBytes)
 		}
 	}))
@@ -110,7 +109,7 @@ func TestMixRouteTableRequest(t *testing.T) {
 	oc := newOsrmHTTPClient(ts.URL)
 	go oc.start()
 
-	clientCount := 3
+	clientCount := 20
 	all := make(chan bool, clientCount)
 
 	rand.Seed(time.Now().UnixNano())
@@ -143,7 +142,7 @@ func TestMixRouteTableRequest(t *testing.T) {
 	}
 
 	go func() {
-		time.Sleep(3 * time.Second)
+		time.Sleep(5 * time.Second)
 		close(all)
 	}()
 
