@@ -120,7 +120,7 @@ func TestMixRouteTableRequest(t *testing.T) {
 				req := route.NewRequest()
 				result := oc.submitRouteReq(req)
 				r := <-result
-				if r.Resp.Code == "OK" && r.Resp.Message == "RouteResponse" {
+				if r.Err == nil && r.Resp.Code == "OK" && r.Resp.Message == "RouteResponse" {
 					all <- true
 				} else {
 					all <- false
@@ -132,7 +132,7 @@ func TestMixRouteTableRequest(t *testing.T) {
 				req := table.NewRequest()
 				result := oc.submitTableReq(req)
 				r := <-result
-				if r.Resp.Code == "OK" && r.Resp.Message == "TableResponse" {
+				if r.Err == nil && r.Resp.Code == "OK" && r.Resp.Message == "TableResponse" {
 					all <- true
 				} else {
 					all <- false
