@@ -94,8 +94,7 @@ func (oc *osrmHTTPClient) response(m *message) {
 			tableResp.Err = m.err
 			m.req.tableRespC <- tableResp
 		} else {
-			glog.Error("osrmHTTPClient Only support OSRMRoute and OSRMTable request for now.")
-			panic("Unsupported request type for osrmHTTPClient")
+			glog.Fatal("Unsupported request type for osrmHTTPClient")
 		}
 
 		return
@@ -109,8 +108,7 @@ func (oc *osrmHTTPClient) response(m *message) {
 		tableResp.Err = json.NewDecoder(m.resp.Body).Decode(&tableResp.Resp)
 		m.req.tableRespC <- tableResp
 	} else {
-		glog.Error("osrmHTTPClient Only support OSRMRoute and OSRMTable request for now.")
-		panic("Unsupported request type for osrmHTTPClient")
+		glog.Fatal("Unsupported request type for osrmHTTPClient")
 	}
 	glog.Infof("[osrmHTTPClient] Response for request %s" + m.req.url + " is generated.")
 
