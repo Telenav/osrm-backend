@@ -4,23 +4,28 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/Telenav/osrm-backend/integration/oasis/osrmconnector"
+	"github.com/Telenav/osrm-backend/integration/oasis/searchconnector"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
+	searchcoordinate "github.com/Telenav/osrm-backend/integration/pkg/api/search/coordinate"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 	"github.com/golang/glog"
 )
 
 // Handler handles oasis request and provide response
 type Handler struct {
-	osrmConnector *osrmconnector.OSRMConnector
+	osrmConnector     *osrmconnector.OSRMConnector
+	tnSearchConnector *searchconnector.TNSearchConnector
 }
 
 // New creates new Handler object
-func New(osrmBackend string) *Handler {
+func New(osrmBackend, searchEndpoint, apiKey, apiSignature string) *Handler {
 	return &Handler{
-		osrmConnector: osrmconnector.NewOSRMConnector(osrmBackend),
+		osrmConnector:     osrmconnector.NewOSRMConnector(osrmBackend),
+		tnSearchConnector: searchconnector.NewTNSearchConnector(searchEndpoint, apiKey, apiSignature),
 	}
 }
 
@@ -36,7 +41,6 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// check whether has enough energy
 	route, err := h.requestRoute4InputOrigDest(oasisReq)
 	if err != nil {
 		glog.Error(err)
@@ -45,6 +49,15 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// check whether orig and dest is reachable
+	if len(route.Routes) == 0 {
+		glog.Info("Orig and destination is not reachable for request.")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "Orig and destination is not reachable for request.")
+		return
+	}
+
+	// check whether has enough energy
 	b, remainRange, err := hasEnoughEnergy(oasisReq.CurrRange, oasisReq.SafeLevel, route)
 	if err != nil {
 		glog.Error(err)
@@ -52,6 +65,8 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		fmt.Fprintf(w, "%v", err)
 		return
 	}
+
+	// check whether could be reached by single charge
 
 	if b {
 		h.generateOASISResponse(w, route, remainRange)
@@ -71,6 +86,57 @@ func (h *Handler) requestRoute4InputOrigDest(oasisReq *oasis.Request) (*route.Re
 	// retrieve route result
 	routeResp := <-respC
 	return routeResp.Resp, routeResp.Err
+}
+
+func (h *Handler) requestTable4Points(startPoints Coordinate.Coordinates, endPoints Coordinate.Coordinates) (*table.Response, error) {
+	if len(startPoints) == 0 || len(endPoints) == 0 {
+		return nil, fmt.Errorf("Calling function with empty points.")
+	}
+	
+	// generate table request
+	req := table.NewRequest()
+	req.Coordinates = append(startPoints, endPoints)
+
+	count := 0
+	for i, _ := range startPoints {
+		str, err := strconv.ParseInt(i, 10, 64)
+		req.Sources = append(req.Sources, str)
+		count++
+	}
+	for i, _ := range endPoints {
+		str, err := strconv.ParseInt(i + count, 10, 64)
+		req.destination = append(req.Destinations, str)
+	}
+}
+
+func (h *Handler) requestSearchResult4OrigDest(oasisReq *oasis.Request) (*oasis.ChargeStationsResponse, *oasis.ChargeStationsResponse) {
+	origReq, _ := h.generateSearchRequest(searchcoordinate.Coordinate{Lat: oasisReq.Coordinates[0].Lat, Lon: oasisReq.Coordinates[0].Lon}, 999, oasisReq.CurrRange)
+	destReq, _ := h.generateSearchRequest(searchcoordinate.Coordinate{Lat: oasisReq.Coordinates[1].Lat, Lon: oasisReq.Coordinates[1].Lon}, 999, oasisReq.MaxRange)
+
+	// request for orig and dest
+	origRespC := h.tnSearchConnector.ChargeStationSearch(origReq)
+	destRespC := h.tnSearchConnector.ChargeStationSearch(destReq)
+
+	// retrieve response and filter
+	origResp := <-origRespC
+	destResp := <-destRespC
+
+	if &origResp, destResp
+}
+
+func (h *Handler) generateSearchRequest(location searchcoordinate.Coordinate, limit int, radius float64) (*nearbychargestation.Request, error) {
+	// generate search request
+	req := nearbychargestation.NewRequest()
+	req.Location = location
+	if limit > 0 {
+		req.Limit = limit
+	}
+
+	if radius > 0 {
+		req.Radius = radius
+	}
+
+	return req, nil
 }
 
 func (h *Handler) generateOASISResponse(w http.ResponseWriter, routeResp *route.Response, remainRange float64) {
