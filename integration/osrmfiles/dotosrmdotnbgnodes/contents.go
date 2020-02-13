@@ -6,6 +6,7 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/fingerprint"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/meta"
+	"github.com/Telenav/osrm-backend/integration/osrmfiles/osrmtype"
 	"github.com/golang/glog"
 )
 
@@ -13,6 +14,7 @@ import (
 type Contents struct {
 	Fingerprint     fingerprint.Fingerprint
 	CoordinatesMeta meta.Num
+	Coordinates     osrmtype.Coordinates
 
 	// for internal implementation
 	writers  map[string]io.Writer
@@ -29,6 +31,7 @@ func New(file string) *Contents {
 	c.writers = map[string]io.Writer{}
 	c.writers["osrm_fingerprint.meta"] = &c.Fingerprint
 	c.writers["/common/nbn_data/coordinates.meta"] = &c.CoordinatesMeta
+	c.writers["/common/nbn_data/coordinates"] = &c.Coordinates
 
 	return &c
 }
@@ -39,6 +42,9 @@ func (c *Contents) PrintSummary(head int) {
 	glog.Infof("  %s\n", &c.Fingerprint)
 
 	glog.Infof("  coordinates meta %d count\n", c.CoordinatesMeta)
+	for i := 0; i < head && i < len(c.Coordinates); i++ {
+		glog.Infof("    coordinate[%d] %v", i, c.Coordinates[i])
+	}
 
 }
 
@@ -46,6 +52,9 @@ func (c *Contents) PrintSummary(head int) {
 func (c *Contents) Validate() error {
 	if !c.Fingerprint.IsValid() {
 		return fmt.Errorf("invalid fingerprint %v", c.Fingerprint)
+	}
+	if uint64(c.CoordinatesMeta) != uint64(len(c.Coordinates)) {
+		return fmt.Errorf("coordinates meta not match, count in meta %d, but actual coordinates count %d", c.CoordinatesMeta, len(c.Coordinates))
 	}
 
 	return nil
