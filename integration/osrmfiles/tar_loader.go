@@ -31,7 +31,7 @@ func Load(contents ContentsOperator) error {
 		//writer, found := contents.writers[hdr.Name]
 		writer, found := contents.FindWriter(hdr.Name)
 		if !found {
-			glog.Warningf("unrecognized content in tar: %s", hdr.Name)
+			glog.Warningf("parsing tar file %s but content unrecognized: %s", contents.FilePath(), hdr.Name)
 			continue
 		}
 
