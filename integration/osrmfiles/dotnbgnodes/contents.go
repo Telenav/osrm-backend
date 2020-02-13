@@ -1,4 +1,4 @@
-package dotosrmdotnbgnodes
+package dotnbgnodes
 
 import (
 	"fmt"

@@ -1,4 +1,4 @@
-package dotosrmdottimestamp
+package dottimestamp
 
 import (
 	"bytes"
