@@ -6,6 +6,7 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/osrmfiles"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/dotosrm"
+	"github.com/Telenav/osrm-backend/integration/osrmfiles/dotosrmdotnbgnodes"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/dotosrmdottimestamp"
 
 	"github.com/golang/glog"
@@ -16,6 +17,9 @@ const (
 
 	dotTimestampSuffix        = ".timestamp"
 	dotOSRMDotTimestampSuffix = dotOSRMSuffix + dotTimestampSuffix
+
+	dotNBGNodesSuffix        = ".nbg_nodes"
+	dotOSRMDotNBGNodesSuffix = dotOSRMSuffix + dotNBGNodesSuffix
 )
 
 // osrmBasefilePath should be 'xxx.osrm'
@@ -24,6 +28,7 @@ func createEmptyOSRMFilesContents(osrmBasefilePath string) map[string]osrmfiles.
 	m := map[string]osrmfiles.ContentsOperator{}
 	m[dotOSRMSuffix] = dotosrm.New(osrmBasefilePath)
 	m[dotOSRMDotTimestampSuffix] = dotosrmdottimestamp.New(osrmBasefilePath + dotTimestampSuffix)
+	m[dotOSRMDotNBGNodesSuffix] = dotosrmdotnbgnodes.New(osrmBasefilePath + dotNBGNodesSuffix)
 
 	return m
 }
