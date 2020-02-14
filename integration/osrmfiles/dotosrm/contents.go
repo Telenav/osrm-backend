@@ -7,7 +7,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/osrmtype"
 
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/meta"
-	"github.com/Telenav/osrm-backend/integration/osrmfiles/querynode"
+	"github.com/Telenav/osrm-backend/integration/osrmfiles/osrmtype/querynode"
 
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/fingerprint"
 	"github.com/golang/glog"
