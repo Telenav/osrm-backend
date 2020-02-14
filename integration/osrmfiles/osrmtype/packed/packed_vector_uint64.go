@@ -52,7 +52,7 @@ const (
 
 // NewUint64Vector creates a new packd Uint64Vector with fixed bits setting.
 func NewUint64Vector(bits uint) Uint64Vector {
-	if bits > maxBits {
+	if bits > maxBits || bits == 0 {
 		glog.Fatalf("invalid bits %d, only allows [1,%d]", bits, maxBits)
 	}
 

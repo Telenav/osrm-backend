@@ -24,9 +24,9 @@ type Contents struct {
 }
 
 // New creates an empty Contents for `.osrm.nbg_nodes`.
-func New(file string) *Contents {
+func New(file string, packedBits uint) *Contents {
 	c := Contents{
-		OSMNodeIDs: packed.NewUint64Vector(63), // https://github.com/Telenav/osrm-backend/blob/6283c6074066f98e6d4a9f774f21ea45407c0d52/include/extractor/packed_osm_ids.hpp#L14
+		OSMNodeIDs: packed.NewUint64Vector(packedBits),
 	}
 
 	c.filePath = file

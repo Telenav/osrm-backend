@@ -28,7 +28,7 @@ func createEmptyOSRMFilesContents(osrmBasefilePath string) map[string]osrmfiles.
 	m := map[string]osrmfiles.ContentsOperator{}
 	m[dotOSRMSuffix] = dotosrm.New(osrmBasefilePath)
 	m[dotOSRMDotTimestampSuffix] = dottimestamp.New(osrmBasefilePath + dotTimestampSuffix)
-	m[dotOSRMDotNBGNodesSuffix] = dotnbgnodes.New(osrmBasefilePath + dotNBGNodesSuffix)
+	m[dotOSRMDotNBGNodesSuffix] = dotnbgnodes.New(osrmBasefilePath+dotNBGNodesSuffix, flags.packBits)
 
 	return m
 }
