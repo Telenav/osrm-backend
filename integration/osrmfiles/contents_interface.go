@@ -11,6 +11,9 @@ type ContentsOperator interface {
 	// Validate checks whether the contents valid or not.
 	Validate() error
 
+	// PostProcess post process the conents once contents loaded if necessary.
+	PostProcess() error
+
 	// FindWriter find io.Writer for the specified name, contents can be filled in by the found io.Writer.
 	FindWriter(name string) (io.Writer, bool)
 

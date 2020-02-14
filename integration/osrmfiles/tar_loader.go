@@ -40,6 +40,11 @@ func Load(contents ContentsOperator) error {
 		}
 	}
 
+	// post process once all contents loaded
+	if err := contents.PostProcess(); err != nil {
+		return err
+	}
+
 	// validate loaded contents
 	if err := contents.Validate(); err != nil {
 		return err

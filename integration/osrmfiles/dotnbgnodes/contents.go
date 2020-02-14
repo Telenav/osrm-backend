@@ -7,6 +7,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/fingerprint"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/meta"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/osrmtype"
+	"github.com/Telenav/osrm-backend/integration/osrmfiles/osrmtype/packed"
 	"github.com/golang/glog"
 )
 
@@ -15,6 +16,7 @@ type Contents struct {
 	Fingerprint     fingerprint.Fingerprint
 	CoordinatesMeta meta.Num
 	Coordinates     osrmtype.Coordinates
+	OSMNodeIDs      packed.Uint64Vector
 
 	// for internal implementation
 	writers  map[string]io.Writer
@@ -23,7 +25,9 @@ type Contents struct {
 
 // New creates an empty Contents for `.osrm.nbg_nodes`.
 func New(file string) *Contents {
-	c := Contents{}
+	c := Contents{
+		OSMNodeIDs: packed.NewUint64Vector(63), // https://github.com/Telenav/osrm-backend/blob/6283c6074066f98e6d4a9f774f21ea45407c0d52/include/extractor/packed_osm_ids.hpp#L14
+	}
 
 	c.filePath = file
 
@@ -32,6 +36,9 @@ func New(file string) *Contents {
 	c.writers["osrm_fingerprint.meta"] = &c.Fingerprint
 	c.writers["/common/nbn_data/coordinates.meta"] = &c.CoordinatesMeta
 	c.writers["/common/nbn_data/coordinates"] = &c.Coordinates
+	c.writers["/common/nbn_data/osm_node_ids/number_of_elements.meta"] = &c.OSMNodeIDs.NumOfElements
+	c.writers["/common/nbn_data/osm_node_ids/packed.meta"] = &c.OSMNodeIDs.PackedMeta
+	c.writers["/common/nbn_data/osm_node_ids/packed"] = &c.OSMNodeIDs
 
 	return &c
 }
@@ -46,6 +53,11 @@ func (c *Contents) PrintSummary(head int) {
 		glog.Infof("    coordinate[%d] %v", i, c.Coordinates[i])
 	}
 
+	glog.Infof("  osm_node_ids number_of_elements meta %d count\n", c.OSMNodeIDs.NumOfElements)
+	glog.Infof("  osm_node_ids packed meta %d count\n", c.OSMNodeIDs.PackedMeta)
+	for i := 0; i < head && i < len(c.OSMNodeIDs.Values); i++ {
+		glog.Infof("    osm_node_ids[%d] %v", i, c.OSMNodeIDs.Values[i])
+	}
 }
 
 // Validate checks whether the contents valid or not.
@@ -56,8 +68,16 @@ func (c *Contents) Validate() error {
 	if uint64(c.CoordinatesMeta) != uint64(len(c.Coordinates)) {
 		return fmt.Errorf("coordinates meta not match, count in meta %d, but actual coordinates count %d", c.CoordinatesMeta, len(c.Coordinates))
 	}
+	if err := c.OSMNodeIDs.Validate(); err != nil {
+		return err
+	}
 
 	return nil
+}
+
+// PostProcess post process the conents once contents loaded if necessary.
+func (c *Contents) PostProcess() error {
+	return c.OSMNodeIDs.Prune()
 }
 
 // FindWriter find io.Writer for the specified name.

@@ -47,6 +47,11 @@ func (c *Contents) Validate() error {
 	return nil
 }
 
+// PostProcess post process the conents once contents loaded if necessary.
+func (c *Contents) PostProcess() error {
+	return nil // nothing need to do
+}
+
 // PrintSummary prints summary and head lines of contents.
 func (c *Contents) PrintSummary(head int) {
 	glog.Infof("Loaded from %s\n", c.filePath)

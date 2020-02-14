@@ -129,6 +129,11 @@ func (c *Contents) Validate() error {
 	return nil
 }
 
+// PostProcess post process the conents once contents loaded if necessary.
+func (c *Contents) PostProcess() error {
+	return nil // nothing need to do
+}
+
 // FindWriter find io.Writer for the specified name.
 func (c *Contents) FindWriter(name string) (io.Writer, bool) {
 	w, b := c.writers[name]
