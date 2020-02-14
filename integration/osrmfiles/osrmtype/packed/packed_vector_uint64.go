@@ -26,9 +26,6 @@ type Uint64Vector struct {
 	blockWords uint // number of words per block
 	blockBytes uint // number of bytes per block
 
-	cachedLower uint64 // last remain bits, stores on lower
-	cachedBits  uint   // should always < u.Bits
-
 	// The `Write` will be called many times in `io.Copy` due to fixed buffer size.
 	// Defaultly the copy buffer size is 32*1024 bytes, see line 391 `copyBuffer()` in https://golang.org/src/io/io.go.
 	// Unfortunetly, we expect to parse the packed data which uses Bits*8 as a block.
@@ -125,6 +122,9 @@ func (u *Uint64Vector) parseBlock(p []byte) (int, error) {
 		return 0, fmt.Errorf("invalid block bytes %d, expect %d", len(p), u.blockBytes)
 	}
 
+	var cachedLower uint64 // last remain bits, stores on lower
+	var cachedBits uint    // should always < u.bits
+
 	var writeLen int
 	writeP := p
 	for {
@@ -135,32 +135,32 @@ func (u *Uint64Vector) parseBlock(p []byte) (int, error) {
 		word := uint64(binary.LittleEndian.Uint64(writeP))
 
 		// construct first value: consume with last cached
-		firstConsumeBits := u.bits - u.cachedBits
-		upper := (word & (^(1 << firstConsumeBits))) << u.cachedBits
-		newValue := upper | u.cachedLower
+		firstConsumeBits := u.bits - cachedBits
+		upper := (word & (^(1 << firstConsumeBits))) << cachedBits
+		newValue := upper | cachedLower
 		u.Values = append(u.Values, newValue)
 		word = word >> firstConsumeBits
 
 		consumedBits := firstConsumeBits
-		for wordBits-consumedBits >= u.bits { // another values may still available
+		for wordBits-consumedBits >= u.bits { // more values may still available
 			newValue = word & (^(1 << u.bits))
 			u.Values = append(u.Values, newValue)
 			word = word >> u.bits
 			consumedBits += u.bits
 		}
-		u.cachedLower = word
-		u.cachedBits = wordBits - consumedBits
-		if u.cachedLower>>u.cachedBits != 0 {
-			glog.Fatalf("expect cacheBits %d, but got cache 0x%x", u.cachedBits, u.cachedLower)
+		cachedLower = word
+		cachedBits = wordBits - consumedBits
+		if cachedLower>>cachedBits != 0 {
+			glog.Fatalf("expect cacheBits %d, but got cache 0x%x", cachedBits, cachedLower)
 		}
 
 		writeP = writeP[wordBytes:]
 		writeLen += wordBytes
 
-		if writeLen%int(u.blockBytes) == 0 && (u.cachedLower != 0 || u.cachedBits != 0) {
+		if writeLen%int(u.blockBytes) == 0 && (cachedLower != 0 || cachedBits != 0) {
 			// a full block has been prased, then nothing should be cached anymore
 			glog.Fatalf("parsed len %d reached block, expect no cache anymore but got cache 0x%x cachedBits %d, block words %d, block bytes %d",
-				writeLen, u.cachedLower, u.cachedBits, u.blockWords, u.blockBytes)
+				writeLen, cachedLower, cachedBits, u.blockWords, u.blockBytes)
 		}
 	}
 	return writeLen, nil
@@ -169,8 +169,8 @@ func (u *Uint64Vector) parseBlock(p []byte) (int, error) {
 // Validate checks whether the Uint64Vector, which parsed from packed data, valid or not.
 func (u *Uint64Vector) Validate() error {
 
-	if len(u.unwrittenBytes) != 0 || u.cachedBits != 0 || u.cachedLower != 0 {
-		return fmt.Errorf("expect consumed all packed data, but len(unwrittenBytes) %d, cachedBits %d, cachedLower %d", len(u.unwrittenBytes), u.cachedBits, u.cachedLower)
+	if len(u.unwrittenBytes) != 0 {
+		return fmt.Errorf("expect consumed all packed data, but len(unwrittenBytes) %d", len(u.unwrittenBytes))
 	}
 
 	if uint64(u.NumOfElements) != uint64(len(u.Values)) {
