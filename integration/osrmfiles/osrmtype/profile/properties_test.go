@@ -1,4 +1,4 @@
-package dotproperties
+package profile
 
 import (
 	"io/ioutil"
@@ -8,7 +8,7 @@ import (
 
 func TestWriteProperties(t *testing.T) {
 
-	propertiesBytes, err := ioutil.ReadFile("testdata/nevada-common-properties")
+	propertiesBytes, err := ioutil.ReadFile("testdata/properties")
 	if err != nil {
 		t.Error(err)
 	}

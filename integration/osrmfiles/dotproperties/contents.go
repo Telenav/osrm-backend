@@ -6,6 +6,7 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/fingerprint"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/meta"
+	"github.com/Telenav/osrm-backend/integration/osrmfiles/osrmtype/profile"
 	"github.com/golang/glog"
 )
 
@@ -13,7 +14,7 @@ import (
 type Contents struct {
 	Fingerprint    fingerprint.Fingerprint
 	PropertiesMeta meta.Num
-	Properties
+	profile.Properties
 
 	// for internal implementation
 	writers  map[string]io.Writer

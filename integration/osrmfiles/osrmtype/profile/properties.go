@@ -1,10 +1,10 @@
-// Package dotproperties implements parser for `.osrm.properties` file.
+// Package profile implements parser for `/common/properties` of `.osrm.properties` file, which represents the `struct ProfileProperties` in C++ implementation.
 // The `struct ProfileProperties` has been written into `.osrm.properties` file by take its address and `sizeof()` its size directly,
 // which strongly related on C++ memory alignment on platform.
 // In this Golang implementation, we assume that on 64 bits machine, which has minimum alignment 4 bytes, and struct should be n*8 bytes.
 // It may not work if out of this memory alignment convention. E.g. it doesn't support 32 bits machine.
 // Be aware of any change of `struct ProfileProperties` and memory alignment of your compiler/platform if anything goes wrong.
-package dotproperties
+package profile
 
 import (
 	"bytes"
@@ -15,6 +15,7 @@ import (
 
 // Properties represents the LUA profile properties that affect run time queries.
 // C++ implementation: https://github.com/Telenav/osrm-backend/blob/8e094d1b90a31c090cdafa9854985343ea1e15c3/include/extractor/profile_properties.hpp#L23
+// Most of contents see Lua code: https://github.com/Telenav/osrm-backend/blob/8e094d1b90a31c090cdafa9854985343ea1e15c3/profiles/car.lua#L16
 // Be aware that the parsing should be strictly follow the memory layout of the `struct ProfileProperties` in C++ implementation,
 // which means the parsing code should be changed also if anything changed in the C++ `struct ProfileProperties`,
 // otherwise error will occrred.
