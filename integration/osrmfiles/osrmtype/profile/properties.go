@@ -1,4 +1,4 @@
-// Package profile implements parser for `/common/properties` of `.osrm.properties` file, which represents the `struct ProfileProperties` in C++ implementation.
+// Package profile (aka Lua profile) implements parser for `/common/properties` of `.osrm.properties` file, which represents the `struct ProfileProperties` in C++ implementation.
 // The `struct ProfileProperties` has been written into `.osrm.properties` file by take its address and `sizeof()` its size directly,
 // which strongly related on C++ memory alignment on platform.
 // In this Golang implementation, we assume that on 64 bits machine, which has minimum alignment 4 bytes, and struct should be n*8 bytes.
