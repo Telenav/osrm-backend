@@ -13,6 +13,7 @@ import (
 type Contents struct {
 	Fingerprint    fingerprint.Fingerprint
 	PropertiesMeta meta.Num
+	Properties
 
 	// for internal implementation
 	writers  map[string]io.Writer
@@ -29,6 +30,7 @@ func New(file string) *Contents {
 	c.writers = map[string]io.Writer{}
 	c.writers["osrm_fingerprint.meta"] = &c.Fingerprint
 	c.writers["/common/properties.meta"] = &c.PropertiesMeta
+	c.writers["/common/properties"] = &c.Properties
 
 	return &c
 }
@@ -37,6 +39,9 @@ func New(file string) *Contents {
 func (c *Contents) Validate() error {
 	if !c.Fingerprint.IsValid() {
 		return fmt.Errorf("invalid fingerprint %v", c.Fingerprint)
+	}
+	if c.PropertiesMeta != 1 { // always only have 1 lua properies stored
+		return fmt.Errorf("invalid properties.meta %d, expect always 1", c.PropertiesMeta)
 	}
 
 	return nil
@@ -53,7 +58,9 @@ func (c *Contents) PrintSummary(head int) {
 	glog.Infof("  %s\n", &c.Fingerprint)
 
 	glog.Infof("  propertiesMeta meta %d\n", c.PropertiesMeta)
-
+	if head > 0 {
+		glog.Infof("  properties %#v\n", c.Properties)
+	}
 }
 
 // FindWriter find io.Writer for the specified name.
