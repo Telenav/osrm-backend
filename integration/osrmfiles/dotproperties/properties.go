@@ -1,3 +1,9 @@
+// Package dotproperties implements parser for `.osrm.properties` file.
+// The `struct ProfileProperties` has been written into `.osrm.properties` file by take its address and `sizeof()` its size directly,
+// which strongly related on C++ memory alignment on platform.
+// In this Golang implementation, we assume that on 64 bits machine, which has minimum alignment 4 bytes, and struct should be n*8 bytes.
+// It may not work if out of this memory alignment convention. E.g. it doesn't support 32 bits machine.
+// Be aware of any change of `struct ProfileProperties` and memory alignment of your compiler/platform if anything goes wrong.
 package dotproperties
 
 import (
@@ -18,7 +24,7 @@ type Properties struct {
 	UTurnPenalty           int32
 	MaxSpeedForMapMatching float64
 
-	// 4 bool together takes 4 bytes on 64 bits machine
+	// 4 bool together takes 4 bytes
 	ContinueStraightAtWaypoint bool
 	UseTurnRestrictions        bool
 	LeftHandDriving            bool // DEPRECATED, see https://github.com/Telenav/osrm-backend/blob/8e094d1b90a31c090cdafa9854985343ea1e15c3/include/extractor/profile_properties.hpp#L129
