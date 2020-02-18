@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Telenav/osrm-backend/integration/oasis"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 	"github.com/Telenav/osrm-backend/integration/pkg/backend"
 	"github.com/golang/glog"
@@ -29,7 +28,7 @@ func newTNSearchHTTPClient(endpoint, apiKey, apiSignature string) *tnSearchHTTPC
 	}
 }
 
-func (sc *tnSearchHTTPClient) submitSearchReq(req *nearbychargestation.Request) <-chan oasis.ChargeStationsResponse {
+func (sc *tnSearchHTTPClient) submitSearchReq(req *nearbychargestation.Request) <-chan ChargeStationsResponse {
 	var url string
 	if !strings.HasPrefix(sc.tnSearchEndpoint, "http://") {
 		url += "http://"
@@ -63,7 +62,7 @@ func (sc *tnSearchHTTPClient) handle(req *request) {
 	}
 	defer resp.Body.Close()
 
-	var searchResp oasis.ChargeStationsResponse
+	var searchResp ChargeStationsResponse
 	searchResp.Err = json.NewDecoder(resp.Body).Decode(&searchResp.Resp)
 	req.searchRespC <- searchResp
 	glog.Infof("[tnSearchHTTPClient]Response for request %s" + req.url + "is generated.")

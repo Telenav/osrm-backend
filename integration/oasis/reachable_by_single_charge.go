@@ -1,11 +1,16 @@
 package oasis
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"sort"
 
+	"github.com/Telenav/osrm-backend/integration/oasis/osrmconnector"
+	"github.com/Telenav/osrm-backend/integration/oasis/searchconnector"
+	"github.com/Telenav/osrm-backend/integration/oasis/stationhandler"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/coordinate"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/table"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 	"github.com/golang/glog"
@@ -17,41 +22,113 @@ import (
 // The energy level is safeRange + nearest charge station's distance to destination
 // If there is one or several charge stations could be found in both origStationsResp and destStationsResp
 // We think the result is reachable by single charge station
-func isReachableBySingleCharge(req *oasis.Request, origStationsResp, destStationsResp *oasis.ChargeStationsResponse, routeResp *route.Response) bool {
+func isReachableBySingleCharge(req *oasis.Request, routedistance float64, osrmConnector *osrmconnector.OSRMConnector, tnSearchConnector *searchconnector.TNSearchConnector) coordinate.Coordinates {
 	// only possible when currRange + maxRange > distance + safeRange
-	if req.CurrRange+req.MaxRange < routeResp.Routes[0].Distance+req.SafeLevel {
-		return false
+	if req.CurrRange+req.MaxRange < routedistance+req.SafeLevel {
+		return nil
 	}
 
-	if nil == origStationsResp.Resp || len(origStationsResp.Resp) == 0 {
-		return false
+	origStations := stationhandler.NewOrigStationFinder(osrmConnector, tnSearchConnector, req)
+	destStations := stationhandler.NewDestStationFinder(osrmConnector, tnSearchConnector, req)
+	overlap := stationhandler.FindOverlapBetweenStations(origStations, destStations)
+
+	if len(overlap) == 0 {
+		return nil
 	}
 
-	if nil == destStationsResp.Resp || len(destStationsResp.Resp) == 0 {
-		return false
+	overlapPoints := make(coordinate.Coordinates, len(overlap))
+	for _, item := range overlap {
+		overlapPoints = append(overlapPoints, item.Location())
+	}
+	return overlapPoints
+}
+
+type singleChargeStationCandidate struct {
+	location         coordinate.Coordinate
+	distanceFromOrig float64
+	durationFromOrig float64
+	distanceToDest   float64
+	durationToDest   float64
+}
+
+// @todo these logic might refactored later: charge station status calculation should be moved away
+func generateResponse4SingleChargeStation(w http.ResponseWriter, req *oasis.Request, overlapPoints coordinate.Coordinates, osrmConnector *osrmconnector.OSRMConnector) {
+	candidate, err := pickChargeStationWithEarlistArrival(req, overlapPoints, osrmConnector)
+
+	if err != nil {
+		w.WriteHeader(http.StatusOK)
+		r := new(oasis.Response)
+		r.Message = err.Error()
+		json.NewEncoder(w).Encode(r)
+		return
 	}
 
-	// build dict for orig
-	origDict := make(map[string]bool)
-	for _, station := range origStationsResp.Resp.Results {
-		origDict[station.ID] = true
+	w.WriteHeader(http.StatusOK)
+
+	station := new(oasis.ChargeStation)
+	station.WaitTime = 0.0
+	station.ChargeTime = 7200.0
+	station.ChargeRange = req.MaxRange
+	station.DetailURL = "url"
+	address := new(nearbychargestation.Address)
+	address.GeoCoordinate = nearbychargestation.Coordinate{Latitude: candidate.location.Lat, Longitude: candidate.location.Lon}
+	address.NavCoordinates = append(address.NavCoordinates, &nearbychargestation.Coordinate{Latitude: candidate.location.Lat, Longitude: candidate.location.Lon})
+	station.Address = append(station.Address, address)
+
+	solution := new(oasis.Solution)
+	solution.Distance = candidate.distanceFromOrig + candidate.distanceToDest
+	solution.Duration = candidate.durationFromOrig + candidate.durationToDest + station.ChargeTime + station.WaitTime
+	solution.RemainingRage = req.MaxRange + req.CurrRange - solution.Distance
+	solution.ChargeStations = append(solution.ChargeStations, station)
+
+	r := new(oasis.Response)
+	r.Code = "200"
+	r.Message = "Success."
+	r.Solutions = append(r.Solutions, solution)
+
+	json.NewEncoder(w).Encode(r)
+}
+
+func pickChargeStationWithEarlistArrival(req *oasis.Request, overlapPoints coordinate.Coordinates, osrmConnector *osrmconnector.OSRMConnector) (*singleChargeStationCandidate, error) {
+	if len(overlapPoints) == 0 {
+		err := fmt.Errorf("pickChargeStationWithEarlistArrival must be called with none empty overlapPoints")
+		glog.Fatalf("%v", err)
+		return nil, err
 	}
 
-	shared := make([]*nearbychargestation.Result, 10)
-	// filter dest stations
-	d := destStationsResp.Resp.Results[0].Distance
-	d = req.MaxRange - req.SafeLevel - d
-	for _, station := range destStationsResp.Resp.Results {
-		if _, has := origDict[station.ID]; has {
-			shared = append(shared, station)
-		}
+	// request table for orig->overlap stations
+	origPoint := coordinate.Coordinates{req.Coordinates[0]}
+	reqOrig, _ := stationhandler.GenerateTableReq4Points(origPoint, overlapPoints)
+	respOrigC := osrmConnector.Request4Table(reqOrig)
+
+	// request table for overlap stations -> dest
+	destPoint := coordinate.Coordinates{req.Coordinates[1]}
+	reqDest, _ := stationhandler.GenerateTableReq4Points(overlapPoints, destPoint)
+	respDestC := osrmConnector.Request4Table(reqDest)
+
+	respOrig := <-respOrigC
+	respDest := <-respDestC
+
+	if respOrig.Err != nil {
+		glog.Warningf("Table request for url %s failed", reqOrig.RequestURI())
+		return nil, respOrig.Err
+	}
+	if respDest.Err != nil {
+		glog.Warningf("Table request for url %s failed", reqDest.RequestURI())
+		return nil, respDest.Err
 	}
 
-	// ranking
-	if len(shared) != 0 {
-		// to do
+	index, err := rankingSingleChargeStation(respOrig.Resp, respDest.Resp, overlapPoints)
+	if err != nil {
+		return nil, respDest.Err
 	}
-
+	return &singleChargeStationCandidate{
+		location:         overlapPoints[index],
+		distanceFromOrig: *respOrig.Resp.Distances[0][index],
+		durationFromOrig: *respOrig.Resp.Durations[0][index],
+		distanceToDest:   *respDest.Resp.Distances[index][0],
+		durationToDest:   *respDest.Resp.Durations[index][0],
+	}, nil
 }
 
 type routePassSingleStation struct {
@@ -59,7 +136,7 @@ type routePassSingleStation struct {
 	index int
 }
 
-func rankingSingleChargeStation(orig2Stations, stations2Dest *table.Response, stations []*nearbychargestation.Result) int, error {
+func rankingSingleChargeStation(orig2Stations, stations2Dest *table.Response, stations coordinate.Coordinates) (int, error) {
 	if len(orig2Stations.Durations) != len(stations) || len(stations2Dest.Durations) != len(stations) {
 		err := fmt.Errorf("Incorrect parameter for function rankingSingleChargeStation")
 		glog.Errorf("%v", err)
@@ -67,13 +144,20 @@ func rankingSingleChargeStation(orig2Stations, stations2Dest *table.Response, st
 	}
 
 	totalTimes := make([]routePassSingleStation, len(stations))
-	for i, _ := range stations {
+	for i := range stations {
 		var route routePassSingleStation
-		route.time = orig2Stations.Durations[i] + stations2Dest.Durations[i]
+		route.time = *orig2Stations.Durations[0][i] + *stations2Dest.Durations[i][0]
 		route.index = i
 		totalTimes = append(totalTimes, route)
 	}
 
 	sort.Slice(totalTimes, func(i, j int) bool { return totalTimes[i].time < totalTimes[j].time })
+
+	if totalTimes[0].index < 0 || totalTimes[0].index > len(stations)-1 {
+		err := fmt.Errorf("Incorrect index calculated for function rankingSingleChargeStation")
+		glog.Errorf("%v", err)
+		return totalTimes[0].index, err
+	}
+
 	return totalTimes[0].index, nil
 }

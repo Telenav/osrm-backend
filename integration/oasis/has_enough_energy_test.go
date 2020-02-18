@@ -7,7 +7,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
 )
 
-func TesthasEnoughEnergyPositive1(t *testing.T) {
+func TestHasEnoughEnergyPositive1(t *testing.T) {
 	response := &route.Response{
 		Routes: []*route.Route{&route.Route{Distance: 10000.0}},
 	}
@@ -26,7 +26,7 @@ func TesthasEnoughEnergyPositive1(t *testing.T) {
 
 }
 
-func TesthasEnoughEnergyPositive2(t *testing.T) {
+func TestHasEnoughEnergyPositive2(t *testing.T) {
 	response := &route.Response{
 		Routes: []*route.Route{&route.Route{Distance: 10000.0}},
 	}

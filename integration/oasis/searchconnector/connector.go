@@ -1,7 +1,6 @@
 package searchconnector
 
 import (
-	"github.com/Telenav/osrm-backend/integration/oasis"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 )
 
@@ -20,7 +19,7 @@ func NewTNSearchConnector(searchEndpoint, apiKey, apiSignature string) *TNSearch
 }
 
 // ChargeStationSearch returns a channel immediately.  Response information could be retrieved from the channel when ready.
-func (sc *TNSearchConnector) ChargeStationSearch(req *nearbychargestation.Request) <-chan oasis.ChargeStationsResponse {
+func (sc *TNSearchConnector) ChargeStationSearch(req *nearbychargestation.Request) <-chan ChargeStationsResponse {
 	return sc.searchClient.submitSearchReq(req)
 }
 

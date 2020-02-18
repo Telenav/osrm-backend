@@ -1,4 +1,4 @@
-package oasis
+package searchconnector
 
 import "github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 

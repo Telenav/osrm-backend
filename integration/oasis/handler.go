@@ -4,13 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/Telenav/osrm-backend/integration/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/oasis/searchconnector"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
-	searchcoordinate "github.com/Telenav/osrm-backend/integration/pkg/api/search/coordinate"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 	"github.com/golang/glog"
 )
@@ -88,56 +86,56 @@ func (h *Handler) requestRoute4InputOrigDest(oasisReq *oasis.Request) (*route.Re
 	return routeResp.Resp, routeResp.Err
 }
 
-func (h *Handler) requestTable4Points(startPoints Coordinate.Coordinates, endPoints Coordinate.Coordinates) (*table.Response, error) {
-	if len(startPoints) == 0 || len(endPoints) == 0 {
-		return nil, fmt.Errorf("Calling function with empty points.")
-	}
-	
-	// generate table request
-	req := table.NewRequest()
-	req.Coordinates = append(startPoints, endPoints)
+// func (h *Handler) requestTable4Points(startPoints coordinate.Coordinates, endPoints coordinate.Coordinates) (*table.Response, error) {
+// 	if len(startPoints) == 0 || len(endPoints) == 0 {
+// 		return nil, fmt.Errorf("Calling function with empty points.")
+// 	}
 
-	count := 0
-	for i, _ := range startPoints {
-		str, err := strconv.ParseInt(i, 10, 64)
-		req.Sources = append(req.Sources, str)
-		count++
-	}
-	for i, _ := range endPoints {
-		str, err := strconv.ParseInt(i + count, 10, 64)
-		req.destination = append(req.Destinations, str)
-	}
-}
+// 	// generate table request
+// 	req := table.NewRequest()
+// 	req.Coordinates = append(startPoints, endPoints)
 
-func (h *Handler) requestSearchResult4OrigDest(oasisReq *oasis.Request) (*oasis.ChargeStationsResponse, *oasis.ChargeStationsResponse) {
-	origReq, _ := h.generateSearchRequest(searchcoordinate.Coordinate{Lat: oasisReq.Coordinates[0].Lat, Lon: oasisReq.Coordinates[0].Lon}, 999, oasisReq.CurrRange)
-	destReq, _ := h.generateSearchRequest(searchcoordinate.Coordinate{Lat: oasisReq.Coordinates[1].Lat, Lon: oasisReq.Coordinates[1].Lon}, 999, oasisReq.MaxRange)
+// 	count := 0
+// 	for i, _ := range startPoints {
+// 		str, err := strconv.ParseInt(i, 10, 64)
+// 		req.Sources = append(req.Sources, str)
+// 		count++
+// 	}
+// 	for i, _ := range endPoints {
+// 		str, err := strconv.ParseInt(i+count, 10, 64)
+// 		req.destination = append(req.Destinations, str)
+// 	}
+// }
 
-	// request for orig and dest
-	origRespC := h.tnSearchConnector.ChargeStationSearch(origReq)
-	destRespC := h.tnSearchConnector.ChargeStationSearch(destReq)
+// func (h *Handler) requestSearchResult4OrigDest(oasisReq *oasis.Request) (*oasis.ChargeStationsResponse, *oasis.ChargeStationsResponse) {
+// 	origReq, _ := h.generateSearchRequest(searchcoordinate.Coordinate{Lat: oasisReq.Coordinates[0].Lat, Lon: oasisReq.Coordinates[0].Lon}, 999, oasisReq.CurrRange)
+// 	destReq, _ := h.generateSearchRequest(searchcoordinate.Coordinate{Lat: oasisReq.Coordinates[1].Lat, Lon: oasisReq.Coordinates[1].Lon}, 999, oasisReq.MaxRange)
 
-	// retrieve response and filter
-	origResp := <-origRespC
-	destResp := <-destRespC
+// 	// request for orig and dest
+// 	origRespC := h.tnSearchConnector.ChargeStationSearch(origReq)
+// 	destRespC := h.tnSearchConnector.ChargeStationSearch(destReq)
 
-	if &origResp, destResp
-}
+// 	// retrieve response and filter
+// 	origResp := <-origRespC
+// 	destResp := <-destRespC
 
-func (h *Handler) generateSearchRequest(location searchcoordinate.Coordinate, limit int, radius float64) (*nearbychargestation.Request, error) {
-	// generate search request
-	req := nearbychargestation.NewRequest()
-	req.Location = location
-	if limit > 0 {
-		req.Limit = limit
-	}
+// 	return &origResp, &destResp
+// }
 
-	if radius > 0 {
-		req.Radius = radius
-	}
+// func (h *Handler) generateSearchRequest(location searchcoordinate.Coordinate, limit int, radius float64) (*nearbychargestation.Request, error) {
+// 	// generate search request
+// 	req := nearbychargestation.NewRequest()
+// 	req.Location = location
+// 	if limit > 0 {
+// 		req.Limit = limit
+// 	}
 
-	return req, nil
-}
+// 	if radius > 0 {
+// 		req.Radius = radius
+// 	}
+
+// 	return req, nil
+// }
 
 func (h *Handler) generateOASISResponse(w http.ResponseWriter, routeResp *route.Response, remainRange float64) {
 	w.WriteHeader(http.StatusOK)
