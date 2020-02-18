@@ -10,7 +10,7 @@ import (
 type basicFinder struct {
 }
 
-func iterateNearbyStations(stations []*nearbychargestation.Result, respLock *sync.RWMutex) <-chan chargeStationInfo {
+func (bf *basicFinder) iterateNearbyStations(stations []*nearbychargestation.Result, respLock *sync.RWMutex) <-chan chargeStationInfo {
 	if len(stations) == 0 {
 		c := make(chan chargeStationInfo)
 		go func() {

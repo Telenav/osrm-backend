@@ -4,6 +4,10 @@ import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/coordinate"
 )
 
+type nearbyStationsIterator interface {
+	iterateNearbyStations() <-chan chargeStationInfo
+}
+
 type chargeStationInfo struct {
 	id       string
 	location coordinate.Coordinate
@@ -12,10 +16,6 @@ type chargeStationInfo struct {
 
 func (c chargeStationInfo) Location() coordinate.Coordinate {
 	return c.location
-}
-
-type nearbyStationsIterator interface {
-	iterateNearbyStations() <-chan chargeStationInfo
 }
 
 func buildChargeStationInfoDict(iter nearbyStationsIterator) map[string]bool {

@@ -21,6 +21,7 @@ type destStationFinder struct {
 	oasisReq          *oasis.Request
 	searchResp        *nearbychargestation.Response
 	searchRespLock    *sync.RWMutex
+	bf                *basicFinder
 }
 
 func NewDestStationFinder(oc *osrmconnector.OSRMConnector, sc *searchconnector.TNSearchConnector, oasisReq *oasis.Request) *destStationFinder {
@@ -30,6 +31,7 @@ func NewDestStationFinder(oc *osrmconnector.OSRMConnector, sc *searchconnector.T
 		oasisReq:          oasisReq,
 		searchResp:        nil,
 		searchRespLock:    &sync.RWMutex{},
+		bf:                &basicFinder{},
 	}
 	obj.prepare()
 	return obj
@@ -57,5 +59,5 @@ func (sf *destStationFinder) prepare() {
 }
 
 func (sf *destStationFinder) iterateNearbyStations() <-chan chargeStationInfo {
-	return iterateNearbyStations(sf.searchResp.Results, sf.searchRespLock)
+	return sf.bf.iterateNearbyStations(sf.searchResp.Results, sf.searchRespLock)
 }
