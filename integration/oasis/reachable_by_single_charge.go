@@ -7,6 +7,7 @@ import (
 	"sort"
 
 	"github.com/Telenav/osrm-backend/integration/oasis/osrmconnector"
+	"github.com/Telenav/osrm-backend/integration/oasis/osrmhelper"
 	"github.com/Telenav/osrm-backend/integration/oasis/searchconnector"
 	"github.com/Telenav/osrm-backend/integration/oasis/stationhandler"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
@@ -98,12 +99,12 @@ func pickChargeStationWithEarlistArrival(req *oasis.Request, overlapPoints coord
 
 	// request table for orig->overlap stations
 	origPoint := coordinate.Coordinates{req.Coordinates[0]}
-	reqOrig, _ := stationhandler.GenerateTableReq4Points(origPoint, overlapPoints)
+	reqOrig, _ := osrmhelper.GenerateTableReq4Points(origPoint, overlapPoints)
 	respOrigC := osrmConnector.Request4Table(reqOrig)
 
 	// request table for overlap stations -> dest
 	destPoint := coordinate.Coordinates{req.Coordinates[1]}
-	reqDest, _ := stationhandler.GenerateTableReq4Points(overlapPoints, destPoint)
+	reqDest, _ := osrmhelper.GenerateTableReq4Points(overlapPoints, destPoint)
 	respDestC := osrmConnector.Request4Table(reqDest)
 
 	respOrig := <-respOrigC

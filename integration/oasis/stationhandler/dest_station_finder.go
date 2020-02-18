@@ -5,11 +5,15 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/oasis/searchconnector"
+	"github.com/Telenav/osrm-backend/integration/oasis/searchhelper"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
 	searchcoordinate "github.com/Telenav/osrm-backend/integration/pkg/api/search/coordinate"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 	"github.com/golang/glog"
 )
+
+//@todo: This number need to be adjusted based on charge station profile
+const destMaxSearchCandidateNumber int = 999
 
 type destStationFinder struct {
 	osrmConnector     *osrmconnector.OSRMConnector
@@ -32,11 +36,11 @@ func NewDestStationFinder(oc *osrmconnector.OSRMConnector, sc *searchconnector.T
 }
 
 func (sf *destStationFinder) prepare() {
-	req, _ := generateSearchRequest(
+	req, _ := searchhelper.GenerateSearchRequest(
 		searchcoordinate.Coordinate{
 			Lat: sf.oasisReq.Coordinates[1].Lat,
 			Lon: sf.oasisReq.Coordinates[1].Lon},
-		999,
+		destMaxSearchCandidateNumber,
 		sf.oasisReq.MaxRange-sf.oasisReq.SafeLevel)
 
 	respC := sf.tnSearchConnector.ChargeStationSearch(req)
@@ -53,5 +57,5 @@ func (sf *destStationFinder) prepare() {
 }
 
 func (sf *destStationFinder) iterateNearbyStations() <-chan chargeStationInfo {
-	return iterateNearbyStations(sf.searchResp, sf.searchRespLock)
+	return iterateNearbyStations(sf.searchResp.Results, sf.searchRespLock)
 }

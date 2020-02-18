@@ -10,8 +10,8 @@ import (
 type basicFinder struct {
 }
 
-func iterateNearbyStations(searchResp *nearbychargestation.Response, respLock *sync.RWMutex) <-chan chargeStationInfo {
-	if searchResp == nil || len(searchResp.Results) == 0 {
+func iterateNearbyStations(stations []*nearbychargestation.Result, respLock *sync.RWMutex) <-chan chargeStationInfo {
+	if len(stations) == 0 {
 		c := make(chan chargeStationInfo)
 		go func() {
 			defer close(c)
@@ -19,13 +19,13 @@ func iterateNearbyStations(searchResp *nearbychargestation.Response, respLock *s
 		return c
 	}
 
-	c := make(chan chargeStationInfo, len(searchResp.Results))
-	results := make([]*nearbychargestation.Result, len(searchResp.Results))
+	c := make(chan chargeStationInfo, len(stations))
+	results := make([]*nearbychargestation.Result, len(stations))
 
 	if respLock != nil {
 		respLock.RLock()
 	}
-	copy(results, searchResp.Results)
+	copy(results, stations)
 	if respLock != nil {
 		respLock.RUnlock()
 	}
