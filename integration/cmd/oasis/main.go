@@ -14,7 +14,7 @@ func main() {
 	defer glog.Flush()
 	mux := http.NewServeMux()
 
-	oasisService := oasis.New(flags.osrmBackendEndpoint)
+	oasisService := oasis.New(flags.osrmBackendEndpoint, flags.tnSearchEndpoint, flags.tnSearchAPIKey, flags.tnSearchAPISignature)
 	mux.Handle("/oasis/v1/earliest/", oasisService)
 
 	// listen
