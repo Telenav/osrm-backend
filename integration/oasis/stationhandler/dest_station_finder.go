@@ -7,8 +7,8 @@ import (
 	"github.com/Telenav/osrm-backend/integration/oasis/searchconnector"
 	"github.com/Telenav/osrm-backend/integration/oasis/searchhelper"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
-	searchcoordinate "github.com/Telenav/osrm-backend/integration/pkg/api/search/coordinate"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/search/searchcoordinate"
 	"github.com/golang/glog"
 )
 
@@ -58,6 +58,6 @@ func (sf *destStationFinder) prepare() {
 	return
 }
 
-func (sf *destStationFinder) iterateNearbyStations() <-chan chargeStationInfo {
+func (sf *destStationFinder) iterateNearbyStations() <-chan ChargeStationInfo {
 	return sf.bf.iterateNearbyStations(sf.searchResp.Results, sf.searchRespLock)
 }

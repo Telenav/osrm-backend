@@ -1,42 +1,28 @@
 package stationhandler
 
-import (
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/coordinate"
-)
-
 type nearbyStationsIterator interface {
-	iterateNearbyStations() <-chan chargeStationInfo
+	iterateNearbyStations() <-chan ChargeStationInfo
 }
 
-type chargeStationInfo struct {
+// ChargeStationInfo defines charge station information
+type ChargeStationInfo struct {
 	id       string
-	location coordinate.Coordinate
+	location StationCoordinate
 	err      error
 }
 
-func (c chargeStationInfo) Location() coordinate.Coordinate {
+// Location returns coordinate of charge station
+func (c ChargeStationInfo) Location() StationCoordinate {
 	return c.location
 }
 
-func buildChargeStationInfoDict(iter nearbyStationsIterator) map[string]bool {
-	dict := make(map[string]bool)
-	c := iter.iterateNearbyStations()
-	for item := range c {
-		dict[item.id] = true
-	}
-
-	return dict
+// ID returns unique charge stations id
+func (c ChargeStationInfo) ID() string {
+	return c.id
 }
 
-func FindOverlapBetweenStations(iterF nearbyStationsIterator, iterS nearbyStationsIterator) []chargeStationInfo {
-	overlap := make([]chargeStationInfo, 10)
-	dict := buildChargeStationInfoDict(iterF)
-	c := iterS.iterateNearbyStations()
-	for item := range c {
-		if _, has := dict[item.id]; has {
-			overlap = append(overlap, item)
-		}
-	}
-
-	return overlap
+// StationCoordinate represents location information
+type StationCoordinate struct {
+	Lat float64
+	Lon float64
 }

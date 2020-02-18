@@ -1,4 +1,4 @@
-package coordinate
+package searchcoordinate
 
 import (
 	"fmt"

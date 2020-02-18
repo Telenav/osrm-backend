@@ -3,23 +3,22 @@ package stationhandler
 import (
 	"sync"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/coordinate"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 )
 
 type basicFinder struct {
 }
 
-func (bf *basicFinder) iterateNearbyStations(stations []*nearbychargestation.Result, respLock *sync.RWMutex) <-chan chargeStationInfo {
+func (bf *basicFinder) iterateNearbyStations(stations []*nearbychargestation.Result, respLock *sync.RWMutex) <-chan ChargeStationInfo {
 	if len(stations) == 0 {
-		c := make(chan chargeStationInfo)
+		c := make(chan ChargeStationInfo)
 		go func() {
 			defer close(c)
 		}()
 		return c
 	}
 
-	c := make(chan chargeStationInfo, len(stations))
+	c := make(chan ChargeStationInfo, len(stations))
 	results := make([]*nearbychargestation.Result, len(stations))
 
 	if respLock != nil {
@@ -36,9 +35,9 @@ func (bf *basicFinder) iterateNearbyStations(stations []*nearbychargestation.Res
 			if len(result.Place.Address) == 0 {
 				continue
 			}
-			station := chargeStationInfo{
+			station := ChargeStationInfo{
 				id: result.ID,
-				location: coordinate.Coordinate{
+				location: StationCoordinate{
 					Lat: result.Place.Address[0].GeoCoordinate.Latitude,
 					Lon: result.Place.Address[0].GeoCoordinate.Longitude},
 			}

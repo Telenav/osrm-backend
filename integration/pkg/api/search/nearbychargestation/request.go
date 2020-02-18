@@ -5,8 +5,8 @@ import (
 	"strconv"
 
 	"github.com/Telenav/osrm-backend/integration/pkg/api"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/search/coordinate"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/options"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/search/searchcoordinate"
 	"github.com/golang/glog"
 )
 
@@ -20,7 +20,7 @@ type Request struct {
 	APIKey       string
 	APISignature string
 	Category     string
-	Location     coordinate.Coordinate
+	Location     searchcoordinate.Coordinate
 	Intent       string
 	Locale       string
 	Limit        int
@@ -40,7 +40,7 @@ func NewRequest() *Request {
 		APIKey:       "",
 		APISignature: "",
 		Category:     options.ChargeStationCategory,
-		Location:     coordinate.Coordinate{},
+		Location:     searchcoordinate.Coordinate{},
 		Intent:       options.AroundIntent,
 		Locale:       options.ENUSLocale,
 		Limit:        options.DefaultLimitValue,

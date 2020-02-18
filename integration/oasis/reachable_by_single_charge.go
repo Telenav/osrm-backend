@@ -39,7 +39,11 @@ func isReachableBySingleCharge(req *oasis.Request, routedistance float64, osrmCo
 
 	overlapPoints := make(coordinate.Coordinates, len(overlap))
 	for _, item := range overlap {
-		overlapPoints = append(overlapPoints, item.Location())
+		overlapPoints = append(overlapPoints,
+			coordinate.Coordinate{
+				Lat: item.Location().Lat,
+				Lon: item.Location().Lon,
+			})
 	}
 	return overlapPoints
 }
