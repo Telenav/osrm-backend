@@ -70,9 +70,10 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// check whether could achieve by single charge
-	overlap := isReachableBySingleCharge(oasisReq, route.Routes[0].Distance, h.osrmConnector, h.tnSearchConnector)
+	overlap := getOverlapChargeStations4OrigDest(oasisReq, route.Routes[0].Distance, h.osrmConnector, h.tnSearchConnector)
 	if len(overlap) > 0 {
 		generateResponse4SingleChargeStation(w, oasisReq, overlap, h.osrmConnector)
+		return
 	} else {
 		generateFakeOASISResponse(w, oasisReq)
 	}

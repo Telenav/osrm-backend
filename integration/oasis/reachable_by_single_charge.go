@@ -23,7 +23,7 @@ import (
 // The energy level is safeRange + nearest charge station's distance to destination
 // If there is one or several charge stations could be found in both origStationsResp and destStationsResp
 // We think the result is reachable by single charge station
-func isReachableBySingleCharge(req *oasis.Request, routedistance float64, osrmConnector *osrmconnector.OSRMConnector, tnSearchConnector *searchconnector.TNSearchConnector) coordinate.Coordinates {
+func getOverlapChargeStations4OrigDest(req *oasis.Request, routedistance float64, osrmConnector *osrmconnector.OSRMConnector, tnSearchConnector *searchconnector.TNSearchConnector) coordinate.Coordinates {
 	// only possible when currRange + maxRange > distance + safeRange
 	if req.CurrRange+req.MaxRange < routedistance+req.SafeLevel {
 		return nil
