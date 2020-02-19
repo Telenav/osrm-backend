@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api/search/coordinate"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/search/searchcoordinate"
 	"github.com/Telenav/osrm-backend/integration/pkg/backend"
 )
 
@@ -30,7 +30,7 @@ func main() {
 	req := nearbychargestation.NewRequest()
 	req.APIKey = flags.apiKey
 	req.APISignature = flags.apiSignature
-	req.Location = coordinate.Coordinate{Lat: 37.78509, Lon: -122.41988}
+	req.Location = searchcoordinate.Coordinate{Lat: 37.78509, Lon: -122.41988}
 
 	clt := http.Client{Timeout: backend.Timeout()}
 	requestURL := flags.entityEndpoint + req.RequestURI()
