@@ -92,57 +92,6 @@ func (h *Handler) requestRoute4InputOrigDest(oasisReq *oasis.Request) (*route.Re
 	return routeResp.Resp, routeResp.Err
 }
 
-// func (h *Handler) requestTable4Points(startPoints coordinate.Coordinates, endPoints coordinate.Coordinates) (*table.Response, error) {
-// 	if len(startPoints) == 0 || len(endPoints) == 0 {
-// 		return nil, fmt.Errorf("Calling function with empty points.")
-// 	}
-
-// 	// generate table request
-// 	req := table.NewRequest()
-// 	req.Coordinates = append(startPoints, endPoints)
-
-// 	count := 0
-// 	for i, _ := range startPoints {
-// 		str, err := strconv.ParseInt(i, 10, 64)
-// 		req.Sources = append(req.Sources, str)
-// 		count++
-// 	}
-// 	for i, _ := range endPoints {
-// 		str, err := strconv.ParseInt(i+count, 10, 64)
-// 		req.destination = append(req.Destinations, str)
-// 	}
-// }
-
-// func (h *Handler) requestSearchResult4OrigDest(oasisReq *oasis.Request) (*oasis.ChargeStationsResponse, *oasis.ChargeStationsResponse) {
-// 	origReq, _ := h.generateSearchRequest(searchcoordinate.Coordinate{Lat: oasisReq.Coordinates[0].Lat, Lon: oasisReq.Coordinates[0].Lon}, 999, oasisReq.CurrRange)
-// 	destReq, _ := h.generateSearchRequest(searchcoordinate.Coordinate{Lat: oasisReq.Coordinates[1].Lat, Lon: oasisReq.Coordinates[1].Lon}, 999, oasisReq.MaxRange)
-
-// 	// request for orig and dest
-// 	origRespC := h.tnSearchConnector.ChargeStationSearch(origReq)
-// 	destRespC := h.tnSearchConnector.ChargeStationSearch(destReq)
-
-// 	// retrieve response and filter
-// 	origResp := <-origRespC
-// 	destResp := <-destRespC
-
-// 	return &origResp, &destResp
-// }
-
-// func (h *Handler) generateSearchRequest(location searchcoordinate.Coordinate, limit int, radius float64) (*nearbychargestation.Request, error) {
-// 	// generate search request
-// 	req := nearbychargestation.NewRequest()
-// 	req.Location = location
-// 	if limit > 0 {
-// 		req.Limit = limit
-// 	}
-
-// 	if radius > 0 {
-// 		req.Radius = radius
-// 	}
-
-// 	return req, nil
-// }
-
 func (h *Handler) generateOASISResponse(w http.ResponseWriter, routeResp *route.Response, remainRange float64) {
 	w.WriteHeader(http.StatusOK)
 
