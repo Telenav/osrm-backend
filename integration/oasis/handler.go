@@ -21,6 +21,7 @@ type Handler struct {
 
 // New creates new Handler object
 func New(osrmBackend, searchEndpoint, apiKey, apiSignature string) *Handler {
+	// @todo: need make sure connectivity is on and continues available
 	return &Handler{
 		osrmConnector:     osrmconnector.NewOSRMConnector(osrmBackend),
 		tnSearchConnector: searchconnector.NewTNSearchConnector(searchEndpoint, apiKey, apiSignature),
