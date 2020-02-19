@@ -86,7 +86,7 @@ enum Action {
 message IncidentResponse {
   Incident incident = 1;
   Action action = 2;
-  string trasctionID = 3; // unique ID for tracking the Flow from provider to end user
+  string trasctionID = 3; // unique ID for tracking the Incident from provider to end user
 }
 
 message Incident {
