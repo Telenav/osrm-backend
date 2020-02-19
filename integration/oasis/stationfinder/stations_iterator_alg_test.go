@@ -12,7 +12,7 @@ var mockDict1 map[string]bool = map[string]bool{
 	"station4": true,
 }
 
-func TestbuildChargeStationInfoDict1(t *testing.T) {
+func TestBuildChargeStationInfoDict1(t *testing.T) {
 	sf := createMockOrigStationFinder1()
 	m := buildChargeStationInfoDict(sf)
 	if !reflect.DeepEqual(m, mockDict1) {

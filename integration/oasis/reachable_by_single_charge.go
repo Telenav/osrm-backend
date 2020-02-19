@@ -116,17 +116,23 @@ func pickChargeStationWithEarlistArrival(req *oasis.Request, overlapPoints coord
 	respDest := <-respDestC
 
 	if respOrig.Err != nil {
-		glog.Warningf("Table request for url %s failed", reqOrig.RequestURI())
+		glog.Warningf("Table request failed for url %s with error %v", reqOrig.RequestURI(), respOrig.Err)
 		return nil, respOrig.Err
 	}
 	if respDest.Err != nil {
-		glog.Warningf("Table request for url %s failed", reqDest.RequestURI())
+		glog.Warningf("Table request failed for url %s with error %v", reqDest.RequestURI(), respDest.Err)
 		return nil, respDest.Err
 	}
+	if len(respOrig.Resp.Durations[0]) != len(respDest.Resp.Durations) || len(overlapPoints) != len(respOrig.Resp.Durations[0]) {
+		err := fmt.Errorf("Incorrect table response, the dimension of array is not as expected. [orig2overlap, overlap2dest, overlap]= %d, %d, %d",
+			len(respOrig.Resp.Durations[0]), len(respDest.Resp.Durations), len(overlapPoints))
+		glog.Errorf("%v", err)
+		return nil, err
+	}
 
-	index, err := rankingSingleChargeStation(respOrig.Resp, respDest.Resp, overlapPoints)
+	index, err := rankingSingleChargeStation(respOrig.Resp, respDest.Resp)
 	if err != nil {
-		return nil, respDest.Err
+		return nil, err
 	}
 	return &singleChargeStationCandidate{
 		location:         overlapPoints[index],
@@ -142,15 +148,17 @@ type routePassSingleStation struct {
 	index int
 }
 
-func rankingSingleChargeStation(orig2Stations, stations2Dest *table.Response, stations coordinate.Coordinates) (int, error) {
-	if len(orig2Stations.Durations) != len(stations) || len(stations2Dest.Durations) != len(stations) {
-		err := fmt.Errorf("Incorrect parameter for function rankingSingleChargeStation")
+func rankingSingleChargeStation(orig2Stations, stations2Dest *table.Response) (int, error) {
+	if len(orig2Stations.Durations) == 0 || len(orig2Stations.Durations[0]) != len(stations2Dest.Durations) {
+		err := fmt.Errorf("Incorrect table response for function rankingSingleChargeStation")
 		glog.Errorf("%v", err)
 		return -1, err
 	}
 
-	totalTimes := make([]routePassSingleStation, len(stations))
-	for i := range stations {
+	size := len(orig2Stations.Durations[0])
+
+	var totalTimes []routePassSingleStation
+	for i := 0; i < size; i++ {
 		var route routePassSingleStation
 		route.time = *orig2Stations.Durations[0][i] + *stations2Dest.Durations[i][0]
 		route.index = i
@@ -158,12 +166,6 @@ func rankingSingleChargeStation(orig2Stations, stations2Dest *table.Response, st
 	}
 
 	sort.Slice(totalTimes, func(i, j int) bool { return totalTimes[i].time < totalTimes[j].time })
-
-	if totalTimes[0].index < 0 || totalTimes[0].index > len(stations)-1 {
-		err := fmt.Errorf("Incorrect index calculated for function rankingSingleChargeStation")
-		glog.Errorf("%v", err)
-		return -1, err
-	}
 
 	return totalTimes[0].index, nil
 }
