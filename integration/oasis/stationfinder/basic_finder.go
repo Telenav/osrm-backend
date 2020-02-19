@@ -18,17 +18,17 @@ func (bf *basicFinder) iterateNearbyStations(stations []*nearbychargestation.Res
 		return c
 	}
 
-	c := make(chan ChargeStationInfo, len(stations))
-	results := make([]*nearbychargestation.Result, len(stations))
-
 	if respLock != nil {
 		respLock.RLock()
 	}
+	size := len(stations)
+	results := make([]*nearbychargestation.Result, size)
 	copy(results, stations)
 	if respLock != nil {
 		respLock.RUnlock()
 	}
 
+	c := make(chan ChargeStationInfo, size)
 	go func() {
 		defer close(c)
 		for _, result := range results {

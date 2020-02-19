@@ -8,120 +8,212 @@ import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 )
 
+var mockSearchResponse1 *nearbychargestation.Response = &nearbychargestation.Response{
+	Results: []*nearbychargestation.Result{
+		&nearbychargestation.Result{
+			ID: "station1",
+			Place: nearbychargestation.Place{
+				Address: []*nearbychargestation.Address{
+					&nearbychargestation.Address{
+						GeoCoordinate: nearbychargestation.Coordinate{
+							Latitude:  32.333,
+							Longitude: 122.333,
+						},
+						NavCoordinates: []*nearbychargestation.Coordinate{
+							&nearbychargestation.Coordinate{
+								Latitude:  32.333,
+								Longitude: 122.333,
+							},
+						},
+					},
+				},
+			},
+		},
+		&nearbychargestation.Result{
+			ID: "station2",
+			Place: nearbychargestation.Place{
+				Address: []*nearbychargestation.Address{
+					&nearbychargestation.Address{
+						GeoCoordinate: nearbychargestation.Coordinate{
+							Latitude:  -32.333,
+							Longitude: -122.333,
+						},
+						NavCoordinates: []*nearbychargestation.Coordinate{
+							&nearbychargestation.Coordinate{
+								Latitude:  -32.333,
+								Longitude: -122.333,
+							},
+						},
+					},
+				},
+			},
+		},
+		&nearbychargestation.Result{
+			ID: "station3",
+			Place: nearbychargestation.Place{
+				Address: []*nearbychargestation.Address{
+					&nearbychargestation.Address{
+						GeoCoordinate: nearbychargestation.Coordinate{
+							Latitude:  32.333,
+							Longitude: -122.333,
+						},
+						NavCoordinates: []*nearbychargestation.Coordinate{
+							&nearbychargestation.Coordinate{
+								Latitude:  32.333,
+								Longitude: -122.333,
+							},
+						},
+					},
+				},
+			},
+		},
+		&nearbychargestation.Result{
+			ID: "station4",
+			Place: nearbychargestation.Place{
+				Address: []*nearbychargestation.Address{
+					&nearbychargestation.Address{
+						GeoCoordinate: nearbychargestation.Coordinate{
+							Latitude:  -32.333,
+							Longitude: 122.333,
+						},
+						NavCoordinates: []*nearbychargestation.Coordinate{
+							&nearbychargestation.Coordinate{
+								Latitude:  -32.333,
+								Longitude: 122.333,
+							},
+						},
+					},
+				},
+			},
+		},
+	},
+}
+
+var mockSearchResponse2 *nearbychargestation.Response = &nearbychargestation.Response{
+	Results: []*nearbychargestation.Result{
+		&nearbychargestation.Result{
+			ID: "station1",
+			Place: nearbychargestation.Place{
+				Address: []*nearbychargestation.Address{
+					&nearbychargestation.Address{
+						GeoCoordinate: nearbychargestation.Coordinate{
+							Latitude:  32.333,
+							Longitude: 122.333,
+						},
+						NavCoordinates: []*nearbychargestation.Coordinate{
+							&nearbychargestation.Coordinate{
+								Latitude:  32.333,
+								Longitude: 122.333,
+							},
+						},
+					},
+				},
+			},
+		},
+		&nearbychargestation.Result{
+			ID: "station2",
+			Place: nearbychargestation.Place{
+				Address: []*nearbychargestation.Address{
+					&nearbychargestation.Address{
+						GeoCoordinate: nearbychargestation.Coordinate{
+							Latitude:  -32.333,
+							Longitude: -122.333,
+						},
+						NavCoordinates: []*nearbychargestation.Coordinate{
+							&nearbychargestation.Coordinate{
+								Latitude:  -32.333,
+								Longitude: -122.333,
+							},
+						},
+					},
+				},
+			},
+		},
+		&nearbychargestation.Result{
+			ID: "station5",
+			Place: nearbychargestation.Place{
+				Address: []*nearbychargestation.Address{
+					&nearbychargestation.Address{
+						GeoCoordinate: nearbychargestation.Coordinate{
+							Latitude:  -12.333,
+							Longitude: 122.333,
+						},
+						NavCoordinates: []*nearbychargestation.Coordinate{
+							&nearbychargestation.Coordinate{
+								Latitude:  -12.333,
+								Longitude: 122.333,
+							},
+						},
+					},
+				},
+			},
+		},
+	},
+}
+
+var mockChargeStationInfo1 []ChargeStationInfo = []ChargeStationInfo{
+	ChargeStationInfo{
+		ID: "station1",
+		Location: StationCoordinate{
+			Lat: 32.333,
+			Lon: 122.333,
+		},
+	},
+	ChargeStationInfo{
+		ID: "station2",
+		Location: StationCoordinate{
+			Lat: -32.333,
+			Lon: -122.333,
+		},
+	},
+	ChargeStationInfo{
+		ID: "station3",
+		Location: StationCoordinate{
+			Lat: 32.333,
+			Lon: -122.333,
+		},
+	},
+	ChargeStationInfo{
+		ID: "station4",
+		Location: StationCoordinate{
+			Lat: -32.333,
+			Lon: 122.333,
+		},
+	},
+}
+
+var mockChargeStationInfo2 []ChargeStationInfo = []ChargeStationInfo{
+	ChargeStationInfo{
+		ID: "station1",
+		Location: StationCoordinate{
+			Lat: 32.333,
+			Lon: 122.333,
+		},
+	},
+	ChargeStationInfo{
+		ID: "station2",
+		Location: StationCoordinate{
+			Lat: -32.333,
+			Lon: -122.333,
+		},
+	},
+	ChargeStationInfo{
+		ID: "station5",
+		Location: StationCoordinate{
+			Lat: -12.333,
+			Lon: 122.333,
+		},
+	},
+}
+
 func TestBasicFinderCorrectness(t *testing.T) {
 	cases := []struct {
 		input  []*nearbychargestation.Result
 		expect []ChargeStationInfo
 	}{
 		{
-			[]*nearbychargestation.Result{
-				&nearbychargestation.Result{
-					ID: "station1",
-					Place: nearbychargestation.Place{
-						Address: []*nearbychargestation.Address{
-							&nearbychargestation.Address{
-								GeoCoordinate: nearbychargestation.Coordinate{
-									Latitude:  32.333,
-									Longitude: 122.333,
-								},
-								NavCoordinates: []*nearbychargestation.Coordinate{
-									&nearbychargestation.Coordinate{
-										Latitude:  32.333,
-										Longitude: 122.333,
-									},
-								},
-							},
-						},
-					},
-				},
-				&nearbychargestation.Result{
-					ID: "station2",
-					Place: nearbychargestation.Place{
-						Address: []*nearbychargestation.Address{
-							&nearbychargestation.Address{
-								GeoCoordinate: nearbychargestation.Coordinate{
-									Latitude:  -32.333,
-									Longitude: -122.333,
-								},
-								NavCoordinates: []*nearbychargestation.Coordinate{
-									&nearbychargestation.Coordinate{
-										Latitude:  -32.333,
-										Longitude: -122.333,
-									},
-								},
-							},
-						},
-					},
-				},
-				&nearbychargestation.Result{
-					ID: "station3",
-					Place: nearbychargestation.Place{
-						Address: []*nearbychargestation.Address{
-							&nearbychargestation.Address{
-								GeoCoordinate: nearbychargestation.Coordinate{
-									Latitude:  32.333,
-									Longitude: -122.333,
-								},
-								NavCoordinates: []*nearbychargestation.Coordinate{
-									&nearbychargestation.Coordinate{
-										Latitude:  32.333,
-										Longitude: -122.333,
-									},
-								},
-							},
-						},
-					},
-				},
-				&nearbychargestation.Result{
-					ID: "station4",
-					Place: nearbychargestation.Place{
-						Address: []*nearbychargestation.Address{
-							&nearbychargestation.Address{
-								GeoCoordinate: nearbychargestation.Coordinate{
-									Latitude:  -32.333,
-									Longitude: 122.333,
-								},
-								NavCoordinates: []*nearbychargestation.Coordinate{
-									&nearbychargestation.Coordinate{
-										Latitude:  -32.333,
-										Longitude: 122.333,
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-			[]ChargeStationInfo{
-				ChargeStationInfo{
-					ID: "station1",
-					Location: StationCoordinate{
-						Lat: 32.333,
-						Lon: 122.333,
-					},
-				},
-				ChargeStationInfo{
-					ID: "station2",
-					Location: StationCoordinate{
-						Lat: -32.333,
-						Lon: -122.333,
-					},
-				},
-				ChargeStationInfo{
-					ID: "station3",
-					Location: StationCoordinate{
-						Lat: 32.333,
-						Lon: -122.333,
-					},
-				},
-				ChargeStationInfo{
-					ID: "station2",
-					Location: StationCoordinate{
-						Lat: -32.333,
-						Lon: 122.333,
-					},
-				},
-			},
+			mockSearchResponse1.Results,
+			mockChargeStationInfo1,
 		},
 	}
 
@@ -130,15 +222,22 @@ func TestBasicFinderCorrectness(t *testing.T) {
 		expect := b.expect
 		var bf basicFinder
 		c := bf.iterateNearbyStations(input, nil)
-		go func() {
-			r := make([]ChargeStationInfo, 10)
+
+		var wg sync.WaitGroup
+		go func(wg *sync.WaitGroup) {
+			wg.Add(1)
+			defer wg.Done()
+
+			var r []ChargeStationInfo
 			for item := range c {
 				r = append(r, item)
 			}
+
 			if !reflect.DeepEqual(r, expect) {
 				t.Errorf("parse %v expect %v but got %v", b.input, b.expect, r)
 			}
-		}()
+		}(&wg)
+		wg.Wait()
 	}
 }
 
@@ -149,115 +248,9 @@ func TestBasicFinderAsync(t *testing.T) {
 		expect    []ChargeStationInfo
 	}{
 		{
-			[]*nearbychargestation.Result{
-				&nearbychargestation.Result{
-					ID: "station1",
-					Place: nearbychargestation.Place{
-						Address: []*nearbychargestation.Address{
-							&nearbychargestation.Address{
-								GeoCoordinate: nearbychargestation.Coordinate{
-									Latitude:  32.333,
-									Longitude: 122.333,
-								},
-								NavCoordinates: []*nearbychargestation.Coordinate{
-									&nearbychargestation.Coordinate{
-										Latitude:  32.333,
-										Longitude: 122.333,
-									},
-								},
-							},
-						},
-					},
-				},
-				&nearbychargestation.Result{
-					ID: "station2",
-					Place: nearbychargestation.Place{
-						Address: []*nearbychargestation.Address{
-							&nearbychargestation.Address{
-								GeoCoordinate: nearbychargestation.Coordinate{
-									Latitude:  -32.333,
-									Longitude: -122.333,
-								},
-								NavCoordinates: []*nearbychargestation.Coordinate{
-									&nearbychargestation.Coordinate{
-										Latitude:  -32.333,
-										Longitude: -122.333,
-									},
-								},
-							},
-						},
-					},
-				},
-				&nearbychargestation.Result{
-					ID: "station3",
-					Place: nearbychargestation.Place{
-						Address: []*nearbychargestation.Address{
-							&nearbychargestation.Address{
-								GeoCoordinate: nearbychargestation.Coordinate{
-									Latitude:  32.333,
-									Longitude: -122.333,
-								},
-								NavCoordinates: []*nearbychargestation.Coordinate{
-									&nearbychargestation.Coordinate{
-										Latitude:  32.333,
-										Longitude: -122.333,
-									},
-								},
-							},
-						},
-					},
-				},
-				&nearbychargestation.Result{
-					ID: "station4",
-					Place: nearbychargestation.Place{
-						Address: []*nearbychargestation.Address{
-							&nearbychargestation.Address{
-								GeoCoordinate: nearbychargestation.Coordinate{
-									Latitude:  -32.333,
-									Longitude: 122.333,
-								},
-								NavCoordinates: []*nearbychargestation.Coordinate{
-									&nearbychargestation.Coordinate{
-										Latitude:  -32.333,
-										Longitude: 122.333,
-									},
-								},
-							},
-						},
-					},
-				},
-			},
+			mockSearchResponse1.Results,
 			&sync.RWMutex{},
-			[]ChargeStationInfo{
-				ChargeStationInfo{
-					ID: "station1",
-					Location: StationCoordinate{
-						Lat: 32.333,
-						Lon: 122.333,
-					},
-				},
-				ChargeStationInfo{
-					ID: "station2",
-					Location: StationCoordinate{
-						Lat: -32.333,
-						Lon: -122.333,
-					},
-				},
-				ChargeStationInfo{
-					ID: "station3",
-					Location: StationCoordinate{
-						Lat: 32.333,
-						Lon: -122.333,
-					},
-				},
-				ChargeStationInfo{
-					ID: "station2",
-					Location: StationCoordinate{
-						Lat: -32.333,
-						Lon: 122.333,
-					},
-				},
-			},
+			mockChargeStationInfo1,
 		},
 	}
 
@@ -266,20 +259,26 @@ func TestBasicFinderAsync(t *testing.T) {
 		expect := b.expect
 		var bf basicFinder
 
-		for i := 0; i < 20; i++ {
-			go func() {
+		num := 20
+		var wg sync.WaitGroup
+		for i := 0; i < num; i++ {
+			go func(wg *sync.WaitGroup) {
+				wg.Add(1)
+
 				c := bf.iterateNearbyStations(input, b.inputLock)
-				go func() {
-					r := make([]ChargeStationInfo, 10)
+				go func(wg *sync.WaitGroup) {
+					defer wg.Done()
+					var r []ChargeStationInfo
 					for item := range c {
 						r = append(r, item)
 					}
 					if !reflect.DeepEqual(r, expect) {
 						t.Errorf("parse %v expect %v but got %v", b.input, b.expect, r)
 					}
-				}()
-			}()
+				}(wg)
+			}(&wg)
 		}
+		wg.Wait()
 
 	}
 }

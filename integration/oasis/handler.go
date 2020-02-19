@@ -64,13 +64,19 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// check whether could be reached by single charge
-
 	if b {
 		h.generateOASISResponse(w, route, remainRange)
+		return
+	}
+
+	// check whether could achieve by single charge
+	overlap := isReachableBySingleCharge(oasisReq, route.Routes[0].Distance, h.osrmConnector, h.tnSearchConnector)
+	if len(overlap) > 0 {
+		generateResponse4SingleChargeStation(w, oasisReq, overlap, h.osrmConnector)
 	} else {
 		generateFakeOASISResponse(w, oasisReq)
 	}
+
 }
 
 func (h *Handler) requestRoute4InputOrigDest(oasisReq *oasis.Request) (*route.Response, error) {

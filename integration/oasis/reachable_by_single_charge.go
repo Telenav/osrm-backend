@@ -57,7 +57,7 @@ type singleChargeStationCandidate struct {
 }
 
 // @todo these logic might refactored later: charge station status calculation should be moved away
-func generateResponse4SingleChargeStation(w http.ResponseWriter, req *oasis.Request, overlapPoints coordinate.Coordinates, osrmConnector *osrmconnector.OSRMConnector) {
+func generateResponse4SingleChargeStation(w http.ResponseWriter, req *oasis.Request, overlapPoints coordinate.Coordinates, osrmConnector *osrmconnector.OSRMConnector) bool {
 	candidate, err := pickChargeStationWithEarlistArrival(req, overlapPoints, osrmConnector)
 
 	if err != nil {
@@ -65,7 +65,7 @@ func generateResponse4SingleChargeStation(w http.ResponseWriter, req *oasis.Requ
 		r := new(oasis.Response)
 		r.Message = err.Error()
 		json.NewEncoder(w).Encode(r)
-		return
+		return false
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -92,6 +92,7 @@ func generateResponse4SingleChargeStation(w http.ResponseWriter, req *oasis.Requ
 	r.Solutions = append(r.Solutions, solution)
 
 	json.NewEncoder(w).Encode(r)
+	return true
 }
 
 func pickChargeStationWithEarlistArrival(req *oasis.Request, overlapPoints coordinate.Coordinates, osrmConnector *osrmconnector.OSRMConnector) (*singleChargeStationCandidate, error) {
@@ -161,7 +162,7 @@ func rankingSingleChargeStation(orig2Stations, stations2Dest *table.Response, st
 	if totalTimes[0].index < 0 || totalTimes[0].index > len(stations)-1 {
 		err := fmt.Errorf("Incorrect index calculated for function rankingSingleChargeStation")
 		glog.Errorf("%v", err)
-		return totalTimes[0].index, err
+		return -1, err
 	}
 
 	return totalTimes[0].index, nil

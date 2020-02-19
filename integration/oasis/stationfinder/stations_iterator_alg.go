@@ -11,7 +11,7 @@ import (
 
 // FindOverlapBetweenStations finds overlap charge stations based on two iterator
 func FindOverlapBetweenStations(iterF nearbyStationsIterator, iterS nearbyStationsIterator) []ChargeStationInfo {
-	overlap := make([]ChargeStationInfo, 10)
+	var overlap []ChargeStationInfo
 	dict := buildChargeStationInfoDict(iterF)
 	c := iterS.iterateNearbyStations()
 	for item := range c {
@@ -100,6 +100,7 @@ func CalcCostBetweenChargeStationsPair(from nearbyStationsIterator, to nearbySta
 					Distance: *resp.Resp.Distances[i][j],
 				},
 			}
+			// @todo, use single goroutine to send
 			go func() {
 				c <- costPair
 			}()
