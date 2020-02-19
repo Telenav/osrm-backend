@@ -9,7 +9,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/oasis/osrmhelper"
 	"github.com/Telenav/osrm-backend/integration/oasis/searchconnector"
-	"github.com/Telenav/osrm-backend/integration/oasis/stationhandler"
+	"github.com/Telenav/osrm-backend/integration/oasis/stationfinder"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/coordinate"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/table"
@@ -29,9 +29,9 @@ func isReachableBySingleCharge(req *oasis.Request, routedistance float64, osrmCo
 		return nil
 	}
 
-	origStations := stationhandler.NewOrigStationFinder(osrmConnector, tnSearchConnector, req)
-	destStations := stationhandler.NewDestStationFinder(osrmConnector, tnSearchConnector, req)
-	overlap := stationhandler.FindOverlapBetweenStations(origStations, destStations)
+	origStations := stationfinder.NewOrigStationFinder(osrmConnector, tnSearchConnector, req)
+	destStations := stationfinder.NewDestStationFinder(osrmConnector, tnSearchConnector, req)
+	overlap := stationfinder.FindOverlapBetweenStations(origStations, destStations)
 
 	if len(overlap) == 0 {
 		return nil
@@ -41,8 +41,8 @@ func isReachableBySingleCharge(req *oasis.Request, routedistance float64, osrmCo
 	for _, item := range overlap {
 		overlapPoints = append(overlapPoints,
 			coordinate.Coordinate{
-				Lat: item.Location().Lat,
-				Lon: item.Location().Lon,
+				Lat: item.Location.Lat,
+				Lon: item.Location.Lon,
 			})
 	}
 	return overlapPoints
