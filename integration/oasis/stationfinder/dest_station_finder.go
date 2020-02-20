@@ -13,7 +13,7 @@ import (
 )
 
 //@todo: This number need to be adjusted based on charge station profile
-const destMaxSearchCandidateNumber int = 999
+const destMaxSearchCandidateNumber = 999
 
 type destStationFinder struct {
 	osrmConnector     *osrmconnector.OSRMConnector

@@ -17,7 +17,7 @@ import (
 	"github.com/golang/glog"
 )
 
-const maxOverlapPointsNum int = 500
+const maxOverlapPointsNum = 500
 
 // Reachable chargestations from orig already be filterred by currage energy range as radius
 // For destination, the filter is a dynamic value, depend on where is the nearest charge station.

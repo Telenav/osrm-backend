@@ -50,9 +50,10 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	// check whether orig and dest is reachable
 	if len(route.Routes) == 0 {
-		glog.Info("Orig and destination is not reachable for request.")
+		info := "Orig and destination is not reachable for request " + oasisReq.RequestURI() + "."
+		glog.Info(info)
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, "Orig and destination is not reachable for request.")
+		fmt.Fprintf(w, info)
 		return
 	}
 
@@ -75,10 +76,9 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	if len(overlap) > 0 {
 		generateResponse4SingleChargeStation(w, oasisReq, overlap, h.osrmConnector)
 		return
-	} else {
-		generateFakeOASISResponse(w, oasisReq)
 	}
 
+	generateFakeOASISResponse(w, oasisReq)
 }
 
 func (h *Handler) requestRoute4InputOrigDest(oasisReq *oasis.Request) (*route.Response, error) {
