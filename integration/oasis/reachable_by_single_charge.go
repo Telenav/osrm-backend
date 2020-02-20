@@ -17,6 +17,8 @@ import (
 	"github.com/golang/glog"
 )
 
+const maxOverlapPointsNum int = 500
+
 // Reachable chargestations from orig already be filterred by currage energy range as radius
 // For destination, the filter is a dynamic value, depend on where is the nearest charge station.
 // We want to make user has enough energy when reach destination
@@ -37,13 +39,16 @@ func getOverlapChargeStations4OrigDest(req *oasis.Request, routedistance float64
 		return nil
 	}
 
-	overlapPoints := make(coordinate.Coordinates, len(overlap))
-	for _, item := range overlap {
+	var overlapPoints coordinate.Coordinates
+	for i, item := range overlap {
 		overlapPoints = append(overlapPoints,
 			coordinate.Coordinate{
 				Lat: item.Location.Lat,
 				Lon: item.Location.Lon,
 			})
+		if i > maxOverlapPointsNum {
+			break
+		}
 	}
 	return overlapPoints
 }

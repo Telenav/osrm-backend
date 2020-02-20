@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/Telenav/osrm-backend/integration/pkg/api"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/coordinate"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route/options"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/table"
 )
 
@@ -29,5 +31,6 @@ func GenerateTableReq4Points(startPoints coordinate.Coordinates, endPoints coord
 		req.Destinations = append(req.Destinations, str)
 	}
 
+	req.Annotations = options.AnnotationsValueDistance + api.Comma + options.AnnotationsValueDuration
 	return req, nil
 }
