@@ -14,6 +14,7 @@ func DumpStreamingDelta(responseChan <-chan trafficproxy.TrafficResponse) {
 	h := NewHandler()
 	startTime := time.Now()
 	trafficResponse := trafficproxy.TrafficResponse{}
+	var totalFlowsCount, totalIncidentsCount uint64
 
 	for {
 		resp, ok := <-responseChan
@@ -27,13 +28,16 @@ func DumpStreamingDelta(responseChan <-chan trafficproxy.TrafficResponse) {
 		}
 
 		// handle per interval
-		glog.Infof("handling flows,incidents(%d,%d) from streaming delta, interval %f seconds",
-			len(trafficResponse.FlowResponses), len(trafficResponse.IncidentResponses), timeInterval.Seconds())
+		totalFlowsCount += uint64(len(trafficResponse.FlowResponses))
+		totalIncidentsCount += uint64(len(trafficResponse.IncidentResponses))
+		glog.Infof("handling flows,incidents(%d,%d) from streaming delta, interval %f seconds. Totally handled flows,incidents(%d,%d) so far.",
+			len(trafficResponse.FlowResponses), len(trafficResponse.IncidentResponses), timeInterval.Seconds(), totalFlowsCount, totalIncidentsCount)
 		if h.writeToFile && h.streamingDeltaSplitDumpFiles {
 			h.updateDumpFileNamePrefix()
 		}
 		h.DumpFlowResponses(trafficResponse.FlowResponses)
 		h.DumpIncidentResponses(trafficResponse.IncidentResponses)
+		trafficResponse = trafficproxy.TrafficResponse{} // clean up
 
 		if !ok { // streaming delta channel no longer available, break after handling to make sure cached data processing.
 			break
