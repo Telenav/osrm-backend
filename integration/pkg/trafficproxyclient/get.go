@@ -45,10 +45,10 @@ func GetFlowsIncidents(wayIDs []int64) (*trafficproxy.TrafficResponse, error) {
 	req.TrafficSource = params{}.newTrafficSource()
 	req.TrafficType = params{}.newTrafficType()
 	if len(wayIDs) > 0 {
-		var trafficWayIdsRequest trafficproxy.TrafficRequest_TrafficWayIDsRequest
-		trafficWayIdsRequest.TrafficWayIDsRequest = new(trafficproxy.TrafficWayIDsRequest)
-		trafficWayIdsRequest.TrafficWayIDsRequest.WayIDs = wayIDs
-		req.RequestOneof = &trafficWayIdsRequest
+		var trafficWayIDsRequest trafficproxy.TrafficRequest_TrafficWayIDsRequest
+		trafficWayIDsRequest.TrafficWayIDsRequest = new(trafficproxy.TrafficWayIDsRequest)
+		trafficWayIDsRequest.TrafficWayIDsRequest.WayIDs = wayIDs
+		req.RequestOneof = &trafficWayIDsRequest
 	} else {
 		trafficAllRequest := new(trafficproxy.TrafficRequest_TrafficAllRequest)
 		trafficAllRequest.TrafficAllRequest = new(trafficproxy.TrafficAllRequest)
