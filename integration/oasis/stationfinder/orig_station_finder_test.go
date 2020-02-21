@@ -30,6 +30,18 @@ func createMockOrigStationFinder2() *origStationFinder {
 	return obj
 }
 
+func createMockOrigStationFinder3() *origStationFinder {
+	obj := &origStationFinder{
+		osrmConnector:     nil,
+		tnSearchConnector: nil,
+		oasisReq:          nil,
+		searchResp:        mockSearchResponse3,
+		searchRespLock:    &sync.RWMutex{},
+		bf:                &basicFinder{},
+	}
+	return obj
+}
+
 func TestOrigStationFinderIterator(t *testing.T) {
 	sf := createMockOrigStationFinder1()
 	c := sf.iterateNearbyStations()

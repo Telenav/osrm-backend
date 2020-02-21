@@ -151,6 +151,49 @@ var mockSearchResponse2 *nearbychargestation.Response = &nearbychargestation.Res
 	},
 }
 
+var mockSearchResponse3 *nearbychargestation.Response = &nearbychargestation.Response{
+	Results: []*nearbychargestation.Result{
+		&nearbychargestation.Result{
+			ID: "station6",
+			Place: nearbychargestation.Place{
+				Address: []*nearbychargestation.Address{
+					&nearbychargestation.Address{
+						GeoCoordinate: nearbychargestation.Coordinate{
+							Latitude:  30.333,
+							Longitude: 122.333,
+						},
+						NavCoordinates: []*nearbychargestation.Coordinate{
+							&nearbychargestation.Coordinate{
+								Latitude:  30.333,
+								Longitude: 122.333,
+							},
+						},
+					},
+				},
+			},
+		},
+		&nearbychargestation.Result{
+			ID: "station7",
+			Place: nearbychargestation.Place{
+				Address: []*nearbychargestation.Address{
+					&nearbychargestation.Address{
+						GeoCoordinate: nearbychargestation.Coordinate{
+							Latitude:  -10.333,
+							Longitude: 122.333,
+						},
+						NavCoordinates: []*nearbychargestation.Coordinate{
+							&nearbychargestation.Coordinate{
+								Latitude:  -10.333,
+								Longitude: 122.333,
+							},
+						},
+					},
+				},
+			},
+		},
+	},
+}
+
 var mockChargeStationInfo1 []ChargeStationInfo = []ChargeStationInfo{
 	ChargeStationInfo{
 		ID: "station1",
@@ -201,6 +244,23 @@ var mockChargeStationInfo2 []ChargeStationInfo = []ChargeStationInfo{
 		ID: "station5",
 		Location: StationCoordinate{
 			Lat: -12.333,
+			Lon: 122.333,
+		},
+	},
+}
+
+var mockChargeStationInfo3 []ChargeStationInfo = []ChargeStationInfo{
+	ChargeStationInfo{
+		ID: "station6",
+		Location: StationCoordinate{
+			Lat: 30.333,
+			Lon: 122.333,
+		},
+	},
+	ChargeStationInfo{
+		ID: "station7",
+		Location: StationCoordinate{
+			Lat: -10.333,
 			Lon: 122.333,
 		},
 	},
