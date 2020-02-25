@@ -8,24 +8,24 @@ import (
 
 func createMockDestStationFinder1() *destStationFinder {
 	obj := &destStationFinder{
-		osrmConnector:     nil,
-		tnSearchConnector: nil,
-		oasisReq:          nil,
-		searchResp:        mockSearchResponse1,
-		searchRespLock:    &sync.RWMutex{},
-		bf:                &basicFinder{},
+		oasisReq: nil,
+		bf: &basicFinder{
+			tnSearchConnector: nil,
+			searchResp:        mockSearchResponse1,
+			searchRespLock:    &sync.RWMutex{},
+		},
 	}
 	return obj
 }
 
 func createMockDestStationFinder2() *destStationFinder {
 	obj := &destStationFinder{
-		osrmConnector:     nil,
-		tnSearchConnector: nil,
-		oasisReq:          nil,
-		searchResp:        mockSearchResponse2,
-		searchRespLock:    &sync.RWMutex{},
-		bf:                &basicFinder{},
+		oasisReq: nil,
+		bf: &basicFinder{
+			tnSearchConnector: nil,
+			searchResp:        mockSearchResponse2,
+			searchRespLock:    &sync.RWMutex{},
+		},
 	}
 	return obj
 }

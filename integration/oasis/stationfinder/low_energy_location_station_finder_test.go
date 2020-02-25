@@ -6,38 +6,38 @@ import (
 	"testing"
 )
 
-func createMockLowEnergyLocationStationFinder1() *destStationFinder {
-	obj := &destStationFinder{
-		osrmConnector:     nil,
-		tnSearchConnector: nil,
-		oasisReq:          nil,
-		searchResp:        mockSearchResponse1,
-		searchRespLock:    &sync.RWMutex{},
-		bf:                &basicFinder{},
+func createMockLowEnergyLocationStationFinder1() *lowEnergyLocationStationFinder {
+	obj := &lowEnergyLocationStationFinder{
+		location: nil,
+		bf: &basicFinder{
+			tnSearchConnector: nil,
+			searchResp:        mockSearchResponse1,
+			searchRespLock:    &sync.RWMutex{},
+		},
 	}
 	return obj
 }
 
-func createMockLowEnergyLocationStationFinder2() *origStationFinder {
-	obj := &origStationFinder{
-		osrmConnector:     nil,
-		tnSearchConnector: nil,
-		oasisReq:          nil,
-		searchResp:        mockSearchResponse2,
-		searchRespLock:    &sync.RWMutex{},
-		bf:                &basicFinder{},
+func createMockLowEnergyLocationStationFinder2() *lowEnergyLocationStationFinder {
+	obj := &lowEnergyLocationStationFinder{
+		location: nil,
+		bf: &basicFinder{
+			tnSearchConnector: nil,
+			searchResp:        mockSearchResponse2,
+			searchRespLock:    &sync.RWMutex{},
+		},
 	}
 	return obj
 }
 
-func createMockLowEnergyLocationStationFinder3() *origStationFinder {
-	obj := &origStationFinder{
-		osrmConnector:     nil,
-		tnSearchConnector: nil,
-		oasisReq:          nil,
-		searchResp:        mockSearchResponse3,
-		searchRespLock:    &sync.RWMutex{},
-		bf:                &basicFinder{},
+func createMockLowEnergyLocationStationFinder3() *lowEnergyLocationStationFinder {
+	obj := &lowEnergyLocationStationFinder{
+		location: nil,
+		bf: &basicFinder{
+			tnSearchConnector: nil,
+			searchResp:        mockSearchResponse3,
+			searchRespLock:    &sync.RWMutex{},
+		},
 	}
 	return obj
 }

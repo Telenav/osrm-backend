@@ -278,10 +278,11 @@ func TestBasicFinderCorrectness(t *testing.T) {
 	}
 
 	for _, b := range cases {
-		input := b.input
 		expect := b.expect
-		var bf basicFinder
-		c := bf.iterateNearbyStations(input, nil)
+		bf := newBasicFinder(nil)
+		bf.searchResp = &nearbychargestation.Response{}
+		bf.searchResp.Results = b.input
+		c := bf.iterateNearbyStations()
 
 		var wg sync.WaitGroup
 		go func(wg *sync.WaitGroup) {
@@ -315,17 +316,17 @@ func TestBasicFinderAsync(t *testing.T) {
 	}
 
 	for _, b := range cases {
-		input := b.input
 		expect := b.expect
-		var bf basicFinder
-
+		bf := newBasicFinder(nil)
+		bf.searchResp = &nearbychargestation.Response{}
+		bf.searchResp.Results = b.input
 		num := 20
 		var wg sync.WaitGroup
 		for i := 0; i < num; i++ {
 			go func(wg *sync.WaitGroup) {
 				wg.Add(1)
 
-				c := bf.iterateNearbyStations(input, b.inputLock)
+				c := bf.iterateNearbyStations()
 				go func(wg *sync.WaitGroup) {
 					defer wg.Done()
 					var r []ChargeStationInfo

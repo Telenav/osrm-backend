@@ -3,14 +3,40 @@ package stationfinder
 import (
 	"sync"
 
+	"github.com/Telenav/osrm-backend/integration/oasis/searchconnector"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
+	"github.com/golang/glog"
 )
 
 type basicFinder struct {
+	tnSearchConnector *searchconnector.TNSearchConnector
+	searchResp        *nearbychargestation.Response
+	searchRespLock    *sync.RWMutex
 }
 
-func (bf *basicFinder) iterateNearbyStations(stations []*nearbychargestation.Result, respLock *sync.RWMutex) <-chan ChargeStationInfo {
-	if len(stations) == 0 {
+func newBasicFinder(sc *searchconnector.TNSearchConnector) *basicFinder {
+	return &basicFinder{
+		tnSearchConnector: sc,
+		searchResp:        nil,
+		searchRespLock:    &sync.RWMutex{},
+	}
+}
+
+func (bf *basicFinder) getNearbyChargeStations(req *nearbychargestation.Request) {
+	respC := bf.tnSearchConnector.ChargeStationSearch(req)
+	resp := <-respC
+	if resp.Err != nil {
+		glog.Warningf("Search failed during prepare orig search for url: %s", req.RequestURI())
+		return
+	}
+
+	bf.searchRespLock.Lock()
+	bf.searchResp = resp.Resp
+	bf.searchRespLock.Unlock()
+}
+
+func (bf *basicFinder) iterateNearbyStations() <-chan ChargeStationInfo {
+	if bf.searchResp == nil || len(bf.searchResp.Results) == 0 {
 		c := make(chan ChargeStationInfo)
 		go func() {
 			defer close(c)
@@ -18,15 +44,11 @@ func (bf *basicFinder) iterateNearbyStations(stations []*nearbychargestation.Res
 		return c
 	}
 
-	if respLock != nil {
-		respLock.RLock()
-	}
-	size := len(stations)
+	bf.searchRespLock.RLock()
+	size := len(bf.searchResp.Results)
 	results := make([]*nearbychargestation.Result, size)
-	copy(results, stations)
-	if respLock != nil {
-		respLock.RUnlock()
-	}
+	copy(results, bf.searchResp.Results)
+	bf.searchRespLock.RUnlock()
 
 	c := make(chan ChargeStationInfo, size)
 	go func() {
