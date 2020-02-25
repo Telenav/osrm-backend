@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/Telenav/osrm-backend/integration/osrmfiles/osrmtype/nametable"
+
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/fingerprint"
 	"github.com/golang/glog"
 )
@@ -11,6 +13,7 @@ import (
 // Contents represents `.osrm.names` file structure.
 type Contents struct {
 	Fingerprint fingerprint.Fingerprint
+	nametable.IndexedData
 
 	// for internal implementation
 	writers  map[string]io.Writer
@@ -26,7 +29,10 @@ func New(file string) *Contents {
 	// init writers
 	c.writers = map[string]io.Writer{}
 	c.writers["osrm_fingerprint.meta"] = &c.Fingerprint
-	//TODO:
+	c.writers["/common/names/blocks.meta"] = &c.IndexedData.BlocksMeta
+	c.writers["/common/names/values.meta"] = &c.IndexedData.ValuesMeta
+	c.writers["/common/names/blocks"] = &c.IndexedData.BlocksBuffer
+	c.writers["/common/names/values"] = &c.IndexedData.ValuesBuffer
 
 	return &c
 }
@@ -35,6 +41,9 @@ func New(file string) *Contents {
 func (c *Contents) PrintSummary(head int) {
 	glog.Infof("Loaded from %s\n", c.filePath)
 	glog.Infof("  %s\n", &c.Fingerprint)
+
+	glog.Infof("  nametable.IndexedData blocks meta %d count\n", c.IndexedData.BlocksMeta)
+	glog.Infof("  nametable.IndexedData values meta %d count\n", c.IndexedData.ValuesMeta)
 
 	//TODO:
 
@@ -45,15 +54,16 @@ func (c *Contents) Validate() error {
 	if !c.Fingerprint.IsValid() {
 		return fmt.Errorf("invalid fingerprint %v", c.Fingerprint)
 	}
-
-	//TODO:
+	if err := c.IndexedData.Validate(); err != nil {
+		return err
+	}
 
 	return nil
 }
 
 // PostProcess post process the conents once contents loaded if necessary.
 func (c *Contents) PostProcess() error {
-	return nil
+	return c.IndexedData.Assemble()
 }
 
 // FindWriter find io.Writer for the specified name.
