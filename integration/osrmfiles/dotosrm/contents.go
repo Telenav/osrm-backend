@@ -62,7 +62,7 @@ func (c *Contents) PrintSummary(head int) {
 
 	glog.Infof("  nodes meta %d count %d\n", c.NodesMeta, len(c.Nodes))
 	for i := 0; i < head && i < len(c.Nodes); i++ {
-		glog.Infof("    node[%d] %v", i, c.Nodes[i])
+		glog.Infof("    node[%d] %#v", i, c.Nodes[i])
 	}
 
 	glog.Infof("  barriers meta %d count %d\n", c.BarriersMeta, len(c.Barriers))
@@ -77,12 +77,12 @@ func (c *Contents) PrintSummary(head int) {
 
 	glog.Infof("  edges meta %d count %d\n", c.EdgesMeta, len(c.Edges))
 	for i := 0; i < head && i < len(c.Edges); i++ {
-		glog.Infof("    edges[%d] %v", i, c.Edges[i])
+		glog.Infof("    edges[%d] %#v", i, c.Edges[i])
 	}
 
 	glog.Infof("  annotations meta %d count %d\n", c.AnnotationsMeta, len(c.Annotations))
 	for i := 0; i < head && i < len(c.Annotations); i++ {
-		glog.Infof("    annotations[%d] %v", i, c.Annotations[i])
+		glog.Infof("    annotations[%d] %#v", i, c.Annotations[i])
 	}
 
 }
