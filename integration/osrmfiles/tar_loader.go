@@ -25,7 +25,8 @@ func Load(contents ContentsOperator) error {
 			break // End of archive
 		}
 		if err != nil {
-			glog.Fatal(err)
+			glog.Errorf("parsing tar file %s failed, err: %v", contents.FilePath(), err)
+			break
 		}
 		glog.V(1).Infof("%s\n", hdr.Name)
 		//writer, found := contents.writers[hdr.Name]
@@ -36,7 +37,8 @@ func Load(contents ContentsOperator) error {
 		}
 
 		if _, err := io.Copy(writer, tr); err != nil {
-			glog.Fatal(err)
+			glog.Errorf("parsing content %s from tar file %s failed, err: %v", hdr.Name, contents.FilePath(), err)
+			continue
 		}
 	}
 
