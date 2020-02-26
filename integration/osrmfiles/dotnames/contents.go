@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/Telenav/osrm-backend/integration/osrmfiles/osrmtype"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/osrmtype/nametable"
 
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/fingerprint"
@@ -44,9 +45,14 @@ func (c *Contents) PrintSummary(head int) {
 
 	glog.Infof("  nametable.IndexedData blocks meta %d count\n", c.IndexedData.BlocksMeta)
 	glog.Infof("  nametable.IndexedData values meta %d count\n", c.IndexedData.ValuesMeta)
-
-	//TODO:
-
+	for i := 0; i < head; i++ {
+		nameID := osrmtype.NameID(i * nametable.NameIDOffset)
+		if s, err := c.IndexedData.GetNamesForID(nameID); err != nil {
+			glog.Infof("    index %d, NameID %d: get names failed, err: %v", i, nameID, err)
+		} else {
+			glog.Infof("    index %d, NameID %d: %#v", i, nameID, s)
+		}
+	}
 }
 
 // Validate checks whether the contents valid or not.

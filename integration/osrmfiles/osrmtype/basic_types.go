@@ -30,5 +30,6 @@ type ClassData uint8
 
 // invalid definitions
 const (
+	InvalidNameID            = ^NameID(0)
 	InvalidLaneDescriptionID = ^LaneDescriptionID(0)
 )

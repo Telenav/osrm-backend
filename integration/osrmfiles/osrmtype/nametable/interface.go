@@ -33,15 +33,65 @@ type IndexedData struct {
 type Names struct {
 	Name         string
 	Destinations string
-	Exits        string
-	Ref          string
 	Pronuciation string
+	Ref          string
+	Exits        string
 }
+
+// NameIDOffset is implementation convention that how to get next/previous NameID from current one.
+// nextNameID = currNameID + NameIDOffset
+// previousNameID = currentNameID - NameIDOffset
+// In C++ implementation,
+// https://github.com/Telenav/osrm-backend/blob/b24b8a085dc10bea279ffb352049330beae23791/src/extractor/extractor_callbacks.cpp#L323,
+// https://github.com/Telenav/osrm-backend/blob/b24b8a085dc10bea279ffb352049330beae23791/include/extractor/name_table.hpp#L38
+// Above 5 Names items store together in memory, and always use the index of Names.Name as NameID.
+// Way string data is stored in blocks based on `id` as follows:
+//
+// | name | destination | pronunciation | ref | exits
+//                      ^               ^
+//                      [range)
+//                       ^ id + 2
+//
+// `id + offset` gives us the range of chars.
+//
+// Offset 0 is name, 1 is destination, 2 is pronunciation, 3 is ref, 4 is exits
+const NameIDOffset = 5
 
 // GetNamesForID try to get Names for an NameID.
 func (i IndexedData) GetNamesForID(id osrmtype.NameID) (Names, error) {
-	//TODO:
-	return Names{}, nil
+	if id == osrmtype.InvalidNameID || id%NameIDOffset != 0 {
+		return Names{}, fmt.Errorf("invalid name id: %d", id)
+	}
+
+	var name Names
+	var b []byte
+	var err error
+	if b, err = i.at(uint32(id)); err != nil {
+		return name, err
+	}
+	name.Name = string(b)
+
+	if b, err = i.at(uint32(id + 1)); err != nil {
+		return name, err
+	}
+	name.Destinations = string(b)
+
+	if b, err = i.at(uint32(id + 2)); err != nil {
+		return name, err
+	}
+	name.Pronuciation = string(b)
+
+	if b, err = i.at(uint32(id + 3)); err != nil {
+		return name, err
+	}
+	name.Ref = string(b)
+
+	if b, err = i.at(uint32(id + 4)); err != nil {
+		return name, err
+	}
+	name.Exits = string(b)
+
+	return name, nil
 }
 
 // Validate checks whether IndexedData valid or not after assemble.
