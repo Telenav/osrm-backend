@@ -35,6 +35,9 @@ spec:
           imagePullPolicy: IfNotPresent
           command: 
           {{- toYaml .Values.osrm.backend.command | nindent 12 }}
+          resources:
+            requests:
+              memory: {{ .Values.osrm.backend.requests.memory }}
           volumeMounts:
           - mountPath: {{ .Values.osrm.backend.mountPath }}
             name:  {{ .Values.logsVolume.name }}

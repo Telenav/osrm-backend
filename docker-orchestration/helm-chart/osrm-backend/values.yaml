@@ -19,6 +19,8 @@ osrm:
     mountPath: "/osrm-logs"
     containerPort: 5000
     exposePort: 5000
+    requests:
+      memory: 35Gi
 
 logsVolume: 
   name: osrm-logs-volume
