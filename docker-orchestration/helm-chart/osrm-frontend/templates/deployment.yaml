@@ -1,9 +1,12 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "osrm-frontend.fullname" . }}
   labels:
     app: {{ .Release.Name }}
+{{- if .Values.labels }}    
+{{ toYaml .Values.labels | indent 4}}
+{{- end }}    
 spec:
   replicas: {{ .Values.replicas }}
   selector:
@@ -18,6 +21,9 @@ spec:
     metadata:
       labels:
         app: {{ .Release.Name }}
+{{- if .Values.labels }}    
+{{ toYaml .Values.labels | indent 8}}
+{{- end }}        
     spec:
     {{- if .Values.nodeSelector }}
       nodeSelector:

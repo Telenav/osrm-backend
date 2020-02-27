@@ -9,16 +9,22 @@ rollingUpdate:
   maxUnavailable: 0
   
 nodeSelector:
-  routing-osrm/role: routing-osrm
+  purpose: memory_optimized
 
 osrm:
   frontend:
     name: osrm-frontend
     image: osrm/osrm-frontend
-    targetBackend: http://localhost:5000
+    targetBackend: http://osrm-backend:5000
     center: '42.303329,-83.234070'
     containerPort: 9966
     exposePort: 9966
 
 service:
   type: LoadBalancer
+
+labels:
+  Group: NavTeam
+  Owner: jiezhang2
+  Product: OSRM
+  TNService: OSRM 

@@ -9,7 +9,7 @@ rollingUpdate:
   maxUnavailable: 0
   
 nodeSelector:
-  routing-osrm/role: routing-osrm
+  purpose: memory_optimized
 
 osrm:
   backend: 
@@ -28,3 +28,9 @@ logsVolume:
 
 service:
   type: LoadBalancer
+
+labels:
+  Group: NavTeam
+  Owner: jiezhang2
+  Product: OSRM
+  TNService: OSRM 

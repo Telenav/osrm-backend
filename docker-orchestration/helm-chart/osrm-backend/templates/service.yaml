@@ -4,6 +4,9 @@ metadata:
   name: {{ include "osrm-backend.fullname" . }}
   labels:
     app: {{ .Release.Name }}
+{{- if .Values.labels }}    
+{{ toYaml .Values.labels | indent 4}}
+{{- end }}    
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
 spec:
