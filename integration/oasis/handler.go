@@ -85,6 +85,7 @@ func (h *Handler) requestRoute4InputOrigDest(oasisReq *oasis.Request) (*route.Re
 	// generate route request
 	req := route.NewRequest()
 	req.Coordinates = oasisReq.Coordinates
+	req.Steps = true
 
 	// request for route
 	respC := h.osrmConnector.Request4Route(req)
