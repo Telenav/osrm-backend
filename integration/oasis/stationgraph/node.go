@@ -18,9 +18,9 @@ type node struct {
 	chargeInfo
 }
 
-type nodeID int32
+type nodeID uint32
 
-const invalidNodeID = math.MinInt32
+const invalidNodeID = math.MaxUint32
 
 func newNode() *node {
 	return &node{
