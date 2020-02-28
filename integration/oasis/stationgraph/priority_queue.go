@@ -17,10 +17,10 @@ func newPriorityQueue() *priorityQueue {
 	}
 }
 
-func (pq *priorityQueue) push(id nodeID, cost float64) *pqElement {
+func (pq *priorityQueue) push(id nodeID, weight float64) *pqElement {
 	e := &pqElement{
 		nodeID: id,
-		cost:   cost,
+		weight: weight,
 	}
 	heap.Push(pq.pqImpl, e)
 	return e
@@ -31,8 +31,8 @@ func (pq *priorityQueue) pop() nodeID {
 	return e.(*pqElement).nodeID
 }
 
-func (pq *priorityQueue) decrease(e *pqElement, newCost float64) {
-	e.cost = newCost
+func (pq *priorityQueue) decrease(e *pqElement, newWeight float64) {
+	e.weight = newWeight
 	heap.Fix(pq.pqImpl, e.index)
 }
 
@@ -42,7 +42,7 @@ func (pq *priorityQueue) empty() bool {
 
 type pqElement struct {
 	nodeID nodeID
-	cost   float64
+	weight float64
 	index  int
 }
 
@@ -51,7 +51,7 @@ const invalidIndex = math.MaxUint32
 type priorityQueueImpl []*pqElement
 
 func (pq priorityQueueImpl) Len() int           { return len(pq) }
-func (pq priorityQueueImpl) Less(i, j int) bool { return pq[i].cost < pq[j].cost }
+func (pq priorityQueueImpl) Less(i, j int) bool { return pq[i].weight < pq[j].weight }
 func (pq priorityQueueImpl) Swap(i, j int) {
 	pq[i], pq[j] = pq[j], pq[i]
 	pq[i].index = i

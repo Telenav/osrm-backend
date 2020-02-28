@@ -8,8 +8,8 @@ import (
 // node_0 -> node_1, duration = 30, distance = 30
 // node_0 -> node_2, duration = 20, distance = 20
 // node_0 -> node_3, duration = 10, distance = 10
-func TestVisitedMap1(t *testing.T) {
-	m := newVisitedMap()
+func TestQueryHeap1(t *testing.T) {
+	m := newQueryHeap()
 	m.add(0, invalidNodeID, 0, 0)
 	m.add(1, 0, 30, 30)
 	m.add(2, 0, 20, 20)
@@ -34,8 +34,8 @@ func TestVisitedMap1(t *testing.T) {
 // node_1 -> node_3, duration = 10, distance = 10
 // node_2 -> node_4, duration = 50, distance = 50
 // node_2 -> node_3, duration = 50, distance = 50
-func TestVisitedMap2(t *testing.T) {
-	m := newVisitedMap()
+func TestQueryHeap2(t *testing.T) {
+	m := newQueryHeap()
 	m.add(0, invalidNodeID, 0, 0)
 
 	m.add(1, 0, 30, 30)
@@ -60,8 +60,8 @@ func TestVisitedMap2(t *testing.T) {
 	}
 }
 
-func TestVisitEmptyMap(t *testing.T) {
-	m := newVisitedMap()
+func TestQueryEmptyHeap(t *testing.T) {
+	m := newQueryHeap()
 	id := m.next()
 	if id != invalidNodeID {
 		t.Errorf("expect %d but got %d", invalidNodeID, id)
@@ -74,7 +74,7 @@ func TestVisitEmptyMap(t *testing.T) {
 // node_2 -> node_4, duration = 50, distance = 50
 // node_2 -> node_3, duration = 50, distance = 50
 func TestRetrieve1(t *testing.T) {
-	m := newVisitedMap()
+	m := newQueryHeap()
 	m.add(0, invalidNodeID, 0, 0)
 
 	m.add(1, 0, 30, 30)
@@ -113,7 +113,7 @@ func TestRetrieve1(t *testing.T) {
 // node_4 -> node_5, duration = 10, distance = 10
 // node_5 -> node_6, duration = 10, distance = 10
 func TestRetrieve2(t *testing.T) {
-	m := newVisitedMap()
+	m := newQueryHeap()
 	m.add(0, invalidNodeID, 0, 0)
 
 	m.add(1, 0, 30, 30)

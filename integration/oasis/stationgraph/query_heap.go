@@ -2,82 +2,82 @@ package stationgraph
 
 import "github.com/golang/glog"
 
-type visitedNodeInfo struct {
+type queryHeapNodeInfo struct {
 	prevNodeID nodeID
 	pqElem     *pqElement
-	minCost    float64
+	minWeight  float64
 	minDist    float64
 	settled    bool
 }
 
-type visitedMap struct {
+type queryHeap struct {
 	pq *priorityQueue
-	m  map[nodeID]*visitedNodeInfo
+	m  map[nodeID]*queryHeapNodeInfo
 }
 
-func newVisitedMap() *visitedMap {
-	return &visitedMap{
+func newQueryHeap() *queryHeap {
+	return &queryHeap{
 		pq: newPriorityQueue(),
-		m:  make(map[nodeID]*visitedNodeInfo),
+		m:  make(map[nodeID]*queryHeapNodeInfo),
 	}
 }
 
-func (vm *visitedMap) add(currID, prevID nodeID, distance, duration float64) bool {
-	newCost := 0.0
+func (qh *queryHeap) add(currID, prevID nodeID, distance, duration float64) bool {
+	newWeight := 0.0
 	newDist := 0.0
 	if prevID != invalidNodeID {
-		newCost = vm.m[prevID].minCost + duration
-		newDist = vm.m[prevID].minDist + distance
+		newWeight = qh.m[prevID].minWeight + duration
+		newDist = qh.m[prevID].minDist + distance
 	}
 
-	if !vm.isVisited(currID) {
-		e := vm.pq.push(currID, newCost)
-		vm.m[currID] = &visitedNodeInfo{
+	if !qh.isVisited(currID) {
+		e := qh.pq.push(currID, newWeight)
+		qh.m[currID] = &queryHeapNodeInfo{
 			prevNodeID: prevID,
 			pqElem:     e,
-			minCost:    newCost,
+			minWeight:  newWeight,
 			minDist:    newDist,
 			settled:    false,
 		}
 		return true
 	} else {
-		if ok := vm.needUpdate(currID, newCost); ok {
-			if vm.isSettled(currID) {
-				glog.Warning("Check your logic, settled node should not have smaller cost for dijkstra.")
+		if ok := qh.needUpdate(currID, newWeight); ok {
+			if qh.isSettled(currID) {
+				glog.Warning("Check your logic, settled node should not have smaller weight for dijkstra.")
 			}
-			vm.pq.decrease(vm.m[currID].pqElem, newCost)
-			vm.update(currID, prevID, newCost, newDist)
+			qh.pq.decrease(qh.m[currID].pqElem, newWeight)
+			qh.update(currID, prevID, newWeight, newDist)
 			return true
 		}
 	}
 	return false
 }
 
-func (vm *visitedMap) next() nodeID {
-	if vm.pq.empty() {
+func (qh *queryHeap) next() nodeID {
+	if qh.pq.empty() {
 		return invalidNodeID
 	}
 
-	n := vm.pq.pop()
-	vm.settle(n)
+	n := qh.pq.pop()
+	qh.settle(n)
 	return n
 }
 
 // node id list: invalidNodeID -> start -> mid1 -> mid2 -> end
 // will return {mid1, mid2}
-func (vm *visitedMap) retrieve(endNodeID nodeID) []nodeID {
+func (qh *queryHeap) retrieve(endNodeID nodeID) []nodeID {
 	var r []nodeID
-	if !vm.isSettled(endNodeID) {
+	if !qh.isSettled(endNodeID) {
 		return r
 	}
 
 	currID := endNodeID
 	for {
-		currV, _ := vm.m[currID]
+		currV, _ := qh.m[currID]
 		if currV.prevNodeID == invalidNodeID {
 			return r
 		}
-		prevV, _ := vm.m[currV.prevNodeID]
+		prevV, _ := qh.m[currV.prevNodeID]
 		if prevV.prevNodeID == invalidNodeID {
 			for i := len(r)/2 - 1; i >= 0; i-- {
 				oppsiteIndex := len(r) - 1 - i
@@ -90,13 +90,13 @@ func (vm *visitedMap) retrieve(endNodeID nodeID) []nodeID {
 	}
 }
 
-func (vm *visitedMap) isVisited(id nodeID) bool {
-	_, ok := vm.m[id]
+func (qh *queryHeap) isVisited(id nodeID) bool {
+	_, ok := qh.m[id]
 	return ok
 }
 
-func (vm *visitedMap) isSettled(id nodeID) bool {
-	v, ok := vm.m[id]
+func (qh *queryHeap) isSettled(id nodeID) bool {
+	v, ok := qh.m[id]
 	if !ok {
 		glog.Fatal("Check your logic, isSettled() should be called when isVisited() returns true")
 		return false
@@ -105,30 +105,30 @@ func (vm *visitedMap) isSettled(id nodeID) bool {
 	}
 }
 
-func (vm *visitedMap) needUpdate(id nodeID, cost float64) bool {
-	v, ok := vm.m[id]
+func (qh *queryHeap) needUpdate(id nodeID, weight float64) bool {
+	v, ok := qh.m[id]
 	if !ok {
 		glog.Fatal("Check your logic, needUpdate() should be called when isVisited() returns true")
 		return true
 	} else {
-		return v.minCost > cost
+		return v.minWeight > weight
 	}
 }
 
-func (vm *visitedMap) update(id, prevNodeID nodeID, cost, dist float64) {
-	v, ok := vm.m[id]
+func (qh *queryHeap) update(id, prevNodeID nodeID, weight, dist float64) {
+	v, ok := qh.m[id]
 	if !ok {
 		glog.Fatal("Check your logic, update() should be called when isVisited() returns true")
 		return
 	} else {
-		v.minCost = cost
+		v.minWeight = weight
 		v.minDist = dist
 		v.prevNodeID = prevNodeID
 	}
 }
 
-func (vm *visitedMap) settle(id nodeID) {
-	if v, ok := vm.m[id]; ok {
+func (qh *queryHeap) settle(id nodeID) {
+	if v, ok := qh.m[id]; ok {
 		if v.settled {
 			glog.Warningf("Check your logic, settle() should be called with unsettled node(%b)", id)
 		}

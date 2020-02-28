@@ -13,8 +13,8 @@ type chargeInfo struct {
 }
 
 type node struct {
-	id    nodeID
-	edges []*edge
+	id        nodeID
+	neighbors []*neighbor
 	chargeInfo
 }
 

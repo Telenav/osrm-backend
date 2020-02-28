@@ -11,7 +11,7 @@ type graph struct {
 }
 
 func (g *graph) dijkstra() []nodeID {
-	m := newVisitedMap()
+	m := newQueryHeap()
 
 	// init
 	m.add(g.startNodeID, invalidNodeID, 0, 0)
@@ -30,11 +30,11 @@ func (g *graph) dijkstra() []nodeID {
 
 		// relax
 		node := g.nodes[n]
-		for _, edge := range node.edges {
-			if g.nodes[n].isLocationReachable(edge.distance) {
+		for _, neighbor := range node.neighbors {
+			if g.nodes[n].isLocationReachable(neighbor.distance) {
 				// @todo: charge time isn't consider here, TBD
-				if m.add(edge.targetNodeID, n, edge.distance, edge.duration) {
-					g.nodes[edge.targetNodeID].updateArrivalEnergy(node, edge.distance)
+				if m.add(neighbor.targetNodeID, n, neighbor.distance, neighbor.duration) {
+					g.nodes[neighbor.targetNodeID].updateArrivalEnergy(node, neighbor.distance)
 				}
 			}
 		}

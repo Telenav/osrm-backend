@@ -1,6 +1,6 @@
 package stationgraph
 
-type edge struct {
+type neighbor struct {
 	targetNodeID nodeID
 	distance     float64
 	duration     float64

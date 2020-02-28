@@ -22,13 +22,13 @@ func TestGraphGeneral(t *testing.T) {
 				nodes: []*node{
 					&node{
 						id: 0,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 1,
 								distance:     30,
 								duration:     30,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 2,
 								distance:     20,
 								duration:     20,
@@ -41,8 +41,8 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 1,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 3,
 								distance:     10,
 								duration:     10,
@@ -55,13 +55,13 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 2,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 4,
 								distance:     50,
 								duration:     50,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 3,
 								distance:     50,
 								duration:     50,
@@ -74,8 +74,8 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 3,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 4,
 								distance:     10,
 								duration:     10,
@@ -87,8 +87,8 @@ func TestGraphGeneral(t *testing.T) {
 						},
 					},
 					&node{
-						id:    4,
-						edges: []*edge{},
+						id:        4,
+						neighbors: []*neighbor{},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
 							chargeEnergy:  999,
@@ -112,13 +112,13 @@ func TestGraphGeneral(t *testing.T) {
 				nodes: []*node{
 					&node{
 						id: 0,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 1,
 								distance:     30,
 								duration:     30,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 2,
 								distance:     20,
 								duration:     20,
@@ -131,8 +131,8 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 1,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 3,
 								distance:     10,
 								duration:     10,
@@ -145,13 +145,13 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 2,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 4,
 								distance:     50,
 								duration:     50,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 3,
 								distance:     50,
 								duration:     50,
@@ -164,8 +164,8 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 3,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 4,
 								distance:     10,
 								duration:     10,
@@ -177,8 +177,8 @@ func TestGraphGeneral(t *testing.T) {
 						},
 					},
 					&node{
-						id:    4,
-						edges: []*edge{},
+						id:        4,
+						neighbors: []*neighbor{},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
 							chargeEnergy:  999,
@@ -202,13 +202,13 @@ func TestGraphGeneral(t *testing.T) {
 				nodes: []*node{
 					&node{
 						id: 0,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 1,
 								distance:     30,
 								duration:     30,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 2,
 								distance:     20,
 								duration:     20,
@@ -221,8 +221,8 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 1,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 3,
 								distance:     10,
 								duration:     10,
@@ -235,13 +235,13 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 2,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 4,
 								distance:     20,
 								duration:     20,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 3,
 								distance:     50,
 								duration:     50,
@@ -254,8 +254,8 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 3,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 4,
 								distance:     10,
 								duration:     10,
@@ -267,8 +267,8 @@ func TestGraphGeneral(t *testing.T) {
 						},
 					},
 					&node{
-						id:    4,
-						edges: []*edge{},
+						id:        4,
+						neighbors: []*neighbor{},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
 							chargeEnergy:  999,
@@ -301,13 +301,13 @@ func TestGraphGeneral(t *testing.T) {
 				nodes: []*node{
 					&node{
 						id: 0,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 1,
 								distance:     30,
 								duration:     30,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 2,
 								distance:     20,
 								duration:     20,
@@ -320,13 +320,13 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 1,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 3,
 								distance:     20,
 								duration:     20,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 4,
 								distance:     15,
 								duration:     15,
@@ -339,13 +339,13 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 2,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 4,
 								distance:     20,
 								duration:     20,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 3,
 								distance:     30,
 								duration:     30,
@@ -358,18 +358,18 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 3,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 5,
 								distance:     10,
 								duration:     10,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 6,
 								distance:     10,
 								duration:     10,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 7,
 								distance:     10,
 								duration:     10,
@@ -382,18 +382,18 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 4,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 5,
 								distance:     15,
 								duration:     15,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 6,
 								distance:     15,
 								duration:     15,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 7,
 								distance:     15,
 								duration:     15,
@@ -406,8 +406,8 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 5,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 8,
 								distance:     10,
 								duration:     10,
@@ -420,8 +420,8 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 6,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 8,
 								distance:     20,
 								duration:     20,
@@ -434,8 +434,8 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 7,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 8,
 								distance:     30,
 								duration:     30,
@@ -448,8 +448,8 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 8,
-						edges: []*edge{
-							&edge{},
+						neighbors: []*neighbor{
+							&neighbor{},
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
@@ -483,13 +483,13 @@ func TestGraphGeneral(t *testing.T) {
 				nodes: []*node{
 					&node{
 						id: 0,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 1,
 								distance:     15,
 								duration:     15,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 2,
 								distance:     20,
 								duration:     20,
@@ -502,13 +502,13 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 1,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 3,
 								distance:     20,
 								duration:     20,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 4,
 								distance:     15,
 								duration:     15,
@@ -521,13 +521,13 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 2,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 4,
 								distance:     20,
 								duration:     20,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 3,
 								distance:     30,
 								duration:     30,
@@ -540,18 +540,18 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 3,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 5,
 								distance:     10,
 								duration:     10,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 6,
 								distance:     10,
 								duration:     10,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 7,
 								distance:     10,
 								duration:     10,
@@ -564,18 +564,18 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 4,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 5,
 								distance:     15,
 								duration:     15,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 6,
 								distance:     15,
 								duration:     15,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 7,
 								distance:     15,
 								duration:     15,
@@ -588,8 +588,8 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 5,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 8,
 								distance:     10,
 								duration:     10,
@@ -602,8 +602,8 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 6,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 8,
 								distance:     20,
 								duration:     20,
@@ -616,8 +616,8 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 7,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 8,
 								distance:     30,
 								duration:     30,
@@ -630,8 +630,8 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 8,
-						edges: []*edge{
-							&edge{},
+						neighbors: []*neighbor{
+							&neighbor{},
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
@@ -668,13 +668,13 @@ func TestGraphGeneral(t *testing.T) {
 				nodes: []*node{
 					&node{
 						id: 0,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 1,
 								distance:     15,
 								duration:     15,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 2,
 								distance:     20,
 								duration:     20,
@@ -687,13 +687,13 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 1,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 3,
 								distance:     20,
 								duration:     20,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 4,
 								distance:     15,
 								duration:     15,
@@ -706,13 +706,13 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 2,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 4,
 								distance:     5,
 								duration:     5,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 3,
 								distance:     30,
 								duration:     30,
@@ -725,18 +725,18 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 3,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 5,
 								distance:     10,
 								duration:     10,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 6,
 								distance:     10,
 								duration:     10,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 7,
 								distance:     10,
 								duration:     10,
@@ -749,18 +749,18 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 4,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 5,
 								distance:     15,
 								duration:     15,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 6,
 								distance:     15,
 								duration:     15,
 							},
-							&edge{
+							&neighbor{
 								targetNodeID: 7,
 								distance:     15,
 								duration:     15,
@@ -773,8 +773,8 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 5,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 8,
 								distance:     10,
 								duration:     10,
@@ -787,8 +787,8 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 6,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 8,
 								distance:     20,
 								duration:     20,
@@ -801,8 +801,8 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 7,
-						edges: []*edge{
-							&edge{
+						neighbors: []*neighbor{
+							&neighbor{
 								targetNodeID: 8,
 								distance:     30,
 								duration:     30,
@@ -815,8 +815,8 @@ func TestGraphGeneral(t *testing.T) {
 					},
 					&node{
 						id: 8,
-						edges: []*edge{
-							&edge{},
+						neighbors: []*neighbor{
+							&neighbor{},
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 0,
