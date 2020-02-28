@@ -81,18 +81,4 @@ func TestFindChargeLocation4Route1(t *testing.T) {
 			t.Errorf("expect to charge %v times, but got %v times", c.chargeCount, len(expect))
 		}
 	}
-
-	// var expect []*stationfinder.StationCoordinate
-	// currEnergy := 15000.0
-	// preferLevel := 10000.0
-	// maxRange := 50000.0
-	// expect, _ = findChargeLocation4Route(&fakeRoute1, expect, currEnergy, preferLevel, maxRange)
-	// fmt.Printf("%d \n", len(expect))
-
-	// s := "gjfcFlirgVb@PZHZHj@PRJTJVRRTNXNd@DZ@\\A\\C`@Ih@Ih@Mn@Ot@OfA_@dDShAgA|FQ~@e@bCa@xBq@pDqB|K{@zEw@|Eq@vEO~@ANKr@EZGh@G`@[|Bm@hE_@fCIn@E^EZYpBw@bGM|@_AdHgBzN_@rCa@`CETCPIn@yAxKq@bFy@hGIh@e@fDKx@UbBCRId@Id@G`@}@dHy@tGKp@Kv@UdBIl@k@bEgAnIIt@Ih@Ip@If@YjBa@tCGf@Il@q@zEKv@g@rDuAfKg@xDsA~JyAxKOlAIp@QrAObAOjAKt@Kz@_@tCm@bEYpBUpA_@xBg@xCWtAa@|BYxAIb@AJMx@UtAa@~BUdBQjA_AdHqBhOYvBq@dFc@hDwAdKMz@Ir@Ib@Kt@QvAKp@]xBS~@g@nBIVIZYdAMb@q@bCK^k@jBcA`DcAbDaA`D{@jCQl@KXy@rC_A`Dc@|AOh@g@`Bw@fCK^cAxDSr@cAnDQj@Sn@w@dCu@jBGNiAzB[j@[j@aAdBINGJgAdBc@p@s@bAiAdBeAbBuB`DMPkDpFsCjEe@t@aCpD_@l@Yb@aBdCoAnBOR_AnASVOTGHMPu@jAiAdBm@`A_FzH_CnDqAlBaAvAy@bA_AjAGF_CtCcFlFeBjBkCrC[ZUVu@v@_@^mArAg@h@oCvC_@`@{C~CoArAqArASTqBtBgAjA}@`A{A~Ag@h@YZq@r@gCjCwB|BkDtDcBfBuHdIyA|AkAnAOPsAtAqAtA]^WXWX}@`Ae@f@QPcGnGoApAoCxCeHtHeJrJg@h@qAvA{FdGONMLoDvDs@v@oCzCg@l@w@~@cArAeAzA[f@]l@QXcB|Ci@hAs@zAm@lAs@xAs@xAaBjDeChFiD`HaDjGUb@qBhEsAtC_@t@iBpD[n@wArCwAtCwCjGS`@oCpFoCrFgAxBc@|@cAlBu@vA}@pBs@xAuEjJyAxCgG`MmBzDaAnBc@z@q@rAo@rAsAjCy@`BKXITIPkA|BkAbCeBjD_AjBe@~@y@dBk@fAmBzDqEdJcKpSWh@Sb@kA~BINGLs@vAq@tAwDvHeBlD{@dBmBzDe@`AKRo@tA_@v@Yh@cAnBcApBi@fA_CvEyA|Cm@pAuBlEm@tAu@lBo@|AkAlDABOh@CJCJCHGPADITSr@CJGTENe@dBi@zBw@|D[hBG\\[bB{@dFO~@G`@c@zDUhBQdBO`B]bEC^OxBcAzOiBbZIjAc@bH}@lN{@~MMtBw@bMUxCKpAY~Ck@|EGh@a@xCOfAIf@Id@Ib@Mx@Kn@Q`AG\\G\\Mh@I^Qv@Ml@i@tBW`AYfAQn@i@fBm@pBk@nB_@hAk@fBOd@eArCwBlGo@hBOb@Qf@}@jC_AlCs@tBs@~Bs@zBe@bBUx@U`AW`AU`AUdAU`A[vA[xA]hBId@Id@I`@UdAIl@]jBqC~Ne@bCKh@Kj@Q~@Mj@Kj@a@nBYtAMr@Mh@Oj@e@~Aw@`Cg@pAo@vAgAvBgAlBg@p@s@~@cBrBeE~EmAvAcAjAsA|AwChDiBvB{AhBuFvG{CpDaAhAcF`GeJrKyJhLu@|@ePnR]`@WZoAvAsEpFyFxGg@l@}@dAoAvA_BlByAdBqAzAcE|EoAzAcAjAqEjFyEtF{@bAe@h@"
-	// coords, _, _ := polyline.DecodeCoords([]byte((&fakeRoute1).Legs[0].Steps[4].Geometry))
-
-	// fmt.Printf("++++ %v\n", coords[0][0])
-
-	//fmt.Printf("### %v\n", []byte((&fakeRoute1).Legs[0].Steps[4].Geometry))
 }
