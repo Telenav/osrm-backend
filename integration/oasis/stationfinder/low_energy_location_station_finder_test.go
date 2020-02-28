@@ -44,9 +44,11 @@ func createMockLowEnergyLocationStationFinder3() *lowEnergyLocationStationFinder
 
 func TestLowEnergyLocationStationFinderIterator1(t *testing.T) {
 	sf := createMockLowEnergyLocationStationFinder1()
-	c := sf.iterateNearbyStations()
-	var r []ChargeStationInfo
+
 	go func() {
+		c := sf.iterateNearbyStations()
+		var r []ChargeStationInfo
+
 		for item := range c {
 			r = append(r, item)
 		}
@@ -57,27 +59,29 @@ func TestLowEnergyLocationStationFinderIterator1(t *testing.T) {
 }
 func TestLowEnergyLocationStationFinderIterator2(t *testing.T) {
 	sf := createMockLowEnergyLocationStationFinder2()
-	c := sf.iterateNearbyStations()
-	var r []ChargeStationInfo
+
 	go func() {
+		c := sf.iterateNearbyStations()
+		var r []ChargeStationInfo
 		for item := range c {
 			r = append(r, item)
 		}
 		if !reflect.DeepEqual(r, mockChargeStationInfo2) {
-			t.Errorf("expect %v but got %v", mockChargeStationInfo1, r)
+			t.Errorf("expect %v but got %v", mockChargeStationInfo2, r)
 		}
 	}()
 }
 func TestLowEnergyLocationStationFinderIterator3(t *testing.T) {
 	sf := createMockLowEnergyLocationStationFinder3()
-	c := sf.iterateNearbyStations()
-	var r []ChargeStationInfo
+
 	go func() {
+		c := sf.iterateNearbyStations()
+		var r []ChargeStationInfo
 		for item := range c {
 			r = append(r, item)
 		}
 		if !reflect.DeepEqual(r, mockChargeStationInfo3) {
-			t.Errorf("expect %v but got %v", mockChargeStationInfo1, r)
+			t.Errorf("expect %v but got %v", mockChargeStationInfo3, r)
 		}
 	}()
 }
