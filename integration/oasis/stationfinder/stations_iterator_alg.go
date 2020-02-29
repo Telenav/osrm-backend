@@ -129,3 +129,5 @@ func buildChargeStationInfoDict(iter nearbyStationsIterator) map[string]bool {
 
 	return dict
 }
+
+func CalculateWeightBetweenNeighbors()

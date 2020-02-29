@@ -7,6 +7,8 @@
 //   based on safe energy level and distance to nearest charge station(todo).
 // - lowEnergyLocationStationFinder holds logic for how to find reachable
 //   charge station near certain location.
+// - orig_iterator and dest_iterator wraps single point of orig/dest which could
+//   be used for algorithms
 
 // Algorithm:
 // - Each finder provide iterator to iterate charge station candidates.
