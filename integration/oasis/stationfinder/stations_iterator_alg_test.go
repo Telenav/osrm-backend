@@ -74,7 +74,7 @@ func TestCalcCostBetweenChargeStationsPair(t *testing.T) {
 	sf2 := createMockOrigStationFinder3()
 
 	table := &fakeTableResponse{}
-	r, err := CalcCostBetweenChargeStationsPair(sf1, sf2, table)
+	r, err := CalcWeightBetweenChargeStationsPair(sf1, sf2, table)
 
 	if err != nil {
 		t.Errorf("expect no error but generate error of %v", err)

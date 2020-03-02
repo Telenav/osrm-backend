@@ -15,7 +15,7 @@
 // - The choice of channel as response makes algorithm could be asynchronous func.
 // - FindOverlapBetweenStations provide functionality to find overlap
 //   between two iterator.
-// - CalcCostBetweenChargeStationsPair provide functionality to calculate
+// - CalcWeightBetweenChargeStationsPair provide functionality to calculate
 //   cost between two group of charge stations which could construct a new
 //   graph as edges.
 package stationfinder
