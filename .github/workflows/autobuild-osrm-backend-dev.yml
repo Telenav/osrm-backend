@@ -26,8 +26,8 @@ jobs:
       run: echo ::set-env name=IMAGE_TAG::$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev )-$(echo ${GITHUB_SHA} | cut -c 1-7)-$(date -u +"%Y%m%d")
     - name: Environment Printer
       uses: managedkaos/print-env@v1.0
-    - name: Append latest if master branches # env 'latest,${IMAGE_TAG}'
-      if: endsWith(github.ref, 'master')
+    - name: Append latest if master branches # env '${IMAGE_TAG},latest'
+      #if: endsWith(github.ref, 'master')
       run: echo ::set-env name=IMAGE_TAG::${IMAGE_TAG},latest
     - name: Environment Printer
       uses: managedkaos/print-env@v1.0
