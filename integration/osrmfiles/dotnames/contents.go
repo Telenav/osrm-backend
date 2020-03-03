@@ -43,8 +43,8 @@ func (c *Contents) PrintSummary(head int) {
 	glog.Infof("Loaded from %s\n", c.filePath)
 	glog.Infof("  %s\n", &c.Fingerprint)
 
-	glog.Infof("  nametable.IndexedData blocks meta %d count\n", c.IndexedData.BlocksMeta)
-	glog.Infof("  nametable.IndexedData values meta %d count\n", c.IndexedData.ValuesMeta)
+	glog.Infof("  nametable.IndexedData blocks meta %d\n", c.IndexedData.BlocksMeta)
+	glog.Infof("  nametable.IndexedData values meta %d\n", c.IndexedData.ValuesMeta)
 	for i := 0; i < head; i++ {
 		nameID := osrmtype.NameID(i * nametable.NameIDOffset)
 		if s, err := c.IndexedData.GetNamesForID(nameID); err != nil {
