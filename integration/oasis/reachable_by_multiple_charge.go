@@ -13,7 +13,7 @@ import (
 )
 
 func pickChargeStationsWithEarlistArrival(oasisReq *oasis.Request, routeResp *route.Response, oc *osrmconnector.OSRMConnector, sc *searchconnector.TNSearchConnector) {
-	// TBE
+	// TBD
 }
 
 // For each route response, will generate an array of *stationfinder.StationCoordinate
