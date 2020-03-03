@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/Telenav/osrm-backend/integration/osrmfiles"
+	"github.com/Telenav/osrm-backend/integration/osrmfiles/dotcnbg"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/dotnames"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/dotnbgnodes"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/dotosrm"
@@ -28,6 +29,9 @@ const (
 
 	dotNamesSuffix        = ".names"
 	dotOSRMDotNamesSuffix = dotOSRMSuffix + dotNamesSuffix
+
+	dotCNBGSuffix        = ".cnbg"
+	dotOSRMDotCNBGSuffix = dotOSRMSuffix + dotCNBGSuffix
 )
 
 // osrmBasefilePath should be 'xxx.osrm'
@@ -39,6 +43,7 @@ func createEmptyOSRMFilesContents(osrmBasefilePath string) map[string]osrmfiles.
 	m[dotOSRMDotNBGNodesSuffix] = dotnbgnodes.New(osrmBasefilePath+dotNBGNodesSuffix, flags.packBits)
 	m[dotOSRMDotPropertiesSuffix] = dotproperties.New(osrmBasefilePath + dotPropertiesSuffix)
 	m[dotOSRMDotNamesSuffix] = dotnames.New(osrmBasefilePath + dotNamesSuffix)
+	m[dotOSRMDotCNBGSuffix] = dotcnbg.New(osrmBasefilePath + dotCNBGSuffix)
 
 	return m
 }
