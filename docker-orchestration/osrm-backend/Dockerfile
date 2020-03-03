@@ -14,7 +14,7 @@ RUN echo "Building on ${GIT_SHA}" && \
 RUN mkdir -p osrm-backend/build && \
   cd osrm-backend/build && \
   cmake .. -DENABLE_LTO=On && \
-  cmake --build . -- -j && \
+  cmake --build . && \
   cp /workspace/osrm-backend/build/osrm* /osrm-build/ && \
   cp -r /workspace/osrm-backend/profiles /osrm-build/
 
