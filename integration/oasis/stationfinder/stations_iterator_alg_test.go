@@ -363,3 +363,4 @@ func floatEquals(a, b float64) bool {
 	}
 	return false
 }
+

@@ -38,6 +38,7 @@ type StationCoordinate struct {
 	Lon float64
 }
 
+// CalcWeightBetweenChargeStationsPair accepts two iterators and calculates weights between each pair of iterators
 func CalcWeightBetweenChargeStationsPair(from nearbyStationsIterator, to nearbyStationsIterator, table osrmconnector.TableRequster) ([]CostBetweenChargeStations, error) {
 	// collect (lat,lon)&ID for current location's nearby charge stations
 	var startPoints coordinate.Coordinates
@@ -50,7 +51,7 @@ func CalcWeightBetweenChargeStationsPair(from nearbyStationsIterator, to nearbyS
 		startIDs = append(startIDs, v.ID)
 	}
 	if len(startPoints) == 0 {
-		err := fmt.Errorf("Empty iterator of from pass into CalcWeightBetweenChargeStationsPair")
+		err := fmt.Errorf("empty iterator of from pass into CalcWeightBetweenChargeStationsPair")
 		glog.Warningf("%v", err)
 		return nil, err
 	}
@@ -66,7 +67,7 @@ func CalcWeightBetweenChargeStationsPair(from nearbyStationsIterator, to nearbyS
 		targetIDs = append(targetIDs, v.ID)
 	}
 	if len(targetPoints) == 0 {
-		err := fmt.Errorf("Empty iterator of to pass into CalcWeightBetweenChargeStationsPair")
+		err := fmt.Errorf("empty iterator of to pass into CalcWeightBetweenChargeStationsPair")
 		glog.Warningf("%v", err)
 		return nil, err
 	}
@@ -87,7 +88,7 @@ func CalcWeightBetweenChargeStationsPair(from nearbyStationsIterator, to nearbyS
 	}
 
 	if len(resp.Resp.Sources) != len(startPoints) || len(resp.Resp.Destinations) != len(targetPoints) {
-		err := fmt.Errorf("Incorrect osrm table response for url: %s", req.RequestURI())
+		err := fmt.Errorf("incorrect osrm table response for url: %s", req.RequestURI())
 		return nil, err
 	}
 
