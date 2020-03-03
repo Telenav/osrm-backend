@@ -6,13 +6,15 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/fingerprint"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/meta"
+	"github.com/Telenav/osrm-backend/integration/osrmfiles/osrmtype"
 	"github.com/golang/glog"
 )
 
 // Contents represents `.osrm.cnbg` file structure.
 type Contents struct {
-	Fingerprint                  fingerprint.Fingerprint
-	CompressedNodeBasedGraphMeta meta.Num // cnbg
+	Fingerprint                       fingerprint.Fingerprint
+	CompressedNodeBasedGraphEdgesMeta meta.Num
+	osrmtype.CompressedNodeBasedGraphEdges
 
 	// for internal implementation
 	writers  map[string]io.Writer
@@ -28,7 +30,8 @@ func New(file string) *Contents {
 	// init writers
 	c.writers = map[string]io.Writer{}
 	c.writers["osrm_fingerprint.meta"] = &c.Fingerprint
-	c.writers["/extractor/cnbg.meta"] = &c.CompressedNodeBasedGraphMeta
+	c.writers["/extractor/cnbg.meta"] = &c.CompressedNodeBasedGraphEdgesMeta
+	c.writers["/extractor/cnbg"] = &c.CompressedNodeBasedGraphEdges
 
 	return &c
 }
@@ -38,7 +41,10 @@ func (c *Contents) PrintSummary(head int) {
 	glog.Infof("Loaded from %s\n", c.filePath)
 	glog.Infof("  %s\n", &c.Fingerprint)
 
-	glog.Infof("  compressed node based graph meta %d count\n", c.CompressedNodeBasedGraphMeta)
+	glog.Infof("  compressed node based graph meta %d count %d\n", c.CompressedNodeBasedGraphEdgesMeta, len(c.CompressedNodeBasedGraphEdges))
+	for i := 0; i < head && i < len(c.CompressedNodeBasedGraphEdges); i++ {
+		glog.Infof("    CompressedNodeBasedGraphEdges[%d] %v", i, c.CompressedNodeBasedGraphEdges[i])
+	}
 
 }
 
@@ -46,6 +52,9 @@ func (c *Contents) PrintSummary(head int) {
 func (c *Contents) Validate() error {
 	if !c.Fingerprint.IsValid() {
 		return fmt.Errorf("invalid fingerprint %v", c.Fingerprint)
+	}
+	if uint64(c.CompressedNodeBasedGraphEdgesMeta) != uint64(len(c.CompressedNodeBasedGraphEdges)) {
+		return fmt.Errorf("CompressedNodeBasedGraphEdges meta not match, count in meta %d, but actual count %d", c.CompressedNodeBasedGraphEdgesMeta, len(c.CompressedNodeBasedGraphEdges))
 	}
 
 	return nil
