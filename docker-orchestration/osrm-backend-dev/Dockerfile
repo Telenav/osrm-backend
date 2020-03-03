@@ -7,7 +7,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteract
   cmake \
   curl \
   wget \
-  tmux \
   vim \
   git \
   libboost-all-dev \
