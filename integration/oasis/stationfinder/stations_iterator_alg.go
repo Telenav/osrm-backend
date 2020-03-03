@@ -137,20 +137,20 @@ type WeightBetweenNeighbors struct {
 	err error
 }
 
-// CalculateWeightBetweenNeighbors accepts locations need to search for charge stations,
-// which will search for nearby charge stations and then calculate weight between stations
-// which could be used to construct graph.
+// CalculateWeightBetweenNeighbors accepts locations array, which will search for nearby
+// charge stations and then calculate weight between stations, the result is used to
+// construct graph.
 // - The input of locations contains: orig location -> first place to search for charge ->
 //   second location to search for charge -> ... -> dest location
 // - Both search nearby charge stations and calculate weight between stations are heavy
 //   operations, so put them into go-routine and use waitgroup to guarantee result channel
 //   is closed after everything is done.
-// - CalcWeightBetweenChargeStationsPair needs two iterators, one for station iterator
-//   represents previous location and one for current location, so an array of channel is
-//   created to represent whether specific iterator is ready or not.  Iterators' result
-//   could be got from array of iterators.
+// - CalcWeightBetweenChargeStationsPair needs two iterators, one for nearbystationiterator
+//   represents from location and one for next location.  An array of channel is created
+//   to represent whether specific iterator is ready or not.
+// - All iterators has been recorded in iterators array
 //   @Todo: isIteratorReady could be removed later.  When iterator is not ready, should
-//         hold inside iterator itself.  That need refactor the design of stationfinder.
+//         pause inside iterator itself.  That need refactor the design of stationfinder.
 func CalculateWeightBetweenNeighbors(locations []*StationCoordinate, oc *osrmconnector.OSRMConnector, sc *searchconnector.TNSearchConnector) chan WeightBetweenNeighbors {
 	c := make(chan WeightBetweenNeighbors)
 
