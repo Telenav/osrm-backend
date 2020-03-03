@@ -31,3 +31,5 @@ ENV GO_HOME=/usr/local/go
 ENV PATH=${GO_HOME}/bin/:$PATH
 ENV GOPATH=/workspace/go
 
+
+LABEL maintainer="wangyoucao577@gmail.com"
