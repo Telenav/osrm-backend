@@ -2,6 +2,7 @@
 
 ## Docker Images 
 ### osrm-backend-dev
+![Build Docker - osrm-backend-dev](https://github.com/Telenav/osrm-backend/workflows/Build%20Docker%20-%20osrm-backend-dev/badge.svg)    
 Base image for telenav osrm-backend development, include all building and running dependencies.     
 ```bash
 $ docker pull telenavmap/osrm-backend-dev 
