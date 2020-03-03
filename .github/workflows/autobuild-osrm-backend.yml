@@ -5,7 +5,15 @@ on:
     branches:
     - '**'
     paths:
+    - 'cmake/**'
     - 'docker-orchestration/osrm-backend/**'
+    - 'fuzz/**'
+    - 'include/**'
+    - 'integration/**'
+    - 'profiles/**'
+    - 'src/**'
+    - 'third_party/**'
+    - 'unit_tests/**'
 
 env:
   IMAGE_NAME: osrm-backend
@@ -40,4 +48,5 @@ jobs:
         snapshot: false
         workdir: ${{ env.DOCKERFILE_PATH }}
         tags: "${{ env.IMAGE_TAG }}"
+        buildargs: "BRANCH_NAME=${{ github.ref }},IMAGE_TAG=${{ env.IMAGE_TAG }}"
 
