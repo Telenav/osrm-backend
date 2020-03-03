@@ -21,7 +21,7 @@ type Contents struct {
 	filePath string
 }
 
-// New creates an empty Contents for `.osrm.nbg_nodes`.
+// New creates an empty Contents for `.osrm.names`.
 func New(file string) *Contents {
 	c := Contents{}
 
