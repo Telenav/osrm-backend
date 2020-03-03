@@ -43,7 +43,7 @@ func (c *Contents) PrintSummary(head int) {
 
 	glog.Infof("  compressed node based graph meta %d count %d\n", c.CompressedNodeBasedGraphEdgesMeta, len(c.CompressedNodeBasedGraphEdges))
 	for i := 0; i < head && i < len(c.CompressedNodeBasedGraphEdges); i++ {
-		glog.Infof("    CompressedNodeBasedGraphEdges[%d] %v", i, c.CompressedNodeBasedGraphEdges[i])
+		glog.Infof("    CompressedNodeBasedGraphEdges[%d] %+v", i, c.CompressedNodeBasedGraphEdges[i])
 	}
 
 }

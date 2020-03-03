@@ -50,7 +50,7 @@ func (c *Contents) PrintSummary(head int) {
 
 	glog.Infof("  coordinates meta %d count %d\n", c.CoordinatesMeta, len(c.Coordinates))
 	for i := 0; i < head && i < len(c.Coordinates); i++ {
-		glog.Infof("    coordinate[%d] %#v", i, c.Coordinates[i])
+		glog.Infof("    coordinate[%d] %+v", i, c.Coordinates[i])
 	}
 
 	glog.Infof("  osm_node_ids number_of_elements meta %d count %d\n", c.OSMNodeIDs.NumOfElements, len(c.OSMNodeIDs.Values))
