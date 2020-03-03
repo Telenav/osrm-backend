@@ -11,7 +11,6 @@ env:
   IMAGE_NAME: osrm-backend-dev
   DOCKERFILE_PATH: docker-orchestration/osrm-backend-dev/
   DOCKERHUB_REGISTRY: telenavmap
-  GITHUB_REPOSITORY: telenav/osrm-backend
 
 jobs:
 
@@ -27,21 +26,10 @@ jobs:
     - name: Environment Printer
       uses: managedkaos/print-env@v1.0
     - name: Append latest if master branches # env '${IMAGE_TAG},latest'
-      #if: endsWith(github.ref, 'master')
+      if: endsWith(github.ref, 'master')
       run: echo ::set-env name=IMAGE_TAG::${IMAGE_TAG},latest
     - name: Environment Printer
       uses: managedkaos/print-env@v1.0
-
-    # - name: Build & Publish to GitHub Package
-    #   uses: elgohr/Publish-Docker-Github-Action@master
-    #   with:
-    #     name: ${{ env.GITHUB_REPOSITORY }}/${{ env.IMAGE_NAME }}
-    #     username: ${{ secrets.GITHUB_TELENAV_OSRM_PACKAGES_USERNAME }}
-    #     password: ${{ secrets.GITHUB_TELENAV_OSRM_PACKAGES_TOKEN }}
-    #     registry: docker.pkg.github.com
-    #     snapshot: false
-    #     workdir: ${{ env.DOCKERFILE_PATH }}
-    #     tags: "${{ env.IMAGE_TAG }}"
 
     - name: Build & Publish to DockerHub
       uses: elgohr/Publish-Docker-Github-Action@master
@@ -52,3 +40,4 @@ jobs:
         snapshot: false
         workdir: ${{ env.DOCKERFILE_PATH }}
         tags: "${{ env.IMAGE_TAG }}"
+
