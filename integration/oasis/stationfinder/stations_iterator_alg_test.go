@@ -1,12 +1,18 @@
 package stationfinder
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/Telenav/osrm-backend/integration/oasis/osrmconnector"
+	"github.com/Telenav/osrm-backend/integration/oasis/searchconnector"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/table"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 )
 
 var mockDict1 map[string]bool = map[string]bool{
@@ -148,4 +154,212 @@ func TestCalcCostBetweenChargeStationsPair(t *testing.T) {
 	if !reflect.DeepEqual(r, expect) {
 		t.Errorf("expect %v but got %v", expect, r)
 	}
+}
+
+// simulate locations array contains 4 points: orig -> location1 -> location2 -> dest
+// (1.1, 1.1) -> (2.2, 2.2) -> (3.3, 3.3) -> (4.4, 4.4)
+// location1 will find 4 nearby charge stations
+// location2 will find 2 nearby charge stations
+// search service will provide results based on upper information.
+// Table service will provide result for: 1(orig) -> 4(charge stations around location 1),
+// 4(charge stations around location 1) -> 2(charge stations around location 2),
+// 2(charge stations around location 2) -> 1(dest)
+func TestCalculateWeightBetweenNeighbors(t *testing.T) {
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+
+		if r.Method != "GET" {
+			t.Errorf("Expected 'GET' request, got '%s'", r.Method)
+		}
+
+		if r.URL.EscapedPath() == "/entity/v4/search/json" {
+			req, _ := nearbychargestation.ParseRequestURL(r.URL)
+			if floatEquals(req.Location.Lat, 2.2) && floatEquals(req.Location.Lon, 2.2) {
+				var searchResponseBytes4Location1, _ = json.Marshal(nearbychargestation.MockSearchResponse1)
+				w.Write(searchResponseBytes4Location1)
+			} else if floatEquals(req.Location.Lat, 3.3) && floatEquals(req.Location.Lon, 3.3) {
+				var searchResponseBytes4Location2, _ = json.Marshal(nearbychargestation.MockSearchResponse3)
+				w.Write(searchResponseBytes4Location2)
+			}
+			return
+		}
+
+		if strings.HasPrefix(r.URL.EscapedPath(), "/table/v1/driving/") {
+			req, _ := table.ParseRequestURL(r.URL)
+			s := len(req.Sources)
+			d := len(req.Destinations)
+			if s == 1 && d == 4 {
+				var tableResponseBytesOrig2Location1, _ = json.Marshal(table.Mock1ToNTableResponse1)
+				w.Write(tableResponseBytesOrig2Location1)
+			} else if s == 4 && d == 2 {
+				var tableResponseBytesLocation12Location2, _ = json.Marshal(table.Mock4To2TableResponse1)
+				w.Write(tableResponseBytesLocation12Location2)
+			} else if s == 2 && d == 1 {
+				var tableResponseBytesLocation2ToDest, _ = json.Marshal(table.Mock2To1TableResponse1)
+				w.Write(tableResponseBytesLocation2ToDest)
+			}
+			return
+		}
+
+	}))
+	defer ts.Close()
+
+	locations := []*StationCoordinate{
+		&StationCoordinate{Lat: 1.1, Lon: 1.1},
+		&StationCoordinate{Lat: 2.2, Lon: 2.2},
+		&StationCoordinate{Lat: 3.3, Lon: 3.3},
+		&StationCoordinate{Lat: 4.4, Lon: 4.4},
+	}
+	oc := osrmconnector.NewOSRMConnector(ts.URL)
+	sc := searchconnector.NewTNSearchConnector(ts.URL, "apikey", "apisignature")
+
+	c := CalculateWeightBetweenNeighbors(locations, oc, sc)
+
+	expect_arr0 := []CostBetweenChargeStations{
+		CostBetweenChargeStations{
+			FromID: "orig_location",
+			ToID:   "station1",
+			Cost: Cost{
+				Duration: 22.2,
+				Distance: 22.2,
+			},
+		},
+		CostBetweenChargeStations{
+			FromID: "orig_location",
+			ToID:   "station2",
+			Cost: Cost{
+				Duration: 11.1,
+				Distance: 11.1,
+			},
+		},
+		CostBetweenChargeStations{
+			FromID: "orig_location",
+			ToID:   "station3",
+			Cost: Cost{
+				Duration: 33.3,
+				Distance: 33.3,
+			},
+		},
+		CostBetweenChargeStations{
+			FromID: "orig_location",
+			ToID:   "station4",
+			Cost: Cost{
+				Duration: 44.4,
+				Distance: 44.4,
+			},
+		},
+	}
+
+	expect_arr1 := []CostBetweenChargeStations{
+		CostBetweenChargeStations{
+			FromID: "station1",
+			ToID:   "station6",
+			Cost: Cost{
+				Duration: 2,
+				Distance: 2,
+			},
+		},
+		CostBetweenChargeStations{
+			FromID: "station1",
+			ToID:   "station7",
+			Cost: Cost{
+				Duration: 3,
+				Distance: 3,
+			},
+		},
+		CostBetweenChargeStations{
+			FromID: "station2",
+			ToID:   "station6",
+			Cost: Cost{
+				Duration: 4,
+				Distance: 4,
+			},
+		},
+		CostBetweenChargeStations{
+			FromID: "station2",
+			ToID:   "station7",
+			Cost: Cost{
+				Duration: 5,
+				Distance: 5,
+			},
+		},
+		CostBetweenChargeStations{
+			FromID: "station3",
+			ToID:   "station6",
+			Cost: Cost{
+				Duration: 6,
+				Distance: 6,
+			},
+		},
+		CostBetweenChargeStations{
+			FromID: "station3",
+			ToID:   "station7",
+			Cost: Cost{
+				Duration: 7,
+				Distance: 7,
+			},
+		},
+		CostBetweenChargeStations{
+			FromID: "station4",
+			ToID:   "station6",
+			Cost: Cost{
+				Duration: 8,
+				Distance: 8,
+			},
+		},
+		CostBetweenChargeStations{
+			FromID: "station4",
+			ToID:   "station7",
+			Cost: Cost{
+				Duration: 9,
+				Distance: 9,
+			},
+		},
+	}
+
+	expect_arr2 := []CostBetweenChargeStations{
+		CostBetweenChargeStations{
+			FromID: "station6",
+			ToID:   "dest_location",
+			Cost: Cost{
+				Duration: 66.6,
+				Distance: 66.6,
+			},
+		},
+		CostBetweenChargeStations{
+			FromID: "station7",
+			ToID:   "dest_location",
+			Cost: Cost{
+				Duration: 11.1,
+				Distance: 11.1,
+			},
+		},
+	}
+
+	for arr := range c {
+		switch len(arr.c) {
+		case 4: 
+			if !reflect.DeepEqual(arr.c, expect_arr0) {
+				t.Errorf("expect %v but got %v", expect_arr0, arr.c)
+			}
+		case 8:
+			if !reflect.DeepEqual(arr.c, expect_arr1) {
+				t.Errorf("expect %v but got %v", expect_arr1, arr.c)
+			}
+		case 2:
+			if !reflect.DeepEqual(arr.c, expect_arr2) {
+				t.Errorf("expect %v but got %v", expect_arr2, arr.c)
+			}
+		}
+	}
+}
+
+var epsilon float64 = 0.00000001
+
+func floatEquals(a, b float64) bool {
+	if (a-b) < epsilon && (b-a) < epsilon {
+		return true
+	}
+	return false
 }

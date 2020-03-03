@@ -5,7 +5,7 @@ type stationGraph struct {
 	stationID2Int map[string]uint32
 }
 
-func NewStationGraph(c chan stationfinder.WeightBetweenNeighbors) *stationGraph {
-
-	return nil
-}
+// @todo
+// func NewStationGraph(c chan stationfinder.WeightBetweenNeighbors) *stationGraph {
+// 	return nil
+// }

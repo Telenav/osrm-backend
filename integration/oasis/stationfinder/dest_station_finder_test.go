@@ -4,6 +4,8 @@ import (
 	"reflect"
 	"sync"
 	"testing"
+
+	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 )
 
 func createMockDestStationFinder1() *destStationFinder {
@@ -11,7 +13,7 @@ func createMockDestStationFinder1() *destStationFinder {
 		oasisReq: nil,
 		bf: &basicFinder{
 			tnSearchConnector: nil,
-			searchResp:        mockSearchResponse1,
+			searchResp:        nearbychargestation.MockSearchResponse1,
 			searchRespLock:    &sync.RWMutex{},
 		},
 	}
@@ -23,7 +25,7 @@ func createMockDestStationFinder2() *destStationFinder {
 		oasisReq: nil,
 		bf: &basicFinder{
 			tnSearchConnector: nil,
-			searchResp:        mockSearchResponse2,
+			searchResp:        nearbychargestation.MockSearchResponse2,
 			searchRespLock:    &sync.RWMutex{},
 		},
 	}

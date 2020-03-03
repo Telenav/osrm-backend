@@ -149,6 +149,8 @@ type WeightBetweenNeighbors struct {
 //   represents previous location and one for current location, so an array of channel is
 //   created to represent whether specific iterator is ready or not.  Iterators' result
 //   could be got from array of iterators.
+//   @Todo: isIteratorReady could be removed later.  When iterator is not ready, should
+//         hold inside iterator itself.  That need refactor the design of stationfinder.
 func CalculateWeightBetweenNeighbors(locations []*StationCoordinate, oc *osrmconnector.OSRMConnector, sc *searchconnector.TNSearchConnector) chan WeightBetweenNeighbors {
 	c := make(chan WeightBetweenNeighbors)
 
@@ -167,6 +169,7 @@ func CalculateWeightBetweenNeighbors(locations []*StationCoordinate, oc *osrmcon
 					iterators[first] = NewOrigIter(locations[first])
 					isIteratorReady[first] <- true
 					wg.Done()
+					glog.Info("Finish generating NewOrigIter")
 				}(&wg, i)
 				continue
 			}
@@ -175,9 +178,10 @@ func CalculateWeightBetweenNeighbors(locations []*StationCoordinate, oc *osrmcon
 				wg.Add(1)
 				go func(wg *sync.WaitGroup, last int) {
 					iterators[last] = NewDestIter(locations[last])
-					isIteratorReady[last] <- true
+					glog.Info("Finish generating NewDestIter")
 					<-isIteratorReady[last-1]
 					putWeightBetweenChargeStationsIntoChannel(iterators[last-1], iterators[last], c, oc)
+					glog.Infof("Finish generating putWeightBetweenChargeStationsIntoChannel for %d", last)
 					wg.Done()
 				}(&wg, i)
 
@@ -187,15 +191,18 @@ func CalculateWeightBetweenNeighbors(locations []*StationCoordinate, oc *osrmcon
 			wg.Add(1)
 			go func(wg *sync.WaitGroup, index int) {
 				iterators[index] = NewLowEnergyLocationStationFinder(sc, locations[index])
-				isIteratorReady[index] <- true
+				glog.Infof("Finish generating NewLowEnergyLocationStationFinder for %d", index)
 				<-isIteratorReady[index-1]
+				isIteratorReady[index] <- true
 				putWeightBetweenChargeStationsIntoChannel(iterators[index-1], iterators[index], c, oc)
+				glog.Infof("Finish generating putWeightBetweenChargeStationsIntoChannel for %d", index)
 				wg.Done()
 			}(&wg, i)
 		}
 
 		go func(wg *sync.WaitGroup) {
 			wg.Wait()
+			glog.Info("Finish all tasks in CalculateWeightBetweenNeighbors")
 			close(c)
 			for _, cI := range isIteratorReady {
 				close(cI)
