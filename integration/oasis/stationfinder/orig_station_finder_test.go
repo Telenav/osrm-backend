@@ -14,6 +14,7 @@ func createMockOrigStationFinder1() *origStationFinder {
 		bf: &basicFinder{
 			tnSearchConnector: nil,
 			searchResp:        nearbychargestation.MockSearchResponse1,
+			searchResp:        mockSearchResponse1,
 			searchRespLock:    &sync.RWMutex{},
 		},
 	}

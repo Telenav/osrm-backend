@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"sync"
 	"testing"
-
+  
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 )
 
@@ -13,6 +13,7 @@ func createMockLowEnergyLocationStationFinder1() *lowEnergyLocationStationFinder
 		location: nil,
 		bf: &basicFinder{
 			tnSearchConnector: nil,
+
 			searchResp:        nearbychargestation.MockSearchResponse1,
 			searchRespLock:    &sync.RWMutex{},
 		},
