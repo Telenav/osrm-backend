@@ -11,6 +11,7 @@ env:
   IMAGE_NAME: osrm-backend-dev
   DOCKERFILE_PATH: docker-orchestration/osrm-backend-dev/
   DOCKERHUB_REGISTRY: telenavmap
+  GITHUB_REPOSITORY: telenav/osrm-backend
 
 jobs:
 
@@ -34,7 +35,7 @@ jobs:
     - name: Build & Publish to GitHub Package
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
-        name: ${{ github.repository }}/${{ env.IMAGE_NAME }}
+        name: ${{ env.GITHUB_REPOSITORY }}/${{ env.IMAGE_NAME }}
         username: ${{ secrets.GITHUB_TELENAV_OSRM_PACKAGES_USERNAME }}
         password: ${{ secrets.GITHUB_TELENAV_OSRM_PACKAGES_TOKEN }}
         registry: docker.pkg.github.com
