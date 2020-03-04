@@ -33,9 +33,12 @@ jobs:
       run: echo ::set-env name=IMAGE_TAG::$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev )-$(echo ${GITHUB_SHA} | cut -c 1-7)-$(date -u +"%Y%m%d")
     - name: Environment Printer
       uses: managedkaos/print-env@v1.0
-    - name: Append latest if master branches # env '${IMAGE_TAG},latest'
+      
+    - name: Comma-separated image tags 
+      run: echo ::set-env name=COMMA_SEPARATED_IMAGE_TAGS::${IMAGE_TAG}
+    - name: Append latest if on master branch # env '${IMAGE_TAG},latest'
       if: endsWith(github.ref, 'master')
-      run: echo ::set-env name=IMAGE_TAG::${IMAGE_TAG},latest
+      run: echo ::set-env name=COMMA_SEPARATED_IMAGE_TAGS::${COMMA_SEPARATED_IMAGE_TAGS},latest
     - name: Environment Printer
       uses: managedkaos/print-env@v1.0
 
@@ -47,6 +50,6 @@ jobs:
         password: ${{ secrets.TELENAVMAP_DOCKERHUB_TOKEN }}
         snapshot: false
         workdir: ${{ env.DOCKERFILE_PATH }}
-        tags: "${{ env.IMAGE_TAG }}"
-        buildargs: "GIT_SHA=${{ github.sha }},IMAGE_TAG=${{ env.IMAGE_TAG }}"
+        tags: "${{ env.COMMA_SEPARATED_IMAGE_TAGS }}"
+        buildargs: "GIT_COMMIT=${{ github.sha }},IMAGE_TAG=${{ env.IMAGE_TAG }}"
 

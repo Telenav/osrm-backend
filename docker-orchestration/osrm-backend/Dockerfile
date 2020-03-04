@@ -5,11 +5,12 @@ FROM telenavmap/osrm-backend-dev as builder
 RUN mkdir -p /osrm-build
 WORKDIR /workspace/
 
-ARG GIT_SHA=
-RUN echo "Building on ${GIT_SHA}" && \
-  git clone https://github.com/Telenav/osrm-backend.git && \
+# specify a branch/tag/commit to checkout, master by default
+ARG GIT_COMMIT=master  
+RUN echo "Building on ${GIT_COMMIT}" && \
+  git clone -n https://github.com/Telenav/osrm-backend.git && \
   cd osrm-backend && \
-  git checkout ${GIT_SHA}
+  git checkout ${GIT_COMMIT}
   
 RUN mkdir -p osrm-backend/build && \
   cd osrm-backend/build && \
