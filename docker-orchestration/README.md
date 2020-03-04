@@ -10,6 +10,7 @@ $ docker pull telenavmap/osrm-backend-dev
 ```
 
 ### osrm-backend
+![Build Docker - osrm-backend](https://github.com/Telenav/osrm-backend/workflows/Build%20Docker%20-%20osrm-backend/badge.svg)    
 Image within built osrm binaries(`osrm-extract/osrm-partition/osrm-customize/...`) and running dependencies. It can be used to **compile data** or **startup routed**.      
 [DockerHub - telenavmap/osrm-backend](https://hub.docker.com/r/telenavmap/osrm-backend)
 
