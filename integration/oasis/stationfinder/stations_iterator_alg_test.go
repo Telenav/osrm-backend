@@ -73,7 +73,7 @@ func (ft *fakeTableResponse) Request4Table(r *table.Request) <-chan osrmconnecto
 	return c
 }
 
-func TestCalcCostBetweenChargeStationsPair(t *testing.T) {
+func TestCalcNeighborInfoPair(t *testing.T) {
 	// from: station1, station2, station3, station4
 	sf1 := createMockOrigStationFinder1()
 	// to: station6, station7
@@ -85,66 +85,66 @@ func TestCalcCostBetweenChargeStationsPair(t *testing.T) {
 	if err != nil {
 		t.Errorf("expect no error but generate error of %v", err)
 	}
-	expect := []CostBetweenChargeStations{
-		CostBetweenChargeStations{
-			FromID: "station1",
-			ToID:   "station6",
+	expect := []NeighborInfo{
+		NeighborInfo{
+			FromName: "station1",
+			ToName:   "station6",
 			Cost: Cost{
 				Duration: 2,
 				Distance: 2,
 			},
 		},
-		CostBetweenChargeStations{
-			FromID: "station1",
-			ToID:   "station7",
+		NeighborInfo{
+			FromName: "station1",
+			ToName:   "station7",
 			Cost: Cost{
 				Duration: 3,
 				Distance: 3,
 			},
 		},
-		CostBetweenChargeStations{
-			FromID: "station2",
-			ToID:   "station6",
+		NeighborInfo{
+			FromName: "station2",
+			ToName:   "station6",
 			Cost: Cost{
 				Duration: 4,
 				Distance: 4,
 			},
 		},
-		CostBetweenChargeStations{
-			FromID: "station2",
-			ToID:   "station7",
+		NeighborInfo{
+			FromName: "station2",
+			ToName:   "station7",
 			Cost: Cost{
 				Duration: 5,
 				Distance: 5,
 			},
 		},
-		CostBetweenChargeStations{
-			FromID: "station3",
-			ToID:   "station6",
+		NeighborInfo{
+			FromName: "station3",
+			ToName:   "station6",
 			Cost: Cost{
 				Duration: 6,
 				Distance: 6,
 			},
 		},
-		CostBetweenChargeStations{
-			FromID: "station3",
-			ToID:   "station7",
+		NeighborInfo{
+			FromName: "station3",
+			ToName:   "station7",
 			Cost: Cost{
 				Duration: 7,
 				Distance: 7,
 			},
 		},
-		CostBetweenChargeStations{
-			FromID: "station4",
-			ToID:   "station6",
+		NeighborInfo{
+			FromName: "station4",
+			ToName:   "station6",
 			Cost: Cost{
 				Duration: 8,
 				Distance: 8,
 			},
 		},
-		CostBetweenChargeStations{
-			FromID: "station4",
-			ToID:   "station7",
+		NeighborInfo{
+			FromName: "station4",
+			ToName:   "station7",
 			Cost: Cost{
 				Duration: 9,
 				Distance: 9,
@@ -216,34 +216,34 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 
 	c := CalculateWeightBetweenNeighbors(locations, oc, sc)
 
-	expect_arr0 := []CostBetweenChargeStations{
-		CostBetweenChargeStations{
-			FromID: "orig_location",
-			ToID:   "station1",
+	expect_arr0 := []NeighborInfo{
+		NeighborInfo{
+			FromName: "orig_location",
+			ToName:   "station1",
 			Cost: Cost{
 				Duration: 22.2,
 				Distance: 22.2,
 			},
 		},
-		CostBetweenChargeStations{
-			FromID: "orig_location",
-			ToID:   "station2",
+		NeighborInfo{
+			FromName: "orig_location",
+			ToName:   "station2",
 			Cost: Cost{
 				Duration: 11.1,
 				Distance: 11.1,
 			},
 		},
-		CostBetweenChargeStations{
-			FromID: "orig_location",
-			ToID:   "station3",
+		NeighborInfo{
+			FromName: "orig_location",
+			ToName:   "station3",
 			Cost: Cost{
 				Duration: 33.3,
 				Distance: 33.3,
 			},
 		},
-		CostBetweenChargeStations{
-			FromID: "orig_location",
-			ToID:   "station4",
+		NeighborInfo{
+			FromName: "orig_location",
+			ToName:   "station4",
 			Cost: Cost{
 				Duration: 44.4,
 				Distance: 44.4,
@@ -251,66 +251,66 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 	}
 
-	expect_arr1 := []CostBetweenChargeStations{
-		CostBetweenChargeStations{
-			FromID: "station1",
-			ToID:   "station6",
+	expect_arr1 := []NeighborInfo{
+		NeighborInfo{
+			FromName: "station1",
+			ToName:   "station6",
 			Cost: Cost{
 				Duration: 2,
 				Distance: 2,
 			},
 		},
-		CostBetweenChargeStations{
-			FromID: "station1",
-			ToID:   "station7",
+		NeighborInfo{
+			FromName: "station1",
+			ToName:   "station7",
 			Cost: Cost{
 				Duration: 3,
 				Distance: 3,
 			},
 		},
-		CostBetweenChargeStations{
-			FromID: "station2",
-			ToID:   "station6",
+		NeighborInfo{
+			FromName: "station2",
+			ToName:   "station6",
 			Cost: Cost{
 				Duration: 4,
 				Distance: 4,
 			},
 		},
-		CostBetweenChargeStations{
-			FromID: "station2",
-			ToID:   "station7",
+		NeighborInfo{
+			FromName: "station2",
+			ToName:   "station7",
 			Cost: Cost{
 				Duration: 5,
 				Distance: 5,
 			},
 		},
-		CostBetweenChargeStations{
-			FromID: "station3",
-			ToID:   "station6",
+		NeighborInfo{
+			FromName: "station3",
+			ToName:   "station6",
 			Cost: Cost{
 				Duration: 6,
 				Distance: 6,
 			},
 		},
-		CostBetweenChargeStations{
-			FromID: "station3",
-			ToID:   "station7",
+		NeighborInfo{
+			FromName: "station3",
+			ToName:   "station7",
 			Cost: Cost{
 				Duration: 7,
 				Distance: 7,
 			},
 		},
-		CostBetweenChargeStations{
-			FromID: "station4",
-			ToID:   "station6",
+		NeighborInfo{
+			FromName: "station4",
+			ToName:   "station6",
 			Cost: Cost{
 				Duration: 8,
 				Distance: 8,
 			},
 		},
-		CostBetweenChargeStations{
-			FromID: "station4",
-			ToID:   "station7",
+		NeighborInfo{
+			FromName: "station4",
+			ToName:   "station7",
 			Cost: Cost{
 				Duration: 9,
 				Distance: 9,
@@ -318,18 +318,18 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 	}
 
-	expect_arr2 := []CostBetweenChargeStations{
-		CostBetweenChargeStations{
-			FromID: "station6",
-			ToID:   "dest_location",
+	expect_arr2 := []NeighborInfo{
+		NeighborInfo{
+			FromName: "station6",
+			ToName:   "dest_location",
 			Cost: Cost{
 				Duration: 66.6,
 				Distance: 66.6,
 			},
 		},
-		CostBetweenChargeStations{
-			FromID: "station7",
-			ToID:   "dest_location",
+		NeighborInfo{
+			FromName: "station7",
+			ToName:   "dest_location",
 			Cost: Cost{
 				Duration: 11.1,
 				Distance: 11.1,
@@ -338,18 +338,18 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 	}
 
 	for arr := range c {
-		switch len(arr.c) {
-		case 4: 
-			if !reflect.DeepEqual(arr.c, expect_arr0) {
-				t.Errorf("expect %v but got %v", expect_arr0, arr.c)
+		switch len(arr.NeighborsInfo) {
+		case 4:
+			if !reflect.DeepEqual(arr.NeighborsInfo, expect_arr0) {
+				t.Errorf("expect %v but got %v", expect_arr0, arr.NeighborsInfo)
 			}
 		case 8:
-			if !reflect.DeepEqual(arr.c, expect_arr1) {
-				t.Errorf("expect %v but got %v", expect_arr1, arr.c)
+			if !reflect.DeepEqual(arr.NeighborsInfo, expect_arr1) {
+				t.Errorf("expect %v but got %v", expect_arr1, arr.NeighborsInfo)
 			}
 		case 2:
-			if !reflect.DeepEqual(arr.c, expect_arr2) {
-				t.Errorf("expect %v but got %v", expect_arr2, arr.c)
+			if !reflect.DeepEqual(arr.NeighborsInfo, expect_arr2) {
+				t.Errorf("expect %v but got %v", expect_arr2, arr.NeighborsInfo)
 			}
 		}
 	}
@@ -363,4 +363,3 @@ func floatEquals(a, b float64) bool {
 	}
 	return false
 }
-

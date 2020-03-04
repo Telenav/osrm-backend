@@ -1,6 +1,7 @@
 package stationfinder
 
-const origLocationID string = "orig_location"
+// OrigLocationName defines name for orig
+const OrigLocationName string = "orig_location"
 
 type origIterator struct {
 	location *StationCoordinate
@@ -18,7 +19,7 @@ func (oi *origIterator) iterateNearbyStations() <-chan ChargeStationInfo {
 	go func() {
 		defer close(c)
 		station := ChargeStationInfo{
-			ID:       origLocationID,
+			ID:       OrigLocationName,
 			Location: *oi.location,
 		}
 		c <- station

@@ -39,7 +39,7 @@ type StationCoordinate struct {
 }
 
 // CalcWeightBetweenChargeStationsPair accepts two iterators and calculates weights between each pair of iterators
-func CalcWeightBetweenChargeStationsPair(from nearbyStationsIterator, to nearbyStationsIterator, table osrmconnector.TableRequster) ([]CostBetweenChargeStations, error) {
+func CalcWeightBetweenChargeStationsPair(from nearbyStationsIterator, to nearbyStationsIterator, table osrmconnector.TableRequster) ([]NeighborInfo, error) {
 	// collect (lat,lon)&ID for current location's nearby charge stations
 	var startPoints coordinate.Coordinates
 	var startIDs []string
@@ -93,12 +93,12 @@ func CalcWeightBetweenChargeStationsPair(from nearbyStationsIterator, to nearbyS
 	}
 
 	// iterate table response result
-	var result []CostBetweenChargeStations
+	var result []NeighborInfo
 	for i := range startPoints {
 		for j := range targetPoints {
-			result = append(result, CostBetweenChargeStations{
-				FromID: startIDs[i],
-				ToID:   targetIDs[j],
+			result = append(result, NeighborInfo{
+				FromName: startIDs[i],
+				ToName:   targetIDs[j],
 				Cost: Cost{
 					Duration: *resp.Resp.Durations[i][j],
 					Distance: *resp.Resp.Distances[i][j],
@@ -116,10 +116,10 @@ type Cost struct {
 	Distance float64
 }
 
-// CostBetweenChargeStations represent cost information between two charge stations
-type CostBetweenChargeStations struct {
-	FromID string
-	ToID   string
+// NeighborInfo represent cost information between two charge stations
+type NeighborInfo struct {
+	FromName string
+	ToName   string
 	Cost
 }
 
@@ -134,8 +134,8 @@ func buildChargeStationInfoDict(iter nearbyStationsIterator) map[string]bool {
 }
 
 type WeightBetweenNeighbors struct {
-	c   []CostBetweenChargeStations
-	err error
+	NeighborsInfo []NeighborInfo
+	Err           error
 }
 
 // CalculateWeightBetweenNeighbors accepts locations array, which will search for nearby
@@ -220,8 +220,8 @@ func putWeightBetweenChargeStationsIntoChannel(from nearbyStationsIterator, to n
 		glog.Errorf("CalculateWeightBetweenNeighbors failed with error %v", err)
 	}
 	result := WeightBetweenNeighbors{
-		c:   r,
-		err: err,
+		NeighborsInfo: r,
+		Err:           err,
 	}
 	c <- result
 }
