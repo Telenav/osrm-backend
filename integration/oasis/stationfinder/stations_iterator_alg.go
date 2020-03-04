@@ -166,31 +166,31 @@ func CalculateWeightBetweenNeighbors(locations []*StationCoordinate, oc *osrmcon
 		for i := 0; i < len(locations); i++ {
 			if i == 0 {
 				wg.Add(1)
-				go func(wg *sync.WaitGroup, first int) {
+				go func(first int) {
 					iterators[first] = NewOrigIter(locations[first])
 					isIteratorReady[first] <- true
 					wg.Done()
 					glog.Info("Finish generating NewOrigIter")
-				}(&wg, i)
+				}(i)
 				continue
 			}
 
 			if i == len(locations)-1 {
 				wg.Add(1)
-				go func(wg *sync.WaitGroup, last int) {
+				go func(last int) {
 					iterators[last] = NewDestIter(locations[last])
 					glog.Info("Finish generating NewDestIter")
 					<-isIteratorReady[last-1]
 					putWeightBetweenChargeStationsIntoChannel(iterators[last-1], iterators[last], c, oc)
 					glog.Infof("Finish generating putWeightBetweenChargeStationsIntoChannel for %d", last)
 					wg.Done()
-				}(&wg, i)
+				}(i)
 
 				break
 			}
 
 			wg.Add(1)
-			go func(wg *sync.WaitGroup, index int) {
+			go func(index int) {
 				iterators[index] = NewLowEnergyLocationStationFinder(sc, locations[index])
 				glog.Infof("Finish generating NewLowEnergyLocationStationFinder for %d", index)
 				<-isIteratorReady[index-1]
@@ -198,7 +198,7 @@ func CalculateWeightBetweenNeighbors(locations []*StationCoordinate, oc *osrmcon
 				putWeightBetweenChargeStationsIntoChannel(iterators[index-1], iterators[index], c, oc)
 				glog.Infof("Finish generating putWeightBetweenChargeStationsIntoChannel for %d", index)
 				wg.Done()
-			}(&wg, i)
+			}(i)
 		}
 
 		go func(wg *sync.WaitGroup) {
