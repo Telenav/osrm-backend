@@ -67,6 +67,7 @@ func (i *IndexedData) varAdvance(byteLen, dataStart, lengthStart uint32) (uint32
 		glog.Fatalf("invalid byteLen %d", byteLen)
 	}
 
+	// Nothing to do for varAdvance while byteLen == 0
 	if byteLen == 1 {
 		dataStart += uint32(i.values[lengthStart])
 		lengthStart++
