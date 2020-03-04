@@ -2,6 +2,8 @@ package oasis
 
 import (
 	"github.com/Telenav/osrm-backend/integration/oasis/haversine"
+	"github.com/Telenav/osrm-backend/integration/oasis/osrmconnector"
+	"github.com/Telenav/osrm-backend/integration/oasis/searchconnector"
 	"github.com/Telenav/osrm-backend/integration/oasis/stationfinder"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
@@ -9,6 +11,10 @@ import (
 
 	"github.com/twpayne/go-polyline"
 )
+
+func pickChargeStationsWithEarlistArrival(oasisReq *oasis.Request, routeResp *route.Response, oc *osrmconnector.OSRMConnector, sc *searchconnector.TNSearchConnector) {
+	// TBD
+}
 
 // For each route response, will generate an array of *stationfinder.StationCoordinate
 // Each array contains: start point, first charge point(could also be start point), second charge point, ..., end point

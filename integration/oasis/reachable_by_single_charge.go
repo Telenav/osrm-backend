@@ -31,8 +31,8 @@ func getOverlapChargeStations4OrigDest(req *oasis.Request, routedistance float64
 		return nil
 	}
 
-	origStations := stationfinder.NewOrigStationFinder(osrmConnector, tnSearchConnector, req)
-	destStations := stationfinder.NewDestStationFinder(osrmConnector, tnSearchConnector, req)
+	origStations := stationfinder.NewOrigStationFinder(tnSearchConnector, req)
+	destStations := stationfinder.NewDestStationFinder(tnSearchConnector, req)
 	overlap := stationfinder.FindOverlapBetweenStations(origStations, destStations)
 
 	if len(overlap) == 0 {

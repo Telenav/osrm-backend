@@ -2,9 +2,11 @@ package stationfinder
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/Telenav/osrm-backend/integration/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/oasis/osrmhelper"
+	"github.com/Telenav/osrm-backend/integration/oasis/searchconnector"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/coordinate"
 	"github.com/golang/glog"
 )
@@ -36,7 +38,8 @@ type StationCoordinate struct {
 	Lon float64
 }
 
-func CalcCostBetweenChargeStationsPair(from nearbyStationsIterator, to nearbyStationsIterator, table osrmconnector.TableRequster) ([]CostBetweenChargeStations, error) {
+// CalcWeightBetweenChargeStationsPair accepts two iterators and calculates weights between each pair of iterators
+func CalcWeightBetweenChargeStationsPair(from nearbyStationsIterator, to nearbyStationsIterator, table osrmconnector.TableRequster) ([]CostBetweenChargeStations, error) {
 	// collect (lat,lon)&ID for current location's nearby charge stations
 	var startPoints coordinate.Coordinates
 	var startIDs []string
@@ -48,7 +51,7 @@ func CalcCostBetweenChargeStationsPair(from nearbyStationsIterator, to nearbySta
 		startIDs = append(startIDs, v.ID)
 	}
 	if len(startPoints) == 0 {
-		err := fmt.Errorf("Empty iterator of from pass into calcCostBetweenChargeStationsPair")
+		err := fmt.Errorf("empty iterator of from pass into CalcWeightBetweenChargeStationsPair")
 		glog.Warningf("%v", err)
 		return nil, err
 	}
@@ -64,7 +67,7 @@ func CalcCostBetweenChargeStationsPair(from nearbyStationsIterator, to nearbySta
 		targetIDs = append(targetIDs, v.ID)
 	}
 	if len(targetPoints) == 0 {
-		err := fmt.Errorf("Empty iterator of to pass into calcCostBetweenChargeStationsPair")
+		err := fmt.Errorf("empty iterator of to pass into CalcWeightBetweenChargeStationsPair")
 		glog.Warningf("%v", err)
 		return nil, err
 	}
@@ -84,12 +87,12 @@ func CalcCostBetweenChargeStationsPair(from nearbyStationsIterator, to nearbySta
 		return nil, resp.Err
 	}
 
-	// iterate table response result
 	if len(resp.Resp.Sources) != len(startPoints) || len(resp.Resp.Destinations) != len(targetPoints) {
-		err := fmt.Errorf("Incorrect osrm table response for url: %s", req.RequestURI())
+		err := fmt.Errorf("incorrect osrm table response for url: %s", req.RequestURI())
 		return nil, err
 	}
 
+	// iterate table response result
 	var result []CostBetweenChargeStations
 	for i := range startPoints {
 		for j := range targetPoints {
@@ -128,4 +131,97 @@ func buildChargeStationInfoDict(iter nearbyStationsIterator) map[string]bool {
 	}
 
 	return dict
+}
+
+type WeightBetweenNeighbors struct {
+	c   []CostBetweenChargeStations
+	err error
+}
+
+// CalculateWeightBetweenNeighbors accepts locations array, which will search for nearby
+// charge stations and then calculate weight between stations, the result is used to
+// construct graph.
+// - The input of locations contains: orig location -> first place to search for charge ->
+//   second location to search for charge -> ... -> dest location
+// - Both search nearby charge stations and calculate weight between stations are heavy
+//   operations, so put them into go-routine and use waitgroup to guarantee result channel
+//   is closed after everything is done.
+// - CalcWeightBetweenChargeStationsPair needs two iterators, one for nearbystationiterator
+//   represents from location and one for next location.  An array of channel is created
+//   to represent whether specific iterator is ready or not.
+// - All iterators has been recorded in iterators array
+//   @Todo: isIteratorReady could be removed later.  When iterator is not ready, should
+//         pause inside iterator itself.  That need refactor the design of stationfinder.
+func CalculateWeightBetweenNeighbors(locations []*StationCoordinate, oc *osrmconnector.OSRMConnector, sc *searchconnector.TNSearchConnector) chan WeightBetweenNeighbors {
+	c := make(chan WeightBetweenNeighbors)
+
+	if len(locations) > 2 {
+		iterators := make([]nearbyStationsIterator, len(locations))
+		isIteratorReady := make([]chan bool, len(locations))
+		for i := range isIteratorReady {
+			isIteratorReady[i] = make(chan bool)
+		}
+		var wg sync.WaitGroup
+
+		for i := 0; i < len(locations); i++ {
+			if i == 0 {
+				wg.Add(1)
+				go func(first int) {
+					iterators[first] = NewOrigIter(locations[first])
+					isIteratorReady[first] <- true
+					wg.Done()
+					glog.Info("Finish generating NewOrigIter")
+				}(i)
+				continue
+			}
+
+			if i == len(locations)-1 {
+				wg.Add(1)
+				go func(last int) {
+					iterators[last] = NewDestIter(locations[last])
+					glog.Info("Finish generating NewDestIter")
+					<-isIteratorReady[last-1]
+					putWeightBetweenChargeStationsIntoChannel(iterators[last-1], iterators[last], c, oc)
+					glog.Infof("Finish generating putWeightBetweenChargeStationsIntoChannel for %d", last)
+					wg.Done()
+				}(i)
+
+				break
+			}
+
+			wg.Add(1)
+			go func(index int) {
+				iterators[index] = NewLowEnergyLocationStationFinder(sc, locations[index])
+				glog.Infof("Finish generating NewLowEnergyLocationStationFinder for %d", index)
+				<-isIteratorReady[index-1]
+				isIteratorReady[index] <- true
+				putWeightBetweenChargeStationsIntoChannel(iterators[index-1], iterators[index], c, oc)
+				glog.Infof("Finish generating putWeightBetweenChargeStationsIntoChannel for %d", index)
+				wg.Done()
+			}(i)
+		}
+
+		go func(wg *sync.WaitGroup) {
+			wg.Wait()
+			glog.Info("Finish all tasks in CalculateWeightBetweenNeighbors")
+			close(c)
+			for _, cI := range isIteratorReady {
+				close(cI)
+			}
+		}(&wg)
+	}
+
+	return c
+}
+
+func putWeightBetweenChargeStationsIntoChannel(from nearbyStationsIterator, to nearbyStationsIterator, c chan WeightBetweenNeighbors, oc *osrmconnector.OSRMConnector) {
+	r, err := CalcWeightBetweenChargeStationsPair(from, to, oc)
+	if err != nil {
+		glog.Errorf("CalculateWeightBetweenNeighbors failed with error %v", err)
+	}
+	result := WeightBetweenNeighbors{
+		c:   r,
+		err: err,
+	}
+	c <- result
 }

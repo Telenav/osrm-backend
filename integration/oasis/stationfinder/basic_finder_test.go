@@ -8,192 +8,6 @@ import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 )
 
-var mockSearchResponse1 *nearbychargestation.Response = &nearbychargestation.Response{
-	Results: []*nearbychargestation.Result{
-		&nearbychargestation.Result{
-			ID: "station1",
-			Place: nearbychargestation.Place{
-				Address: []*nearbychargestation.Address{
-					&nearbychargestation.Address{
-						GeoCoordinate: nearbychargestation.Coordinate{
-							Latitude:  32.333,
-							Longitude: 122.333,
-						},
-						NavCoordinates: []*nearbychargestation.Coordinate{
-							&nearbychargestation.Coordinate{
-								Latitude:  32.333,
-								Longitude: 122.333,
-							},
-						},
-					},
-				},
-			},
-		},
-		&nearbychargestation.Result{
-			ID: "station2",
-			Place: nearbychargestation.Place{
-				Address: []*nearbychargestation.Address{
-					&nearbychargestation.Address{
-						GeoCoordinate: nearbychargestation.Coordinate{
-							Latitude:  -32.333,
-							Longitude: -122.333,
-						},
-						NavCoordinates: []*nearbychargestation.Coordinate{
-							&nearbychargestation.Coordinate{
-								Latitude:  -32.333,
-								Longitude: -122.333,
-							},
-						},
-					},
-				},
-			},
-		},
-		&nearbychargestation.Result{
-			ID: "station3",
-			Place: nearbychargestation.Place{
-				Address: []*nearbychargestation.Address{
-					&nearbychargestation.Address{
-						GeoCoordinate: nearbychargestation.Coordinate{
-							Latitude:  32.333,
-							Longitude: -122.333,
-						},
-						NavCoordinates: []*nearbychargestation.Coordinate{
-							&nearbychargestation.Coordinate{
-								Latitude:  32.333,
-								Longitude: -122.333,
-							},
-						},
-					},
-				},
-			},
-		},
-		&nearbychargestation.Result{
-			ID: "station4",
-			Place: nearbychargestation.Place{
-				Address: []*nearbychargestation.Address{
-					&nearbychargestation.Address{
-						GeoCoordinate: nearbychargestation.Coordinate{
-							Latitude:  -32.333,
-							Longitude: 122.333,
-						},
-						NavCoordinates: []*nearbychargestation.Coordinate{
-							&nearbychargestation.Coordinate{
-								Latitude:  -32.333,
-								Longitude: 122.333,
-							},
-						},
-					},
-				},
-			},
-		},
-	},
-}
-
-var mockSearchResponse2 *nearbychargestation.Response = &nearbychargestation.Response{
-	Results: []*nearbychargestation.Result{
-		&nearbychargestation.Result{
-			ID: "station1",
-			Place: nearbychargestation.Place{
-				Address: []*nearbychargestation.Address{
-					&nearbychargestation.Address{
-						GeoCoordinate: nearbychargestation.Coordinate{
-							Latitude:  32.333,
-							Longitude: 122.333,
-						},
-						NavCoordinates: []*nearbychargestation.Coordinate{
-							&nearbychargestation.Coordinate{
-								Latitude:  32.333,
-								Longitude: 122.333,
-							},
-						},
-					},
-				},
-			},
-		},
-		&nearbychargestation.Result{
-			ID: "station2",
-			Place: nearbychargestation.Place{
-				Address: []*nearbychargestation.Address{
-					&nearbychargestation.Address{
-						GeoCoordinate: nearbychargestation.Coordinate{
-							Latitude:  -32.333,
-							Longitude: -122.333,
-						},
-						NavCoordinates: []*nearbychargestation.Coordinate{
-							&nearbychargestation.Coordinate{
-								Latitude:  -32.333,
-								Longitude: -122.333,
-							},
-						},
-					},
-				},
-			},
-		},
-		&nearbychargestation.Result{
-			ID: "station5",
-			Place: nearbychargestation.Place{
-				Address: []*nearbychargestation.Address{
-					&nearbychargestation.Address{
-						GeoCoordinate: nearbychargestation.Coordinate{
-							Latitude:  -12.333,
-							Longitude: 122.333,
-						},
-						NavCoordinates: []*nearbychargestation.Coordinate{
-							&nearbychargestation.Coordinate{
-								Latitude:  -12.333,
-								Longitude: 122.333,
-							},
-						},
-					},
-				},
-			},
-		},
-	},
-}
-
-var mockSearchResponse3 *nearbychargestation.Response = &nearbychargestation.Response{
-	Results: []*nearbychargestation.Result{
-		&nearbychargestation.Result{
-			ID: "station6",
-			Place: nearbychargestation.Place{
-				Address: []*nearbychargestation.Address{
-					&nearbychargestation.Address{
-						GeoCoordinate: nearbychargestation.Coordinate{
-							Latitude:  30.333,
-							Longitude: 122.333,
-						},
-						NavCoordinates: []*nearbychargestation.Coordinate{
-							&nearbychargestation.Coordinate{
-								Latitude:  30.333,
-								Longitude: 122.333,
-							},
-						},
-					},
-				},
-			},
-		},
-		&nearbychargestation.Result{
-			ID: "station7",
-			Place: nearbychargestation.Place{
-				Address: []*nearbychargestation.Address{
-					&nearbychargestation.Address{
-						GeoCoordinate: nearbychargestation.Coordinate{
-							Latitude:  -10.333,
-							Longitude: 122.333,
-						},
-						NavCoordinates: []*nearbychargestation.Coordinate{
-							&nearbychargestation.Coordinate{
-								Latitude:  -10.333,
-								Longitude: 122.333,
-							},
-						},
-					},
-				},
-			},
-		},
-	},
-}
-
 var mockChargeStationInfo1 []ChargeStationInfo = []ChargeStationInfo{
 	ChargeStationInfo{
 		ID: "station1",
@@ -272,7 +86,7 @@ func TestBasicFinderCorrectness(t *testing.T) {
 		expect []ChargeStationInfo
 	}{
 		{
-			mockSearchResponse1.Results,
+			nearbychargestation.MockSearchResponse1.Results,
 			mockChargeStationInfo1,
 		},
 	}
@@ -309,7 +123,7 @@ func TestBasicFinderAsync(t *testing.T) {
 		expect    []ChargeStationInfo
 	}{
 		{
-			mockSearchResponse1.Results,
+			nearbychargestation.MockSearchResponse1.Results,
 			&sync.RWMutex{},
 			mockChargeStationInfo1,
 		},
