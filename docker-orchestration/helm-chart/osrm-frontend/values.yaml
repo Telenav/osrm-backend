@@ -18,7 +18,7 @@ osrm:
     targetBackend: http://osrm-backend:5000
     center: '42.303329,-83.234070'
     containerPort: 9966
-    exposePort: 9966
+    exposePort: 80
 
 service:
   type: LoadBalancer

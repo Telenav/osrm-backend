@@ -18,7 +18,7 @@ osrm:
     command: ["/bin/sh", "-c", "export LOG_FILE=/osrm-logs/$(date -u +%Y%m%dT%H%M%S)-${HOSTNAME}.log; /docker-entrypoint.sh routed_no_traffic_startup 2>&1 | while read LINE; do echo \"[$(date \"+%Y-%m-%dT%H:%M:%S %Z\")] ${LINE}\">>${LOG_FILE}; done;" ]
     mountPath: "/osrm-logs"
     containerPort: 5000
-    exposePort: 5000
+    exposePort: 80
     requests:
       memory: 35Gi
 
