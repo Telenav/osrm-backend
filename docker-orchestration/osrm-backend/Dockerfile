@@ -12,10 +12,13 @@ RUN echo "Building on ${GIT_COMMIT}" && \
   cd osrm-backend && \
   git checkout ${GIT_COMMIT}
   
+# Alternatively `-- -j` to enable parallel compiling.
+# It can not be enabled by default due to GitHub Actions runner's resource limitation.
+ARG CMAKE_BUILD_EXTRA_ARGS=
 RUN mkdir -p osrm-backend/build && \
   cd osrm-backend/build && \
   cmake .. -DENABLE_LTO=On && \
-  cmake --build . && \
+  cmake --build . ${CMAKE_BUILD_EXTRA_ARGS} && \
   cp /workspace/osrm-backend/build/osrm* /osrm-build/ && \
   cp -r /workspace/osrm-backend/profiles /osrm-build/
 
