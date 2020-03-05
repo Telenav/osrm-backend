@@ -11,10 +11,11 @@ type stationGraph struct {
 	stationName2Nodes map[string][]*node
 	stationID2Name    map[uint32]string
 	nodesCount        uint32
+	strategy          chargingstrategy.ChargingStrategyCreator
 }
 
 // NewStationGraph creates station graph from channel
-func NewStationGraph(c chan stationfinder.WeightBetweenNeighbors) *stationGraph {
+func NewStationGraph(c chan stationfinder.WeightBetweenNeighbors, currEnergyLevel, maxEnergyLevel float64, strategy chargingstrategy.ChargingStrategyCreator) *stationGraph {
 	sg := &stationGraph{
 		g: &graph{
 			startNodeID: invalidNodeID,
@@ -23,6 +24,7 @@ func NewStationGraph(c chan stationfinder.WeightBetweenNeighbors) *stationGraph 
 		stationName2Nodes: make(map[string][]*node),
 		stationID2Name:    make(map[uint32]string),
 		nodesCount:        0,
+		strategy:          strategy,
 	}
 
 	for item := range c {
@@ -31,9 +33,8 @@ func NewStationGraph(c chan stationfinder.WeightBetweenNeighbors) *stationGraph 
 			return nil
 		}
 
-		// build connectivity
 		for _, neighborInfo := range item.NeighborsInfo {
-			sg.buildNeighborInfoBetweenNodes(neighborInfo)
+			sg.buildNeighborInfoBetweenNodes(neighborInfo, currEnergyLevel, maxEnergyLevel)
 		}
 	}
 
@@ -41,9 +42,9 @@ func NewStationGraph(c chan stationfinder.WeightBetweenNeighbors) *stationGraph 
 
 }
 
-func (sg *stationGraph) buildNeighborInfoBetweenNodes(neighborInfo stationfinder.NeighborInfo) {
-	for _, fn := range sg.getChargeStationsNodes(neighborInfo.FromName, 0.0, 0.0) {
-		for _, tn := range sg.getChargeStationsNodes(neighborInfo.ToName, 0.0, 0.0) {
+func (sg *stationGraph) buildNeighborInfoBetweenNodes(neighborInfo stationfinder.NeighborInfo, currEnergyLevel, maxEnergyLevel float64) {
+	for _, fn := range sg.getChargeStationsNodes(neighborInfo.FromName, currEnergyLevel, maxEnergyLevel) {
+		for _, tn := range sg.getChargeStationsNodes(neighborInfo.ToName, currEnergyLevel, maxEnergyLevel) {
 			fn.neighbors = append(fn.neighbors, &neighbor{
 				targetNodeID: tn.id,
 				distance:     neighborInfo.Distance,
@@ -61,7 +62,7 @@ func (sg *stationGraph) getChargeStationsNodes(name string, currEnergyLevel, max
 			sg.constructEndNode(name)
 		} else {
 			var nodes []*node
-			for _, strategy := range chargingstrategy.CreateChargingStrategies(maxEnergyLevel) {
+			for _, strategy := range sg.strategy.CreateChargingStrategies() {
 				n := &node{
 					id: nodeID(sg.nodesCount),
 					chargeInfo: chargeInfo{
@@ -86,6 +87,10 @@ func (sg *stationGraph) isStart(name string) bool {
 
 func (sg *stationGraph) isEnd(name string) bool {
 	return name == stationfinder.DestLocationName
+}
+
+func (sg *stationGraph) getName(id nodeID) string {
+	return sg.stationID2Name[uint32(id)]
 }
 
 func (sg *stationGraph) constructStartNode(name string, currEnergyLevel float64) {
