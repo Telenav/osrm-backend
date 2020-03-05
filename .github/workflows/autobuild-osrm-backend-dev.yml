@@ -1,0 +1,43 @@
+name: Build Docker - osrm-backend-dev 
+
+on: 
+  push:
+    branches:
+    - '**'
+    paths:
+    - 'docker-orchestration/osrm-backend-dev/**'
+
+env:
+  IMAGE_NAME: osrm-backend-dev
+  DOCKERFILE_PATH: docker-orchestration/osrm-backend-dev/
+  DOCKERHUB_REGISTRY: telenavmap
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Set IMAGE_TAG env # env IMAGE_TAG=BranchName-CommitID-Timestamp
+      run: echo ::set-env name=IMAGE_TAG::$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev )-$(echo ${GITHUB_SHA} | cut -c 1-7)-$(date -u +"%Y%m%d")
+    - name: Environment Printer
+      uses: managedkaos/print-env@v1.0
+    - name: Append latest if master branches # env '${IMAGE_TAG},latest'
+      if: endsWith(github.ref, 'master')
+      run: echo ::set-env name=IMAGE_TAG::${IMAGE_TAG},latest
+    - name: Environment Printer
+      uses: managedkaos/print-env@v1.0
+
+    - name: Build & Publish to DockerHub
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: ${{ env.DOCKERHUB_REGISTRY }}/${{ env.IMAGE_NAME }}
+        username: ${{ secrets.TELENAVMAP_DOCKERHUB_USERNAME }}
+        password: ${{ secrets.TELENAVMAP_DOCKERHUB_TOKEN }}
+        snapshot: false
+        workdir: ${{ env.DOCKERFILE_PATH }}
+        tags: "${{ env.IMAGE_TAG }}"
+

@@ -1,4 +1,6 @@
 ## Open Source Routing Machine
+![Build Docker - osrm-backend-dev](https://github.com/Telenav/osrm-backend/workflows/Build%20Docker%20-%20osrm-backend-dev/badge.svg) ![Build Docker - osrm-backend](https://github.com/Telenav/osrm-backend/workflows/Build%20Docker%20-%20osrm-backend/badge.svg)    
+   
 
 | Linux / macOS | Windows | Code Coverage |
 | ------------- | ------- | ------------- |

@@ -5,14 +5,20 @@ FROM telenavmap/osrm-backend-dev as builder
 RUN mkdir -p /osrm-build
 WORKDIR /workspace/
 
-ARG BRANCH_NAME=master-telenav
-RUN echo "Building branch ${BRANCH_NAME}" && \
-  git clone -b ${BRANCH_NAME} https://github.com/Telenav/osrm-backend.git
+# specify a branch/tag/commit to checkout, master by default
+ARG GIT_COMMIT=master  
+RUN echo "Building on ${GIT_COMMIT}" && \
+  git clone -n https://github.com/Telenav/osrm-backend.git && \
+  cd osrm-backend && \
+  git checkout ${GIT_COMMIT}
   
+# Alternatively `-- -j` to enable parallel compiling.
+# It can not be enabled by default due to GitHub Actions runner's resource limitation.
+ARG CMAKE_BUILD_EXTRA_ARGS=
 RUN mkdir -p osrm-backend/build && \
   cd osrm-backend/build && \
   cmake .. -DENABLE_LTO=On && \
-  cmake --build . -- -j && \
+  cmake --build . ${CMAKE_BUILD_EXTRA_ARGS} && \
   cp /workspace/osrm-backend/build/osrm* /osrm-build/ && \
   cp -r /workspace/osrm-backend/profiles /osrm-build/
 
