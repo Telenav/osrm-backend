@@ -9,31 +9,34 @@ import (
 )
 
 /*
-Construct graph of
-start connects to staion 1, station 2, station 3
-station 1 connects to station 4, station 5
-station 2 connects to station 4, station 5
-station 3 connects to station 4, station 5
-station 4 connects to end
-station 5 connects to end
+Construct test graph of
+- start connects to staion 1, station 2, station 3
+- station 1 connects to station 4, station 5
+- station 2 connects to station 4, station 5
+- station 3 connects to station 4, station 5
+- station 4 connects to end
+- station 5 connects to end
 
-				   station 1
-		       /       \    \
-		      /         \    \
-		     /          _\_____station 4
-	        /          /  \     /        \
-	       /          /    \   /          \
+                    station 1
+               /       \    \
+              /         \    \
+             /          _\_____station 4
+            /          /  \     /        \
+           /          /    \   /          \
 start  -------   station 2  \ /           end
-		   \          \     / \          /
-		    \          \   /   \        /
-		     \          \_/_____station 5
-		      \          /     /
-		       \        /     /
-		            station 3
+           \          \     / \          /
+            \          \   /   \        /
+             \          \_/_____station 5
+              \          /     /
+               \        /     /
+                    station 3
 
 
-- Each charge station will generate 3 virtual node
-- In total there should be 17 nodes in the graph
+
+
+- Each charge station will generate 3 virtual node, represent for different charge strategy:
+  use different time to charge different amount of energy
+- In total there should be 17 nodes in graph
 	  + start node
 	  + end node
 	  + station 1 * 3 (node represent for with 60% of total energy, with 80% of total energy, with 100% of total energy, respectively)
@@ -48,8 +51,7 @@ start  -------   station 2  \ /           end
 	  + connection to station 5's node with 60% of total energy
 	  + connection to station 5's node with 80% of total energy
 	  + connection to station 5's node with 100% of total energy
-  In total, there are 3 different node's id whose name is "station 1"
-  Each of them will have 6 neighbor nodes
+  Each node with name `station1` will have different id, and each of them will have 6 neighbor nodes
 */
 func TestConstructStationGraph(t *testing.T) {
 	neighbors := [][]stationfinder.NeighborInfo{
@@ -179,7 +181,6 @@ func TestConstructStationGraph(t *testing.T) {
 	testConnectivity(t, graph, "station3", []string{"station4", "station5"}, neighbors, currEnergyLevel, maxEnergyLevel)
 	testConnectivity(t, graph, "station4", []string{stationfinder.DestLocationName}, neighbors, currEnergyLevel, maxEnergyLevel)
 	testConnectivity(t, graph, "station5", []string{stationfinder.DestLocationName}, neighbors, currEnergyLevel, maxEnergyLevel)
-
 }
 
 func testStart(t *testing.T, graph *stationGraph, currEnergyLevel, maxEnergyLevel float64) {
