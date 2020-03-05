@@ -151,9 +151,8 @@ func TestConstructStationGraph(t *testing.T) {
 
 	// generate channel contains neighbors information
 	// simulate real situation using different go-routine
-	var c chan stationfinder.WeightBetweenNeighbors
+	c := make(chan stationfinder.WeightBetweenNeighbors)
 	go func() {
-		defer close(c)
 		for _, n := range neighbors {
 			neighborsInfo := stationfinder.WeightBetweenNeighbors{
 				NeighborsInfo: n,
@@ -161,6 +160,7 @@ func TestConstructStationGraph(t *testing.T) {
 			}
 			c <- neighborsInfo
 		}
+		close(c)
 	}()
 
 	currEnergyLevel := 20.0

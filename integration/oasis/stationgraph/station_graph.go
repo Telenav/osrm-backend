@@ -39,7 +39,6 @@ func NewStationGraph(c chan stationfinder.WeightBetweenNeighbors, currEnergyLeve
 	}
 
 	return sg.constructGraph()
-
 }
 
 func (sg *stationGraph) buildNeighborInfoBetweenNodes(neighborInfo stationfinder.NeighborInfo, currEnergyLevel, maxEnergyLevel float64) {
@@ -135,8 +134,8 @@ func (sg *stationGraph) constructGraph() *stationGraph {
 	} else if sg.g.endNodeID == invalidNodeID {
 		glog.Error("Invalid nodeid generated for start node.\n")
 		return nil
-	} else if len(sg.g.nodes)-1 != int(sg.nodesCount) {
-		glog.Error("Invalid nodes generated, len(sg.g.nodes) is %d while sg.nodesCount is %d.\n", len(sg.g.nodes), sg.nodesCount)
+	} else if len(sg.g.nodes) != int(sg.nodesCount) {
+		glog.Errorf("Invalid nodes generated, len(sg.g.nodes) is %d while sg.nodesCount is %d.\n", len(sg.g.nodes), sg.nodesCount)
 		return nil
 	}
 
