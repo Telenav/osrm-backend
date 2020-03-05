@@ -1,11 +1,12 @@
 package chargingstrategy
 
-type FakeChargingStrategyCreator struct {
+type fakeChargingStrategyCreator struct {
 	maxEnergyLevel float64
 }
 
-func NewFakeChargingStrategyCreator(maxEnergyLevel float64) *FakeChargingStrategyCreator {
-	return &FakeChargingStrategyCreator{
+// NewFakeChargingStrategyCreator creates fake charging strategy
+func NewFakeChargingStrategyCreator(maxEnergyLevel float64) *fakeChargingStrategyCreator {
+	return &fakeChargingStrategyCreator{
 		maxEnergyLevel: maxEnergyLevel,
 	}
 }
@@ -14,7 +15,7 @@ func NewFakeChargingStrategyCreator(maxEnergyLevel float64) *FakeChargingStrateg
 // Initial implementation: 1 hour charge for 60% of max energy,
 //                         2 hour charge for 80%
 //                         4 hour charge for 100%
-func (f *FakeChargingStrategyCreator) CreateChargingStrategies() []ChargingStrategy {
+func (f *fakeChargingStrategyCreator) CreateChargingStrategies() []ChargingStrategy {
 
 	return []ChargingStrategy{
 		ChargingStrategy{
