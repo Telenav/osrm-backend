@@ -5,7 +5,7 @@ on:
     types: [created]
 
 env:
-  CMD_PATH: ./cmd/trafficproxy-cli
+  CMD_PATH: ./integration/cmd/trafficproxy-cli
 
 
 jobs:

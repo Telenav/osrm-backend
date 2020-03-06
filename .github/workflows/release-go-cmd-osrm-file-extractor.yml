@@ -5,7 +5,7 @@ on:
     types: [created]
 
 env:
-  CMD_PATH: ./cmd/osrm-file-extractor
+  CMD_PATH: ./integration/cmd/osrm-file-extractor
 
 
 jobs:
