@@ -1,0 +1,71 @@
+name: Release cmd/osrm-file-extractor
+
+on: 
+  release:
+    types: [created]
+
+env:
+  CMD_PATH: ./cmd/trafficproxy-cli
+
+
+jobs:
+  release-linux-386:
+    name: release linux/386
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: build and release
+      uses: shoukoo/golang-pipeline/go1.13/release@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GOOS: linux
+        GOARCH: "386"
+        PROJECT_PATH: "${{ env.CMD_PATH }}"
+  release-linux-amd64:
+    name: release linux/amd64
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: build and release
+      uses: shoukoo/golang-pipeline/go1.13/release@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GOOS: linux
+        GOARCH: amd64
+        PROJECT_PATH: "${{ env.CMD_PATH }}"
+  release-darwin-amd64:
+    name: release darwin/amd64
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: build and release
+      uses: shoukoo/golang-pipeline/go1.13/release@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GOOS: darwin
+        GOARCH: amd64
+        PROJECT_PATH: "${{ env.CMD_PATH }}"
+  release-windows-386:
+    name: release windows/386
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: build and release
+      uses: shoukoo/golang-pipeline/go1.13/release@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GOOS: windows
+        GOARCH: "386"
+        PROJECT_PATH: "${{ env.CMD_PATH }}"
+  release-windows-amd64:
+    name: release windows/amd64
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: build and release
+      uses: shoukoo/golang-pipeline/go1.13/release@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GOOS: windows
+        GOARCH: amd64
+        PROJECT_PATH: "${{ env.CMD_PATH }}"
