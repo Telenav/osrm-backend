@@ -1,11 +1,11 @@
-name: Release cmd/osrm-files-extractor
+name: Release cmd/osrm-file-extractor
 
 on: 
   release:
     types: [created]
 
 env:
-  CMD_PATH: ./integration/cmd/osrm-files-extractor
+  CMD_PATH: ./integration/cmd/osrm-file-extractor
 
 
 jobs:
