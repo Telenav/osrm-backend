@@ -1,7 +1,7 @@
 package stationfinder
 
-// DestLocationName defines name for dest
-const DestLocationName string = "dest_location"
+// DestLocationID defines name for dest
+const DestLocationID string = "dest_location"
 
 type destIterator struct {
 	location *StationCoordinate
@@ -19,7 +19,7 @@ func (di *destIterator) iterateNearbyStations() <-chan ChargeStationInfo {
 	go func() {
 		defer close(c)
 		station := ChargeStationInfo{
-			ID:       DestLocationName,
+			ID:       DestLocationID,
 			Location: *di.location,
 		}
 		c <- station

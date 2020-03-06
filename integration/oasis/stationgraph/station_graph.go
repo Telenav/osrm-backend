@@ -7,11 +7,11 @@ import (
 )
 
 type stationGraph struct {
-	g                 *graph
-	stationName2Nodes map[string][]*node
-	stationID2Name    map[uint32]string
-	nodesCount        uint32
-	strategy          chargingstrategy.ChargingStrategyCreator
+	g               *graph
+	stationID2Nodes map[string][]*node
+	num2StationID   map[uint32]string
+	stationsCount   uint32
+	strategy        chargingstrategy.ChargingStrategyCreator
 }
 
 // NewStationGraph creates station graph from channel
@@ -21,10 +21,10 @@ func NewStationGraph(c chan stationfinder.WeightBetweenNeighbors, currEnergyLeve
 			startNodeID: invalidNodeID,
 			endNodeID:   invalidNodeID,
 		},
-		stationName2Nodes: make(map[string][]*node),
-		stationID2Name:    make(map[uint32]string),
-		nodesCount:        0,
-		strategy:          strategy,
+		stationID2Nodes: make(map[string][]*node),
+		num2StationID:   make(map[uint32]string),
+		stationsCount:   0,
+		strategy:        strategy,
 	}
 
 	for item := range c {
@@ -42,10 +42,10 @@ func NewStationGraph(c chan stationfinder.WeightBetweenNeighbors, currEnergyLeve
 }
 
 func (sg *stationGraph) buildNeighborInfoBetweenNodes(neighborInfo stationfinder.NeighborInfo, currEnergyLevel, maxEnergyLevel float64) {
-	for _, fn := range sg.getChargeStationsNodes(neighborInfo.FromName, currEnergyLevel, maxEnergyLevel) {
-		for _, tn := range sg.getChargeStationsNodes(neighborInfo.ToName, currEnergyLevel, maxEnergyLevel) {
-			fn.neighbors = append(fn.neighbors, &neighbor{
-				targetNodeID: tn.id,
+	for _, fromNode := range sg.getChargeStationsNodes(neighborInfo.FromID, currEnergyLevel, maxEnergyLevel) {
+		for _, toNode := range sg.getChargeStationsNodes(neighborInfo.ToID, currEnergyLevel, maxEnergyLevel) {
+			fromNode.neighbors = append(fromNode.neighbors, &neighbor{
+				targetNodeID: toNode.id,
 				distance:     neighborInfo.Distance,
 				duration:     neighborInfo.Duration,
 			})
@@ -53,68 +53,68 @@ func (sg *stationGraph) buildNeighborInfoBetweenNodes(neighborInfo stationfinder
 	}
 }
 
-func (sg *stationGraph) getChargeStationsNodes(name string, currEnergyLevel, maxEnergyLevel float64) []*node {
-	if _, ok := sg.stationName2Nodes[name]; !ok {
-		if sg.isStart(name) {
-			sg.constructStartNode(name, currEnergyLevel)
-		} else if sg.isEnd(name) {
-			sg.constructEndNode(name)
+func (sg *stationGraph) getChargeStationsNodes(id string, currEnergyLevel, maxEnergyLevel float64) []*node {
+	if _, ok := sg.stationID2Nodes[id]; !ok {
+		if sg.isStart(id) {
+			sg.constructStartNode(id, currEnergyLevel)
+		} else if sg.isEnd(id) {
+			sg.constructEndNode(id)
 		} else {
 			var nodes []*node
 			for _, strategy := range sg.strategy.CreateChargingStrategies() {
 				n := &node{
-					id: nodeID(sg.nodesCount),
+					id: nodeID(sg.stationsCount),
 					chargeInfo: chargeInfo{
 						chargeTime:   strategy.ChargingTime,
 						chargeEnergy: strategy.ChargingEnergy,
 					},
 				}
 				nodes = append(nodes, n)
-				sg.stationID2Name[sg.nodesCount] = name
-				sg.nodesCount += 1
+				sg.num2StationID[sg.stationsCount] = id
+				sg.stationsCount += 1
 			}
 
-			sg.stationName2Nodes[name] = nodes
+			sg.stationID2Nodes[id] = nodes
 		}
 	}
-	return sg.stationName2Nodes[name]
+	return sg.stationID2Nodes[id]
 }
 
-func (sg *stationGraph) isStart(name string) bool {
-	return name == stationfinder.OrigLocationName
+func (sg *stationGraph) isStart(id string) bool {
+	return id == stationfinder.OrigLocationID
 }
 
-func (sg *stationGraph) isEnd(name string) bool {
-	return name == stationfinder.DestLocationName
+func (sg *stationGraph) isEnd(id string) bool {
+	return id == stationfinder.DestLocationID
 }
 
-func (sg *stationGraph) getName(id nodeID) string {
-	return sg.stationID2Name[uint32(id)]
+func (sg *stationGraph) getStationID(id nodeID) string {
+	return sg.num2StationID[uint32(id)]
 }
 
-func (sg *stationGraph) constructStartNode(name string, currEnergyLevel float64) {
+func (sg *stationGraph) constructStartNode(id string, currEnergyLevel float64) {
 
 	n := &node{
-		id:         nodeID(sg.nodesCount),
+		id:         nodeID(sg.stationsCount),
 		chargeInfo: chargeInfo{arrivalEnergy: currEnergyLevel},
 	}
-	sg.stationName2Nodes[name] = []*node{n}
-	sg.stationID2Name[sg.nodesCount] = name
-	sg.nodesCount += 1
+	sg.stationID2Nodes[id] = []*node{n}
+	sg.num2StationID[sg.stationsCount] = id
+	sg.stationsCount += 1
 }
 
-func (sg *stationGraph) constructEndNode(name string) {
+func (sg *stationGraph) constructEndNode(id string) {
 
 	n := &node{
-		id: nodeID(sg.nodesCount),
+		id: nodeID(sg.stationsCount),
 	}
-	sg.stationName2Nodes[name] = []*node{n}
-	sg.stationID2Name[sg.nodesCount] = name
-	sg.nodesCount += 1
+	sg.stationID2Nodes[id] = []*node{n}
+	sg.num2StationID[sg.stationsCount] = id
+	sg.stationsCount += 1
 }
 
 func (sg *stationGraph) constructGraph() *stationGraph {
-	for k, v := range sg.stationName2Nodes {
+	for k, v := range sg.stationID2Nodes {
 		if sg.isStart(k) {
 			sg.g.startNodeID = v[0].id
 		}
@@ -134,8 +134,8 @@ func (sg *stationGraph) constructGraph() *stationGraph {
 	} else if sg.g.endNodeID == invalidNodeID {
 		glog.Error("Invalid nodeid generated for start node.\n")
 		return nil
-	} else if len(sg.g.nodes) != int(sg.nodesCount) {
-		glog.Errorf("Invalid nodes generated, len(sg.g.nodes) is %d while sg.nodesCount is %d.\n", len(sg.g.nodes), sg.nodesCount)
+	} else if len(sg.g.nodes) != int(sg.stationsCount) {
+		glog.Errorf("Invalid nodes generated, len(sg.g.nodes) is %d while sg.stationsCount is %d.\n", len(sg.g.nodes), sg.stationsCount)
 		return nil
 	}
 

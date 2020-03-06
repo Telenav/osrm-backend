@@ -1,6 +1,6 @@
 package chargingstrategy
 
-// ChargingStrategy contains charging realted information
+// ChargingStrategy contains charging related information
 type ChargingStrategy struct {
 	ChargingTime   float64
 	ChargingEnergy float64

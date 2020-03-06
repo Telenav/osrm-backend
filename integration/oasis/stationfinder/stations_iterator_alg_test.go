@@ -87,64 +87,64 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 	}
 	expect := []NeighborInfo{
 		NeighborInfo{
-			FromName: "station1",
-			ToName:   "station6",
+			FromID: "station1",
+			ToID:   "station6",
 			Cost: Cost{
 				Duration: 2,
 				Distance: 2,
 			},
 		},
 		NeighborInfo{
-			FromName: "station1",
-			ToName:   "station7",
+			FromID: "station1",
+			ToID:   "station7",
 			Cost: Cost{
 				Duration: 3,
 				Distance: 3,
 			},
 		},
 		NeighborInfo{
-			FromName: "station2",
-			ToName:   "station6",
+			FromID: "station2",
+			ToID:   "station6",
 			Cost: Cost{
 				Duration: 4,
 				Distance: 4,
 			},
 		},
 		NeighborInfo{
-			FromName: "station2",
-			ToName:   "station7",
+			FromID: "station2",
+			ToID:   "station7",
 			Cost: Cost{
 				Duration: 5,
 				Distance: 5,
 			},
 		},
 		NeighborInfo{
-			FromName: "station3",
-			ToName:   "station6",
+			FromID: "station3",
+			ToID:   "station6",
 			Cost: Cost{
 				Duration: 6,
 				Distance: 6,
 			},
 		},
 		NeighborInfo{
-			FromName: "station3",
-			ToName:   "station7",
+			FromID: "station3",
+			ToID:   "station7",
 			Cost: Cost{
 				Duration: 7,
 				Distance: 7,
 			},
 		},
 		NeighborInfo{
-			FromName: "station4",
-			ToName:   "station6",
+			FromID: "station4",
+			ToID:   "station6",
 			Cost: Cost{
 				Duration: 8,
 				Distance: 8,
 			},
 		},
 		NeighborInfo{
-			FromName: "station4",
-			ToName:   "station7",
+			FromID: "station4",
+			ToID:   "station7",
 			Cost: Cost{
 				Duration: 9,
 				Distance: 9,
@@ -218,32 +218,32 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 
 	expect_arr0 := []NeighborInfo{
 		NeighborInfo{
-			FromName: "orig_location",
-			ToName:   "station1",
+			FromID: "orig_location",
+			ToID:   "station1",
 			Cost: Cost{
 				Duration: 22.2,
 				Distance: 22.2,
 			},
 		},
 		NeighborInfo{
-			FromName: "orig_location",
-			ToName:   "station2",
+			FromID: "orig_location",
+			ToID:   "station2",
 			Cost: Cost{
 				Duration: 11.1,
 				Distance: 11.1,
 			},
 		},
 		NeighborInfo{
-			FromName: "orig_location",
-			ToName:   "station3",
+			FromID: "orig_location",
+			ToID:   "station3",
 			Cost: Cost{
 				Duration: 33.3,
 				Distance: 33.3,
 			},
 		},
 		NeighborInfo{
-			FromName: "orig_location",
-			ToName:   "station4",
+			FromID: "orig_location",
+			ToID:   "station4",
 			Cost: Cost{
 				Duration: 44.4,
 				Distance: 44.4,
@@ -253,64 +253,64 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 
 	expect_arr1 := []NeighborInfo{
 		NeighborInfo{
-			FromName: "station1",
-			ToName:   "station6",
+			FromID: "station1",
+			ToID:   "station6",
 			Cost: Cost{
 				Duration: 2,
 				Distance: 2,
 			},
 		},
 		NeighborInfo{
-			FromName: "station1",
-			ToName:   "station7",
+			FromID: "station1",
+			ToID:   "station7",
 			Cost: Cost{
 				Duration: 3,
 				Distance: 3,
 			},
 		},
 		NeighborInfo{
-			FromName: "station2",
-			ToName:   "station6",
+			FromID: "station2",
+			ToID:   "station6",
 			Cost: Cost{
 				Duration: 4,
 				Distance: 4,
 			},
 		},
 		NeighborInfo{
-			FromName: "station2",
-			ToName:   "station7",
+			FromID: "station2",
+			ToID:   "station7",
 			Cost: Cost{
 				Duration: 5,
 				Distance: 5,
 			},
 		},
 		NeighborInfo{
-			FromName: "station3",
-			ToName:   "station6",
+			FromID: "station3",
+			ToID:   "station6",
 			Cost: Cost{
 				Duration: 6,
 				Distance: 6,
 			},
 		},
 		NeighborInfo{
-			FromName: "station3",
-			ToName:   "station7",
+			FromID: "station3",
+			ToID:   "station7",
 			Cost: Cost{
 				Duration: 7,
 				Distance: 7,
 			},
 		},
 		NeighborInfo{
-			FromName: "station4",
-			ToName:   "station6",
+			FromID: "station4",
+			ToID:   "station6",
 			Cost: Cost{
 				Duration: 8,
 				Distance: 8,
 			},
 		},
 		NeighborInfo{
-			FromName: "station4",
-			ToName:   "station7",
+			FromID: "station4",
+			ToID:   "station7",
 			Cost: Cost{
 				Duration: 9,
 				Distance: 9,
@@ -320,16 +320,16 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 
 	expect_arr2 := []NeighborInfo{
 		NeighborInfo{
-			FromName: "station6",
-			ToName:   "dest_location",
+			FromID: "station6",
+			ToID:   "dest_location",
 			Cost: Cost{
 				Duration: 66.6,
 				Distance: 66.6,
 			},
 		},
 		NeighborInfo{
-			FromName: "station7",
-			ToName:   "dest_location",
+			FromID: "station7",
+			ToID:   "dest_location",
 			Cost: Cost{
 				Duration: 11.1,
 				Distance: 11.1,
