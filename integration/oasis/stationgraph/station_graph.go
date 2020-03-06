@@ -9,9 +9,11 @@ import (
 type stationGraph struct {
 	g               *graph
 	stationID2Nodes map[string][]*node
-	num2StationID   map[uint32]string
-	stationsCount   uint32
-	strategy        chargingstrategy.ChargingStrategyCreator
+	num2StationID   map[uint32]string // from number to original stationID
+	// stationID is converted to numbers(0, 1, 2 ...) based on visit sequence
+
+	stationsCount uint32
+	strategy      chargingstrategy.ChargingStrategyCreator
 }
 
 // NewStationGraph creates station graph from channel
