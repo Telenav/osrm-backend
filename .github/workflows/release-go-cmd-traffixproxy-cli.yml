@@ -20,7 +20,9 @@ jobs:
         exclude:  
           # windows/386 and darwin/386 seems useless 
           - goarch: "386"
-            goos: [windows, darwin]
+            goos: windows 
+          - goarch: "386"
+            goos: darwin 
     steps:
     - uses: actions/checkout@v2
     - uses: wangyoucao577/go-release-action@master
