@@ -17,6 +17,9 @@ jobs:
       matrix:
         goos: [linux, windows, darwin]
         goarch: ["386", amd64]
+      exclude:  # windows/386 and darwin/386 seems useless 
+      - goarch: "386"
+        goos: [windows, darwin]
     steps:
     - uses: actions/checkout@v2
     - uses: wangyoucao577/go-release-action@master
