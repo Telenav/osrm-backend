@@ -60,7 +60,7 @@ func TestFakeChargingStrategyCreator(t *testing.T) {
 
 	for _, c := range cases {
 		var actualResult []ChargingCost
-		strategy := NewFakeChargingStrategyCreator(c.arrivalEnergyLevel, c.maxEnergyLevel)
+		strategy := NewFakeChargingStrategyCreator(c.maxEnergyLevel)
 		for _, state := range strategy.CreateChargingStrategies() {
 			actualResult = append(actualResult, strategy.EvaluateCost(c.arrivalEnergyLevel, state))
 		}

@@ -5,30 +5,28 @@ import (
 )
 
 type fakeChargingStrategyCreator struct {
-	arrivalEnergyLevel float64
-	maxEnergyLevel     float64
+	maxEnergyLevel float64
 }
 
 // NewFakeChargingStrategyCreator creates fake charging strategy
-func NewFakeChargingStrategyCreator(arrivalEnergyLevel, maxEnergyLevel float64) *fakeChargingStrategyCreator {
+func NewFakeChargingStrategyCreator(maxEnergyLevel float64) *fakeChargingStrategyCreator {
 	return &fakeChargingStrategyCreator{
-		arrivalEnergyLevel: arrivalEnergyLevel,
-		maxEnergyLevel:     maxEnergyLevel,
+		maxEnergyLevel: maxEnergyLevel,
 	}
 }
 
 // @todo:
 // - Influence of returning candidate with no charge time and additional energy
 // CreateChargingStrategies returns different charging strategy
-func (f *fakeChargingStrategyCreator) CreateChargingStrategies() []ChargingStrategy {
-	return []ChargingStrategy{
-		ChargingStrategy{
+func (f *fakeChargingStrategyCreator) CreateChargingStrategies() []ChargingStatus {
+	return []ChargingStatus{
+		ChargingStatus{
 			ChargingEnergy: f.maxEnergyLevel * 0.6,
 		},
-		ChargingStrategy{
+		ChargingStatus{
 			ChargingEnergy: f.maxEnergyLevel * 0.8,
 		},
-		ChargingStrategy{
+		ChargingStatus{
 			ChargingEnergy: f.maxEnergyLevel,
 		},
 	}
@@ -39,7 +37,7 @@ func (f *fakeChargingStrategyCreator) CreateChargingStrategies() []ChargingStrat
 //                    1 hour charge to 60% of max energy
 //                    2 hour charge to 80%, means from 60% ~ 80% need 1 hour
 //                    4 hour charge to 100%, means from 80% ~ 100% need 2 hours
-func (f *fakeChargingStrategyCreator) EvaluateCost(arrivalEnergy float64, targetState ChargingStrategy) ChargingCost {
+func (f *fakeChargingStrategyCreator) EvaluateCost(arrivalEnergy float64, targetState ChargingStatus) ChargingCost {
 	sixtyPercentOfMaxEnergy := f.maxEnergyLevel * 0.6
 	eightyPercentOfMaxEnergy := f.maxEnergyLevel * 0.8
 	noNeedCharge := ChargingCost{

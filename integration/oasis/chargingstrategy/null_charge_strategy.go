@@ -8,10 +8,10 @@ func NewNullChargeStrategy() *nullChargeStrategy {
 	return &nullChargeStrategy{}
 }
 
-func (f *nullChargeStrategy) CreateChargingStrategies() []ChargingStrategy {
-	return []ChargingStrategy{}
+func (f *nullChargeStrategy) CreateChargingStrategies() []ChargingStatus {
+	return []ChargingStatus{}
 }
 
-func (f *nullChargeStrategy) EvaluateCost(arrivalEnergy float64, targetState ChargingStrategy) ChargingCost {
+func (f *nullChargeStrategy) EvaluateCost(arrivalEnergy float64, targetState ChargingStatus) ChargingCost {
 	return ChargingCost{}
 }

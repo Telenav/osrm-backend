@@ -52,7 +52,7 @@ func (n *node) calcChargeTime(prev *node, distance float64, strategy chargingstr
 	if arrivalEnergy < 0 {
 		glog.Fatalf("Before updateNode should check isLocationReachable() prev.arrivalEnergy=%#v distance=%#v", prev.arrivalEnergy, distance)
 	}
-	return strategy.EvaluateCost(arrivalEnergy, chargingstrategy.ChargingStrategy{ChargingEnergy: n.chargeEnergy}).Duration
+	return strategy.EvaluateCost(arrivalEnergy, chargingstrategy.ChargingStatus{ChargingEnergy: n.chargeEnergy}).Duration
 }
 
 func (n *node) updateChargingTime(chargingTime float64) {

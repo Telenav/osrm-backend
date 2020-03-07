@@ -259,7 +259,7 @@ func TestConstructStationGraph(t *testing.T) {
 	currEnergyLevel := 0.0
 	maxEnergyLevel := 50.0
 	graph := NewStationGraph(c, currEnergyLevel, maxEnergyLevel,
-		chargingstrategy.NewFakeChargingStrategyCreator(currEnergyLevel, maxEnergyLevel))
+		chargingstrategy.NewFakeChargingStrategyCreator(maxEnergyLevel))
 	if graph == nil {
 		t.Errorf("create Station graph failed, expect none-empty graph but result is empty")
 	}
@@ -453,7 +453,7 @@ func TestGenerateChargeSolutions1(t *testing.T) {
 	currEnergyLevel := 20.0
 	maxEnergyLevel := 50.0
 	graph := NewStationGraph(c, currEnergyLevel, maxEnergyLevel,
-		chargingstrategy.NewFakeChargingStrategyCreator(currEnergyLevel, maxEnergyLevel))
+		chargingstrategy.NewFakeChargingStrategyCreator(maxEnergyLevel))
 	if graph == nil {
 		t.Error("create Station graph failed, expect none-empty graph but result is empty")
 	}
