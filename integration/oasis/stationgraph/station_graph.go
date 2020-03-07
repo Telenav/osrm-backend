@@ -67,7 +67,6 @@ func (sg *stationGraph) getChargeStationsNodes(id string, currEnergyLevel, maxEn
 				n := &node{
 					id: nodeID(sg.stationsCount),
 					chargeInfo: chargeInfo{
-						chargeTime:   strategy.ChargingTime,
 						chargeEnergy: strategy.ChargingEnergy,
 					},
 				}
