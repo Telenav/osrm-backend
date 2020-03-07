@@ -147,8 +147,12 @@ func (sg *stationGraph) getStationID(id nodeID) string {
 func (sg *stationGraph) constructStartNode(id string, location stationfinder.StationCoordinate, currEnergyLevel float64) {
 
 	n := &node{
-		id:         nodeID(sg.stationsCount),
-		chargeInfo: chargeInfo{arrivalEnergy: currEnergyLevel},
+		id: nodeID(sg.stationsCount),
+		chargeInfo: chargeInfo{
+			arrivalEnergy: currEnergyLevel,
+			chargeTime:    0.0,
+			chargeEnergy:  currEnergyLevel,
+		},
 		locationInfo: locationInfo{
 			lat: location.Lat,
 			lon: location.Lon,

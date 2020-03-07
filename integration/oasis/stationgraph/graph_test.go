@@ -690,7 +690,7 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 16,
-							chargeEnergy:  0,
+							chargeEnergy:  16,
 						},
 					},
 					&node{

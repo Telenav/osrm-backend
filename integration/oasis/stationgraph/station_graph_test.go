@@ -3,9 +3,11 @@ package stationgraph
 import (
 	"fmt"
 	"math"
+	"reflect"
 	"testing"
 
 	"github.com/Telenav/osrm-backend/integration/oasis/chargingstrategy"
+	"github.com/Telenav/osrm-backend/integration/oasis/solutionformat"
 	"github.com/Telenav/osrm-backend/integration/oasis/stationfinder"
 )
 
@@ -35,9 +37,9 @@ start  -------   station 2  \ /           end
 
 
 
-- Each charge station will generate 3 virtual node, represent for different charge strategy:
-  use different time to charge different amount of energy
-- In total there should be 17 nodes in graph
+- Each charge station will try to generate up to 3 virtual node based on fakechargestrategy,
+  each node represent for situation of time spend in charging and get to different energy level
+- In total there could be 17 nodes in graph
 	  + start node
 	  + end node
 	  + station 1 * 3 (node represent for with 60% of total energy, with 80% of total energy, with 100% of total energy, respectively)
@@ -254,7 +256,7 @@ func TestConstructStationGraph(t *testing.T) {
 		close(c)
 	}()
 
-	currEnergyLevel := 20.0
+	currEnergyLevel := 0.0
 	maxEnergyLevel := 50.0
 	graph := NewStationGraph(c, currEnergyLevel, maxEnergyLevel,
 		chargingstrategy.NewFakeChargingStrategyCreator(currEnergyLevel, maxEnergyLevel))
@@ -379,24 +381,6 @@ func testConnectivity(t *testing.T, graph *stationGraph, from string, fromLocati
 	tos []string, mockArray [][]stationfinder.NeighborInfo, currEnergyLevel, maxEnergyLevel float64) {
 	fns := graph.getChargeStationsNodes(from, stationfinder.StationCoordinate{}, 0.0, 0.0)
 
-	// if len(fns) != 3 {
-	// 	t.Errorf("incorrect node generated for %s expect 3 nodes but got %d", from, len(fns))
-	// }
-
-	fmt.Printf("+++fns = %#v\n", fns[0])
-
-	// if !floatEquals(fns[0].arrivalEnergy, 0.0) ||
-	// 	!floatEquals(fns[0].chargeEnergy, maxEnergyLevel*0.6) ||
-	// 	!floatEquals(fns[0].chargeTime, 3600) ||
-	// 	!floatEquals(fns[1].arrivalEnergy, 0.0) ||
-	// 	!floatEquals(fns[1].chargeEnergy, maxEnergyLevel*0.8) ||
-	// 	!floatEquals(fns[1].chargeTime, 7200) ||
-	// 	!floatEquals(fns[2].arrivalEnergy, 0.0) ||
-	// 	!floatEquals(fns[2].chargeEnergy, maxEnergyLevel) ||
-	// 	!floatEquals(fns[2].chargeTime, 14400) {
-	// 	t.Errorf("incorrect charge information generated for node %s", from)
-	// }
-
 	for _, fromNode := range fns {
 		if !floatEquals(fromNode.locationInfo.lat, fromLocation.lat) ||
 			!floatEquals(fromNode.locationInfo.lon, fromLocation.lon) {
@@ -487,49 +471,49 @@ func TestGenerateChargeSolutions1(t *testing.T) {
 		t.Errorf("Incorrect distance calculated for fakeGraph1 expect 58.89 but got %#v.\n", solution.Distance)
 	}
 
-	// // 10858.8 = 11.1 + 3600(60% charge) + 14.4 + 7200(80% charge) + 33.3
-	// if !floatEquals(solution.Duration, 10858.8) {
-	// 	t.Errorf("Incorrect duration calculated for fakeGraph1 expect 10858.8 but got %#v.\n", solution.Duration)
-	// }
+	// 7918.8 = 11.1 + 2532(60% charge) + 14.4 + 5328(80% charge) + 33.3
+	if !floatEquals(solution.Duration, 7918.8) {
+		t.Errorf("Incorrect duration calculated for fakeGraph1 expect 10858.8 but got %#v.\n", solution.Duration)
+	}
 
-	// // 6.7 = 40 - 33.3
-	// if !floatEquals(solution.RemainingRage, 6.7) {
-	// 	t.Errorf("Incorrect duration calculated for fakeGraph1 expect 10858.8 but got %#v.\n", solution.RemainingRage)
-	// }
+	// 6.7 = 40 - 33.3
+	if !floatEquals(solution.RemainingRage, 6.7) {
+		t.Errorf("Incorrect duration calculated for fakeGraph1 expect 10858.8 but got %#v.\n", solution.RemainingRage)
+	}
 
-	// if len(solution.ChargeStations) != 2 {
-	// 	t.Errorf("Expect to have 2 charge stations for fakeGraph1 but got %d.\n", len(solution.ChargeStations))
-	// }
+	if len(solution.ChargeStations) != 2 {
+		t.Errorf("Expect to have 2 charge stations for fakeGraph1 but got %d.\n", len(solution.ChargeStations))
+	}
 
-	// expectStation1 := &solutionformat.ChargeStation{
-	// 	Location: solutionformat.Location{
-	// 		Lat: 2.2,
-	// 		Lon: 2.2,
-	// 	},
-	// 	StationID:     "station2",
-	// 	ArrivalEnergy: 8.9,
-	// 	WaitTime:      0,
-	// 	ChargeTime:    3600,
-	// 	ChargeRange:   30,
-	// }
-	// if !reflect.DeepEqual(solution.ChargeStations[0], expectStation1) {
-	// 	t.Errorf("Expect first charge stations info for fakeGraph1 is %#v but got %#v\n", expectStation1, solution.ChargeStations[0])
-	// }
+	expectStation1 := &solutionformat.ChargeStation{
+		Location: solutionformat.Location{
+			Lat: 2.2,
+			Lon: 2.2,
+		},
+		StationID:     "station2",
+		ArrivalEnergy: 8.9,
+		WaitTime:      0,
+		ChargeTime:    2532,
+		ChargeRange:   30,
+	}
+	if !reflect.DeepEqual(solution.ChargeStations[0], expectStation1) {
+		t.Errorf("Expect first charge stations info for fakeGraph1 is %#v but got %#v\n", expectStation1, solution.ChargeStations[0])
+	}
 
-	// expectStation2 := &solutionformat.ChargeStation{
-	// 	Location: solutionformat.Location{
-	// 		Lat: 5.5,
-	// 		Lon: 5.5,
-	// 	},
-	// 	StationID:     "station5",
-	// 	ArrivalEnergy: 15.6,
-	// 	WaitTime:      0,
-	// 	ChargeTime:    7200,
-	// 	ChargeRange:   40,
-	// }
-	// if !reflect.DeepEqual(solution.ChargeStations[1], expectStation2) {
-	// 	t.Errorf("Expect second charge stations info for fakeGraph1 is %#v but got %#v\n", expectStation2, solution.ChargeStations[1])
-	// }
+	expectStation2 := &solutionformat.ChargeStation{
+		Location: solutionformat.Location{
+			Lat: 5.5,
+			Lon: 5.5,
+		},
+		StationID:     "station5",
+		ArrivalEnergy: 15.6,
+		WaitTime:      0,
+		ChargeTime:    5328,
+		ChargeRange:   40,
+	}
+	if !reflect.DeepEqual(solution.ChargeStations[1], expectStation2) {
+		t.Errorf("Expect second charge stations info for fakeGraph1 is %#v but got %#v\n", expectStation2, solution.ChargeStations[1])
+	}
 
 }
 

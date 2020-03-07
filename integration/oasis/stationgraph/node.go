@@ -40,15 +40,17 @@ func newNode() *node {
 	}
 }
 
+// @todo: change name to: isDistanceReachable
+// Each charge station node will charge to a energy level, this function is used to test whether target node is reachable
 func (n *node) isLocationReachable(distance float64) bool {
 	return n.chargeEnergy > distance
-	// return (n.arrivalEnergy + n.chargeEnergy) > distance
 }
 
+// @todo: update comment: previous final status to current
 func (n *node) calcChargeTime(prev *node, distance float64, strategy chargingstrategy.ChargingStrategyCreator) float64 {
-	arrivalEnergy := prev.arrivalEnergy - distance
+	arrivalEnergy := prev.chargeEnergy - distance
 	if arrivalEnergy < 0 {
-		glog.Fatal("Before updateNode should check isLocationReachable()")
+		glog.Fatalf("Before updateNode should check isLocationReachable() prev.arrivalEnergy=%#v distance=%#v", prev.arrivalEnergy, distance)
 	}
 	return strategy.EvaluateCost(arrivalEnergy, chargingstrategy.ChargingStrategy{ChargingEnergy: n.chargeEnergy}).Duration
 }
@@ -59,8 +61,8 @@ func (n *node) updateChargingTime(chargingTime float64) {
 }
 
 func (n *node) updateArrivalEnergy(prev *node, distance float64) {
-	n.arrivalEnergy = prev.arrivalEnergy - distance
+	n.arrivalEnergy = prev.chargeEnergy - distance
 	if n.arrivalEnergy < 0 {
-		glog.Fatal("Before updateNode should check isLocationReachable()")
+		glog.Fatalf("Before updateNode should check isLocationReachable() prev.arrivalEnergy=%#v distance=%#v", prev.arrivalEnergy, distance)
 	}
 }
