@@ -265,18 +265,6 @@ func testConnectivity(t *testing.T, graph *stationGraph, from string, tos []stri
 		t.Errorf("incorrect node generated for %s expect 3 nodes but got %d", from, len(fns))
 	}
 
-	if !floatEquals(fns[0].arrivalEnergy, 0.0) ||
-		!floatEquals(fns[0].chargeEnergy, maxEnergyLevel*0.6) ||
-		!floatEquals(fns[0].chargeTime, 3600) ||
-		!floatEquals(fns[1].arrivalEnergy, 0.0) ||
-		!floatEquals(fns[1].chargeEnergy, maxEnergyLevel*0.8) ||
-		!floatEquals(fns[1].chargeTime, 7200) ||
-		!floatEquals(fns[2].arrivalEnergy, 0.0) ||
-		!floatEquals(fns[2].chargeEnergy, maxEnergyLevel) ||
-		!floatEquals(fns[2].chargeTime, 14400) {
-		t.Errorf("incorrect charge information generated for node %s", from)
-	}
-
 	index := 0
 	for _, to := range tos {
 		tns := graph.getChargeStationsNodes(to, 0.0, 0.0)
