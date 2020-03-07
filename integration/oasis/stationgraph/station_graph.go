@@ -75,6 +75,7 @@ func (sg *stationGraph) GenerateChargeSolutions() []*solutionformat.Solution {
 			Lat: sg.g.getLocationInfo(nodes[i]).lat,
 			Lon: sg.g.getLocationInfo(nodes[i]).lon,
 		}
+		station.StationID = sg.num2StationID[uint32(nodes[i])]
 
 		solution.ChargeStations = append(solution.ChargeStations, station)
 

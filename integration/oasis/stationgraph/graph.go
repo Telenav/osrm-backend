@@ -32,7 +32,6 @@ func (g *graph) dijkstra() []nodeID {
 		node := g.nodes[n]
 		for _, neighbor := range node.neighbors {
 			if g.nodes[n].isLocationReachable(neighbor.distance) {
-				// @todo: charge time isn't consider here, TBD
 				if m.add(neighbor.targetNodeID, n, neighbor.distance, neighbor.duration) {
 					g.nodes[neighbor.targetNodeID].updateArrivalEnergy(node, neighbor.distance)
 				}

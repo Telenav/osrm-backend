@@ -1,10 +1,13 @@
 package stationgraph
 
 import (
+	"fmt"
 	"math"
+	"reflect"
 	"testing"
 
 	"github.com/Telenav/osrm-backend/integration/oasis/chargingstrategy"
+	"github.com/Telenav/osrm-backend/integration/oasis/solutionformat"
 	"github.com/Telenav/osrm-backend/integration/oasis/stationfinder"
 )
 
@@ -53,197 +56,197 @@ start  -------   station 2  \ /           end
 	  + connection to station 5's node with 100% of total energy
   Each node with name `station1` will have different id, and each of them will have 6 neighbor nodes
 */
-func TestConstructStationGraph(t *testing.T) {
-	neighbors := [][]stationfinder.NeighborInfo{
-		[]stationfinder.NeighborInfo{
-			stationfinder.NeighborInfo{
-				FromID: "orig_location",
-				FromLocation: stationfinder.StationCoordinate{
-					Lat: 0.0,
-					Lon: 0.0,
-				},
-				ToID: "station1",
-				ToLocation: stationfinder.StationCoordinate{
-					Lat: 1.1,
-					Lon: 1.1,
-				},
-				Cost: stationfinder.Cost{
-					Duration: 22.2,
-					Distance: 22.2,
-				},
+var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
+	[]stationfinder.NeighborInfo{
+		stationfinder.NeighborInfo{
+			FromID: "orig_location",
+			FromLocation: stationfinder.StationCoordinate{
+				Lat: 0.0,
+				Lon: 0.0,
 			},
-			stationfinder.NeighborInfo{
-				FromID: "orig_location",
-				FromLocation: stationfinder.StationCoordinate{
-					Lat: 0.0,
-					Lon: 0.0,
-				},
-				ToID: "station2",
-				ToLocation: stationfinder.StationCoordinate{
-					Lat: 2.2,
-					Lon: 2.2,
-				},
-				Cost: stationfinder.Cost{
-					Duration: 11.1,
-					Distance: 11.1,
-				},
+			ToID: "station1",
+			ToLocation: stationfinder.StationCoordinate{
+				Lat: 1.1,
+				Lon: 1.1,
 			},
-			stationfinder.NeighborInfo{
-				FromID: "orig_location",
-				FromLocation: stationfinder.StationCoordinate{
-					Lat: 0.0,
-					Lon: 0.0,
-				},
-				ToID: "station3",
-				Cost: stationfinder.Cost{
-					Duration: 33.3,
-					Distance: 33.3,
-				},
-				ToLocation: stationfinder.StationCoordinate{
-					Lat: 3.3,
-					Lon: 3.3,
-				},
+			Cost: stationfinder.Cost{
+				Duration: 22.2,
+				Distance: 22.2,
 			},
 		},
-		[]stationfinder.NeighborInfo{
-			stationfinder.NeighborInfo{
-				FromID: "station1",
-				FromLocation: stationfinder.StationCoordinate{
-					Lat: 1.1,
-					Lon: 1.1,
-				},
-				ToID: "station4",
-				ToLocation: stationfinder.StationCoordinate{
-					Lat: 4.4,
-					Lon: 4.4,
-				},
-				Cost: stationfinder.Cost{
-					Duration: 44.4,
-					Distance: 44.4,
-				},
+		stationfinder.NeighborInfo{
+			FromID: "orig_location",
+			FromLocation: stationfinder.StationCoordinate{
+				Lat: 0.0,
+				Lon: 0.0,
 			},
-			stationfinder.NeighborInfo{
-				FromID: "station1",
-				FromLocation: stationfinder.StationCoordinate{
-					Lat: 1.1,
-					Lon: 1.1,
-				},
-				ToID: "station5",
-				ToLocation: stationfinder.StationCoordinate{
-					Lat: 5.5,
-					Lon: 5.5,
-				},
-				Cost: stationfinder.Cost{
-					Duration: 34.3,
-					Distance: 34.4,
-				},
+			ToID: "station2",
+			ToLocation: stationfinder.StationCoordinate{
+				Lat: 2.2,
+				Lon: 2.2,
 			},
-			stationfinder.NeighborInfo{
-				FromID: "station2",
-				FromLocation: stationfinder.StationCoordinate{
-					Lat: 2.2,
-					Lon: 2.2,
-				},
-				ToID: "station4",
-				ToLocation: stationfinder.StationCoordinate{
-					Lat: 4.4,
-					Lon: 4.4,
-				},
-				Cost: stationfinder.Cost{
-					Duration: 11.1,
-					Distance: 11.1,
-				},
-			},
-			stationfinder.NeighborInfo{
-				FromID: "station2",
-				FromLocation: stationfinder.StationCoordinate{
-					Lat: 2.2,
-					Lon: 2.2,
-				},
-				ToID: "station5",
-				ToLocation: stationfinder.StationCoordinate{
-					Lat: 5.5,
-					Lon: 5.5,
-				},
-				Cost: stationfinder.Cost{
-					Duration: 14.4,
-					Distance: 14.4,
-				},
-			},
-			stationfinder.NeighborInfo{
-				FromID: "station3",
-				FromLocation: stationfinder.StationCoordinate{
-					Lat: 3.3,
-					Lon: 3.3,
-				},
-				ToID: "station4",
-				ToLocation: stationfinder.StationCoordinate{
-					Lat: 4.4,
-					Lon: 4.4,
-				},
-				Cost: stationfinder.Cost{
-					Duration: 22.2,
-					Distance: 22.2,
-				},
-			},
-			stationfinder.NeighborInfo{
-				FromID: "station3",
-				FromLocation: stationfinder.StationCoordinate{
-					Lat: 3.3,
-					Lon: 3.3,
-				},
-				ToID: "station5",
-				ToLocation: stationfinder.StationCoordinate{
-					Lat: 5.5,
-					Lon: 5.5,
-				},
-				Cost: stationfinder.Cost{
-					Duration: 15.5,
-					Distance: 15.5,
-				},
+			Cost: stationfinder.Cost{
+				Duration: 11.1,
+				Distance: 11.1,
 			},
 		},
-		[]stationfinder.NeighborInfo{
-			stationfinder.NeighborInfo{
-				FromID: "station4",
-				FromLocation: stationfinder.StationCoordinate{
-					Lat: 4.4,
-					Lon: 4.4,
-				},
-				ToID: stationfinder.DestLocationID,
-				ToLocation: stationfinder.StationCoordinate{
-					Lat: 6.6,
-					Lon: 6.6,
-				},
-				Cost: stationfinder.Cost{
-					Duration: 44.4,
-					Distance: 44.4,
-				},
+		stationfinder.NeighborInfo{
+			FromID: "orig_location",
+			FromLocation: stationfinder.StationCoordinate{
+				Lat: 0.0,
+				Lon: 0.0,
 			},
-			stationfinder.NeighborInfo{
-				FromID: "station5",
-				FromLocation: stationfinder.StationCoordinate{
-					Lat: 5.5,
-					Lon: 5.5,
-				},
-				ToID: stationfinder.DestLocationID,
-				ToLocation: stationfinder.StationCoordinate{
-					Lat: 6.6,
-					Lon: 6.6,
-				},
-				Cost: stationfinder.Cost{
-					Duration: 33.3,
-					Distance: 33.3,
-				},
+			ToID: "station3",
+			Cost: stationfinder.Cost{
+				Duration: 33.3,
+				Distance: 33.3,
+			},
+			ToLocation: stationfinder.StationCoordinate{
+				Lat: 3.3,
+				Lon: 3.3,
 			},
 		},
-	}
+	},
+	[]stationfinder.NeighborInfo{
+		stationfinder.NeighborInfo{
+			FromID: "station1",
+			FromLocation: stationfinder.StationCoordinate{
+				Lat: 1.1,
+				Lon: 1.1,
+			},
+			ToID: "station4",
+			ToLocation: stationfinder.StationCoordinate{
+				Lat: 4.4,
+				Lon: 4.4,
+			},
+			Cost: stationfinder.Cost{
+				Duration: 44.4,
+				Distance: 44.4,
+			},
+		},
+		stationfinder.NeighborInfo{
+			FromID: "station1",
+			FromLocation: stationfinder.StationCoordinate{
+				Lat: 1.1,
+				Lon: 1.1,
+			},
+			ToID: "station5",
+			ToLocation: stationfinder.StationCoordinate{
+				Lat: 5.5,
+				Lon: 5.5,
+			},
+			Cost: stationfinder.Cost{
+				Duration: 34.4,
+				Distance: 34.4,
+			},
+		},
+		stationfinder.NeighborInfo{
+			FromID: "station2",
+			FromLocation: stationfinder.StationCoordinate{
+				Lat: 2.2,
+				Lon: 2.2,
+			},
+			ToID: "station4",
+			ToLocation: stationfinder.StationCoordinate{
+				Lat: 4.4,
+				Lon: 4.4,
+			},
+			Cost: stationfinder.Cost{
+				Duration: 11.1,
+				Distance: 11.1,
+			},
+		},
+		stationfinder.NeighborInfo{
+			FromID: "station2",
+			FromLocation: stationfinder.StationCoordinate{
+				Lat: 2.2,
+				Lon: 2.2,
+			},
+			ToID: "station5",
+			ToLocation: stationfinder.StationCoordinate{
+				Lat: 5.5,
+				Lon: 5.5,
+			},
+			Cost: stationfinder.Cost{
+				Duration: 14.4,
+				Distance: 14.4,
+			},
+		},
+		stationfinder.NeighborInfo{
+			FromID: "station3",
+			FromLocation: stationfinder.StationCoordinate{
+				Lat: 3.3,
+				Lon: 3.3,
+			},
+			ToID: "station4",
+			ToLocation: stationfinder.StationCoordinate{
+				Lat: 4.4,
+				Lon: 4.4,
+			},
+			Cost: stationfinder.Cost{
+				Duration: 22.2,
+				Distance: 22.2,
+			},
+		},
+		stationfinder.NeighborInfo{
+			FromID: "station3",
+			FromLocation: stationfinder.StationCoordinate{
+				Lat: 3.3,
+				Lon: 3.3,
+			},
+			ToID: "station5",
+			ToLocation: stationfinder.StationCoordinate{
+				Lat: 5.5,
+				Lon: 5.5,
+			},
+			Cost: stationfinder.Cost{
+				Duration: 15.5,
+				Distance: 15.5,
+			},
+		},
+	},
+	[]stationfinder.NeighborInfo{
+		stationfinder.NeighborInfo{
+			FromID: "station4",
+			FromLocation: stationfinder.StationCoordinate{
+				Lat: 4.4,
+				Lon: 4.4,
+			},
+			ToID: stationfinder.DestLocationID,
+			ToLocation: stationfinder.StationCoordinate{
+				Lat: 6.6,
+				Lon: 6.6,
+			},
+			Cost: stationfinder.Cost{
+				Duration: 44.4,
+				Distance: 44.4,
+			},
+		},
+		stationfinder.NeighborInfo{
+			FromID: "station5",
+			FromLocation: stationfinder.StationCoordinate{
+				Lat: 5.5,
+				Lon: 5.5,
+			},
+			ToID: stationfinder.DestLocationID,
+			ToLocation: stationfinder.StationCoordinate{
+				Lat: 6.6,
+				Lon: 6.6,
+			},
+			Cost: stationfinder.Cost{
+				Duration: 33.3,
+				Distance: 33.3,
+			},
+		},
+	},
+}
 
+func TestConstructStationGraph(t *testing.T) {
 	// generate channel contains neighbors information
 	// simulate real situation using different go-routine
 	c := make(chan stationfinder.WeightBetweenNeighbors)
 	go func() {
-		for _, n := range neighbors {
+		for _, n := range fakeNeighborsGraph {
 			neighborsInfo := stationfinder.WeightBetweenNeighbors{
 				NeighborsInfo: n,
 				Err:           nil,
@@ -265,19 +268,19 @@ func TestConstructStationGraph(t *testing.T) {
 	testEnd(t, graph, currEnergyLevel, maxEnergyLevel)
 
 	testConnectivity(t, graph, "station1", locationInfo{lat: 1.1, lon: 1.1},
-		[]string{"station4", "station5"}, neighbors, currEnergyLevel, maxEnergyLevel)
+		[]string{"station4", "station5"}, fakeNeighborsGraph, currEnergyLevel, maxEnergyLevel)
 
 	testConnectivity(t, graph, "station2", locationInfo{lat: 2.2, lon: 2.2},
-		[]string{"station4", "station5"}, neighbors, currEnergyLevel, maxEnergyLevel)
+		[]string{"station4", "station5"}, fakeNeighborsGraph, currEnergyLevel, maxEnergyLevel)
 
 	testConnectivity(t, graph, "station3", locationInfo{lat: 3.3, lon: 3.3},
-		[]string{"station4", "station5"}, neighbors, currEnergyLevel, maxEnergyLevel)
+		[]string{"station4", "station5"}, fakeNeighborsGraph, currEnergyLevel, maxEnergyLevel)
 
 	testConnectivity(t, graph, "station4", locationInfo{lat: 4.4, lon: 4.4},
-		[]string{stationfinder.DestLocationID}, neighbors, currEnergyLevel, maxEnergyLevel)
+		[]string{stationfinder.DestLocationID}, fakeNeighborsGraph, currEnergyLevel, maxEnergyLevel)
 
 	testConnectivity(t, graph, "station5", locationInfo{lat: 5.5, lon: 5.5},
-		[]string{stationfinder.DestLocationID}, neighbors, currEnergyLevel, maxEnergyLevel)
+		[]string{stationfinder.DestLocationID}, fakeNeighborsGraph, currEnergyLevel, maxEnergyLevel)
 }
 
 func testStart(t *testing.T, graph *stationGraph, currEnergyLevel, maxEnergyLevel float64) {
@@ -434,6 +437,100 @@ func testConnectivity(t *testing.T, graph *stationGraph, from string, fromLocati
 
 		index += len(tns)
 	}
+}
+
+// based on original graph, best charge solution is
+// start -> station 2 -> station 4 -> end
+// when start, initial energy is 20
+// start -> station 2, time/duration = 11.1, this case will choose charging for 60%
+// station 2 -> station 5, time/duration = 14.4, this cause will choose charging for 80%
+func TestGenerateChargeSolutions1(t *testing.T) {
+
+	fakeGraph1 := make([][]stationfinder.NeighborInfo, len(fakeNeighborsGraph))
+	for i := range fakeNeighborsGraph {
+		fakeGraph1[i] = make([]stationfinder.NeighborInfo, len(fakeNeighborsGraph[i]))
+		copy(fakeGraph1[i], fakeNeighborsGraph[i])
+	}
+
+	// generate channel contains neighbors information
+	// simulate real situation using different go-routine
+	c := make(chan stationfinder.WeightBetweenNeighbors)
+	go func() {
+		for _, n := range fakeGraph1 {
+			neighborsInfo := stationfinder.WeightBetweenNeighbors{
+				NeighborsInfo: n,
+				Err:           nil,
+			}
+			c <- neighborsInfo
+		}
+		close(c)
+	}()
+
+	currEnergyLevel := 20.0
+	maxEnergyLevel := 50.0
+	graph := NewStationGraph(c, currEnergyLevel, maxEnergyLevel,
+		chargingstrategy.NewFakeChargingStrategyCreator(maxEnergyLevel))
+	if graph == nil {
+		t.Error("create Station graph failed, expect none-empty graph but result is empty")
+	}
+
+	solutions := graph.GenerateChargeSolutions()
+	fmt.Printf("### %#v\n", solutions[0])
+	fmt.Printf("### %#v\n", solutions[0].ChargeStations[0])
+	fmt.Printf("### %#v\n", solutions[0].ChargeStations[1])
+	if len(solutions) != 1 {
+		t.Errorf("expect to have 1 solution but got %d.\n", len(solutions))
+	}
+	solution := solutions[0]
+	// 58.8 = 11.1 + 14.4 + 33.3
+	if !floatEquals(solution.Distance, 58.8) {
+		t.Errorf("Incorrect distance calculated for fakeGraph1 expect 58.89 but got %#v.\n", solution.Distance)
+	}
+
+	// 10858.8 = 11.1 + 3600(60% charge) + 14.4 + 7200(80% charge) + 33.3
+	if !floatEquals(solution.Duration, 10858.8) {
+		t.Errorf("Incorrect duration calculated for fakeGraph1 expect 10858.8 but got %#v.\n", solution.Duration)
+	}
+
+	// 31.2 = 40 - 33.3
+	if !floatEquals(solution.RemainingRage, 31.2) {
+		t.Errorf("Incorrect duration calculated for fakeGraph1 expect 10858.8 but got %#v.\n", solution.RemainingRage)
+	}
+
+	if len(solution.ChargeStations) != 2 {
+		t.Errorf("Expect to have 2 charge stations for fakeGraph1 but got %d.\n", len(solution.ChargeStations))
+	}
+
+	expectStation1 := &solutionformat.ChargeStation{
+		Location: solutionformat.Location{
+			Lat: 2.2,
+			Lon: 2.2,
+		},
+		StationID:     "station2",
+		ArrivalEnergy: 8.9,
+		WaitTime:      0,
+		ChargeTime:    3600,
+		ChargeRange:   30,
+	}
+	if !reflect.DeepEqual(solution.ChargeStations[0], expectStation1) {
+		t.Errorf("Expect first charge stations info for fakeGraph1 is %#v but got %#v\n", expectStation1, solution.ChargeStations[0])
+	}
+
+	expectStation2 := &solutionformat.ChargeStation{
+		Location: solutionformat.Location{
+			Lat: 5.5,
+			Lon: 5.5,
+		},
+		StationID:     "station5",
+		ArrivalEnergy: 24.5,
+		WaitTime:      0,
+		ChargeTime:    7200,
+		ChargeRange:   40,
+	}
+	if !reflect.DeepEqual(solution.ChargeStations[1], expectStation2) {
+		t.Errorf("Expect second charge stations info for fakeGraph1 is %#v but got %#v\n", expectStation2, solution.ChargeStations[1])
+	}
+
 }
 
 var epsilon float64 = 0.00000001
