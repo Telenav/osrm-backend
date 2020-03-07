@@ -159,6 +159,10 @@ type WeightBetweenNeighbors struct {
 // - CalcWeightBetweenChargeStationsPair needs two iterators, one for nearbystationiterator
 //   represents from location and one for next location.  An array of channel is created
 //   to represent whether specific iterator is ready or not.
+// - The result of this function is channel of WeightBetweenNeighbors, the sequence of
+//   WeightBetweenNeighbors is important for future logic: first result is start -> first
+//   group of low energy charge stations, first group -> second group, ..., xxx group to
+//   end
 // - All iterators has been recorded in iterators array
 //   @Todo: isIteratorReady could be removed later.  When iterator is not ready, should
 //         pause inside iterator itself.  That need refactor the design of stationfinder.

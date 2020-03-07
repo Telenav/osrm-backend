@@ -3,6 +3,8 @@ package stationgraph
 import (
 	"reflect"
 	"testing"
+
+	"github.com/Telenav/osrm-backend/integration/oasis/chargingstrategy"
 )
 
 func TestGraphGeneral(t *testing.T) {
@@ -19,6 +21,7 @@ func TestGraphGeneral(t *testing.T) {
 			// node_2 -> node_3, duration = 50, distance = 50
 			// node_3 -> node_4, duration = 10, distance = 10
 			&graph{
+				strategy: chargingstrategy.NewNullChargeStrategy(),
 				nodes: []*node{
 					&node{
 						id: 0,
@@ -109,6 +112,7 @@ func TestGraphGeneral(t *testing.T) {
 			// node_2 -> node_3, duration = 50, distance = 50
 			// node_3 -> node_4, duration = 10, distance = 10
 			&graph{
+				strategy: chargingstrategy.NewNullChargeStrategy(),
 				nodes: []*node{
 					&node{
 						id: 0,
@@ -199,6 +203,7 @@ func TestGraphGeneral(t *testing.T) {
 			// node_2 -> node_3, duration = 50, distance = 50
 			// node_3 -> node_4, duration = 10, distance = 10
 			&graph{
+				strategy: chargingstrategy.NewNullChargeStrategy(),
 				nodes: []*node{
 					&node{
 						id: 0,
@@ -298,6 +303,7 @@ func TestGraphGeneral(t *testing.T) {
 			// node_6 -> node_8, duration = 20, distance = 20
 			// node_7 -> node_8, duration = 30, distance = 30
 			&graph{
+				strategy: chargingstrategy.NewNullChargeStrategy(),
 				nodes: []*node{
 					&node{
 						id: 0,
@@ -480,6 +486,7 @@ func TestGraphGeneral(t *testing.T) {
 			// node_6 -> node_8, duration = 20, distance = 20
 			// node_7 -> node_8, duration = 30, distance = 30
 			&graph{
+				strategy: chargingstrategy.NewNullChargeStrategy(),
 				nodes: []*node{
 					&node{
 						id: 0,
@@ -665,6 +672,7 @@ func TestGraphGeneral(t *testing.T) {
 			// node_6 -> node_8, duration = 20, distance = 20
 			// node_7 -> node_8, duration = 30, distance = 30
 			&graph{
+				strategy: chargingstrategy.NewNullChargeStrategy(),
 				nodes: []*node{
 					&node{
 						id: 0,
@@ -831,10 +839,10 @@ func TestGraphGeneral(t *testing.T) {
 		},
 	}
 
-	for _, c := range cases {
+	for i, c := range cases {
 		s := c.g.dijkstra()
 		if !reflect.DeepEqual(c.chargeStations, s) {
-			t.Errorf("expect %v but got %v", c.chargeStations, s)
+			t.Errorf("for test case %d expect %v but got %v", i, c.chargeStations, s)
 		}
 	}
 }

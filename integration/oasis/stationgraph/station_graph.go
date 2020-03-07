@@ -23,6 +23,7 @@ func NewStationGraph(c chan stationfinder.WeightBetweenNeighbors, currEnergyLeve
 		g: &graph{
 			startNodeID: invalidNodeID,
 			endNodeID:   invalidNodeID,
+			strategy:    strategy,
 		},
 		stationID2Nodes: make(map[string][]*node),
 		num2StationID:   make(map[uint32]string),
@@ -113,7 +114,6 @@ func (sg *stationGraph) getChargeStationsNodes(id string, location stationfinder
 				n := &node{
 					id: nodeID(sg.stationsCount),
 					chargeInfo: chargeInfo{
-						chargeTime:   strategy.ChargingTime,
 						chargeEnergy: strategy.ChargingEnergy,
 					},
 					locationInfo: locationInfo{

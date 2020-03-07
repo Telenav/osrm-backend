@@ -3,6 +3,7 @@ package stationgraph
 import (
 	"math"
 
+	"github.com/Telenav/osrm-backend/integration/oasis/chargingstrategy"
 	"github.com/golang/glog"
 )
 
@@ -40,11 +41,25 @@ func newNode() *node {
 }
 
 func (n *node) isLocationReachable(distance float64) bool {
-	return (n.arrivalEnergy + n.chargeEnergy) > distance
+	return n.chargeEnergy > distance
+	// return (n.arrivalEnergy + n.chargeEnergy) > distance
+}
+
+func (n *node) calcChargeTime(prev *node, distance float64, strategy chargingstrategy.ChargingStrategyCreator) float64 {
+	arrivalEnergy := prev.arrivalEnergy - distance
+	if arrivalEnergy < 0 {
+		glog.Fatal("Before updateNode should check isLocationReachable()")
+	}
+	return strategy.EvaluateCost(arrivalEnergy, chargingstrategy.ChargingStrategy{ChargingEnergy: n.chargeEnergy}).Duration
+}
+
+func (n *node) updateChargingTime(chargingTime float64) {
+	// @todo: maybe node record chargestate
+	n.chargeTime = chargingTime
 }
 
 func (n *node) updateArrivalEnergy(prev *node, distance float64) {
-	n.arrivalEnergy = prev.chargeEnergy - distance
+	n.arrivalEnergy = prev.arrivalEnergy - distance
 	if n.arrivalEnergy < 0 {
 		glog.Fatal("Before updateNode should check isLocationReachable()")
 	}

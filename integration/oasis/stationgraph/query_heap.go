@@ -28,10 +28,13 @@ func (qh *queryHeap) add(currID, prevID nodeID, distance, duration float64) bool
 	if prevID != invalidNodeID {
 		newWeight = qh.m[prevID].minWeight + duration
 		newDist = qh.m[prevID].minDist + distance
+	} else {
+		// Nothing to do. currID is start node.
 	}
 
 	if !qh.isVisited(currID) {
 		e := qh.pq.push(currID, newWeight)
+		glog.V(3).Infof("pq-push new element %#v with weight %#v\n", currID, newWeight)
 		qh.m[currID] = &queryHeapNodeInfo{
 			prevNodeID: prevID,
 			pqElem:     e,
@@ -39,6 +42,7 @@ func (qh *queryHeap) add(currID, prevID nodeID, distance, duration float64) bool
 			minDist:    newDist,
 			settled:    false,
 		}
+		glog.V(3).Infof("query-heap insert new element %#v for %#v\n", qh.m[currID], currID)
 		return true
 	} else {
 		if ok := qh.needUpdate(currID, newWeight); ok {
@@ -47,6 +51,7 @@ func (qh *queryHeap) add(currID, prevID nodeID, distance, duration float64) bool
 			}
 			qh.pq.decrease(qh.m[currID].pqElem, newWeight)
 			qh.update(currID, prevID, newWeight, newDist)
+			glog.V(3).Infof("pq-update element %#v with weight %#v\n", currID, newWeight)
 			return true
 		}
 	}
@@ -59,6 +64,7 @@ func (qh *queryHeap) next() nodeID {
 	}
 
 	n := qh.pq.pop()
+	glog.V(3).Infof("pq-pop element %#v\n", n)
 	qh.settle(n)
 	return n
 }
