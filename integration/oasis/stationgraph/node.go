@@ -44,7 +44,7 @@ func (n *node) isLocationReachable(distance float64) bool {
 }
 
 func (n *node) updateArrivalEnergy(prev *node, distance float64) {
-	n.arrivalEnergy = prev.arrivalEnergy + prev.chargeEnergy - distance
+	n.arrivalEnergy = prev.chargeEnergy - distance
 	if n.arrivalEnergy < 0 {
 		glog.Fatal("Before updateNode should check isLocationReachable()")
 	}
