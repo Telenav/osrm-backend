@@ -32,55 +32,6 @@ func (f *fakeChargingStrategyCreator) CreateChargingStrategies() []ChargingStrat
 			ChargingEnergy: f.maxEnergyLevel,
 		},
 	}
-
-	// var result []ChargingStrategy
-
-	// if f.arrivalEnergyLevel < sixtyPercentOfMaxEnergy {
-	// 	energy4Stage1 := sixtyPercentOfMaxEnergy - f.arrivalEnergyLevel
-	// 	time4Stage1 := energy4Stage1 / sixtyPercentOfMaxEnergy * 3600.0
-	// 	result = append(result, ChargingStrategy{
-	// 		ChargingTime:   time4Stage1,
-	// 		ChargingEnergy: energy4Stage1,
-	// 	})
-
-	// 	energy4Stage2 := eightyPercentOfMaxEnergy - sixtyPercentOfMaxEnergy + energy4Stage1
-	// 	time4Stage2 := 3600.0 + time4Stage1
-	// 	result = append(result, ChargingStrategy{
-	// 		ChargingTime:   time4Stage2,
-	// 		ChargingEnergy: energy4Stage2,
-	// 	})
-
-	// 	energy4Stage3 := f.maxEnergyLevel - sixtyPercentOfMaxEnergy + energy4Stage1
-	// 	time4Stage3 := 7200.0 + 3600.0 + time4Stage1
-	// 	result = append(result, ChargingStrategy{
-	// 		ChargingTime:   time4Stage3,
-	// 		ChargingEnergy: energy4Stage3,
-	// 	})
-	// } else if f.arrivalEnergyLevel < eightyPercentOfMaxEnergy {
-	// 	energy4Stage2 := eightyPercentOfMaxEnergy - f.arrivalEnergyLevel
-	// 	time4Stage2 := energy4Stage2 / (eightyPercentOfMaxEnergy - sixtyPercentOfMaxEnergy) * 3600
-
-	// 	result = append(result, ChargingStrategy{
-	// 		ChargingTime:   time4Stage2,
-	// 		ChargingEnergy: energy4Stage2,
-	// 	})
-
-	// 	energy4Stage3 := f.maxEnergyLevel - eightyPercentOfMaxEnergy + energy4Stage2
-	// 	time4Stage3 := 7200.0 + time4Stage2
-	// 	result = append(result, ChargingStrategy{
-	// 		ChargingTime:   time4Stage3,
-	// 		ChargingEnergy: energy4Stage3,
-	// 	})
-	// } else {
-	// 	energy4Stage3 := f.maxEnergyLevel - f.arrivalEnergyLevel
-	// 	time4Stage3 := energy4Stage3 / (f.maxEnergyLevel - eightyPercentOfMaxEnergy) * 7200
-	// 	result = append(result, ChargingStrategy{
-	// 		ChargingTime:   time4Stage3,
-	// 		ChargingEnergy: energy4Stage3,
-	// 	})
-	// }
-
-	// return result
 }
 
 // Fake charge strategy
