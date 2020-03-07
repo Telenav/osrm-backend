@@ -2,6 +2,7 @@ package stationgraph
 
 import (
 	"github.com/Telenav/osrm-backend/integration/oasis/chargingstrategy"
+	"github.com/Telenav/osrm-backend/integration/oasis/solutionformat"
 	"github.com/Telenav/osrm-backend/integration/oasis/stationfinder"
 	"github.com/golang/glog"
 )
@@ -43,9 +44,53 @@ func NewStationGraph(c chan stationfinder.WeightBetweenNeighbors, currEnergyLeve
 	return sg.constructGraph()
 }
 
+func (sg *stationGraph) GenerateChargeSolutions() []*solutionformat.Solution {
+	nodes := sg.g.dijkstra()
+	if nil == nodes {
+		glog.Warning("Failed to generate charge stations for stationGraph.\n")
+		return nil
+	}
+
+	var result []*solutionformat.Solution
+
+	solution := &solutionformat.Solution{}
+	solution.ChargeStations = make([]*solutionformat.ChargeStation, 0)
+	var totalDistance, totalDuration float64
+
+	startNodeID := sg.stationID2Nodes[stationfinder.OrigLocationID][0].id
+	sg.g.accumulateDistanceAndDuration(startNodeID, nodes[0], &totalDistance, &totalDuration)
+	for i := 0; i < len(nodes); i++ {
+		if i != len(nodes)-1 {
+			sg.g.accumulateDistanceAndDuration(nodes[i], nodes[i+1], &totalDistance, &totalDuration)
+		} else {
+			endNodeID := sg.stationID2Nodes[stationfinder.DestLocationID][0].id
+			sg.g.accumulateDistanceAndDuration(nodes[i], endNodeID, &totalDistance, &totalDuration)
+		}
+
+		station := &solutionformat.ChargeStation{}
+		station.ArrivalEnergy = sg.g.getChargeInfo(nodes[i]).arrivalEnergy
+		station.ChargeRange = sg.g.getChargeInfo(nodes[i]).chargeEnergy
+		station.ChargeTime = sg.g.getChargeInfo(nodes[i]).chargeTime
+		station.Location = solutionformat.Location{
+			Lat: sg.g.getLocationInfo(nodes[i]).lat,
+			Lon: sg.g.getLocationInfo(nodes[i]).lon,
+		}
+
+		solution.ChargeStations = append(solution.ChargeStations, station)
+
+	}
+
+	solution.Distance = totalDistance
+	solution.Duration = totalDuration
+	solution.RemainingRage = sg.stationID2Nodes[stationfinder.DestLocationID][0].arrivalEnergy
+
+	result = append(result, solution)
+	return result
+}
+
 func (sg *stationGraph) buildNeighborInfoBetweenNodes(neighborInfo stationfinder.NeighborInfo, currEnergyLevel, maxEnergyLevel float64) {
-	for _, fromNode := range sg.getChargeStationsNodes(neighborInfo.FromID, currEnergyLevel, maxEnergyLevel) {
-		for _, toNode := range sg.getChargeStationsNodes(neighborInfo.ToID, currEnergyLevel, maxEnergyLevel) {
+	for _, fromNode := range sg.getChargeStationsNodes(neighborInfo.FromID, neighborInfo.FromLocation, currEnergyLevel, maxEnergyLevel) {
+		for _, toNode := range sg.getChargeStationsNodes(neighborInfo.ToID, neighborInfo.ToLocation, currEnergyLevel, maxEnergyLevel) {
 			fromNode.neighbors = append(fromNode.neighbors, &neighbor{
 				targetNodeID: toNode.id,
 				distance:     neighborInfo.Distance,
@@ -55,12 +100,12 @@ func (sg *stationGraph) buildNeighborInfoBetweenNodes(neighborInfo stationfinder
 	}
 }
 
-func (sg *stationGraph) getChargeStationsNodes(id string, currEnergyLevel, maxEnergyLevel float64) []*node {
+func (sg *stationGraph) getChargeStationsNodes(id string, location stationfinder.StationCoordinate, currEnergyLevel, maxEnergyLevel float64) []*node {
 	if _, ok := sg.stationID2Nodes[id]; !ok {
 		if sg.isStart(id) {
-			sg.constructStartNode(id, currEnergyLevel)
+			sg.constructStartNode(id, location, currEnergyLevel)
 		} else if sg.isEnd(id) {
-			sg.constructEndNode(id)
+			sg.constructEndNode(id, location)
 		} else {
 			var nodes []*node
 			for _, strategy := range sg.strategy.CreateChargingStrategies() {
@@ -69,6 +114,10 @@ func (sg *stationGraph) getChargeStationsNodes(id string, currEnergyLevel, maxEn
 					chargeInfo: chargeInfo{
 						chargeTime:   strategy.ChargingTime,
 						chargeEnergy: strategy.ChargingEnergy,
+					},
+					locationInfo: locationInfo{
+						lat: location.Lat,
+						lon: location.Lon,
 					},
 				}
 				nodes = append(nodes, n)
@@ -94,21 +143,29 @@ func (sg *stationGraph) getStationID(id nodeID) string {
 	return sg.num2StationID[uint32(id)]
 }
 
-func (sg *stationGraph) constructStartNode(id string, currEnergyLevel float64) {
+func (sg *stationGraph) constructStartNode(id string, location stationfinder.StationCoordinate, currEnergyLevel float64) {
 
 	n := &node{
 		id:         nodeID(sg.stationsCount),
 		chargeInfo: chargeInfo{arrivalEnergy: currEnergyLevel},
+		locationInfo: locationInfo{
+			lat: location.Lat,
+			lon: location.Lon,
+		},
 	}
 	sg.stationID2Nodes[id] = []*node{n}
 	sg.num2StationID[sg.stationsCount] = id
 	sg.stationsCount += 1
 }
 
-func (sg *stationGraph) constructEndNode(id string) {
+func (sg *stationGraph) constructEndNode(id string, location stationfinder.StationCoordinate) {
 
 	n := &node{
 		id: nodeID(sg.stationsCount),
+		locationInfo: locationInfo{
+			lat: location.Lat,
+			lon: location.Lon,
+		},
 	}
 	sg.stationID2Nodes[id] = []*node{n}
 	sg.num2StationID[sg.stationsCount] = id
@@ -116,6 +173,8 @@ func (sg *stationGraph) constructEndNode(id string) {
 }
 
 func (sg *stationGraph) constructGraph() *stationGraph {
+	sg.g.nodes = make([]*node, int(sg.stationsCount))
+
 	for k, v := range sg.stationID2Nodes {
 		if sg.isStart(k) {
 			sg.g.startNodeID = v[0].id
@@ -126,7 +185,7 @@ func (sg *stationGraph) constructGraph() *stationGraph {
 		}
 
 		for _, n := range v {
-			sg.g.nodes = append(sg.g.nodes, n)
+			sg.g.nodes[n.id] = n
 		}
 	}
 

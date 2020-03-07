@@ -94,11 +94,19 @@ func CalcWeightBetweenChargeStationsPair(from nearbyStationsIterator, to nearbyS
 
 	// iterate table response result
 	var result []NeighborInfo
-	for i := range startPoints {
-		for j := range targetPoints {
+	for i, startPoint := range startPoints {
+		for j, targetPoint := range targetPoints {
 			result = append(result, NeighborInfo{
 				FromID: startIDs[i],
-				ToID:   targetIDs[j],
+				FromLocation: StationCoordinate{
+					Lat: startPoint.Lat,
+					Lon: startPoint.Lon,
+				},
+				ToID: targetIDs[j],
+				ToLocation: StationCoordinate{
+					Lat: targetPoint.Lat,
+					Lon: targetPoint.Lon,
+				},
 				Cost: Cost{
 					Duration: *resp.Resp.Durations[i][j],
 					Distance: *resp.Resp.Distances[i][j],
@@ -118,8 +126,10 @@ type Cost struct {
 
 // NeighborInfo represent cost information between two charge stations
 type NeighborInfo struct {
-	FromID string
-	ToID   string
+	FromID       string
+	FromLocation StationCoordinate
+	ToID         string
+	ToLocation   StationCoordinate
 	Cost
 }
 

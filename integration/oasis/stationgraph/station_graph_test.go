@@ -58,7 +58,15 @@ func TestConstructStationGraph(t *testing.T) {
 		[]stationfinder.NeighborInfo{
 			stationfinder.NeighborInfo{
 				FromID: "orig_location",
-				ToID:   "station1",
+				FromLocation: stationfinder.StationCoordinate{
+					Lat: 0.0,
+					Lon: 0.0,
+				},
+				ToID: "station1",
+				ToLocation: stationfinder.StationCoordinate{
+					Lat: 1.1,
+					Lon: 1.1,
+				},
 				Cost: stationfinder.Cost{
 					Duration: 22.2,
 					Distance: 22.2,
@@ -66,7 +74,15 @@ func TestConstructStationGraph(t *testing.T) {
 			},
 			stationfinder.NeighborInfo{
 				FromID: "orig_location",
-				ToID:   "station2",
+				FromLocation: stationfinder.StationCoordinate{
+					Lat: 0.0,
+					Lon: 0.0,
+				},
+				ToID: "station2",
+				ToLocation: stationfinder.StationCoordinate{
+					Lat: 2.2,
+					Lon: 2.2,
+				},
 				Cost: stationfinder.Cost{
 					Duration: 11.1,
 					Distance: 11.1,
@@ -74,17 +90,33 @@ func TestConstructStationGraph(t *testing.T) {
 			},
 			stationfinder.NeighborInfo{
 				FromID: "orig_location",
-				ToID:   "station3",
+				FromLocation: stationfinder.StationCoordinate{
+					Lat: 0.0,
+					Lon: 0.0,
+				},
+				ToID: "station3",
 				Cost: stationfinder.Cost{
 					Duration: 33.3,
 					Distance: 33.3,
+				},
+				ToLocation: stationfinder.StationCoordinate{
+					Lat: 3.3,
+					Lon: 3.3,
 				},
 			},
 		},
 		[]stationfinder.NeighborInfo{
 			stationfinder.NeighborInfo{
 				FromID: "station1",
-				ToID:   "station4",
+				FromLocation: stationfinder.StationCoordinate{
+					Lat: 1.1,
+					Lon: 1.1,
+				},
+				ToID: "station4",
+				ToLocation: stationfinder.StationCoordinate{
+					Lat: 4.4,
+					Lon: 4.4,
+				},
 				Cost: stationfinder.Cost{
 					Duration: 44.4,
 					Distance: 44.4,
@@ -92,7 +124,15 @@ func TestConstructStationGraph(t *testing.T) {
 			},
 			stationfinder.NeighborInfo{
 				FromID: "station1",
-				ToID:   "station5",
+				FromLocation: stationfinder.StationCoordinate{
+					Lat: 1.1,
+					Lon: 1.1,
+				},
+				ToID: "station5",
+				ToLocation: stationfinder.StationCoordinate{
+					Lat: 5.5,
+					Lon: 5.5,
+				},
 				Cost: stationfinder.Cost{
 					Duration: 34.3,
 					Distance: 34.4,
@@ -100,7 +140,15 @@ func TestConstructStationGraph(t *testing.T) {
 			},
 			stationfinder.NeighborInfo{
 				FromID: "station2",
-				ToID:   "station4",
+				FromLocation: stationfinder.StationCoordinate{
+					Lat: 2.2,
+					Lon: 2.2,
+				},
+				ToID: "station4",
+				ToLocation: stationfinder.StationCoordinate{
+					Lat: 4.4,
+					Lon: 4.4,
+				},
 				Cost: stationfinder.Cost{
 					Duration: 11.1,
 					Distance: 11.1,
@@ -108,7 +156,15 @@ func TestConstructStationGraph(t *testing.T) {
 			},
 			stationfinder.NeighborInfo{
 				FromID: "station2",
-				ToID:   "station5",
+				FromLocation: stationfinder.StationCoordinate{
+					Lat: 2.2,
+					Lon: 2.2,
+				},
+				ToID: "station5",
+				ToLocation: stationfinder.StationCoordinate{
+					Lat: 5.5,
+					Lon: 5.5,
+				},
 				Cost: stationfinder.Cost{
 					Duration: 14.4,
 					Distance: 14.4,
@@ -116,7 +172,15 @@ func TestConstructStationGraph(t *testing.T) {
 			},
 			stationfinder.NeighborInfo{
 				FromID: "station3",
-				ToID:   "station4",
+				FromLocation: stationfinder.StationCoordinate{
+					Lat: 3.3,
+					Lon: 3.3,
+				},
+				ToID: "station4",
+				ToLocation: stationfinder.StationCoordinate{
+					Lat: 4.4,
+					Lon: 4.4,
+				},
 				Cost: stationfinder.Cost{
 					Duration: 22.2,
 					Distance: 22.2,
@@ -124,7 +188,15 @@ func TestConstructStationGraph(t *testing.T) {
 			},
 			stationfinder.NeighborInfo{
 				FromID: "station3",
-				ToID:   "station5",
+				FromLocation: stationfinder.StationCoordinate{
+					Lat: 3.3,
+					Lon: 3.3,
+				},
+				ToID: "station5",
+				ToLocation: stationfinder.StationCoordinate{
+					Lat: 5.5,
+					Lon: 5.5,
+				},
 				Cost: stationfinder.Cost{
 					Duration: 15.5,
 					Distance: 15.5,
@@ -134,7 +206,15 @@ func TestConstructStationGraph(t *testing.T) {
 		[]stationfinder.NeighborInfo{
 			stationfinder.NeighborInfo{
 				FromID: "station4",
-				ToID:   stationfinder.DestLocationID,
+				FromLocation: stationfinder.StationCoordinate{
+					Lat: 4.4,
+					Lon: 4.4,
+				},
+				ToID: stationfinder.DestLocationID,
+				ToLocation: stationfinder.StationCoordinate{
+					Lat: 6.6,
+					Lon: 6.6,
+				},
 				Cost: stationfinder.Cost{
 					Duration: 44.4,
 					Distance: 44.4,
@@ -142,7 +222,15 @@ func TestConstructStationGraph(t *testing.T) {
 			},
 			stationfinder.NeighborInfo{
 				FromID: "station5",
-				ToID:   stationfinder.DestLocationID,
+				FromLocation: stationfinder.StationCoordinate{
+					Lat: 5.5,
+					Lon: 5.5,
+				},
+				ToID: stationfinder.DestLocationID,
+				ToLocation: stationfinder.StationCoordinate{
+					Lat: 6.6,
+					Lon: 6.6,
+				},
 				Cost: stationfinder.Cost{
 					Duration: 33.3,
 					Distance: 33.3,
@@ -176,15 +264,24 @@ func TestConstructStationGraph(t *testing.T) {
 	testStart(t, graph, currEnergyLevel, maxEnergyLevel)
 	testEnd(t, graph, currEnergyLevel, maxEnergyLevel)
 
-	testConnectivity(t, graph, "station1", []string{"station4", "station5"}, neighbors, currEnergyLevel, maxEnergyLevel)
-	testConnectivity(t, graph, "station2", []string{"station4", "station5"}, neighbors, currEnergyLevel, maxEnergyLevel)
-	testConnectivity(t, graph, "station3", []string{"station4", "station5"}, neighbors, currEnergyLevel, maxEnergyLevel)
-	testConnectivity(t, graph, "station4", []string{stationfinder.DestLocationID}, neighbors, currEnergyLevel, maxEnergyLevel)
-	testConnectivity(t, graph, "station5", []string{stationfinder.DestLocationID}, neighbors, currEnergyLevel, maxEnergyLevel)
+	testConnectivity(t, graph, "station1", locationInfo{lat: 1.1, lon: 1.1},
+		[]string{"station4", "station5"}, neighbors, currEnergyLevel, maxEnergyLevel)
+
+	testConnectivity(t, graph, "station2", locationInfo{lat: 2.2, lon: 2.2},
+		[]string{"station4", "station5"}, neighbors, currEnergyLevel, maxEnergyLevel)
+
+	testConnectivity(t, graph, "station3", locationInfo{lat: 3.3, lon: 3.3},
+		[]string{"station4", "station5"}, neighbors, currEnergyLevel, maxEnergyLevel)
+
+	testConnectivity(t, graph, "station4", locationInfo{lat: 4.4, lon: 4.4},
+		[]string{stationfinder.DestLocationID}, neighbors, currEnergyLevel, maxEnergyLevel)
+
+	testConnectivity(t, graph, "station5", locationInfo{lat: 5.5, lon: 5.5},
+		[]string{stationfinder.DestLocationID}, neighbors, currEnergyLevel, maxEnergyLevel)
 }
 
 func testStart(t *testing.T, graph *stationGraph, currEnergyLevel, maxEnergyLevel float64) {
-	sn := graph.getChargeStationsNodes(stationfinder.OrigLocationID, currEnergyLevel, maxEnergyLevel)
+	sn := graph.getChargeStationsNodes(stationfinder.OrigLocationID, stationfinder.StationCoordinate{}, currEnergyLevel, maxEnergyLevel)
 	if len(sn) != 1 {
 		t.Errorf("incorrect start node generated expect only one node but got %d", len(sn))
 	}
@@ -199,6 +296,15 @@ func testStart(t *testing.T, graph *stationGraph, currEnergyLevel, maxEnergyLeve
 			chargeTime:    0.0,
 			chargeEnergy:  0.0,
 		}, sn[0].chargeInfo)
+	}
+
+	startLocation := graph.g.getLocationInfo(sn[0].id)
+	if !floatEquals(startLocation.lat, 0.0) ||
+		!floatEquals(startLocation.lon, 0.0) {
+		t.Errorf("incorrect location information for start node expect %v but got %v", locationInfo{
+			lat: 0.0,
+			lon: 0.0,
+		}, startLocation)
 	}
 
 	if len(sn[0].neighbors) != 9 {
@@ -237,7 +343,7 @@ func testStart(t *testing.T, graph *stationGraph, currEnergyLevel, maxEnergyLeve
 }
 
 func testEnd(t *testing.T, graph *stationGraph, currEnergyLevel, maxEnergyLevel float64) {
-	se := graph.getChargeStationsNodes(stationfinder.DestLocationID, currEnergyLevel, maxEnergyLevel)
+	se := graph.getChargeStationsNodes(stationfinder.DestLocationID, stationfinder.StationCoordinate{}, currEnergyLevel, maxEnergyLevel)
 	if len(se) != 1 {
 		t.Errorf("incorrect end node generated expect only one node but got %d", len(se))
 	}
@@ -253,13 +359,24 @@ func testEnd(t *testing.T, graph *stationGraph, currEnergyLevel, maxEnergyLevel 
 			chargeEnergy:  0.0,
 		}, se[0].chargeInfo)
 	}
+
+	endLocation := graph.g.getLocationInfo(se[0].id)
+	if !floatEquals(endLocation.lat, 6.6) ||
+		!floatEquals(endLocation.lon, 6.6) {
+		t.Errorf("incorrect location information for end node expect %v but got %v", locationInfo{
+			lat: 6.6,
+			lon: 6.6,
+		}, endLocation)
+	}
+
 	if len(se[0].neighbors) != 0 {
 		t.Errorf("incorrect neighbors count for end node expect %d but got %d", 0, len(se[0].neighbors))
 	}
 }
 
-func testConnectivity(t *testing.T, graph *stationGraph, from string, tos []string, mockArray [][]stationfinder.NeighborInfo, currEnergyLevel, maxEnergyLevel float64) {
-	fns := graph.getChargeStationsNodes(from, 0.0, 0.0)
+func testConnectivity(t *testing.T, graph *stationGraph, from string, fromLocation locationInfo,
+	tos []string, mockArray [][]stationfinder.NeighborInfo, currEnergyLevel, maxEnergyLevel float64) {
+	fns := graph.getChargeStationsNodes(from, stationfinder.StationCoordinate{}, 0.0, 0.0)
 
 	if len(fns) != 3 {
 		t.Errorf("incorrect node generated for %s expect 3 nodes but got %d", from, len(fns))
@@ -277,9 +394,17 @@ func testConnectivity(t *testing.T, graph *stationGraph, from string, tos []stri
 		t.Errorf("incorrect charge information generated for node %s", from)
 	}
 
+	for _, fromNode := range fns {
+		if !floatEquals(fromNode.locationInfo.lat, fromLocation.lat) ||
+			!floatEquals(fromNode.locationInfo.lon, fromLocation.lon) {
+			t.Errorf("incorrect location information generated for node %s expect %+v got %+v",
+				from, fromLocation, fromNode.locationInfo)
+		}
+	}
+
 	index := 0
 	for _, to := range tos {
-		tns := graph.getChargeStationsNodes(to, 0.0, 0.0)
+		tns := graph.getChargeStationsNodes(to, stationfinder.StationCoordinate{}, 0.0, 0.0)
 
 		expectDuration := math.MaxFloat64
 		expectDistance := math.MaxFloat64

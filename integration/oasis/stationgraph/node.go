@@ -12,10 +12,16 @@ type chargeInfo struct {
 	chargeEnergy  float64
 }
 
+type locationInfo struct {
+	lat float64
+	lon float64
+}
+
 type node struct {
 	id        nodeID
 	neighbors []*neighbor
 	chargeInfo
+	locationInfo
 }
 
 type nodeID uint32
