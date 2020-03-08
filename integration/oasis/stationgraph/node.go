@@ -40,13 +40,12 @@ func newNode() *node {
 	}
 }
 
-// @todo: change name to: isDistanceReachable
-// Each charge station node will charge to a energy level, this function is used to test whether target node is reachable
+// Function isLocationReachable is used to test whether target node is reachable
 func (n *node) isLocationReachable(distance float64) bool {
 	return n.chargeEnergy > distance
 }
 
-// @todo: update comment: previous final status to current
+// calcChargeTime calculates time effort needed from previous final status to current
 func (n *node) calcChargeTime(prev *node, distance float64, strategy chargingstrategy.ChargingStrategyCreator) float64 {
 	arrivalEnergy := prev.chargeEnergy - distance
 	if arrivalEnergy < 0 {
