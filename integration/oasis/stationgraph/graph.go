@@ -1,8 +1,6 @@
 package stationgraph
 
 import (
-	"fmt"
-
 	"github.com/Telenav/osrm-backend/integration/oasis/chargingstrategy"
 	"github.com/golang/glog"
 )
@@ -35,9 +33,7 @@ func (g *graph) dijkstra() []nodeID {
 		// relax
 		node := g.nodes[n]
 		for _, neighbor := range node.neighbors {
-			fmt.Printf("+++before is reachable  %v %+v\n", g.nodes[n], neighbor)
 			if g.nodes[n].isLocationReachable(neighbor.distance) {
-				fmt.Printf("+++node is reachable  %v %+v\n", n, neighbor)
 				chargeTime := g.nodes[neighbor.targetNodeID].calcChargeTime(node, neighbor.distance, g.strategy)
 				if m.add(neighbor.targetNodeID, n, neighbor.distance, neighbor.duration+chargeTime) {
 					g.nodes[neighbor.targetNodeID].updateArrivalEnergy(node, neighbor.distance)
