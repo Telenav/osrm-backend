@@ -18,7 +18,7 @@ env:
 jobs:
 
   build-test:
-    name: Go CI - Build & Test
+    name: Go CI
     runs-on: ubuntu-latest
     steps:
     - name: Set up Go 1.13
@@ -32,11 +32,6 @@ jobs:
       run: cd ${GO_PROJECT_PATH} && go build -v ./...
     - name: Test
       run: cd ${GO_PROJECT_PATH} && go test -v ./...
-
-  go-linter:
-    name: Go CI - Linter
-    runs-on: ubuntu-latest
-    steps:
     - name: go1.13 linter
       uses: shoukoo/golang-pipeline/go1.13/linter@master
       with:
