@@ -94,11 +94,19 @@ func CalcWeightBetweenChargeStationsPair(from nearbyStationsIterator, to nearbyS
 
 	// iterate table response result
 	var result []NeighborInfo
-	for i := range startPoints {
-		for j := range targetPoints {
+	for i, startPoint := range startPoints {
+		for j, targetPoint := range targetPoints {
 			result = append(result, NeighborInfo{
 				FromID: startIDs[i],
-				ToID:   targetIDs[j],
+				FromLocation: StationCoordinate{
+					Lat: startPoint.Lat,
+					Lon: startPoint.Lon,
+				},
+				ToID: targetIDs[j],
+				ToLocation: StationCoordinate{
+					Lat: targetPoint.Lat,
+					Lon: targetPoint.Lon,
+				},
 				Cost: Cost{
 					Duration: *resp.Resp.Durations[i][j],
 					Distance: *resp.Resp.Distances[i][j],
@@ -118,8 +126,10 @@ type Cost struct {
 
 // NeighborInfo represent cost information between two charge stations
 type NeighborInfo struct {
-	FromID string
-	ToID   string
+	FromID       string
+	FromLocation StationCoordinate
+	ToID         string
+	ToLocation   StationCoordinate
 	Cost
 }
 
@@ -149,6 +159,10 @@ type WeightBetweenNeighbors struct {
 // - CalcWeightBetweenChargeStationsPair needs two iterators, one for nearbystationiterator
 //   represents from location and one for next location.  An array of channel is created
 //   to represent whether specific iterator is ready or not.
+// - The result of this function is channel of WeightBetweenNeighbors, the sequence of
+//   WeightBetweenNeighbors is important for future logic: first result is start -> first
+//   group of low energy charge stations, first group -> second group, ..., xxx group to
+//   end
 // - All iterators has been recorded in iterators array
 //   @Todo: isIteratorReady could be removed later.  When iterator is not ready, should
 //         pause inside iterator itself.  That need refactor the design of stationfinder.

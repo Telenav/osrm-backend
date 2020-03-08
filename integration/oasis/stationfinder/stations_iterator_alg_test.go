@@ -88,7 +88,15 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 	expect := []NeighborInfo{
 		NeighborInfo{
 			FromID: "station1",
-			ToID:   "station6",
+			FromLocation: StationCoordinate{
+				Lat: 32.333,
+				Lon: 122.333,
+			},
+			ToID: "station6",
+			ToLocation: StationCoordinate{
+				Lat: 30.333,
+				Lon: 122.333,
+			},
 			Cost: Cost{
 				Duration: 2,
 				Distance: 2,
@@ -96,7 +104,15 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station1",
-			ToID:   "station7",
+			FromLocation: StationCoordinate{
+				Lat: 32.333,
+				Lon: 122.333,
+			},
+			ToID: "station7",
+			ToLocation: StationCoordinate{
+				Lat: -10.333,
+				Lon: 122.333,
+			},
 			Cost: Cost{
 				Duration: 3,
 				Distance: 3,
@@ -104,7 +120,15 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station2",
-			ToID:   "station6",
+			FromLocation: StationCoordinate{
+				Lat: -32.333,
+				Lon: -122.333,
+			},
+			ToID: "station6",
+			ToLocation: StationCoordinate{
+				Lat: 30.333,
+				Lon: 122.333,
+			},
 			Cost: Cost{
 				Duration: 4,
 				Distance: 4,
@@ -112,7 +136,15 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station2",
-			ToID:   "station7",
+			FromLocation: StationCoordinate{
+				Lat: -32.333,
+				Lon: -122.333,
+			},
+			ToID: "station7",
+			ToLocation: StationCoordinate{
+				Lat: -10.333,
+				Lon: 122.333,
+			},
 			Cost: Cost{
 				Duration: 5,
 				Distance: 5,
@@ -120,7 +152,15 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station3",
-			ToID:   "station6",
+			FromLocation: StationCoordinate{
+				Lat: 32.333,
+				Lon: -122.333,
+			},
+			ToID: "station6",
+			ToLocation: StationCoordinate{
+				Lat: 30.333,
+				Lon: 122.333,
+			},
 			Cost: Cost{
 				Duration: 6,
 				Distance: 6,
@@ -128,7 +168,15 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station3",
-			ToID:   "station7",
+			FromLocation: StationCoordinate{
+				Lat: 32.333,
+				Lon: -122.333,
+			},
+			ToID: "station7",
+			ToLocation: StationCoordinate{
+				Lat: -10.333,
+				Lon: 122.333,
+			},
 			Cost: Cost{
 				Duration: 7,
 				Distance: 7,
@@ -136,7 +184,15 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station4",
-			ToID:   "station6",
+			FromLocation: StationCoordinate{
+				Lat: -32.333,
+				Lon: 122.333,
+			},
+			ToID: "station6",
+			ToLocation: StationCoordinate{
+				Lat: 30.333,
+				Lon: 122.333,
+			},
 			Cost: Cost{
 				Duration: 8,
 				Distance: 8,
@@ -144,7 +200,15 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station4",
-			ToID:   "station7",
+			FromLocation: StationCoordinate{
+				Lat: -32.333,
+				Lon: 122.333,
+			},
+			ToID: "station7",
+			ToLocation: StationCoordinate{
+				Lat: -10.333,
+				Lon: 122.333,
+			},
 			Cost: Cost{
 				Duration: 9,
 				Distance: 9,
@@ -219,7 +283,15 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 	expect_arr0 := []NeighborInfo{
 		NeighborInfo{
 			FromID: "orig_location",
-			ToID:   "station1",
+			FromLocation: StationCoordinate{
+				Lat: 1.1,
+				Lon: 1.1,
+			},
+			ToID: "station1",
+			ToLocation: StationCoordinate{
+				Lat: 32.333,
+				Lon: 122.333,
+			},
 			Cost: Cost{
 				Duration: 22.2,
 				Distance: 22.2,
@@ -227,7 +299,15 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "orig_location",
-			ToID:   "station2",
+			FromLocation: StationCoordinate{
+				Lat: 1.1,
+				Lon: 1.1,
+			},
+			ToID: "station2",
+			ToLocation: StationCoordinate{
+				Lat: -32.333,
+				Lon: -122.333,
+			},
 			Cost: Cost{
 				Duration: 11.1,
 				Distance: 11.1,
@@ -235,7 +315,15 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "orig_location",
-			ToID:   "station3",
+			FromLocation: StationCoordinate{
+				Lat: 1.1,
+				Lon: 1.1,
+			},
+			ToID: "station3",
+			ToLocation: StationCoordinate{
+				Lat: 32.333,
+				Lon: -122.333,
+			},
 			Cost: Cost{
 				Duration: 33.3,
 				Distance: 33.3,
@@ -243,7 +331,15 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "orig_location",
-			ToID:   "station4",
+			FromLocation: StationCoordinate{
+				Lat: 1.1,
+				Lon: 1.1,
+			},
+			ToID: "station4",
+			ToLocation: StationCoordinate{
+				Lat: -32.333,
+				Lon: 122.333,
+			},
 			Cost: Cost{
 				Duration: 44.4,
 				Distance: 44.4,
@@ -254,7 +350,15 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 	expect_arr1 := []NeighborInfo{
 		NeighborInfo{
 			FromID: "station1",
-			ToID:   "station6",
+			FromLocation: StationCoordinate{
+				Lat: 32.333,
+				Lon: 122.333,
+			},
+			ToID: "station6",
+			ToLocation: StationCoordinate{
+				Lat: 30.333,
+				Lon: 122.333,
+			},
 			Cost: Cost{
 				Duration: 2,
 				Distance: 2,
@@ -262,7 +366,15 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station1",
-			ToID:   "station7",
+			FromLocation: StationCoordinate{
+				Lat: 32.333,
+				Lon: 122.333,
+			},
+			ToID: "station7",
+			ToLocation: StationCoordinate{
+				Lat: -10.333,
+				Lon: 122.333,
+			},
 			Cost: Cost{
 				Duration: 3,
 				Distance: 3,
@@ -270,7 +382,15 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station2",
-			ToID:   "station6",
+			FromLocation: StationCoordinate{
+				Lat: -32.333,
+				Lon: -122.333,
+			},
+			ToID: "station6",
+			ToLocation: StationCoordinate{
+				Lat: 30.333,
+				Lon: 122.333,
+			},
 			Cost: Cost{
 				Duration: 4,
 				Distance: 4,
@@ -278,7 +398,15 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station2",
-			ToID:   "station7",
+			FromLocation: StationCoordinate{
+				Lat: -32.333,
+				Lon: -122.333,
+			},
+			ToID: "station7",
+			ToLocation: StationCoordinate{
+				Lat: -10.333,
+				Lon: 122.333,
+			},
 			Cost: Cost{
 				Duration: 5,
 				Distance: 5,
@@ -286,7 +414,15 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station3",
-			ToID:   "station6",
+			FromLocation: StationCoordinate{
+				Lat: 32.333,
+				Lon: -122.333,
+			},
+			ToID: "station6",
+			ToLocation: StationCoordinate{
+				Lat: 30.333,
+				Lon: 122.333,
+			},
 			Cost: Cost{
 				Duration: 6,
 				Distance: 6,
@@ -294,7 +430,15 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station3",
-			ToID:   "station7",
+			FromLocation: StationCoordinate{
+				Lat: 32.333,
+				Lon: -122.333,
+			},
+			ToID: "station7",
+			ToLocation: StationCoordinate{
+				Lat: -10.333,
+				Lon: 122.333,
+			},
 			Cost: Cost{
 				Duration: 7,
 				Distance: 7,
@@ -302,7 +446,15 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station4",
-			ToID:   "station6",
+			FromLocation: StationCoordinate{
+				Lat: -32.333,
+				Lon: 122.333,
+			},
+			ToID: "station6",
+			ToLocation: StationCoordinate{
+				Lat: 30.333,
+				Lon: 122.333,
+			},
 			Cost: Cost{
 				Duration: 8,
 				Distance: 8,
@@ -310,7 +462,15 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station4",
-			ToID:   "station7",
+			FromLocation: StationCoordinate{
+				Lat: -32.333,
+				Lon: 122.333,
+			},
+			ToID: "station7",
+			ToLocation: StationCoordinate{
+				Lat: -10.333,
+				Lon: 122.333,
+			},
 			Cost: Cost{
 				Duration: 9,
 				Distance: 9,
@@ -321,7 +481,15 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 	expect_arr2 := []NeighborInfo{
 		NeighborInfo{
 			FromID: "station6",
-			ToID:   "dest_location",
+			FromLocation: StationCoordinate{
+				Lat: 30.333,
+				Lon: 122.333,
+			},
+			ToID: "dest_location",
+			ToLocation: StationCoordinate{
+				Lat: 4.4,
+				Lon: 4.4,
+			},
 			Cost: Cost{
 				Duration: 66.6,
 				Distance: 66.6,
@@ -329,7 +497,15 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station7",
-			ToID:   "dest_location",
+			FromLocation: StationCoordinate{
+				Lat: -10.333,
+				Lon: 122.333,
+			},
+			ToID: "dest_location",
+			ToLocation: StationCoordinate{
+				Lat: 4.4,
+				Lon: 4.4,
+			},
 			Cost: Cost{
 				Duration: 11.1,
 				Distance: 11.1,
