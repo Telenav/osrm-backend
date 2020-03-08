@@ -41,5 +41,6 @@ jobs:
       uses: shoukoo/golang-pipeline/go1.13/linter@master
       with:
         GOLINT: on
-        GOLINTPATH: ${{ env.GO_PROJECT_PATH }}
         MISSPELL: off
+      env:
+        PROJECT_PATH: ${{ env.GO_PROJECT_PATH }}
