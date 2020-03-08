@@ -105,4 +105,3 @@ I0121 15:01:55.286525    7124 contents.go:53]   OSRN v5.22.0
 I0121 15:01:55.286539    7124 contents.go:55]   timestamp(a.k.a. data_version) meta 20 count 20
 I0121 15:01:55.286549    7124 contents.go:57]   timestamp(a.k.a. data_version) 2019-01-24T21:15:02Z
 ```
-
