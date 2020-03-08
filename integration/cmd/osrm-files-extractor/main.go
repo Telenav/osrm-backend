@@ -87,4 +87,5 @@ func main() {
 			c.PrintSummary(flags.printSummary)
 		}
 	}
+
 }
