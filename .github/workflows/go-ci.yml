@@ -5,7 +5,12 @@ on:
     branches: 
       - '**'
     paths:
-    - 'integration/**'
+      - 'integration/**.go'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: 
+      - 'master'
+      - 'release/**'
 
 env:
   GO_PROJECT_PATH: integration/
