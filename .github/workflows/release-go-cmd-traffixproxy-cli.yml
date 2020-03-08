@@ -11,7 +11,7 @@ env:
 
 jobs:
   releases-matrix:
-    name: Release Go Binary
+    name: Release cmd/trafficproxy-cli
     runs-on: ubuntu-latest
     strategy:
       matrix:

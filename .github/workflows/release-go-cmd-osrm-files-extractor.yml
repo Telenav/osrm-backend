@@ -11,7 +11,7 @@ env:
 
 jobs:
   releases-matrix:
-    name: Release Go Binary
+    name: Release cmd/osrm-files-extractor
     runs-on: ubuntu-latest
     strategy:
       matrix:
