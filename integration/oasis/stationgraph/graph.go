@@ -32,11 +32,50 @@ func (g *graph) dijkstra() []nodeID {
 		node := g.nodes[n]
 		for _, neighbor := range node.neighbors {
 			if g.nodes[n].isLocationReachable(neighbor.distance) {
-				// @todo: charge time isn't consider here, TBD
-				if m.add(neighbor.targetNodeID, n, neighbor.distance, neighbor.duration) {
+				// chargeTime := g.nodes[neighbor.targetNodeID].calcChargeTime(node, neighbor.distance, g.strategy)
+				chargeTime := 0.0
+				if m.add(neighbor.targetNodeID, n, neighbor.distance, neighbor.duration+chargeTime) {
 					g.nodes[neighbor.targetNodeID].updateArrivalEnergy(node, neighbor.distance)
+					g.nodes[neighbor.targetNodeID].updateChargingTime(chargeTime)
 				}
 			}
 		}
 	}
+}
+
+func (g *graph) accumulateDistanceAndDuration(from nodeID, to nodeID, distance, duration *float64) {
+	if from < 0 || int(from) >= len(g.nodes) {
+		glog.Fatalf("While calling accumulateDistanceAndDuration, incorrect nodeID passed into graph %v\n", from)
+	}
+
+	if to < 0 || int(to) >= len(g.nodes) {
+		glog.Fatalf("While calling accumulateDistanceAndDuration, incorrect nodeID passed into graph %v\n", to)
+	}
+
+	fromNode := g.nodes[from]
+	for _, neighbor := range fromNode.neighbors {
+		if neighbor.targetNodeID == to {
+			*distance += neighbor.distance
+			*duration += neighbor.duration + g.nodes[to].chargeTime
+			return
+		}
+	}
+
+	glog.Errorf("Passing un-connect fromNodeID and toNodeID into accumulateDistanceAndDuration.\n")
+}
+
+func (g *graph) getChargeInfo(n nodeID) chargeInfo {
+	if n < 0 || int(n) >= len(g.nodes) {
+		glog.Fatalf("While calling getChargeInfo, incorrect nodeID passed into graph %v\n", n)
+	}
+
+	return g.nodes[n].chargeInfo
+}
+
+func (g *graph) getLocationInfo(n nodeID) locationInfo {
+	if n < 0 || int(n) >= len(g.nodes) {
+		glog.Fatalf("While calling getLocationInfo, incorrect nodeID passed into graph %v\n", n)
+	}
+
+	return g.nodes[n].locationInfo
 }

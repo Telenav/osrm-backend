@@ -3,6 +3,7 @@ package stationgraph
 import (
 	"math"
 
+	"github.com/Telenav/osrm-backend/integration/oasis/chargingstrategy"
 	"github.com/golang/glog"
 )
 
@@ -12,10 +13,16 @@ type chargeInfo struct {
 	chargeEnergy  float64
 }
 
+type locationInfo struct {
+	lat float64
+	lon float64
+}
+
 type node struct {
 	id        nodeID
 	neighbors []*neighbor
 	chargeInfo
+	locationInfo
 }
 
 type nodeID uint32
@@ -33,13 +40,29 @@ func newNode() *node {
 	}
 }
 
+// Function isLocationReachable is used to test whether target node is reachable
 func (n *node) isLocationReachable(distance float64) bool {
-	return (n.arrivalEnergy + n.chargeEnergy) > distance
+	return n.chargeEnergy > distance
+}
+
+// calcChargeTime calculates time effort needed from previous final status to current
+func (n *node) calcChargeTime(prev *node, distance float64, strategy chargingstrategy.ChargingStrategyCreator) float64 {
+	arrivalEnergy := prev.chargeEnergy - distance
+	if arrivalEnergy < 0 {
+		glog.Fatalf("Before updateNode should check isLocationReachable() prev.arrivalEnergy=%#v distance=%#v", prev.arrivalEnergy, distance)
+	}
+	//return strategy.EvaluateCost(arrivalEnergy, chargingstrategy.ChargingStatus{ChargingEnergy: n.chargeEnergy}).Duration
+	return 0.0
+}
+
+func (n *node) updateChargingTime(chargingTime float64) {
+	// @todo: maybe node record chargestate
+	n.chargeTime = chargingTime
 }
 
 func (n *node) updateArrivalEnergy(prev *node, distance float64) {
-	n.arrivalEnergy = prev.arrivalEnergy + prev.chargeEnergy - distance
+	n.arrivalEnergy = prev.chargeEnergy - distance
 	if n.arrivalEnergy < 0 {
-		glog.Fatal("Before updateNode should check isLocationReachable()")
+		glog.Fatalf("Before updateNode should check isLocationReachable() prev.arrivalEnergy=%#v distance=%#v", prev.arrivalEnergy, distance)
 	}
 }
