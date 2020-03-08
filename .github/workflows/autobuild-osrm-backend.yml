@@ -23,7 +23,7 @@ env:
 jobs:
 
   build:
-    name: Build Docker - osrm-backend
+
     runs-on: ubuntu-latest
 
     steps:
