@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/Telenav/osrm-backend/integration/oasis/chargingstrategy"
+	"github.com/Telenav/osrm-backend/integration/oasis/solution"
 	"github.com/Telenav/osrm-backend/integration/oasis/stationfinder"
 )
 
@@ -467,17 +468,17 @@ func TestGenerateChargeSolutions1(t *testing.T) {
 	sol := solutions[0]
 	// 58.8 = 11.1 + 14.4 + 33.3
 	if !floatEquals(sol.Distance, 58.8) {
-		t.Errorf("Incorrect distance calculated for fakeGraph1 expect 58.89 but got %#v.\n", solution.Distance)
+		t.Errorf("Incorrect distance calculated for fakeGraph1 expect 58.89 but got %#v.\n", sol.Distance)
 	}
 
 	// 7918.8 = 11.1 + 2532(60% charge) + 14.4 + 5328(80% charge) + 33.3
 	if !floatEquals(sol.Duration, 7918.8) {
-		t.Errorf("Incorrect duration calculated for fakeGraph1 expect 10858.8 but got %#v.\n", solution.Duration)
+		t.Errorf("Incorrect duration calculated for fakeGraph1 expect 10858.8 but got %#v.\n", sol.Duration)
 	}
 
 	// 6.7 = 40 - 33.3
 	if !floatEquals(sol.RemainingRage, 6.7) {
-		t.Errorf("Incorrect duration calculated for fakeGraph1 expect 10858.8 but got %#v.\n", solution.RemainingRage)
+		t.Errorf("Incorrect duration calculated for fakeGraph1 expect 10858.8 but got %#v.\n", sol.RemainingRage)
 	}
 
 	if len(sol.ChargeStations) != 2 {
@@ -496,7 +497,7 @@ func TestGenerateChargeSolutions1(t *testing.T) {
 		ChargeRange:   30,
 	}
 	if !reflect.DeepEqual(sol.ChargeStations[0], expectStation1) {
-		t.Errorf("Expect first charge stations info for fakeGraph1 is %#v but got %#v\n", expectStation1, solution.ChargeStations[0])
+		t.Errorf("Expect first charge stations info for fakeGraph1 is %#v but got %#v\n", expectStation1, sol.ChargeStations[0])
 	}
 
 	expectStation2 := &solution.ChargeStation{
@@ -510,8 +511,8 @@ func TestGenerateChargeSolutions1(t *testing.T) {
 		ChargeTime:    5328,
 		ChargeRange:   40,
 	}
-	if !reflect.DeepEqual(solution.ChargeStations[1], expectStation2) {
-		t.Errorf("Expect second charge stations info for fakeGraph1 is %#v but got %#v\n", expectStation2, solution.ChargeStations[1])
+	if !reflect.DeepEqual(sol.ChargeStations[1], expectStation2) {
+		t.Errorf("Expect second charge stations info for fakeGraph1 is %#v but got %#v\n", expectStation2, sol.ChargeStations[1])
 	}
 
 }
