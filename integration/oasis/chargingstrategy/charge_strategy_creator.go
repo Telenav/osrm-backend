@@ -1,7 +1,7 @@
 package chargingstrategy
 
-// ChargingStatus contains charging related information
-type ChargingStatus struct {
+// State contains charging related information
+type State struct {
 	ChargingEnergy float64
 }
 
@@ -15,8 +15,8 @@ type ChargingCost struct {
 type ChargingStrategyCreator interface {
 
 	// CreateChargingStrategies creates charge strategies which could be used by other algorithm
-	CreateChargingStrategies() []ChargingStatus
+	CreateChargingStrategies() []State
 
 	// EvaluateCost accepts current status and target status and returns cost needed
-	EvaluateCost(arrivalEnergy float64, targetState ChargingStatus) ChargingCost
+	EvaluateCost(arrivalEnergy float64, targetState State) ChargingCost
 }
