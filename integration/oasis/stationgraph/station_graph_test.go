@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/Telenav/osrm-backend/integration/oasis/chargingstrategy"
-	"github.com/Telenav/osrm-backend/integration/oasis/solutionformat"
 	"github.com/Telenav/osrm-backend/integration/oasis/stationfinder"
 )
 
@@ -465,28 +464,28 @@ func TestGenerateChargeSolutions1(t *testing.T) {
 	if len(solutions) != 1 {
 		t.Errorf("expect to have 1 solution but got %d.\n", len(solutions))
 	}
-	solution := solutions[0]
+	sol := solutions[0]
 	// 58.8 = 11.1 + 14.4 + 33.3
-	if !floatEquals(solution.Distance, 58.8) {
+	if !floatEquals(sol.Distance, 58.8) {
 		t.Errorf("Incorrect distance calculated for fakeGraph1 expect 58.89 but got %#v.\n", solution.Distance)
 	}
 
 	// 7918.8 = 11.1 + 2532(60% charge) + 14.4 + 5328(80% charge) + 33.3
-	if !floatEquals(solution.Duration, 7918.8) {
+	if !floatEquals(sol.Duration, 7918.8) {
 		t.Errorf("Incorrect duration calculated for fakeGraph1 expect 10858.8 but got %#v.\n", solution.Duration)
 	}
 
 	// 6.7 = 40 - 33.3
-	if !floatEquals(solution.RemainingRage, 6.7) {
+	if !floatEquals(sol.RemainingRage, 6.7) {
 		t.Errorf("Incorrect duration calculated for fakeGraph1 expect 10858.8 but got %#v.\n", solution.RemainingRage)
 	}
 
-	if len(solution.ChargeStations) != 2 {
-		t.Errorf("Expect to have 2 charge stations for fakeGraph1 but got %d.\n", len(solution.ChargeStations))
+	if len(sol.ChargeStations) != 2 {
+		t.Errorf("Expect to have 2 charge stations for fakeGraph1 but got %d.\n", len(sol.ChargeStations))
 	}
 
-	expectStation1 := &solutionformat.ChargeStation{
-		Location: solutionformat.Location{
+	expectStation1 := &solution.ChargeStation{
+		Location: solution.Location{
 			Lat: 2.2,
 			Lon: 2.2,
 		},
@@ -496,12 +495,12 @@ func TestGenerateChargeSolutions1(t *testing.T) {
 		ChargeTime:    2532,
 		ChargeRange:   30,
 	}
-	if !reflect.DeepEqual(solution.ChargeStations[0], expectStation1) {
+	if !reflect.DeepEqual(sol.ChargeStations[0], expectStation1) {
 		t.Errorf("Expect first charge stations info for fakeGraph1 is %#v but got %#v\n", expectStation1, solution.ChargeStations[0])
 	}
 
-	expectStation2 := &solutionformat.ChargeStation{
-		Location: solutionformat.Location{
+	expectStation2 := &solution.ChargeStation{
+		Location: solution.Location{
 			Lat: 5.5,
 			Lon: 5.5,
 		},

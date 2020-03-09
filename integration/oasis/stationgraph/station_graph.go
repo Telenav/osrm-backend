@@ -2,7 +2,7 @@ package stationgraph
 
 import (
 	"github.com/Telenav/osrm-backend/integration/oasis/chargingstrategy"
-	"github.com/Telenav/osrm-backend/integration/oasis/solutionformat"
+	"github.com/Telenav/osrm-backend/integration/oasis/solution"
 	"github.com/Telenav/osrm-backend/integration/oasis/stationfinder"
 	"github.com/golang/glog"
 )
@@ -45,17 +45,17 @@ func NewStationGraph(c chan stationfinder.WeightBetweenNeighbors, currEnergyLeve
 	return sg.constructGraph()
 }
 
-func (sg *stationGraph) GenerateChargeSolutions() []*solutionformat.Solution {
+func (sg *stationGraph) GenerateChargeSolutions() []*solution.Solution {
 	nodes := sg.g.dijkstra()
 	if nil == nodes {
 		glog.Warning("Failed to generate charge stations for stationGraph.\n")
 		return nil
 	}
 
-	var result []*solutionformat.Solution
+	var result []*solution.Solution
 
-	solution := &solutionformat.Solution{}
-	solution.ChargeStations = make([]*solutionformat.ChargeStation, 0)
+	sol := &solution.Solution{}
+	sol.ChargeStations = make([]*solution.ChargeStation, 0)
 	var totalDistance, totalDuration float64
 
 	startNodeID := sg.stationID2Nodes[stationfinder.OrigLocationID][0].id
@@ -68,25 +68,25 @@ func (sg *stationGraph) GenerateChargeSolutions() []*solutionformat.Solution {
 			sg.g.accumulateDistanceAndDuration(nodes[i], endNodeID, &totalDistance, &totalDuration)
 		}
 
-		station := &solutionformat.ChargeStation{}
+		station := &solution.ChargeStation{}
 		station.ArrivalEnergy = sg.g.getChargeInfo(nodes[i]).arrivalEnergy
 		station.ChargeRange = sg.g.getChargeInfo(nodes[i]).chargeEnergy
 		station.ChargeTime = sg.g.getChargeInfo(nodes[i]).chargeTime
-		station.Location = solutionformat.Location{
+		station.Location = solution.Location{
 			Lat: sg.g.getLocationInfo(nodes[i]).lat,
 			Lon: sg.g.getLocationInfo(nodes[i]).lon,
 		}
 		station.StationID = sg.num2StationID[uint32(nodes[i])]
 
-		solution.ChargeStations = append(solution.ChargeStations, station)
+		sol.ChargeStations = append(sol.ChargeStations, station)
 
 	}
 
-	solution.Distance = totalDistance
-	solution.Duration = totalDuration
-	solution.RemainingRage = sg.stationID2Nodes[stationfinder.DestLocationID][0].arrivalEnergy
+	sol.Distance = totalDistance
+	sol.Duration = totalDuration
+	sol.RemainingRage = sg.stationID2Nodes[stationfinder.DestLocationID][0].arrivalEnergy
 
-	result = append(result, solution)
+	result = append(result, sol)
 	return result
 }
 
