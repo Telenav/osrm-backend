@@ -1,4 +1,4 @@
-package solutionformat
+package solution
 
 // Solution contains summary and selected charge stations
 type Solution struct {
