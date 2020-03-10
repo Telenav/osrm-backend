@@ -1,6 +1,7 @@
 package stationgraph
 
 import (
+	"github.com/Telenav/osrm-backend/integration/oasis/chargingstrategy"
 	"github.com/golang/glog"
 )
 
@@ -8,6 +9,7 @@ type graph struct {
 	nodes       []*node
 	startNodeID nodeID
 	endNodeID   nodeID
+	strategy    chargingstrategy.ChargingStrategyCreator
 }
 
 func (g *graph) dijkstra() []nodeID {
@@ -32,8 +34,7 @@ func (g *graph) dijkstra() []nodeID {
 		node := g.nodes[n]
 		for _, neighbor := range node.neighbors {
 			if g.nodes[n].isLocationReachable(neighbor.distance) {
-				// chargeTime := g.nodes[neighbor.targetNodeID].calcChargeTime(node, neighbor.distance, g.strategy)
-				chargeTime := 0.0
+				chargeTime := g.nodes[neighbor.targetNodeID].calcChargeTime(node, neighbor.distance, g.strategy)
 				if m.add(neighbor.targetNodeID, n, neighbor.distance, neighbor.duration+chargeTime) {
 					g.nodes[neighbor.targetNodeID].updateArrivalEnergy(node, neighbor.distance)
 					g.nodes[neighbor.targetNodeID].updateChargingTime(chargeTime)

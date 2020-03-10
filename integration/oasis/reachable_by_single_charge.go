@@ -77,6 +77,7 @@ func generateResponse4SingleChargeStation(w http.ResponseWriter, req *oasis.Requ
 
 	station := new(oasis.ChargeStation)
 	station.WaitTime = 0.0
+	// @todo ChargeTime and ChargeRange need to be adjusted according to chargingstrategy
 	station.ChargeTime = 7200.0
 	station.ChargeRange = req.MaxRange
 	station.DetailURL = "url"
