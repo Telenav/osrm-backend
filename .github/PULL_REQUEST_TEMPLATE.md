@@ -2,8 +2,9 @@
 
 What issue is this PR targeting? If there is no issue that addresses the problem, please open a corresponding issue and link it here.
 
-Please read our [documentation](https://github.com/Project-OSRM/osrm-backend/blob/master/docs/releasing.md) on release and version management.
-If your PR is still work in progress please attach the relevant label.
+- Please read Telenav's [Contribution Guidelines](https://github.com/Telenav/osrm-backend/wiki/Contribution-Guidelines) for OSRM project
+- Please read OSRM team's [documentation](https://github.com/Project-OSRM/osrm-backend/blob/master/docs/releasing.md) on release and version management.
+- If your PR is still work in progress please attach the relevant label.
 
 ## Tasklist
 
