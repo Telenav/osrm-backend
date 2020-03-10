@@ -46,8 +46,8 @@ func NewStationGraph(c chan stationfinder.WeightBetweenNeighbors, currEnergyLeve
 }
 
 func (sg *stationGraph) GenerateChargeSolutions() []*solution.Solution {
-	nodes := sg.g.dijkstra()
-	if nil == nodes {
+	stationNodes := sg.g.dijkstra()
+	if nil == stationNodes {
 		glog.Warning("Failed to generate charge stations for stationGraph.\n")
 		return nil
 	}
@@ -58,28 +58,31 @@ func (sg *stationGraph) GenerateChargeSolutions() []*solution.Solution {
 	sol.ChargeStations = make([]*solution.ChargeStation, 0)
 	var totalDistance, totalDuration float64
 
+	// accumulate information from start node -> first charge station
 	startNodeID := sg.stationID2Nodes[stationfinder.OrigLocationID][0].id
-	sg.g.accumulateDistanceAndDuration(startNodeID, nodes[0], &totalDistance, &totalDuration)
-	for i := 0; i < len(nodes); i++ {
-		if i != len(nodes)-1 {
-			sg.g.accumulateDistanceAndDuration(nodes[i], nodes[i+1], &totalDistance, &totalDuration)
+	sg.g.accumulateDistanceAndDuration(startNodeID, stationNodes[0], &totalDistance, &totalDuration)
+
+	// accumulate information first charge station -> second charge station -> ... -> end node
+	for i := 0; i < len(stationNodes); i++ {
+		if i != len(stationNodes)-1 {
+			sg.g.accumulateDistanceAndDuration(stationNodes[i], stationNodes[i+1], &totalDistance, &totalDuration)
 		} else {
 			endNodeID := sg.stationID2Nodes[stationfinder.DestLocationID][0].id
-			sg.g.accumulateDistanceAndDuration(nodes[i], endNodeID, &totalDistance, &totalDuration)
+			sg.g.accumulateDistanceAndDuration(stationNodes[i], endNodeID, &totalDistance, &totalDuration)
 		}
 
+		// construct station information
 		station := &solution.ChargeStation{}
-		station.ArrivalEnergy = sg.g.getChargeInfo(nodes[i]).arrivalEnergy
-		station.ChargeRange = sg.g.getChargeInfo(nodes[i]).chargeEnergy
-		station.ChargeTime = sg.g.getChargeInfo(nodes[i]).chargeTime
+		station.ArrivalEnergy = sg.g.getChargeInfo(stationNodes[i]).arrivalEnergy
+		station.ChargeRange = sg.g.getChargeInfo(stationNodes[i]).chargeEnergy
+		station.ChargeTime = sg.g.getChargeInfo(stationNodes[i]).chargeTime
 		station.Location = solution.Location{
-			Lat: sg.g.getLocationInfo(nodes[i]).lat,
-			Lon: sg.g.getLocationInfo(nodes[i]).lon,
+			Lat: sg.g.getLocationInfo(stationNodes[i]).lat,
+			Lon: sg.g.getLocationInfo(stationNodes[i]).lon,
 		}
-		station.StationID = sg.num2StationID[uint32(nodes[i])]
+		station.StationID = sg.num2StationID[uint32(stationNodes[i])]
 
 		sol.ChargeStations = append(sol.ChargeStations, station)
-
 	}
 
 	sol.Distance = totalDistance
