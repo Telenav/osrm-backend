@@ -1,6 +1,7 @@
 package chargingstrategy
 
 import (
+	"github.com/Telenav/osrm-backend/integration/util"
 	"github.com/golang/glog"
 )
 
@@ -45,7 +46,7 @@ func (f *fakeChargingStrategyCreator) EvaluateCost(arrivalEnergy float64, target
 	}
 
 	if arrivalEnergy > targetState.ChargingEnergy ||
-		floatEquals(targetState.ChargingEnergy, 0.0) {
+		util.FloatEquals(targetState.ChargingEnergy, 0.0) {
 		return noNeedCharge
 	}
 
@@ -57,7 +58,7 @@ func (f *fakeChargingStrategyCreator) EvaluateCost(arrivalEnergy float64, target
 		currentEnergy = sixtyPercentOfMaxEnergy
 	}
 
-	if floatEquals(targetState.ChargingEnergy, sixtyPercentOfMaxEnergy) {
+	if util.FloatEquals(targetState.ChargingEnergy, sixtyPercentOfMaxEnergy) {
 		return ChargingCost{
 			Duration: totalTime,
 		}
@@ -68,7 +69,7 @@ func (f *fakeChargingStrategyCreator) EvaluateCost(arrivalEnergy float64, target
 		totalTime += energyNeeded4Stage2 / (eightyPercentOfMaxEnergy - sixtyPercentOfMaxEnergy) * 3600.0
 		currentEnergy = eightyPercentOfMaxEnergy
 	}
-	if floatEquals(targetState.ChargingEnergy, eightyPercentOfMaxEnergy) {
+	if util.FloatEquals(targetState.ChargingEnergy, eightyPercentOfMaxEnergy) {
 		return ChargingCost{
 			Duration: totalTime,
 		}
@@ -79,7 +80,7 @@ func (f *fakeChargingStrategyCreator) EvaluateCost(arrivalEnergy float64, target
 		totalTime += energyNeeded4Stage3 / (f.maxEnergyLevel - eightyPercentOfMaxEnergy) * 7200.0
 	}
 
-	if floatEquals(targetState.ChargingEnergy, f.maxEnergyLevel) {
+	if util.FloatEquals(targetState.ChargingEnergy, f.maxEnergyLevel) {
 		return ChargingCost{
 			Duration: totalTime,
 		}
@@ -87,13 +88,4 @@ func (f *fakeChargingStrategyCreator) EvaluateCost(arrivalEnergy float64, target
 
 	glog.Fatalf("Invalid charging state %#v\n", targetState)
 	return noNeedCharge
-}
-
-var epsilon float64 = 0.00000001
-
-func floatEquals(a, b float64) bool {
-	if (a-b) < epsilon && (b-a) < epsilon {
-		return true
-	}
-	return false
 }
