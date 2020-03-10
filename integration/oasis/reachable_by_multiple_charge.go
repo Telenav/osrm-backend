@@ -1,14 +1,10 @@
 package oasis
 
 import (
-	"fmt"
-
-	"github.com/Telenav/osrm-backend/integration/oasis/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/oasis/haversine"
 	"github.com/Telenav/osrm-backend/integration/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/oasis/searchconnector"
 	"github.com/Telenav/osrm-backend/integration/oasis/stationfinder"
-	"github.com/Telenav/osrm-backend/integration/oasis/stationgraph"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
 	"github.com/golang/glog"
@@ -17,16 +13,12 @@ import (
 )
 
 func pickChargeStationsWithEarlistArrival(oasisReq *oasis.Request, routeResp *route.Response, oc *osrmconnector.OSRMConnector, sc *searchconnector.TNSearchConnector) {
-	chargeLocations := chargeLocationSelection(oasisReq, routeResp)
-	for _, locations := range chargeLocations {
-		c := stationfinder.CalculateWeightBetweenNeighbors(locations, oc, sc)
-		sol := stationgraph.NewStationGraph(c, oasisReq.CurrRange, oasisReq.MaxRange,
-			chargingstrategy.NewFakeChargingStrategyCreator(oasisReq.MaxRange)).GenerateChargeSolutions()
-		fmt.Printf("++++++ sol = %+v\n", sol[0])
-		for i, c := range sol[0].ChargeStations {
-			fmt.Printf("charge station %v is %#v", i, c)
-		}
-	}
+	// chargeLocations := chargeLocationSelection(oasisReq, routeResp)
+	// for _, locations := range chargeLocations {
+	// 	c := stationfinder.CalculateWeightBetweenNeighbors(locations, oc, sc)
+	// 	sol := stationgraph.NewStationGraph(c, oasisReq.CurrRange, oasisReq.MaxRange,
+	// 		chargingstrategy.NewFakeChargingStrategyCreator(oasisReq.MaxRange)).GenerateChargeSolutions()
+	// }
 }
 
 // For each route response, will generate an array of *stationfinder.StationCoordinate
