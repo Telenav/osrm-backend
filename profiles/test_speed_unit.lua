@@ -1,6 +1,6 @@
 
-local tags = require('lib/tags')
-local Measure = require('lib/measure')
+local tags = require('lib-unidb/tags')
+local Measure = require('lib-unidb/measure')
 
 -- Test get speed uint by key
 local way = {
