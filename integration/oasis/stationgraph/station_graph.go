@@ -58,11 +58,11 @@ func (sg *stationGraph) GenerateChargeSolutions() []*solution.Solution {
 	sol.ChargeStations = make([]*solution.ChargeStation, 0)
 	var totalDistance, totalDuration float64
 
-	// accumulate information from start node -> first charge station
+	// accumulate information: start node -> first charge station
 	startNodeID := sg.stationID2Nodes[stationfinder.OrigLocationID][0].id
 	sg.g.accumulateDistanceAndDuration(startNodeID, stationNodes[0], &totalDistance, &totalDuration)
 
-	// accumulate information first charge station -> second charge station -> ... -> end node
+	// accumulate information: first charge station -> second charge station -> ... -> end node
 	for i := 0; i < len(stationNodes); i++ {
 		if i != len(stationNodes)-1 {
 			sg.g.accumulateDistanceAndDuration(stationNodes[i], stationNodes[i+1], &totalDistance, &totalDuration)
