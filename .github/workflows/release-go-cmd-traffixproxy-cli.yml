@@ -1,0 +1,34 @@
+name: Release cmd/trafficproxy-cli
+
+on: 
+  release:
+    types: [created]
+
+env:
+  CMD_PATH: ./integration/cmd/trafficproxy-cli
+  BINARY_NAME: trafficproxy-cli
+
+
+jobs:
+  releases-matrix:
+    name: Release cmd/trafficproxy-cli
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: ["386", amd64]
+        exclude:  
+          # windows/386 and darwin/386 seems useless 
+          - goarch: "386"
+            goos: windows 
+          - goarch: "386"
+            goos: darwin 
+    steps:
+    - uses: actions/checkout@v2
+    - uses: wangyoucao577/go-release-action@v1.2
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        goos: ${{ matrix.goos }}
+        goarch: ${{ matrix.goarch }}
+        project_path: "${{ env.CMD_PATH }}"
+        binary_name: "${{ env.BINARY_NAME }}"

@@ -48,13 +48,13 @@ func (c *Contents) PrintSummary(head int) {
 	glog.Infof("Loaded from %s\n", c.filePath)
 	glog.Infof("  %s\n", &c.Fingerprint)
 
-	glog.Infof("  coordinates meta %d count\n", c.CoordinatesMeta)
+	glog.Infof("  coordinates meta %d count %d\n", c.CoordinatesMeta, len(c.Coordinates))
 	for i := 0; i < head && i < len(c.Coordinates); i++ {
-		glog.Infof("    coordinate[%d] %#v", i, c.Coordinates[i])
+		glog.Infof("    coordinate[%d] %+v", i, c.Coordinates[i])
 	}
 
-	glog.Infof("  osm_node_ids number_of_elements meta %d count\n", c.OSMNodeIDs.NumOfElements)
-	glog.Infof("  osm_node_ids packed meta %d count\n", c.OSMNodeIDs.PackedMeta)
+	glog.Infof("  osm_node_ids number_of_elements meta %d count %d\n", c.OSMNodeIDs.NumOfElements, len(c.OSMNodeIDs.Values))
+	glog.Infof("  osm_node_ids packed meta %d\n", c.OSMNodeIDs.PackedMeta)
 	for i := 0; i < head && i < len(c.OSMNodeIDs.Values); i++ {
 		glog.Infof("    osm_node_ids[%d] %v", i, c.OSMNodeIDs.Values[i])
 	}
