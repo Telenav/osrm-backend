@@ -45,6 +45,7 @@ func NewStationGraph(c chan stationfinder.WeightBetweenNeighbors, currEnergyLeve
 	return sg.constructGraph()
 }
 
+// GenerateChargeSolutions creates creates charge solutions for staion graph
 func (sg *stationGraph) GenerateChargeSolutions() []*solution.Solution {
 	stationNodes := sg.g.dijkstra()
 	if nil == stationNodes {
