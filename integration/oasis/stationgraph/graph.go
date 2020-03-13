@@ -9,7 +9,7 @@ type graph struct {
 	nodes       []*node
 	startNodeID nodeID
 	endNodeID   nodeID
-	strategy    chargingstrategy.ChargingStrategyCreator
+	strategy    chargingstrategy.Strategy
 }
 
 func (g *graph) dijkstra() []nodeID {

@@ -39,7 +39,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -53,7 +55,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -72,7 +76,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -86,7 +92,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -94,7 +102,9 @@ func TestGraphGeneral(t *testing.T) {
 						neighbors: []*neighbor{},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 				},
@@ -130,7 +140,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -144,7 +156,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -163,7 +177,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -177,7 +193,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -185,7 +203,9 @@ func TestGraphGeneral(t *testing.T) {
 						neighbors: []*neighbor{},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 				},
@@ -221,7 +241,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -235,7 +257,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -254,7 +278,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -268,7 +294,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -276,7 +304,9 @@ func TestGraphGeneral(t *testing.T) {
 						neighbors: []*neighbor{},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 				},
@@ -321,7 +351,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -340,7 +372,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -359,7 +393,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -383,7 +419,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -407,7 +445,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -421,7 +461,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -435,7 +477,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -449,7 +493,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -459,7 +505,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 				},
@@ -504,7 +552,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -523,7 +573,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -542,7 +594,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -566,7 +620,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -590,7 +646,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -604,7 +662,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -618,7 +678,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -632,7 +694,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 					&node{
@@ -642,7 +706,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							targetState: chargingstrategy.State{
+								Energy: 999,
+							},
 						},
 					},
 				},
@@ -690,7 +756,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 16,
-							chargeEnergy:  16,
+							targetState: chargingstrategy.State{
+								Energy: 16,
+							},
 						},
 					},
 					&node{
@@ -709,7 +777,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 0,
-							chargeEnergy:  16,
+							targetState: chargingstrategy.State{
+								Energy: 16,
+							},
 						},
 					},
 					&node{
@@ -728,7 +798,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 0,
-							chargeEnergy:  16,
+							targetState: chargingstrategy.State{
+								Energy: 16,
+							},
 						},
 					},
 					&node{
@@ -752,7 +824,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 0,
-							chargeEnergy:  16,
+							targetState: chargingstrategy.State{
+								Energy: 16,
+							},
 						},
 					},
 					&node{
@@ -776,7 +850,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 0,
-							chargeEnergy:  16,
+							targetState: chargingstrategy.State{
+								Energy: 16,
+							},
 						},
 					},
 					&node{
@@ -789,8 +865,10 @@ func TestGraphGeneral(t *testing.T) {
 							},
 						},
 						chargeInfo: chargeInfo{
-							arrivalEnergy: 999,
-							chargeEnergy:  999,
+							arrivalEnergy: 0,
+							targetState: chargingstrategy.State{
+								Energy: 16,
+							},
 						},
 					},
 					&node{
@@ -804,7 +882,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 0,
-							chargeEnergy:  16,
+							targetState: chargingstrategy.State{
+								Energy: 16,
+							},
 						},
 					},
 					&node{
@@ -818,7 +898,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 0,
-							chargeEnergy:  16,
+							targetState: chargingstrategy.State{
+								Energy: 16,
+							},
 						},
 					},
 					&node{
@@ -828,7 +910,9 @@ func TestGraphGeneral(t *testing.T) {
 						},
 						chargeInfo: chargeInfo{
 							arrivalEnergy: 0,
-							chargeEnergy:  0,
+							targetState: chargingstrategy.State{
+								Energy: 0,
+							},
 						},
 					},
 				},

@@ -5,30 +5,30 @@ import (
 	"github.com/golang/glog"
 )
 
-type fakeChargingStrategyCreator struct {
+type fakeChargeStrategy struct {
 	maxEnergyLevel float64
 }
 
-// NewFakeChargingStrategyCreator creates fake charging strategy
-func NewFakeChargingStrategyCreator(maxEnergyLevel float64) *fakeChargingStrategyCreator {
-	return &fakeChargingStrategyCreator{
+// NewFakeChargingStrategy creates fake charge strategy
+func NewFakeChargingStrategy(maxEnergyLevel float64) *fakeChargeStrategy {
+	return &fakeChargeStrategy{
 		maxEnergyLevel: maxEnergyLevel,
 	}
 }
 
 // @todo:
 // - Influence of returning candidate with no charge time and additional energy
-// CreateChargingStrategies returns different charging strategy
-func (f *fakeChargingStrategyCreator) CreateChargingStrategies() []State {
+// CreateChargingStates returns different charging strategy
+func (f *fakeChargeStrategy) CreateChargingStates() []State {
 	return []State{
 		State{
-			ChargingEnergy: f.maxEnergyLevel * 0.6,
+			Energy: f.maxEnergyLevel * 0.6,
 		},
 		State{
-			ChargingEnergy: f.maxEnergyLevel * 0.8,
+			Energy: f.maxEnergyLevel * 0.8,
 		},
 		State{
-			ChargingEnergy: f.maxEnergyLevel,
+			Energy: f.maxEnergyLevel,
 		},
 	}
 }
@@ -38,15 +38,15 @@ func (f *fakeChargingStrategyCreator) CreateChargingStrategies() []State {
 //                    1 hour charge to 60% of max energy
 //                    2 hour charge to 80%, means from 60% ~ 80% need 1 hour
 //                    4 hour charge to 100%, means from 80% ~ 100% need 2 hours
-func (f *fakeChargingStrategyCreator) EvaluateCost(arrivalEnergy float64, targetState State) ChargingCost {
+func (f *fakeChargeStrategy) EvaluateCost(arrivalEnergy float64, targetState State) ChargingCost {
 	sixtyPercentOfMaxEnergy := f.maxEnergyLevel * 0.6
 	eightyPercentOfMaxEnergy := f.maxEnergyLevel * 0.8
 	noNeedCharge := ChargingCost{
 		Duration: 0.0,
 	}
 
-	if arrivalEnergy > targetState.ChargingEnergy ||
-		util.FloatEquals(targetState.ChargingEnergy, 0.0) {
+	if arrivalEnergy > targetState.Energy ||
+		util.FloatEquals(targetState.Energy, 0.0) {
 		return noNeedCharge
 	}
 
@@ -58,7 +58,7 @@ func (f *fakeChargingStrategyCreator) EvaluateCost(arrivalEnergy float64, target
 		currentEnergy = sixtyPercentOfMaxEnergy
 	}
 
-	if util.FloatEquals(targetState.ChargingEnergy, sixtyPercentOfMaxEnergy) {
+	if util.FloatEquals(targetState.Energy, sixtyPercentOfMaxEnergy) {
 		return ChargingCost{
 			Duration: totalTime,
 		}
@@ -69,7 +69,7 @@ func (f *fakeChargingStrategyCreator) EvaluateCost(arrivalEnergy float64, target
 		totalTime += energyNeeded4Stage2 / (eightyPercentOfMaxEnergy - sixtyPercentOfMaxEnergy) * 3600.0
 		currentEnergy = eightyPercentOfMaxEnergy
 	}
-	if util.FloatEquals(targetState.ChargingEnergy, eightyPercentOfMaxEnergy) {
+	if util.FloatEquals(targetState.Energy, eightyPercentOfMaxEnergy) {
 		return ChargingCost{
 			Duration: totalTime,
 		}
@@ -80,7 +80,7 @@ func (f *fakeChargingStrategyCreator) EvaluateCost(arrivalEnergy float64, target
 		totalTime += energyNeeded4Stage3 / (f.maxEnergyLevel - eightyPercentOfMaxEnergy) * 7200.0
 	}
 
-	if util.FloatEquals(targetState.ChargingEnergy, f.maxEnergyLevel) {
+	if util.FloatEquals(targetState.Energy, f.maxEnergyLevel) {
 		return ChargingCost{
 			Duration: totalTime,
 		}

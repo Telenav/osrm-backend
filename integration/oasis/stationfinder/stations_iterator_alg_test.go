@@ -13,6 +13,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/oasis/searchconnector"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/table"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
+	"github.com/Telenav/osrm-backend/integration/util"
 )
 
 var mockDict1 map[string]bool = map[string]bool{
@@ -239,10 +240,10 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 
 		if r.URL.EscapedPath() == "/entity/v4/search/json" {
 			req, _ := nearbychargestation.ParseRequestURL(r.URL)
-			if floatEquals(req.Location.Lat, 2.2) && floatEquals(req.Location.Lon, 2.2) {
+			if util.FloatEquals(req.Location.Lat, 2.2) && util.FloatEquals(req.Location.Lon, 2.2) {
 				var searchResponseBytes4Location1, _ = json.Marshal(nearbychargestation.MockSearchResponse1)
 				w.Write(searchResponseBytes4Location1)
-			} else if floatEquals(req.Location.Lat, 3.3) && floatEquals(req.Location.Lon, 3.3) {
+			} else if util.FloatEquals(req.Location.Lat, 3.3) && util.FloatEquals(req.Location.Lon, 3.3) {
 				var searchResponseBytes4Location2, _ = json.Marshal(nearbychargestation.MockSearchResponse3)
 				w.Write(searchResponseBytes4Location2)
 			}
@@ -529,13 +530,4 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 			}
 		}
 	}
-}
-
-var epsilon float64 = 0.00000001
-
-func floatEquals(a, b float64) bool {
-	if (a-b) < epsilon && (b-a) < epsilon {
-		return true
-	}
-	return false
 }

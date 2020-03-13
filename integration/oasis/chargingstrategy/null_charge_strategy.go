@@ -8,7 +8,7 @@ func NewNullChargeStrategy() *nullChargeStrategy {
 	return &nullChargeStrategy{}
 }
 
-func (f *nullChargeStrategy) CreateChargingStrategies() []State {
+func (f *nullChargeStrategy) CreateChargingStates() []State {
 	return []State{}
 }
 

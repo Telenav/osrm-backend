@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
+	"github.com/Telenav/osrm-backend/integration/util"
 )
 
 func TestHasEnoughEnergyPositive1(t *testing.T) {
@@ -20,7 +21,7 @@ func TestHasEnoughEnergyPositive1(t *testing.T) {
 	}
 
 	expect := 10000.0
-	if !floatEquals(remainRange, expect) {
+	if !util.FloatEquals(remainRange, expect) {
 		t.Errorf("Incorrect remaining range calculated, expect %s while actual value is %s", strconv.FormatFloat(expect, 'f', -1, 64), strconv.FormatFloat(remainRange, 'f', -1, 64))
 	}
 
@@ -39,16 +40,7 @@ func TestHasEnoughEnergyPositive2(t *testing.T) {
 	}
 
 	expect := 0.0
-	if !floatEquals(remainRange, expect) {
+	if !util.FloatEquals(remainRange, expect) {
 		t.Errorf("Incorrect remaining range calculated, expect %s while actual value is %s", strconv.FormatFloat(expect, 'f', -1, 64), strconv.FormatFloat(remainRange, 'f', -1, 64))
 	}
-}
-
-var epsilon float64 = 0.00000001
-
-func floatEquals(a, b float64) bool {
-	if (a-b) < epsilon && (b-a) < epsilon {
-		return true
-	}
-	return false
 }

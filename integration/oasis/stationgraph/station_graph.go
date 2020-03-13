@@ -14,11 +14,11 @@ type stationGraph struct {
 	// stationID is converted to numbers(0, 1, 2 ...) based on visit sequence
 
 	stationsCount uint32
-	strategy      chargingstrategy.ChargingStrategyCreator
+	strategy      chargingstrategy.Strategy
 }
 
 // NewStationGraph creates station graph from channel
-func NewStationGraph(c chan stationfinder.WeightBetweenNeighbors, currEnergyLevel, maxEnergyLevel float64, strategy chargingstrategy.ChargingStrategyCreator) *stationGraph {
+func NewStationGraph(c chan stationfinder.WeightBetweenNeighbors, currEnergyLevel, maxEnergyLevel float64, strategy chargingstrategy.Strategy) *stationGraph {
 	sg := &stationGraph{
 		g: &graph{
 			startNodeID: invalidNodeID,
@@ -75,7 +75,7 @@ func (sg *stationGraph) GenerateChargeSolutions() []*solution.Solution {
 		// construct station information
 		station := &solution.ChargeStation{}
 		station.ArrivalEnergy = sg.g.getChargeInfo(stationNodes[i]).arrivalEnergy
-		station.ChargeRange = sg.g.getChargeInfo(stationNodes[i]).chargeEnergy
+		station.ChargeRange = sg.g.getChargeInfo(stationNodes[i]).targetState.Energy
 		station.ChargeTime = sg.g.getChargeInfo(stationNodes[i]).chargeTime
 		station.Location = solution.Location{
 			Lat: sg.g.getLocationInfo(stationNodes[i]).lat,
@@ -114,11 +114,11 @@ func (sg *stationGraph) getChargeStationsNodes(id string, location stationfinder
 			sg.constructEndNode(id, location)
 		} else {
 			var nodes []*node
-			for _, strategy := range sg.strategy.CreateChargingStrategies() {
+			for _, state := range sg.strategy.CreateChargingStates() {
 				n := &node{
 					id: nodeID(sg.stationsCount),
 					chargeInfo: chargeInfo{
-						chargeEnergy: strategy.ChargingEnergy,
+						targetState: state,
 					},
 					locationInfo: locationInfo{
 						lat: location.Lat,
@@ -155,7 +155,9 @@ func (sg *stationGraph) constructStartNode(id string, location stationfinder.Sta
 		chargeInfo: chargeInfo{
 			arrivalEnergy: currEnergyLevel,
 			chargeTime:    0.0,
-			chargeEnergy:  currEnergyLevel,
+			targetState: chargingstrategy.State{
+				Energy: currEnergyLevel,
+			},
 		},
 		locationInfo: locationInfo{
 			lat: location.Lat,

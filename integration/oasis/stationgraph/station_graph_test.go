@@ -9,6 +9,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/oasis/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/oasis/solution"
 	"github.com/Telenav/osrm-backend/integration/oasis/stationfinder"
+	"github.com/Telenav/osrm-backend/integration/util"
 )
 
 /*
@@ -259,7 +260,7 @@ func TestConstructStationGraph(t *testing.T) {
 	currEnergyLevel := 0.0
 	maxEnergyLevel := 50.0
 	graph := NewStationGraph(c, currEnergyLevel, maxEnergyLevel,
-		chargingstrategy.NewFakeChargingStrategyCreator(maxEnergyLevel))
+		chargingstrategy.NewFakeChargingStrategy(maxEnergyLevel))
 	if graph == nil {
 		t.Errorf("create Station graph failed, expect none-empty graph but result is empty")
 	}
@@ -291,19 +292,21 @@ func testStart(t *testing.T, graph *stationGraph, currEnergyLevel, maxEnergyLeve
 	if graph.getStationID(sn[0].id) != stationfinder.OrigLocationID {
 		t.Errorf("incorrect name for start node expect %s but got %s", stationfinder.OrigLocationID, graph.getStationID(sn[0].id))
 	}
-	if !floatEquals(sn[0].arrivalEnergy, currEnergyLevel) ||
-		!floatEquals(sn[0].chargeEnergy, 0.0) ||
-		!floatEquals(sn[0].chargeTime, 0.0) {
+	if !util.FloatEquals(sn[0].arrivalEnergy, currEnergyLevel) ||
+		!util.FloatEquals(sn[0].targetState.Energy, 0.0) ||
+		!util.FloatEquals(sn[0].chargeTime, 0.0) {
 		t.Errorf("incorrect energy information for start node expect %v but got %v", chargeInfo{
 			arrivalEnergy: currEnergyLevel,
 			chargeTime:    0.0,
-			chargeEnergy:  0.0,
+			targetState: chargingstrategy.State{
+				Energy: 0.0,
+			},
 		}, sn[0].chargeInfo)
 	}
 
 	startLocation := graph.g.getLocationInfo(sn[0].id)
-	if !floatEquals(startLocation.lat, 0.0) ||
-		!floatEquals(startLocation.lon, 0.0) {
+	if !util.FloatEquals(startLocation.lat, 0.0) ||
+		!util.FloatEquals(startLocation.lon, 0.0) {
 		t.Errorf("incorrect location information for start node expect %v but got %v", locationInfo{
 			lat: 0.0,
 			lon: 0.0,
@@ -315,32 +318,32 @@ func testStart(t *testing.T, graph *stationGraph, currEnergyLevel, maxEnergyLeve
 	}
 
 	if graph.getStationID(sn[0].neighbors[0].targetNodeID) != "station1" ||
-		!floatEquals(sn[0].neighbors[0].distance, 22.2) ||
-		!floatEquals(sn[0].neighbors[0].duration, 22.2) ||
+		!util.FloatEquals(sn[0].neighbors[0].distance, 22.2) ||
+		!util.FloatEquals(sn[0].neighbors[0].duration, 22.2) ||
 		graph.getStationID(sn[0].neighbors[1].targetNodeID) != "station1" ||
-		!floatEquals(sn[0].neighbors[1].distance, 22.2) ||
-		!floatEquals(sn[0].neighbors[1].duration, 22.2) ||
+		!util.FloatEquals(sn[0].neighbors[1].distance, 22.2) ||
+		!util.FloatEquals(sn[0].neighbors[1].duration, 22.2) ||
 		graph.getStationID(sn[0].neighbors[2].targetNodeID) != "station1" ||
-		!floatEquals(sn[0].neighbors[2].distance, 22.2) ||
-		!floatEquals(sn[0].neighbors[2].duration, 22.2) ||
+		!util.FloatEquals(sn[0].neighbors[2].distance, 22.2) ||
+		!util.FloatEquals(sn[0].neighbors[2].duration, 22.2) ||
 		graph.getStationID(sn[0].neighbors[3].targetNodeID) != "station2" ||
-		!floatEquals(sn[0].neighbors[3].distance, 11.1) ||
-		!floatEquals(sn[0].neighbors[3].duration, 11.1) ||
+		!util.FloatEquals(sn[0].neighbors[3].distance, 11.1) ||
+		!util.FloatEquals(sn[0].neighbors[3].duration, 11.1) ||
 		graph.getStationID(sn[0].neighbors[4].targetNodeID) != "station2" ||
-		!floatEquals(sn[0].neighbors[4].distance, 11.1) ||
-		!floatEquals(sn[0].neighbors[4].duration, 11.1) ||
+		!util.FloatEquals(sn[0].neighbors[4].distance, 11.1) ||
+		!util.FloatEquals(sn[0].neighbors[4].duration, 11.1) ||
 		graph.getStationID(sn[0].neighbors[5].targetNodeID) != "station2" ||
-		!floatEquals(sn[0].neighbors[5].distance, 11.1) ||
-		!floatEquals(sn[0].neighbors[5].duration, 11.1) ||
+		!util.FloatEquals(sn[0].neighbors[5].distance, 11.1) ||
+		!util.FloatEquals(sn[0].neighbors[5].duration, 11.1) ||
 		graph.getStationID(sn[0].neighbors[6].targetNodeID) != "station3" ||
-		!floatEquals(sn[0].neighbors[6].distance, 33.3) ||
-		!floatEquals(sn[0].neighbors[6].duration, 33.3) ||
+		!util.FloatEquals(sn[0].neighbors[6].distance, 33.3) ||
+		!util.FloatEquals(sn[0].neighbors[6].duration, 33.3) ||
 		graph.getStationID(sn[0].neighbors[7].targetNodeID) != "station3" ||
-		!floatEquals(sn[0].neighbors[7].distance, 33.3) ||
-		!floatEquals(sn[0].neighbors[7].duration, 33.3) ||
+		!util.FloatEquals(sn[0].neighbors[7].distance, 33.3) ||
+		!util.FloatEquals(sn[0].neighbors[7].duration, 33.3) ||
 		graph.getStationID(sn[0].neighbors[8].targetNodeID) != "station3" ||
-		!floatEquals(sn[0].neighbors[8].distance, 33.3) ||
-		!floatEquals(sn[0].neighbors[8].duration, 33.3) {
+		!util.FloatEquals(sn[0].neighbors[8].distance, 33.3) ||
+		!util.FloatEquals(sn[0].neighbors[8].duration, 33.3) {
 		t.Errorf("incorrect neighbor information generated for start node")
 	}
 }
@@ -353,19 +356,21 @@ func testEnd(t *testing.T, graph *stationGraph, currEnergyLevel, maxEnergyLevel 
 	if graph.getStationID(se[0].id) != stationfinder.DestLocationID {
 		t.Errorf("incorrect name for end node expect %s but got %s", stationfinder.DestLocationID, graph.getStationID(se[0].id))
 	}
-	if !floatEquals(se[0].arrivalEnergy, 0.0) ||
-		!floatEquals(se[0].chargeEnergy, 0.0) ||
-		!floatEquals(se[0].chargeTime, 0.0) {
+	if !util.FloatEquals(se[0].arrivalEnergy, 0.0) ||
+		!util.FloatEquals(se[0].targetState.Energy, 0.0) ||
+		!util.FloatEquals(se[0].chargeTime, 0.0) {
 		t.Errorf("incorrect energy information for end node expect %v but got %v", chargeInfo{
 			arrivalEnergy: 0.0,
 			chargeTime:    0.0,
-			chargeEnergy:  0.0,
+			targetState: chargingstrategy.State{
+				Energy: 0.0,
+			},
 		}, se[0].chargeInfo)
 	}
 
 	endLocation := graph.g.getLocationInfo(se[0].id)
-	if !floatEquals(endLocation.lat, 6.6) ||
-		!floatEquals(endLocation.lon, 6.6) {
+	if !util.FloatEquals(endLocation.lat, 6.6) ||
+		!util.FloatEquals(endLocation.lon, 6.6) {
 		t.Errorf("incorrect location information for end node expect %v but got %v", locationInfo{
 			lat: 6.6,
 			lon: 6.6,
@@ -382,8 +387,8 @@ func testConnectivity(t *testing.T, graph *stationGraph, from string, fromLocati
 	fns := graph.getChargeStationsNodes(from, stationfinder.StationCoordinate{}, 0.0, 0.0)
 
 	for _, fromNode := range fns {
-		if !floatEquals(fromNode.locationInfo.lat, fromLocation.lat) ||
-			!floatEquals(fromNode.locationInfo.lon, fromLocation.lon) {
+		if !util.FloatEquals(fromNode.locationInfo.lat, fromLocation.lat) ||
+			!util.FloatEquals(fromNode.locationInfo.lon, fromLocation.lon) {
 			t.Errorf("incorrect location information generated for node %s expect %+v got %+v",
 				from, fromLocation, fromNode.locationInfo)
 		}
@@ -453,7 +458,7 @@ func TestGenerateChargeSolutions1(t *testing.T) {
 	currEnergyLevel := 20.0
 	maxEnergyLevel := 50.0
 	graph := NewStationGraph(c, currEnergyLevel, maxEnergyLevel,
-		chargingstrategy.NewFakeChargingStrategyCreator(maxEnergyLevel))
+		chargingstrategy.NewFakeChargingStrategy(maxEnergyLevel))
 	if graph == nil {
 		t.Error("create Station graph failed, expect none-empty graph but result is empty")
 	}
@@ -467,17 +472,17 @@ func TestGenerateChargeSolutions1(t *testing.T) {
 	}
 	sol := solutions[0]
 	// 58.8 = 11.1 + 14.4 + 33.3
-	if !floatEquals(sol.Distance, 58.8) {
+	if !util.FloatEquals(sol.Distance, 58.8) {
 		t.Errorf("Incorrect distance calculated for fakeGraph1 expect 58.89 but got %#v.\n", sol.Distance)
 	}
 
 	// 7918.8 = 11.1 + 2532(60% charge) + 14.4 + 5328(80% charge) + 33.3
-	if !floatEquals(sol.Duration, 7918.8) {
+	if !util.FloatEquals(sol.Duration, 7918.8) {
 		t.Errorf("Incorrect duration calculated for fakeGraph1 expect 10858.8 but got %#v.\n", sol.Duration)
 	}
 
 	// 6.7 = 40 - 33.3
-	if !floatEquals(sol.RemainingRage, 6.7) {
+	if !util.FloatEquals(sol.RemainingRage, 6.7) {
 		t.Errorf("Incorrect duration calculated for fakeGraph1 expect 10858.8 but got %#v.\n", sol.RemainingRage)
 	}
 
@@ -515,13 +520,4 @@ func TestGenerateChargeSolutions1(t *testing.T) {
 		t.Errorf("Expect second charge stations info for fakeGraph1 is %#v but got %#v\n", expectStation2, sol.ChargeStations[1])
 	}
 
-}
-
-var epsilon float64 = 0.00000001
-
-func floatEquals(a, b float64) bool {
-	if (a-b) < epsilon && (b-a) < epsilon {
-		return true
-	}
-	return false
 }

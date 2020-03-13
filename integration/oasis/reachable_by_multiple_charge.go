@@ -17,7 +17,7 @@ func pickChargeStationsWithEarlistArrival(oasisReq *oasis.Request, routeResp *ro
 	// for _, locations := range chargeLocations {
 	// 	c := stationfinder.CalculateWeightBetweenNeighbors(locations, oc, sc)
 	// 	sol := stationgraph.NewStationGraph(c, oasisReq.CurrRange, oasisReq.MaxRange,
-	// 		chargingstrategy.NewFakeChargingStrategyCreator(oasisReq.MaxRange)).GenerateChargeSolutions()
+	// 		chargingstrategy.NewFakeChargingStrategy(oasisReq.MaxRange)).GenerateChargeSolutions()
 	// }
 }
 

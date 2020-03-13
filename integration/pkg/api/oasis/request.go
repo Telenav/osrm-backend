@@ -10,6 +10,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis/options"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/coordinate"
+	"github.com/Telenav/osrm-backend/integration/util"
 	"github.com/golang/glog"
 )
 
@@ -125,12 +126,12 @@ func (r *Request) parseQuery(params url.Values) error {
 
 func (r *Request) validate() error {
 	// MaxRange must be set
-	if floatEquals(r.MaxRange, options.InvalidMaxRangeValue) || r.MaxRange < 0 {
+	if util.FloatEquals(r.MaxRange, options.InvalidMaxRangeValue) || r.MaxRange < 0 {
 		return errors.New("Invalid value for " + options.KeyMaxRange + ".")
 	}
 
 	// CurrRange must be set
-	if floatEquals(r.CurrRange, options.InvalidCurrentRangeValue) || r.CurrRange < 0 {
+	if util.FloatEquals(r.CurrRange, options.InvalidCurrentRangeValue) || r.CurrRange < 0 {
 		return errors.New("Invalid value for " + options.KeyCurrRange + ".")
 	}
 
@@ -150,15 +151,6 @@ func (r *Request) validate() error {
 	}
 
 	return nil
-}
-
-var epsilon float64 = 0.00000001
-
-func floatEquals(a, b float64) bool {
-	if (a-b) < epsilon && (b-a) < epsilon {
-		return true
-	}
-	return false
 }
 
 // RequestURI convert RouteRequest to RequestURI (e.g. "/path?foo=bar").
