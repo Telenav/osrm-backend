@@ -1,10 +1,15 @@
 package oasis
 
 import (
+	"encoding/json"
+	"net/http"
+
+	"github.com/Telenav/osrm-backend/integration/oasis/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/oasis/haversine"
 	"github.com/Telenav/osrm-backend/integration/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/oasis/searchconnector"
 	"github.com/Telenav/osrm-backend/integration/oasis/stationfinder"
+	"github.com/Telenav/osrm-backend/integration/oasis/stationgraph"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
 	"github.com/golang/glog"
@@ -12,13 +17,35 @@ import (
 	"github.com/twpayne/go-polyline"
 )
 
-func pickChargeStationsWithEarlistArrival(oasisReq *oasis.Request, routeResp *route.Response, oc *osrmconnector.OSRMConnector, sc *searchconnector.TNSearchConnector) {
-	// chargeLocations := chargeLocationSelection(oasisReq, routeResp)
-	// for _, locations := range chargeLocations {
-	// 	c := stationfinder.CalculateWeightBetweenNeighbors(locations, oc, sc)
-	// 	sol := stationgraph.NewStationGraph(c, oasisReq.CurrRange, oasisReq.MaxRange,
-	// 		chargingstrategy.NewFakeChargingStrategy(oasisReq.MaxRange)).GenerateChargeSolutions()
-	// }
+func generateSolutions4MultipleCharge(w http.ResponseWriter, oasisReq *oasis.Request, routeResp *route.Response, oc *osrmconnector.OSRMConnector, sc *searchconnector.TNSearchConnector) {
+	solutions := generateSolutionsWithEarlistArrival(oasisReq, routeResp, oc, sc)
+
+	w.WriteHeader(http.StatusOK)
+	r := new(oasis.Response)
+	r.Code = "200"
+	r.Message = "Success."
+	for _, sol := range solutions {
+		r.Solutions = append(r.Solutions, sol)
+	}
+	json.NewEncoder(w).Encode(r)
+}
+
+func generateSolutionsWithEarlistArrival(oasisReq *oasis.Request, routeResp *route.Response, oc *osrmconnector.OSRMConnector, sc *searchconnector.TNSearchConnector) []*oasis.Solution {
+	targetSolutions := make([]*oasis.Solution, 0)
+
+	chargeLocations := chargeLocationSelection(oasisReq, routeResp)
+	for _, locations := range chargeLocations {
+		c := stationfinder.CalculateWeightBetweenNeighbors(locations, oc, sc)
+		intternalSolutions := stationgraph.NewStationGraph(c, oasisReq.CurrRange, oasisReq.MaxRange,
+			chargingstrategy.NewFakeChargingStrategy(oasisReq.MaxRange)).GenerateChargeSolutions()
+
+		for _, sol := range intternalSolutions {
+			targetSolution := sol.Convert2ExternalSolution()
+			targetSolutions = append(targetSolutions, targetSolution)
+		}
+	}
+
+	return targetSolutions
 }
 
 // For each route response, will generate an array of *stationfinder.StationCoordinate

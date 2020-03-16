@@ -1,9 +1,12 @@
 package oasis
 
 import (
+	"encoding/json"
 	"fmt"
 	"math"
+	"net/http"
 
+	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
 )
 
@@ -37,4 +40,22 @@ func hasEnoughEnergy(currRange, destRange float64, routeResp *route.Response) (b
 		return true, remainRange, nil
 	}
 	return false, remainRange, nil
+}
+
+func generateOASISResponse4NoChargeNeeded(w http.ResponseWriter, routeResp *route.Response, remainRange float64) {
+	w.WriteHeader(http.StatusOK)
+
+	solution := new(oasis.Solution)
+	solution.Distance = routeResp.Routes[0].Distance
+	solution.Duration = routeResp.Routes[0].Duration
+	solution.Weight = routeResp.Routes[0].Weight
+	solution.RemainingRage = remainRange
+	solution.WeightName = routeResp.Routes[0].WeightName
+
+	r := new(oasis.Response)
+	r.Code = "200"
+	r.Message = "Success."
+	r.Solutions = append(r.Solutions, solution)
+
+	json.NewEncoder(w).Encode(r)
 }

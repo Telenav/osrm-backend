@@ -4,8 +4,11 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/Telenav/osrm-backend/integration/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/pkg/api"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/coordinate"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route/options"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/table"
 )
@@ -33,4 +36,19 @@ func GenerateTableReq4Points(startPoints coordinate.Coordinates, endPoints coord
 
 	req.Annotations = options.AnnotationsValueDistance + api.Comma + options.AnnotationsValueDuration
 	return req, nil
+}
+
+// RequestRoute4InputOrigDest generate route response based on given oasis Orig and Destination
+func RequestRoute4InputOrigDest(oasisReq *oasis.Request, oc *osrmconnector.OSRMConnector) (*route.Response, error) {
+	// generate route request
+	req := route.NewRequest()
+	req.Coordinates = oasisReq.Coordinates
+	req.Steps = true
+
+	// request for route
+	respC := oc.Request4Route(req)
+
+	// retrieve route result
+	routeResp := <-respC
+	return routeResp.Resp, routeResp.Err
 }
