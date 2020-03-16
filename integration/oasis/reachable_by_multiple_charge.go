@@ -17,6 +17,7 @@ import (
 	"github.com/twpayne/go-polyline"
 )
 
+// @todo: handle negative situation
 func generateSolutions4MultipleCharge(w http.ResponseWriter, oasisReq *oasis.Request, routeResp *route.Response, oc *osrmconnector.OSRMConnector, sc *searchconnector.TNSearchConnector) {
 	solutions := generateSolutionsWithEarlistArrival(oasisReq, routeResp, oc, sc)
 
