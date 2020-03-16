@@ -2,6 +2,7 @@ package stationgraph
 
 import (
 	"github.com/Telenav/osrm-backend/integration/oasis/chargingstrategy"
+	"github.com/Telenav/osrm-backend/integration/oasis/solution"
 	"github.com/Telenav/osrm-backend/integration/oasis/stationfinder"
 	"github.com/golang/glog"
 )
@@ -22,6 +23,7 @@ func NewStationGraph(c chan stationfinder.WeightBetweenNeighbors, currEnergyLeve
 		g: &graph{
 			startNodeID: invalidNodeID,
 			endNodeID:   invalidNodeID,
+			strategy:    strategy,
 		},
 		stationID2Nodes: make(map[string][]*node),
 		num2StationID:   make(map[uint32]string),
@@ -43,9 +45,58 @@ func NewStationGraph(c chan stationfinder.WeightBetweenNeighbors, currEnergyLeve
 	return sg.constructGraph()
 }
 
+// GenerateChargeSolutions creates creates charge solutions for staion graph
+func (sg *stationGraph) GenerateChargeSolutions() []*solution.Solution {
+	stationNodes := sg.g.dijkstra()
+	if nil == stationNodes {
+		glog.Warning("Failed to generate charge stations for stationGraph.\n")
+		return nil
+	}
+
+	var result []*solution.Solution
+
+	sol := &solution.Solution{}
+	sol.ChargeStations = make([]*solution.ChargeStation, 0)
+	var totalDistance, totalDuration float64
+
+	// accumulate information: start node -> first charge station
+	startNodeID := sg.stationID2Nodes[stationfinder.OrigLocationID][0].id
+	sg.g.accumulateDistanceAndDuration(startNodeID, stationNodes[0], &totalDistance, &totalDuration)
+
+	// accumulate information: first charge station -> second charge station -> ... -> end node
+	for i := 0; i < len(stationNodes); i++ {
+		if i != len(stationNodes)-1 {
+			sg.g.accumulateDistanceAndDuration(stationNodes[i], stationNodes[i+1], &totalDistance, &totalDuration)
+		} else {
+			endNodeID := sg.stationID2Nodes[stationfinder.DestLocationID][0].id
+			sg.g.accumulateDistanceAndDuration(stationNodes[i], endNodeID, &totalDistance, &totalDuration)
+		}
+
+		// construct station information
+		station := &solution.ChargeStation{}
+		station.ArrivalEnergy = sg.g.getChargeInfo(stationNodes[i]).arrivalEnergy
+		station.ChargeRange = sg.g.getChargeInfo(stationNodes[i]).chargeEnergy
+		station.ChargeTime = sg.g.getChargeInfo(stationNodes[i]).chargeTime
+		station.Location = solution.Location{
+			Lat: sg.g.getLocationInfo(stationNodes[i]).lat,
+			Lon: sg.g.getLocationInfo(stationNodes[i]).lon,
+		}
+		station.StationID = sg.num2StationID[uint32(stationNodes[i])]
+
+		sol.ChargeStations = append(sol.ChargeStations, station)
+	}
+
+	sol.Distance = totalDistance
+	sol.Duration = totalDuration
+	sol.RemainingRage = sg.stationID2Nodes[stationfinder.DestLocationID][0].arrivalEnergy
+
+	result = append(result, sol)
+	return result
+}
+
 func (sg *stationGraph) buildNeighborInfoBetweenNodes(neighborInfo stationfinder.NeighborInfo, currEnergyLevel, maxEnergyLevel float64) {
-	for _, fromNode := range sg.getChargeStationsNodes(neighborInfo.FromID, currEnergyLevel, maxEnergyLevel) {
-		for _, toNode := range sg.getChargeStationsNodes(neighborInfo.ToID, currEnergyLevel, maxEnergyLevel) {
+	for _, fromNode := range sg.getChargeStationsNodes(neighborInfo.FromID, neighborInfo.FromLocation, currEnergyLevel, maxEnergyLevel) {
+		for _, toNode := range sg.getChargeStationsNodes(neighborInfo.ToID, neighborInfo.ToLocation, currEnergyLevel, maxEnergyLevel) {
 			fromNode.neighbors = append(fromNode.neighbors, &neighbor{
 				targetNodeID: toNode.id,
 				distance:     neighborInfo.Distance,
@@ -55,12 +106,12 @@ func (sg *stationGraph) buildNeighborInfoBetweenNodes(neighborInfo stationfinder
 	}
 }
 
-func (sg *stationGraph) getChargeStationsNodes(id string, currEnergyLevel, maxEnergyLevel float64) []*node {
+func (sg *stationGraph) getChargeStationsNodes(id string, location stationfinder.StationCoordinate, currEnergyLevel, maxEnergyLevel float64) []*node {
 	if _, ok := sg.stationID2Nodes[id]; !ok {
 		if sg.isStart(id) {
-			sg.constructStartNode(id, currEnergyLevel)
+			sg.constructStartNode(id, location, currEnergyLevel)
 		} else if sg.isEnd(id) {
-			sg.constructEndNode(id)
+			sg.constructEndNode(id, location)
 		} else {
 			var nodes []*node
 			for _, strategy := range sg.strategy.CreateChargingStrategies() {
@@ -68,6 +119,10 @@ func (sg *stationGraph) getChargeStationsNodes(id string, currEnergyLevel, maxEn
 					id: nodeID(sg.stationsCount),
 					chargeInfo: chargeInfo{
 						chargeEnergy: strategy.ChargingEnergy,
+					},
+					locationInfo: locationInfo{
+						lat: location.Lat,
+						lon: location.Lon,
 					},
 				}
 				nodes = append(nodes, n)
@@ -93,21 +148,33 @@ func (sg *stationGraph) getStationID(id nodeID) string {
 	return sg.num2StationID[uint32(id)]
 }
 
-func (sg *stationGraph) constructStartNode(id string, currEnergyLevel float64) {
+func (sg *stationGraph) constructStartNode(id string, location stationfinder.StationCoordinate, currEnergyLevel float64) {
 
 	n := &node{
-		id:         nodeID(sg.stationsCount),
-		chargeInfo: chargeInfo{arrivalEnergy: currEnergyLevel},
+		id: nodeID(sg.stationsCount),
+		chargeInfo: chargeInfo{
+			arrivalEnergy: currEnergyLevel,
+			chargeTime:    0.0,
+			chargeEnergy:  currEnergyLevel,
+		},
+		locationInfo: locationInfo{
+			lat: location.Lat,
+			lon: location.Lon,
+		},
 	}
 	sg.stationID2Nodes[id] = []*node{n}
 	sg.num2StationID[sg.stationsCount] = id
 	sg.stationsCount += 1
 }
 
-func (sg *stationGraph) constructEndNode(id string) {
+func (sg *stationGraph) constructEndNode(id string, location stationfinder.StationCoordinate) {
 
 	n := &node{
 		id: nodeID(sg.stationsCount),
+		locationInfo: locationInfo{
+			lat: location.Lat,
+			lon: location.Lon,
+		},
 	}
 	sg.stationID2Nodes[id] = []*node{n}
 	sg.num2StationID[sg.stationsCount] = id
@@ -115,6 +182,8 @@ func (sg *stationGraph) constructEndNode(id string) {
 }
 
 func (sg *stationGraph) constructGraph() *stationGraph {
+	sg.g.nodes = make([]*node, int(sg.stationsCount))
+
 	for k, v := range sg.stationID2Nodes {
 		if sg.isStart(k) {
 			sg.g.startNodeID = v[0].id
@@ -125,7 +194,7 @@ func (sg *stationGraph) constructGraph() *stationGraph {
 		}
 
 		for _, n := range v {
-			sg.g.nodes = append(sg.g.nodes, n)
+			sg.g.nodes[n.id] = n
 		}
 	}
 

@@ -77,6 +77,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		generateResponse4SingleChargeStation(w, oasisReq, overlap, h.osrmConnector)
 		return
 	}
+	pickChargeStationsWithEarlistArrival(oasisReq, route, h.osrmConnector, h.tnSearchConnector)
 
 	generateFakeOASISResponse(w, oasisReq)
 }

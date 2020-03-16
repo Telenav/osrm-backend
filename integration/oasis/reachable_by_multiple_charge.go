@@ -13,10 +13,12 @@ import (
 )
 
 func pickChargeStationsWithEarlistArrival(oasisReq *oasis.Request, routeResp *route.Response, oc *osrmconnector.OSRMConnector, sc *searchconnector.TNSearchConnector) {
-	// 	chargeLocations := chargeLocationSelection(oasisReq, routeResp)
-	// 	for _, locations := range chargeLocations {
-	// 		c := stationfinder.CalculateWeightBetweenNeighbors(locations, oc, sc)
-	// 	}
+	// chargeLocations := chargeLocationSelection(oasisReq, routeResp)
+	// for _, locations := range chargeLocations {
+	// 	c := stationfinder.CalculateWeightBetweenNeighbors(locations, oc, sc)
+	// 	sol := stationgraph.NewStationGraph(c, oasisReq.CurrRange, oasisReq.MaxRange,
+	// 		chargingstrategy.NewFakeChargingStrategyCreator(oasisReq.MaxRange)).GenerateChargeSolutions()
+	// }
 }
 
 // For each route response, will generate an array of *stationfinder.StationCoordinate
