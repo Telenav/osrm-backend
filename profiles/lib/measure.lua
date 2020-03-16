@@ -1,5 +1,4 @@
 local Sequence = require('lib/sequence')
-local Sequence = require('lib/set')
 
 Measure = {}
 
@@ -10,12 +9,10 @@ local pound_to_kilograms = 0.45359237
 local miles_to_kilometers = 1.609
 
 -- Parse speed value as kilometers by hours.
-function Measure.parse_value_speed(source, speed_unit)
+function Measure.parse_value_speed(source)
   local n = tonumber(source:match("%d*"))
   if n then
     if string.match(source, "mph") or string.match(source, "mp/h") then
-      n = n * miles_to_kilometers
-    elseif speed_unit and speed_unit == "M" then
       n = n * miles_to_kilometers
     end
 
@@ -59,9 +56,9 @@ function Measure.parse_value_kilograms(value)
 end
 
 --- Get maxspeed of specified way in kilometers by hours.
-function Measure.get_max_speed(raw_value, speed_unit)
+function Measure.get_max_speed(raw_value)
   if raw_value then
-    return Measure.parse_value_speed(raw_value, speed_unit)
+    return Measure.parse_value_speed(raw_value)
   end
 end
 
