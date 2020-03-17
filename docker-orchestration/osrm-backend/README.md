@@ -53,8 +53,32 @@ total 243M
 $ cd ..
 
 # pull & run
-$ docker pull telenavmap/osrm-backend:no.63-20191112-master-telenav-845f953
-$ docker run -d -p 5000:5000  "src=$(pwd)/osrm-data,dst=/osrm-data,type=bind" telenavmap/osrm-backend:no.63-20191112-master-telenav-845f953 routed_no_traffic_startup 
+$ docker pull telenavmap/osrm-backend
+$ docker run -d -p 5000:5000 --mount "src=$(pwd)/osrm-data,dst=/osrm-data,type=bind" telenavmap/osrm-backend routed_no_traffic_startup 
+5b54931c035abaa0d0635cae4539da91e91fca02d1b37426451aa73476dd53fd
+$ docker logs -f 5b54931c035abaa0d0635cae4539da91e91fca02d1b37426451aa73476dd53fd
++ BUILD_PATH=/osrm-build
++ DATA_PATH=/osrm-data
++ OSRM_EXTRA_COMMAND='-l DEBUG'
++ OSRM_ROUTED_STARTUP_COMMAND=' -a MLD --max-table-size 8000 '
++ MAPDATA_NAME_WITH_SUFFIX=map
++ PBF_FILE_SUFFIX=.osm.pbf
++ WAYID2NODEIDS_MAPPING_FILE=wayid2nodeids.csv
++ WAYID2NODEIDS_MAPPING_FILE_COMPRESSED=wayid2nodeids.csv.snappy
++ '[' routed_no_traffic_startup = routed_startup ']'
++ '[' routed_no_traffic_startup = routed_blocking_traffic_startup ']'
++ '[' routed_no_traffic_startup = routed_no_traffic_startup ']'
++ cd /osrm-data
++ child=7
++ wait 7
++ /osrm-build/osrm-routed map.osrm -a MLD --max-table-size 8000
+[info] starting up engines, v5.22.0
+[info] Threads: 8
+[info] IP address: 0.0.0.0
+[info] IP port: 5000
+[info] http 1.1 compression handled by zlib version 1.2.8
+[info] Listening on: 0.0.0.0:5000
+[info] running and waiting for requests
 ```
 
 ## Example By Manual
