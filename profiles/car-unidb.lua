@@ -347,10 +347,6 @@ function process_node(profile, node, result, relations)
   end
 
   -- check if node is a traffic light
-  -- local tag = node:get_value_by_key("highway")
-  -- if "traffic_signals" == tag then
-  --   result.traffic_lights = true
-  -- end
   Relations.process_node_refs(node, relations, result)
   
 end
