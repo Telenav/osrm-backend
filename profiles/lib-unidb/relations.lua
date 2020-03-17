@@ -259,9 +259,9 @@ function Relations.process_way_refs(way, relations, result)
   end
 end
 
-function Relations.parse_traffic_sign(rel)
+function Relations.parse_traffic_signals(rel)
   local t = rel:get_value_by_key("type")
-  if t == "traffic_sign" then
+  if t == "traffic_signals" then
     return true
   else
     return false
@@ -274,7 +274,10 @@ function Relations.process_node_refs(node, relations, result)
   local rel_id_list = relations:get_relations(node)
   for i, rel_id in ipairs(rel_id_list) do
     local rel = relations:relation(rel_id)
-    result.traffic_lights = Relations.parse_traffic_sign(rel)
+    if Relations.parse_traffic_signals(rel) then
+      result.traffic_lights = true
+      return
+    end
   end
 
 end

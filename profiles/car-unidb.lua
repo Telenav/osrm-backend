@@ -306,8 +306,7 @@ function setup()
     },
 
     relation_types = Sequence {
-      "route",
-      "traffic_sign"
+      "traffic_signals"
     },
 
     -- classify highway tags when necessary for turn weights
