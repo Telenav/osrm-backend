@@ -60,12 +60,12 @@ elif [ "$1" = 'compile_mapdata' ]; then
   if [ "${PBF_SOURCE}" = "unidb" ]; then
     ${BUILD_PATH}/wayid2nodeid-extractor -i $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}${PBF_FILE_SUFFIX} -o $DATA_PATH/${WAYID2NODEIDS_MAPPING_FILE} -b=true
     ${BUILD_PATH}/snappy -i $DATA_PATH/${WAYID2NODEIDS_MAPPING_FILE} -o $DATA_PATH/${WAYID2NODEIDS_MAPPING_FILE_COMPRESSED}
+    rm -f $DATA_PATH/${WAYID2NODEIDS_MAPPING_FILE}
   fi
   ls -lh ${DATA_PATH}/
 
   # clean source pbf and temp files
   rm -f $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}${PBF_FILE_SUFFIX}
-  rm -f $DATA_PATH/${WAYID2NODEIDS_MAPPING_FILE}
   if [ "${KEEP_TEMP_OSRM_FILES}" != "true" ]; then # set KEEP_TEMP_OSRM_FILES explicitly by env vars.
     rm -f $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}.osrm
   fi
