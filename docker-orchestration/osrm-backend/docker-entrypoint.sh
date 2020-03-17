@@ -46,11 +46,12 @@ elif [ "$1" = 'routed_no_traffic_startup' ]; then
 elif [ "$1" = 'compile_mapdata' ]; then
   #trap _sig SIGKILL SIGTERM SIGHUP SIGINT EXIT
 
-  PBF_FILE_URL=${2}
-  PROFILE_LUA=${3:-"profiles/car.lua"}
+  PROFILE_LUA=${2} # e.g., "profiles/car.lua"
+  PBF_FILE_URL=${3}
   PBF_SOURCE=${4:-"osm"}
-  DATA_VERSION=${5:-"unset"}
-  REMOVE_TEMP_OSRM_FILES=${6:-"true"}
+  if [ x"${DATA_VERSION}" = x ]; then  # set DATA_VERSION explicitly by env vars. Use the PBF_FILE_URL if not set.
+    DATA_VERSION=${PBF_FILE_URL}
+  fi
 
   curl -sSL -f ${PBF_FILE_URL} > $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}${PBF_FILE_SUFFIX}
   ${BUILD_PATH}/osrm-extract $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}${PBF_FILE_SUFFIX} -p ${BUILD_PATH}/${PROFILE_LUA} -d ${DATA_VERSION} ${OSRM_EXTRA_COMMAND}
@@ -65,15 +66,15 @@ elif [ "$1" = 'compile_mapdata' ]; then
   # clean source pbf and temp files
   rm -f $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}${PBF_FILE_SUFFIX}
   rm -f $DATA_PATH/${WAYID2NODEIDS_MAPPING_FILE}
-  if [ "${REMOVE_TEMP_OSRM_FILES}" = "true" ]; then
+  if [ "${KEEP_TEMP_OSRM_FILES}" != "true" ]; then # set KEEP_TEMP_OSRM_FILES explicitly by env vars.
     rm -f $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}.osrm
   fi
   ls -lh ${DATA_PATH}/
 
   # export compiled mapdata to mounted path for publishing 
-  SAVE_DATA_PACKAGE_PATH=/save-data
-  mv ${DATA_PATH}/* ${SAVE_DATA_PACKAGE_PATH}/
-  chmod 777 ${SAVE_DATA_PACKAGE_PATH}/*
+  COMPILED_DATA_EXPORT_PATH=/compiled-data
+  mv ${DATA_PATH}/* ${COMPILED_DATA_EXPORT_PATH}/
+  chmod 777 ${COMPILED_DATA_EXPORT_PATH}/*
 
 else
   exec "$@"
