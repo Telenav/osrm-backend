@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -24,6 +25,7 @@ func main() {
 	// monitor
 	upClock := time.Now()
 	monitorContents := newMonitorContents()
+	monitorContents.CmdlineArgs = os.Args
 	monitorContents.TrafficCacheMonitorContents.Name = "traffic cache(indexed by edge)"
 
 	// prepare historical speeds if available
@@ -63,6 +65,8 @@ func main() {
 
 	//start http listening
 	mux := http.NewServeMux()
+
+	//monitor service
 	mux.HandleFunc("/monitor/", func(w http.ResponseWriter, req *http.Request) {
 		monitorContents.UpTime = jsonDuration(time.Now().Sub(upClock))
 

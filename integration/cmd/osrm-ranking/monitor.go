@@ -10,6 +10,7 @@ type monitorContents struct {
 	HistoricalSpeedMonitorContents *historicalSpeedMonitorContents `json:"historical_speed"`
 	TrafficCacheMonitorContents    *trafficCacheMonitorContents    `json:"traffic_cache"`
 	WayID2NodeIDsMonitorContents   *wayID2NodeIDsMonitorContents   `json:"wayid2nodeids"`
+	CmdlineArgs                    []string                        `json:"cmdline"`
 }
 
 type trafficCacheMonitorContents struct {
@@ -33,7 +34,7 @@ type historicalSpeedMonitorContents struct {
 
 func newMonitorContents() *monitorContents {
 	return &monitorContents{
-		0, &historicalSpeedMonitorContents{}, &trafficCacheMonitorContents{}, &wayID2NodeIDsMonitorContents{},
+		0, &historicalSpeedMonitorContents{}, &trafficCacheMonitorContents{}, &wayID2NodeIDsMonitorContents{}, nil,
 	}
 }
 
