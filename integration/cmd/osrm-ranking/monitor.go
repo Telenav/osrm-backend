@@ -6,9 +6,10 @@ import (
 )
 
 type monitorContents struct {
-	UpTime                       jsonDuration                  `json:"uptime"`
-	TrafficCacheMonitorContents  *trafficCacheMonitorContents  `json:"traffic_cache"`
-	WayID2NodeIDsMonitorContents *wayID2NodeIDsMonitorContents `json:"wayid2nodeids"`
+	UpTime                         jsonDuration                    `json:"uptime"`
+	HistoricalSpeedMonitorContents *historicalSpeedMonitorContents `json:"historical_speed"`
+	TrafficCacheMonitorContents    *trafficCacheMonitorContents    `json:"traffic_cache"`
+	WayID2NodeIDsMonitorContents   *wayID2NodeIDsMonitorContents   `json:"wayid2nodeids"`
 }
 
 type trafficCacheMonitorContents struct {
@@ -25,9 +26,14 @@ type wayID2NodeIDsMonitorContents struct {
 	Ways    int  `json:"ways"`
 }
 
+type historicalSpeedMonitorContents struct {
+	DailyPatterns       int `json:"daily_patterns"`
+	Way2PatternsMapping int `json:"way2patterns"`
+}
+
 func newMonitorContents() *monitorContents {
 	return &monitorContents{
-		0, &trafficCacheMonitorContents{}, &wayID2NodeIDsMonitorContents{},
+		0, &historicalSpeedMonitorContents{}, &trafficCacheMonitorContents{}, &wayID2NodeIDsMonitorContents{},
 	}
 }
 

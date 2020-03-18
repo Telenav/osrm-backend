@@ -5,10 +5,12 @@ import (
 	"flag"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxyclient"
 	"github.com/Telenav/osrm-backend/integration/rankingservice"
+	"github.com/Telenav/osrm-backend/integration/traffic/historicalspeed"
 	"github.com/Telenav/osrm-backend/integration/trafficcache/trafficcacheindexedbyedge"
 	"github.com/Telenav/osrm-backend/integration/wayid2nodeids"
 
@@ -23,6 +25,19 @@ func main() {
 	upClock := time.Now()
 	monitorContents := newMonitorContents()
 	monitorContents.TrafficCacheMonitorContents.Name = "traffic cache(indexed by edge)"
+
+	// prepare historical speeds if available
+	var hs *historicalspeed.Speeds
+	if flags.historicalSpeed {
+		hs = historicalspeed.New(strings.Split(flags.historicalSpeedDailyPatternFile, ","), strings.Split(flags.historicalSpeedWay2PatternsMappingFile, ","))
+		if err := hs.Load(); err != nil {
+			glog.Errorf("Load historical speed failed, err: %v", err)
+			return
+		}
+		glog.Infof("Historical speeds loaded: daily patterns count %d, ways(directed) count %d.", hs.DailyPatternsCount(), hs.WaysCount())
+		monitorContents.HistoricalSpeedMonitorContents.DailyPatterns = hs.DailyPatternsCount()
+		monitorContents.HistoricalSpeedMonitorContents.Way2PatternsMapping = hs.WaysCount()
+	}
 
 	// wayid2nodeids mapping
 	wayID2NodeIDsMapping := wayid2nodeids.NewMappingFrom(flags.wayID2NodeIDsMappingFile)
