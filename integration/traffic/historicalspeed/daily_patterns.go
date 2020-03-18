@@ -21,15 +21,29 @@ const (
 )
 
 func (s *Speeds) loadDailyPatterns() error {
-	f, err := os.Open(s.dailyPatternsFilePath)
+
+	for _, f := range s.dailyPatternsFilePath {
+		err := s.loadDailyPatternsFromSingleFile(f)
+		if err != nil {
+			return err
+		}
+	}
+
+	glog.Infof("Loaded daily patterns count %d", len(s.dailyPatterns))
+	return nil
+}
+
+func (s *Speeds) loadDailyPatternsFromSingleFile(filePath string) error {
+	f, err := os.Open(filePath)
 	defer f.Close()
 	if err != nil {
 		return err
 	}
-	glog.V(1).Infof("open %s succeed.\n", s.dailyPatternsFilePath)
+	glog.V(1).Infof("open %s succeed.\n", filePath)
 
 	r := csv.NewReader(f)
 
+	beforeLoadPatternsCount := len(s.dailyPatterns)
 	var count int // succeed parsed count
 	for {
 		record, err := r.Read()
@@ -44,7 +58,7 @@ func (s *Speeds) loadDailyPatterns() error {
 		id, pattern, err := parseDailyPatternRecord(record)
 		if err != nil {
 			if count == 0 {
-				glog.V(1).Infof("Ignore head record %v due to parse failure: %v", record, err)
+				glog.V(2).Infof("Ignore head record %v due to parse failure: %v", record, err)
 			} else {
 				glog.Warningf("Parse record %v failed, err: %v", record, err)
 			}
@@ -55,7 +69,7 @@ func (s *Speeds) loadDailyPatterns() error {
 		count++
 	}
 
-	glog.Infof("Loaded daily patterns count %d, total succeed parsed count %d", len(s.dailyPatterns), count)
+	glog.V(1).Infof("Loaded daily patterns from file %s, count %d, total succeed parsed count %d", filePath, len(s.dailyPatterns)-beforeLoadPatternsCount, count)
 	return nil
 }
 

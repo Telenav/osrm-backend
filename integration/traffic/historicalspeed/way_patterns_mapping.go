@@ -12,8 +12,8 @@ import (
 
 type mappingItem struct {
 	patternIDs     [daysPerWeek]uint32 // U,M,T,W,R,F,S
-	timezone       int16
-	daylightSaving int8
+	timezone       int16               //TODO: timezone
+	daylightSaving int8                //TODO: daylight saving
 }
 
 const (
@@ -23,15 +23,30 @@ const (
 )
 
 func (s *Speeds) loadWaysPatternsMapping() error {
-	f, err := os.Open(s.ways2PatternsMappingFilePath)
+
+	for _, f := range s.ways2PatternsMappingFilePath {
+		err := s.loadWaysPatternsMappingFromSingleFile(f)
+		if err != nil {
+			return err
+		}
+	}
+
+	glog.Infof("Loaded way2patterns mapping count %d", len(s.way2PatternsMapping))
+	return nil
+}
+
+func (s *Speeds) loadWaysPatternsMappingFromSingleFile(filePath string) error {
+
+	f, err := os.Open(filePath)
 	defer f.Close()
 	if err != nil {
 		return err
 	}
-	glog.V(1).Infof("open %s succeed.\n", s.ways2PatternsMappingFilePath)
+	glog.V(1).Infof("open %s succeed.\n", filePath)
 
 	r := csv.NewReader(f)
 
+	beforeLoadMappingCount := len(s.way2PatternsMapping)
 	var count int // succeed parsed count
 	for {
 		record, err := r.Read()
@@ -46,7 +61,7 @@ func (s *Speeds) loadWaysPatternsMapping() error {
 		wayID, mapping, err := parseWay2PatternsMapping(record)
 		if err != nil {
 			if count == 0 {
-				glog.V(1).Infof("Ignore head record %v due to parse failure: %v", record, err)
+				glog.V(2).Infof("Ignore head record %v due to parse failure: %v", record, err)
 			} else {
 				glog.Warningf("Parse record %v failed, err: %v", record, err)
 			}
@@ -57,7 +72,7 @@ func (s *Speeds) loadWaysPatternsMapping() error {
 		count++
 	}
 
-	glog.Infof("Loaded way2patterns mapping count %d, total succeed parsed count %d", len(s.way2PatternsMapping), count)
+	glog.V(1).Infof("Loaded way2patterns mapping from file %s, count %d, total succeed parsed count %d", filePath, len(s.way2PatternsMapping)-beforeLoadMappingCount, count)
 	return nil
 }
 

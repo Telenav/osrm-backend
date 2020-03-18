@@ -7,12 +7,13 @@ type Speeds struct {
 	dailyPatterns       map[uint32]dailyPattern
 	way2PatternsMapping map[int64]*mappingItem // indexed by wayID: positive means forward, negative means backward
 
-	dailyPatternsFilePath        string
-	ways2PatternsMappingFilePath string
+	// allow multiple files
+	dailyPatternsFilePath        []string
+	ways2PatternsMappingFilePath []string
 }
 
 // New create a empty Speeds object.
-func New(dailyPatternsFilePath, ways2PatternsMappingFilePath string) *Speeds {
+func New(dailyPatternsFilePath, ways2PatternsMappingFilePath []string) *Speeds {
 
 	return &Speeds{
 		dailyPatterns:       map[uint32]dailyPattern{},
