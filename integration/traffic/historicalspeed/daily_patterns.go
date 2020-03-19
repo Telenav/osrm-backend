@@ -13,6 +13,11 @@ import (
 
 type dailyPattern []uint8
 
+type dailyPatterns struct {
+	m         map[uint32]dailyPattern // patternID->dailyPattern mapping
+	filesPath []string                // allow multiple files
+}
+
 const (
 	dailyPatternIntervalInMinutes = 15                                      // 15 minutes per value, e.g. speed_0 represents [00:00~00:15)
 	patternsPerDay                = 24 * 60 / dailyPatternIntervalInMinutes // 96 per day
@@ -20,20 +25,24 @@ const (
 	fieldsPerPattern = 1 + patternsPerDay // patternID and patterns
 )
 
-func (s *Speeds) loadDailyPatterns() error {
+func (d dailyPatterns) count() int {
+	return len(d.m)
+}
 
-	for _, f := range s.dailyPatternsFilePath {
-		err := s.loadDailyPatternsFromSingleFile(f)
+func (d *dailyPatterns) load() error {
+
+	for _, f := range d.filesPath {
+		err := d.loadFromSingleFile(f)
 		if err != nil {
 			return err
 		}
 	}
 
-	glog.Infof("Loaded daily patterns count %d", len(s.dailyPatterns))
+	glog.Infof("Loaded daily patterns count %d", d.count())
 	return nil
 }
 
-func (s *Speeds) loadDailyPatternsFromSingleFile(filePath string) error {
+func (d *dailyPatterns) loadFromSingleFile(filePath string) error {
 	f, err := os.Open(filePath)
 	defer f.Close()
 	if err != nil {
@@ -43,7 +52,7 @@ func (s *Speeds) loadDailyPatternsFromSingleFile(filePath string) error {
 
 	r := csv.NewReader(f)
 
-	beforeLoadPatternsCount := len(s.dailyPatterns)
+	beforeLoadPatternsCount := d.count()
 	var count int // succeed parsed count
 	for {
 		record, err := r.Read()
@@ -65,11 +74,11 @@ func (s *Speeds) loadDailyPatternsFromSingleFile(filePath string) error {
 			continue
 		}
 
-		s.dailyPatterns[id] = pattern
+		d.m[id] = pattern
 		count++
 	}
 
-	glog.V(1).Infof("Loaded daily patterns from file %s, count %d, total succeed parsed count %d", filePath, len(s.dailyPatterns)-beforeLoadPatternsCount, count)
+	glog.V(1).Infof("Loaded daily patterns from file %s, count %d, total succeed parsed count %d", filePath, d.count()-beforeLoadPatternsCount, count)
 	return nil
 }
 

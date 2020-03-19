@@ -16,26 +16,35 @@ type mappingItem struct {
 	daylightSaving int8                //TODO: daylight saving
 }
 
+type way2PatternsMapping struct {
+	m         map[int64]*mappingItem // indexed by wayID: positive means forward, negative means backward
+	filesPath []string               // allow multiple files
+}
+
 const (
 	daysPerWeek = 7
 
 	fieldsPerMapping = 9 //LINK_PVID,TRAVEL_DIRECTION,U,M,T,W,R,F,S
 )
 
-func (s *Speeds) loadWaysPatternsMapping() error {
+func (w way2PatternsMapping) count() int {
+	return len(w.m)
+}
 
-	for _, f := range s.ways2PatternsMappingFilePath {
-		err := s.loadWaysPatternsMappingFromSingleFile(f)
+func (w *way2PatternsMapping) load() error {
+
+	for _, f := range w.filesPath {
+		err := w.loadFromSingleFile(f)
 		if err != nil {
 			return err
 		}
 	}
 
-	glog.Infof("Loaded way2patterns mapping count %d", len(s.way2PatternsMapping))
+	glog.Infof("Loaded way2patterns mapping count %d", w.count())
 	return nil
 }
 
-func (s *Speeds) loadWaysPatternsMappingFromSingleFile(filePath string) error {
+func (w *way2PatternsMapping) loadFromSingleFile(filePath string) error {
 
 	f, err := os.Open(filePath)
 	defer f.Close()
@@ -46,7 +55,7 @@ func (s *Speeds) loadWaysPatternsMappingFromSingleFile(filePath string) error {
 
 	r := csv.NewReader(f)
 
-	beforeLoadMappingCount := len(s.way2PatternsMapping)
+	beforeLoadMappingCount := w.count()
 	var count int // succeed parsed count
 	for {
 		record, err := r.Read()
@@ -68,11 +77,11 @@ func (s *Speeds) loadWaysPatternsMappingFromSingleFile(filePath string) error {
 			continue
 		}
 
-		s.way2PatternsMapping[wayID] = mapping
+		w.m[wayID] = mapping
 		count++
 	}
 
-	glog.V(1).Infof("Loaded way2patterns mapping from file %s, count %d, total succeed parsed count %d", filePath, len(s.way2PatternsMapping)-beforeLoadMappingCount, count)
+	glog.V(1).Infof("Loaded way2patterns mapping from file %s, count %d, total succeed parsed count %d", filePath, w.count()-beforeLoadMappingCount, count)
 	return nil
 }
 

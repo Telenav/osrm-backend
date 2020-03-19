@@ -4,32 +4,29 @@ import "time"
 
 // Speeds stores historical speeds.
 type Speeds struct {
-	dailyPatterns       map[uint32]dailyPattern
-	way2PatternsMapping map[int64]*mappingItem // indexed by wayID: positive means forward, negative means backward
-
-	// allow multiple files
-	dailyPatternsFilePath        []string
-	ways2PatternsMappingFilePath []string
+	dailyPatterns
+	way2PatternsMapping
 }
 
 // New create a empty Speeds object.
 func New(dailyPatternsFilePath, ways2PatternsMappingFilePath []string) *Speeds {
 
 	return &Speeds{
-		dailyPatterns:       map[uint32]dailyPattern{},
-		way2PatternsMapping: map[int64]*mappingItem{},
-
-		dailyPatternsFilePath:        dailyPatternsFilePath,
-		ways2PatternsMappingFilePath: ways2PatternsMappingFilePath,
+		dailyPatterns{
+			map[uint32]dailyPattern{}, dailyPatternsFilePath,
+		},
+		way2PatternsMapping{
+			map[int64]*mappingItem{}, ways2PatternsMappingFilePath,
+		},
 	}
 }
 
 // Load loads contents from file into memory.
 func (s *Speeds) Load() error {
-	if err := s.loadDailyPatterns(); err != nil {
+	if err := s.dailyPatterns.load(); err != nil {
 		return err
 	}
-	if err := s.loadWaysPatternsMapping(); err != nil {
+	if err := s.way2PatternsMapping.load(); err != nil {
 		return err
 	}
 
@@ -46,10 +43,10 @@ func (s *Speeds) QueryHistoricalSpeed(wayID int64, t time.Time) float64 {
 
 // DailyPatternsCount returns how many daily patterns.
 func (s *Speeds) DailyPatternsCount() int {
-	return len(s.dailyPatterns)
+	return s.dailyPatterns.count()
 }
 
 // WaysCount returns how many directed ways have historical speeds.
 func (s *Speeds) WaysCount() int {
-	return len(s.way2PatternsMapping)
+	return s.way2PatternsMapping.count()
 }
