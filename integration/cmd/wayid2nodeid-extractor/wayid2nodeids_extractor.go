@@ -18,11 +18,6 @@ import (
 	"github.com/qedus/osmpbf"
 )
 
-const (
-	pbfSourceUniDB = "unidb"
-	pbfSourceOSM   = "osm"
-)
-
 func generateWayid2nodeidsMapping(input, output string) {
 	infile, err := os.Open(input)
 	defer infile.Close()
@@ -114,18 +109,6 @@ func convertWayObj2MockSpeed(v *osmpbf.Way, wayid string) string {
 	return wayid + "," +
 		strconv.Itoa(rand.Intn(100)) +
 		"\n"
-}
-
-var flags struct {
-	input     string
-	output    string
-	pbfSource string
-}
-
-func init() {
-	flag.StringVar(&flags.input, "i", "", "Input pbf file.")
-	flag.StringVar(&flags.output, "o", "", "Output csv file")
-	flag.StringVar(&flags.pbfSource, "pbf_source", pbfSourceOSM, fmt.Sprintf("pbf data source, can be '%s' or '%s'.", pbfSourceOSM, pbfSourceUniDB))
 }
 
 func main() {
