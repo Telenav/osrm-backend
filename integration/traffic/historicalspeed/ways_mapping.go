@@ -16,19 +16,23 @@ type mappingItem struct {
 	daylightSaving int8                //TODO: daylight saving
 }
 
-type waysMapping map[int64]*mappingItem // indexed by wayID: positive means forward, negative means backward
+// WaysMapping represents way->patterns(weekly),timezone,daylight_saving mapping for historical speeds querying.
+type WaysMapping map[int64]*mappingItem // indexed by wayID: positive means forward, negative means backward
 
 const (
 	daysPerWeek = 7
 
-	fieldsPerMapping = 9 //LINK_PVID,TRAVEL_DIRECTION,U,M,T,W,R,F,S
+	fieldsPerCSVLine                           = 9                    // LINK_PVID,TRAVEL_DIRECTION,U,M,T,W,R,F,S
+	fieldsWithTimezoneDaylightSavingPerCSVLine = fieldsPerCSVLine + 2 // LINK_PVID,TRAVEL_DIRECTION,U,M,T,W,R,F,S,TIME_ZONE,DAYLIGHT_SAVING
 )
 
-func (w waysMapping) count() int {
+// Count returns how many ways(directed) mapping records.
+func (w WaysMapping) Count() int {
 	return len(w)
 }
 
-func (w *waysMapping) load(filesPath []string) error {
+// Load loads data from csv files.
+func (w *WaysMapping) Load(filesPath []string) error {
 
 	for _, f := range filesPath {
 		err := w.loadFromSingleFile(f)
@@ -37,11 +41,11 @@ func (w *waysMapping) load(filesPath []string) error {
 		}
 	}
 
-	glog.Infof("Loaded way2patterns mapping count %d", w.count())
+	glog.Infof("Loaded way2patterns mapping count %d", w.Count())
 	return nil
 }
 
-func (w *waysMapping) loadFromSingleFile(filePath string) error {
+func (w *WaysMapping) loadFromSingleFile(filePath string) error {
 
 	f, err := os.Open(filePath)
 	defer f.Close()
@@ -52,7 +56,7 @@ func (w *waysMapping) loadFromSingleFile(filePath string) error {
 
 	r := csv.NewReader(f)
 
-	beforeLoadMappingCount := w.count()
+	beforeLoadMappingCount := w.Count()
 	var count int // succeed parsed count
 	for {
 		record, err := r.Read()
@@ -78,13 +82,13 @@ func (w *waysMapping) loadFromSingleFile(filePath string) error {
 		count++
 	}
 
-	glog.V(1).Infof("Loaded way2patterns mapping from file %s, count %d, total succeed parsed count %d", filePath, w.count()-beforeLoadMappingCount, count)
+	glog.V(1).Infof("Loaded way2patterns mapping from file %s, count %d, total succeed parsed count %d", filePath, w.Count()-beforeLoadMappingCount, count)
 	return nil
 }
 
 func parseWay2PatternsMapping(record []string) (int64, *mappingItem, error) {
-	if len(record) != fieldsPerMapping {
-		return 0, nil, fmt.Errorf("expect %d fields in csv record but got %d", fieldsPerMapping, len(record))
+	if len(record) != fieldsPerCSVLine && len(record) != fieldsWithTimezoneDaylightSavingPerCSVLine {
+		return 0, nil, fmt.Errorf("expect %d or %d fields in csv record but got %d", fieldsPerCSVLine, fieldsWithTimezoneDaylightSavingPerCSVLine, len(record))
 	}
 
 	undirectedWayID, err := strconv.ParseUint(record[0], 10, 64)
@@ -110,6 +114,10 @@ func parseWay2PatternsMapping(record []string) (int64, *mappingItem, error) {
 			return 0, nil, fmt.Errorf("parse patternID from %s failed, err %v", v, err)
 		}
 		mapping.patternIDs[i] = uint32(patternID)
+	}
+
+	if len(record) == fieldsWithTimezoneDaylightSavingPerCSVLine { // prase timezoen and daylight_saving if exist
+		//TODO:
 	}
 
 	return wayID, &mapping, nil
