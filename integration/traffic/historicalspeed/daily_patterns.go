@@ -13,10 +13,7 @@ import (
 
 type dailyPattern []uint8
 
-type dailyPatterns struct {
-	m         map[uint32]dailyPattern // patternID->dailyPattern mapping
-	filesPath []string                // allow multiple files
-}
+type dailyPatterns map[uint32]dailyPattern // patternID->dailyPattern mapping
 
 const (
 	dailyPatternIntervalInMinutes = 15                                      // 15 minutes per value, e.g. speed_0 represents [00:00~00:15)
@@ -26,12 +23,12 @@ const (
 )
 
 func (d dailyPatterns) count() int {
-	return len(d.m)
+	return len(d)
 }
 
-func (d *dailyPatterns) load() error {
+func (d *dailyPatterns) load(filesPath []string) error {
 
-	for _, f := range d.filesPath {
+	for _, f := range filesPath {
 		err := d.loadFromSingleFile(f)
 		if err != nil {
 			return err
@@ -74,7 +71,7 @@ func (d *dailyPatterns) loadFromSingleFile(filePath string) error {
 			continue
 		}
 
-		d.m[id] = pattern
+		(*d)[id] = pattern
 		count++
 	}
 

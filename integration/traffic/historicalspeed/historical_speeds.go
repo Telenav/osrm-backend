@@ -5,28 +5,31 @@ import "time"
 // Speeds stores historical speeds.
 type Speeds struct {
 	dailyPatterns
-	way2PatternsMapping
+	waysMapping
+
+	// allow multiple files
+	dailyPatternsFilePath []string
+	waysMappingFilePath   []string
 }
 
 // New create a empty Speeds object.
-func New(dailyPatternsFilePath, ways2PatternsMappingFilePath []string) *Speeds {
+func New(dailyPatternsFilePath, waysMappingFilePath []string) *Speeds {
 
 	return &Speeds{
-		dailyPatterns{
-			map[uint32]dailyPattern{}, dailyPatternsFilePath,
-		},
-		way2PatternsMapping{
-			map[int64]*mappingItem{}, ways2PatternsMappingFilePath,
-		},
+		dailyPatterns: dailyPatterns{},
+		waysMapping:   waysMapping{},
+
+		dailyPatternsFilePath: dailyPatternsFilePath,
+		waysMappingFilePath:   waysMappingFilePath,
 	}
 }
 
 // Load loads contents from file into memory.
 func (s *Speeds) Load() error {
-	if err := s.dailyPatterns.load(); err != nil {
+	if err := s.dailyPatterns.load(s.dailyPatternsFilePath); err != nil {
 		return err
 	}
-	if err := s.way2PatternsMapping.load(); err != nil {
+	if err := s.waysMapping.load(s.waysMappingFilePath); err != nil {
 		return err
 	}
 
@@ -48,5 +51,5 @@ func (s *Speeds) DailyPatternsCount() int {
 
 // WaysCount returns how many directed ways have historical speeds.
 func (s *Speeds) WaysCount() int {
-	return s.way2PatternsMapping.count()
+	return s.waysMapping.count()
 }

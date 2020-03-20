@@ -16,10 +16,7 @@ type mappingItem struct {
 	daylightSaving int8                //TODO: daylight saving
 }
 
-type way2PatternsMapping struct {
-	m         map[int64]*mappingItem // indexed by wayID: positive means forward, negative means backward
-	filesPath []string               // allow multiple files
-}
+type waysMapping map[int64]*mappingItem // indexed by wayID: positive means forward, negative means backward
 
 const (
 	daysPerWeek = 7
@@ -27,13 +24,13 @@ const (
 	fieldsPerMapping = 9 //LINK_PVID,TRAVEL_DIRECTION,U,M,T,W,R,F,S
 )
 
-func (w way2PatternsMapping) count() int {
-	return len(w.m)
+func (w waysMapping) count() int {
+	return len(w)
 }
 
-func (w *way2PatternsMapping) load() error {
+func (w *waysMapping) load(filesPath []string) error {
 
-	for _, f := range w.filesPath {
+	for _, f := range filesPath {
 		err := w.loadFromSingleFile(f)
 		if err != nil {
 			return err
@@ -44,7 +41,7 @@ func (w *way2PatternsMapping) load() error {
 	return nil
 }
 
-func (w *way2PatternsMapping) loadFromSingleFile(filePath string) error {
+func (w *waysMapping) loadFromSingleFile(filePath string) error {
 
 	f, err := os.Open(filePath)
 	defer f.Close()
@@ -77,7 +74,7 @@ func (w *way2PatternsMapping) loadFromSingleFile(filePath string) error {
 			continue
 		}
 
-		w.m[wayID] = mapping
+		(*w)[wayID] = mapping
 		count++
 	}
 
