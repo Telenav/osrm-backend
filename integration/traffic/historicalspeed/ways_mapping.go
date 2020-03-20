@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/golang/glog"
 )
@@ -37,6 +38,8 @@ func (w WaysMapping) Count() int {
 // Load loads data from csv files.
 func (w *WaysMapping) Load(filesPath []string) error {
 
+	startTime := time.Now()
+
 	for _, f := range filesPath {
 		err := w.loadFromSingleFile(f)
 		if err != nil {
@@ -44,14 +47,16 @@ func (w *WaysMapping) Load(filesPath []string) error {
 		}
 	}
 
-	glog.Infof("Loaded way2patterns mapping count %d", w.Count())
+	glog.Infof("Loaded way2patterns mapping count %d, takes %f seconds", w.Count(), time.Now().Sub(startTime).Seconds())
 	return nil
 }
 
 // Dump dumps contents to csv
 func (w *WaysMapping) Dump(filePath string, withCSVHeader bool) error {
 
-	f, err := os.Open(filePath)
+	startTime := time.Now()
+
+	f, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0755)
 	defer f.Close()
 	if err != nil {
 		return err
@@ -75,7 +80,7 @@ func (w *WaysMapping) Dump(filePath string, withCSVHeader bool) error {
 		count++
 	}
 
-	glog.Infof("Dumped ways mapping to %s, csv header: %t, total count: %d", filePath, withCSVHeader, count)
+	glog.Infof("Dumped ways mapping to %s, csv header: %t, total count: %d, takes %f seconds", filePath, withCSVHeader, count, time.Now().Sub(startTime).Seconds())
 	return nil
 }
 
