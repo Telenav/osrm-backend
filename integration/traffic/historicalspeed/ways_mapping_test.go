@@ -84,5 +84,47 @@ func TestParseWaysMappingRecordSucceed(t *testing.T) {
 			t.Errorf("parse %v, expect mapping %v but got %v", c.record, c.mappingItem, mapping)
 		}
 	}
+}
 
+func TestToWaysMappingRecord(t *testing.T) {
+	cases := []struct {
+		wayID int64
+		mappingItem
+		record []string
+	}{
+		{
+			737019219,
+			mappingItem{
+				[daysPerWeek]uint32{39, 39, 39, 39, 39, 14949, 39}, 0, 0,
+			},
+			[]string{
+				"737019219", "T", "39", "39", "39", "39", "39", "14949", "39", "000", "0",
+			},
+		},
+		{
+			737019219,
+			mappingItem{
+				[daysPerWeek]uint32{39, 39, 39, 39, 39, 14949, 39}, 80, 67,
+			},
+			[]string{
+				"737019219", "T", "39", "39", "39", "39", "39", "14949", "39", "080", "67",
+			},
+		},
+		{
+			-737019219,
+			mappingItem{
+				[daysPerWeek]uint32{39, 39, 39, 39, 39, 14949, 39}, -70, 2,
+			},
+			[]string{
+				"737019219", "F", "39", "39", "39", "39", "39", "14949", "39", "-070", "2",
+			},
+		},
+	}
+
+	for _, c := range cases {
+		record := toWaysMappingRecord(c.wayID, &c.mappingItem)
+		if !reflect.DeepEqual(record, c.record) {
+			t.Errorf("wayID %d mappingItem %v to record, expect %v but got %v", c.wayID, c.mappingItem, c.record, record)
+		}
+	}
 }

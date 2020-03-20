@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/golang/glog"
 )
@@ -24,6 +25,8 @@ const (
 
 	fieldsPerCSVLine                           = 9                    // LINK_PVID,TRAVEL_DIRECTION,U,M,T,W,R,F,S
 	fieldsWithTimezoneDaylightSavingPerCSVLine = fieldsPerCSVLine + 2 // LINK_PVID,TRAVEL_DIRECTION,U,M,T,W,R,F,S,TIME_ZONE,DAYLIGHT_SAVING
+
+	outputCSVHeader = "LINK_PVID,TRAVEL_DIRECTION,U,M,T,W,R,F,S,TIME_ZONE,DAYLIGHT_SAVING"
 )
 
 // Count returns how many ways(directed) mapping records.
@@ -42,6 +45,37 @@ func (w *WaysMapping) Load(filesPath []string) error {
 	}
 
 	glog.Infof("Loaded way2patterns mapping count %d", w.Count())
+	return nil
+}
+
+// Dump dumps contents to csv
+func (w *WaysMapping) Dump(filePath string, withCSVHeader bool) error {
+
+	f, err := os.Open(filePath)
+	defer f.Close()
+	if err != nil {
+		return err
+	}
+	defer f.Sync()
+	glog.V(1).Infof("open %s succeed.\n", filePath)
+
+	writer := csv.NewWriter(f)
+	defer writer.Flush()
+	if withCSVHeader {
+		if err := writer.Write(strings.Split(outputCSVHeader, ",")); err != nil {
+			return err
+		}
+	}
+
+	var count int
+	for k, v := range *w {
+		if err := writer.Write(toWaysMappingRecord(k, v)); err != nil {
+			return err
+		}
+		count++
+	}
+
+	glog.Infof("Dumped ways mapping to %s, csv header: %t, total count: %d", filePath, withCSVHeader, count)
 	return nil
 }
 
@@ -140,4 +174,30 @@ func parseWaysMappingRecord(record []string) (int64, *mappingItem, error) {
 	}
 
 	return wayID, &mapping, nil
+}
+
+func toWaysMappingRecord(wayID int64, item *mappingItem) []string {
+	record := []string{}
+	if wayID >= 0 {
+		record = append(record, strconv.FormatInt(wayID, 10), "T")
+	} else {
+		record = append(record, strconv.FormatInt(-wayID, 10), "F")
+	}
+
+	for _, v := range item.patternIDs {
+		record = append(record, strconv.FormatUint(uint64(v), 10))
+	}
+
+	if item.timezone >= 0 {
+		record = append(record, fmt.Sprintf("%03d", item.timezone)) //e.g. 000
+	} else {
+		record = append(record, fmt.Sprintf("%04d", item.timezone)) //e.g. -070
+	}
+
+	record = append(record, strconv.FormatInt(int64(item.daylightSaving), 10))
+
+	if len(record) != fieldsWithTimezoneDaylightSavingPerCSVLine {
+		glog.Fatalf("expect record count %d but got %d", fieldsWithTimezoneDaylightSavingPerCSVLine, len(record))
+	}
+	return record
 }
