@@ -68,7 +68,7 @@ func (w *WaysMapping) loadFromSingleFile(filePath string) error {
 			return err
 		}
 
-		wayID, mapping, err := parseWay2PatternsMapping(record)
+		wayID, mapping, err := parseWaysMappingRecord(record)
 		if err != nil {
 			if count == 0 {
 				glog.V(2).Infof("Ignore head record %v due to parse failure: %v", record, err)
@@ -86,7 +86,7 @@ func (w *WaysMapping) loadFromSingleFile(filePath string) error {
 	return nil
 }
 
-func parseWay2PatternsMapping(record []string) (int64, *mappingItem, error) {
+func parseWaysMappingRecord(record []string) (int64, *mappingItem, error) {
 	if len(record) != fieldsPerCSVLine && len(record) != fieldsWithTimezoneDaylightSavingPerCSVLine {
 		return 0, nil, fmt.Errorf("expect %d or %d fields in csv record but got %d", fieldsPerCSVLine, fieldsWithTimezoneDaylightSavingPerCSVLine, len(record))
 	}

@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestParseWay2PatternsMappingRecordFailure(t *testing.T) {
+func TestParseWaysMappingRecordFailure(t *testing.T) {
 	cases := [][]string{
 		strings.Split("LINK_PVID,TRAVEL_DIRECTION,U,M,T,W,R,F,S", ","),
 		strings.Split("737019219,F,10788,14140,3561,14978,12324,2202,", ","),           // too less field
@@ -19,14 +19,14 @@ func TestParseWay2PatternsMappingRecordFailure(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		_, _, err := parseWay2PatternsMapping(c)
+		_, _, err := parseWaysMappingRecord(c)
 		if err == nil {
 			t.Errorf("expect parse %v failed but got succeed", c)
 		}
 	}
 }
 
-func TestParseWay2PatternsMappingRecordSucceed(t *testing.T) {
+func TestParseWaysMappingRecordSucceed(t *testing.T) {
 	cases := []struct {
 		record []string
 		wayID  int64
@@ -53,7 +53,7 @@ func TestParseWay2PatternsMappingRecordSucceed(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		wayID, mapping, err := parseWay2PatternsMapping(c.record)
+		wayID, mapping, err := parseWaysMappingRecord(c.record)
 		if err != nil {
 			t.Errorf("expect parse %v succeed but got err %v", c.record, err)
 		}
