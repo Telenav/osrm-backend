@@ -28,7 +28,7 @@ func main() {
 
 	go func() {
 		glog.V(1).Infof("ways mapping updater routine start.")
-		errChan <- newWaysMappingUpdater(strings.Split(flags.historicalSpeedWaysMappingFile, ","), flags.outputHistoricalSpeedWaysMappingFile, flags.withCSVHeader, wayTimezoneInfoChan)
+		errChan <- newWaysMappingUpdater(strings.Split(flags.inWaysMappingFile, ","), flags.outWaysMappingFile, flags.withCSVHeader, wayTimezoneInfoChan)
 		glog.V(1).Info("ways mapping updater routine exited.")
 	}()
 	go func() {
