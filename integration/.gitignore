@@ -9,8 +9,10 @@ cmd/trafficproxy-cli/trafficproxy-cli
 cmd/osrm-ranking/osrm-ranking
 cmd/trafficcache-parallel-test/trafficcache-parallel-test
 cmd/osrm-files-extractor/osrm-files-extractor
+cmd/historicalspeed-timezone-builder/historicalspeed-timezone-builder
 
 # test files
 cmd/trafficproxy-cli/*_flows.csv
 cmd/trafficproxy-cli/*_incidents.csv
+cmd/historicalspeed-timezone-builder/*mapping.csv
 
