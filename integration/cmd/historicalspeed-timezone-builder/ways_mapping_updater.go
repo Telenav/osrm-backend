@@ -1,15 +1,13 @@
 package main
 
 import (
-	"strings"
-
 	"github.com/Telenav/osrm-backend/integration/traffic/historicalspeed"
 )
 
 func newWaysMappingUpdater(inFiles []string, outFile string, withCSVHeader bool, inWayTimezoneInfo <-chan *wayTimezoneInfo) error {
 
 	waysMapping := historicalspeed.WaysMapping{}
-	if err := waysMapping.Load(strings.Split(flags.historicalSpeedWaysMappingFile, ",")); err != nil {
+	if err := waysMapping.Load(inFiles); err != nil {
 		return err
 	}
 
