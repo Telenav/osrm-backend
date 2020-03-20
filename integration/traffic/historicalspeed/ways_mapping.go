@@ -12,8 +12,8 @@ import (
 
 type mappingItem struct {
 	patternIDs     [daysPerWeek]uint32 // U,M,T,W,R,F,S
-	timezone       int16               //TODO: timezone
-	daylightSaving int8                //TODO: daylight saving
+	timezone       int16
+	daylightSaving int8
 }
 
 // WaysMapping represents way->patterns(weekly),timezone,daylight_saving mapping for historical speeds querying.
@@ -105,7 +105,7 @@ func parseWaysMappingRecord(record []string) (int64, *mappingItem, error) {
 		wayID = -wayID
 	}
 
-	patternIDsRecord := record[2:]
+	patternIDsRecord := record[2 : 2+daysPerWeek]
 	mapping := mappingItem{}
 
 	for i, v := range patternIDsRecord {
@@ -117,7 +117,26 @@ func parseWaysMappingRecord(record []string) (int64, *mappingItem, error) {
 	}
 
 	if len(record) == fieldsWithTimezoneDaylightSavingPerCSVLine { // prase timezoen and daylight_saving if exist
-		//TODO:
+
+		timezoneStr := record[9]
+		timezone, err := strconv.ParseInt(timezoneStr, 10, 16)
+		if err != nil {
+			return 0, nil, fmt.Errorf("parse timezone from %s failed, err %v", timezoneStr, err)
+		}
+		if !isValidTimezone(int16(timezone)) {
+			return 0, nil, fmt.Errorf("parsed timezone %d from %s is invalid", timezone, timezoneStr)
+		}
+		mapping.timezone = int16(timezone)
+
+		dstStr := record[10]
+		dst, err := strconv.ParseInt(dstStr, 10, 8)
+		if err != nil {
+			return 0, nil, fmt.Errorf("parse daylight saving from %s failed, err %v", dstStr, err)
+		}
+		if !isValidDaylightSaving(int8(dst)) {
+			return 0, nil, fmt.Errorf("parsed daylight saving %d from %s is invalid", dst, dstStr)
+		}
+		mapping.daylightSaving = int8(dst)
 	}
 
 	return wayID, &mapping, nil

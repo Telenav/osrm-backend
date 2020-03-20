@@ -9,13 +9,15 @@ import (
 func TestParseWaysMappingRecordFailure(t *testing.T) {
 	cases := [][]string{
 		strings.Split("LINK_PVID,TRAVEL_DIRECTION,U,M,T,W,R,F,S", ","),
-		strings.Split("737019219,F,10788,14140,3561,14978,12324,2202,", ","),           // too less field
-		strings.Split("737019219,F,10788,14140,3561,14978,12324,2202,2243,1", ","),     // too many fields
-		strings.Split("a,F,10788,14140,3561,14978,12324,2202,2243", ","),               // char instead of integer on wayID
-		strings.Split("737019219,F,a,14140,3561,14978,12324,2202,2243", ","),           // char instead of integer on patternID
-		strings.Split("-737019219,F,10788,14140,3561,14978,12324,2202,2243", ","),      // negative wayID
-		strings.Split("737019219,F,-10788,14140,3561,14978,12324,2202,2243", ","),      // negative patternID
-		strings.Split("737019219,F,10788000000,14140,3561,14978,12324,2202,2243", ","), // patternID overflow
+		strings.Split("737019219,F,10788,14140,3561,14978,12324,2202,", ","),             // too less field
+		strings.Split("737019219,F,10788,14140,3561,14978,12324,2202,2243,1", ","),       // too many fields
+		strings.Split("a,F,10788,14140,3561,14978,12324,2202,2243", ","),                 // char instead of integer on wayID
+		strings.Split("737019219,F,a,14140,3561,14978,12324,2202,2243", ","),             // char instead of integer on patternID
+		strings.Split("-737019219,F,10788,14140,3561,14978,12324,2202,2243", ","),        // negative wayID
+		strings.Split("737019219,F,-10788,14140,3561,14978,12324,2202,2243", ","),        // negative patternID
+		strings.Split("737019219,F,10788000000,14140,3561,14978,12324,2202,2243", ","),   // patternID overflow
+		strings.Split("737019219,F,10788,14140,3561,14978,12324,2202,2243,-130,0", ","),  // invalid timezone
+		strings.Split("737019219,F,10788,14140,3561,14978,12324,2202,2243,-120,-1", ","), // invalid daylight saving
 	}
 
 	for _, c := range cases {
@@ -48,6 +50,24 @@ func TestParseWaysMappingRecordSucceed(t *testing.T) {
 				[daysPerWeek]uint32{39, 39, 39, 39, 39, 14949, 39},
 				0,
 				0,
+			},
+		},
+		{
+			strings.Split("737019219,F,10788,14140,3561,14978,12324,2202,2243,-120,5", ","),
+			-737019219,
+			&mappingItem{
+				[daysPerWeek]uint32{10788, 14140, 3561, 14978, 12324, 2202, 2243},
+				-120,
+				5,
+			},
+		},
+		{
+			strings.Split("737019219,F,10788,14140,3561,14978,12324,2202,2243,0,67", ","),
+			-737019219,
+			&mappingItem{
+				[daysPerWeek]uint32{10788, 14140, 3561, 14978, 12324, 2202, 2243},
+				0,
+				67,
 			},
 		},
 	}
