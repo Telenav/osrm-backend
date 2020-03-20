@@ -31,7 +31,7 @@ func main() {
 	// prepare historical speeds if available
 	var hs *historicalspeed.Speeds
 	if flags.historicalSpeed {
-		hs = historicalspeed.New(strings.Split(flags.historicalSpeedDailyPatternFile, ","), strings.Split(flags.historicalSpeedWay2PatternsMappingFile, ","))
+		hs = historicalspeed.New(strings.Split(flags.historicalSpeedDailyPatternFile, ","), strings.Split(flags.historicalSpeedWaysMappingFile, ","))
 		if err := hs.Load(); err != nil {
 			glog.Errorf("Load historical speed failed, err: %v", err)
 			return
