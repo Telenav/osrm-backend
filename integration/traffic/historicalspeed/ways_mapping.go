@@ -126,6 +126,7 @@ func (w *WaysMapping) loadFromSingleFile(filePath string) error {
 	glog.V(1).Infof("open %s succeed.\n", filePath)
 
 	r := csv.NewReader(f)
+	r.ReuseRecord = true
 
 	beforeLoadMappingCount := w.Count()
 	var count int // succeed parsed count
