@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Telenav/osrm-backend/integration/traffic/historicalspeed/internal/timezone"
+
 	"github.com/golang/glog"
 )
 
@@ -157,25 +159,17 @@ func parseWaysMappingRecord(record []string) (int64, *mappingItem, error) {
 
 	if len(record) == fieldsWithTimezoneDaylightSavingPerCSVLine { // prase timezoen and daylight_saving if exist
 
-		timezoneStr := record[9]
-		timezone, err := strconv.ParseInt(timezoneStr, 10, 16)
+		tz, err := timezone.ParseTimezone(record[9])
 		if err != nil {
-			return 0, nil, fmt.Errorf("parse timezone from %s failed, err %v", timezoneStr, err)
+			return 0, nil, err
 		}
-		if !isValidTimezone(int16(timezone)) {
-			return 0, nil, fmt.Errorf("parsed timezone %d from %s is invalid", timezone, timezoneStr)
-		}
-		mapping.timezone = int16(timezone)
+		mapping.timezone = tz
 
-		dstStr := record[10]
-		dst, err := strconv.ParseInt(dstStr, 10, 8)
+		dst, err := timezone.ParseDaylightSaving(record[10])
 		if err != nil {
-			return 0, nil, fmt.Errorf("parse daylight saving from %s failed, err %v", dstStr, err)
+			return 0, nil, err
 		}
-		if !isValidDaylightSaving(int8(dst)) {
-			return 0, nil, fmt.Errorf("parsed daylight saving %d from %s is invalid", dst, dstStr)
-		}
-		mapping.daylightSaving = int8(dst)
+		mapping.daylightSaving = dst
 	}
 
 	return wayID, &mapping, nil
@@ -193,13 +187,8 @@ func toWaysMappingRecord(wayID int64, item *mappingItem) []string {
 		record = append(record, strconv.FormatUint(uint64(v), 10))
 	}
 
-	if item.timezone >= 0 {
-		record = append(record, fmt.Sprintf("%03d", item.timezone)) //e.g. 000
-	} else {
-		record = append(record, fmt.Sprintf("%04d", item.timezone)) //e.g. -070
-	}
-
-	record = append(record, strconv.FormatInt(int64(item.daylightSaving), 10))
+	record = append(record, timezone.FormatTimezone(item.timezone))
+	record = append(record, timezone.FormatDaylightSaving(item.daylightSaving))
 
 	if len(record) != fieldsWithTimezoneDaylightSavingPerCSVLine {
 		glog.Fatalf("expect record count %d but got %d", fieldsWithTimezoneDaylightSavingPerCSVLine, len(record))
