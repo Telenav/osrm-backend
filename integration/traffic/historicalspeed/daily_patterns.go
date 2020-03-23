@@ -48,6 +48,7 @@ func (d *dailyPatterns) loadFromSingleFile(filePath string) error {
 	glog.V(1).Infof("open %s succeed.\n", filePath)
 
 	r := csv.NewReader(f)
+	r.ReuseRecord = true
 
 	beforeLoadPatternsCount := d.count()
 	var count int // succeed parsed count
