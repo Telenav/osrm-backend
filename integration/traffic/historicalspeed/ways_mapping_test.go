@@ -6,6 +6,38 @@ import (
 	"testing"
 )
 
+func TestUpdateTimezoneDaylightSaving(t *testing.T) {
+	mapping := WaysMapping{
+		737019219:  {[daysPerWeek]uint32{10788, 14140, 3561, 14978, 12324, 2202, 2243}, 0, 0},
+		-737019219: {[daysPerWeek]uint32{14140, 10788, 3561, 14978, 12324, 2202, 2243}, 0, 0},
+		737019218:  {[daysPerWeek]uint32{14140, 10788, 3561, 14978, 12324, 2202, 2243}, 0, 0},
+		737019217:  {[daysPerWeek]uint32{14140, 10788, 3561, 14978, 12324, 2202, 2243}, 0, 0},
+	}
+	expectMapping := WaysMapping{
+		737019219:  {[daysPerWeek]uint32{10788, 14140, 3561, 14978, 12324, 2202, 2243}, -70, 8},
+		-737019219: {[daysPerWeek]uint32{14140, 10788, 3561, 14978, 12324, 2202, 2243}, -70, 8},
+		737019218:  {[daysPerWeek]uint32{14140, 10788, 3561, 14978, 12324, 2202, 2243}, 80, 10},
+		737019217:  {[daysPerWeek]uint32{14140, 10788, 3561, 14978, 12324, 2202, 2243}, 0, 0},
+	}
+
+	timezoneInfos := []struct {
+		wayID  int64
+		tzStr  string
+		dstStr string
+	}{
+		{737019219, "-070", "8"},
+		{737019218, "080", "10"},
+	}
+
+	for _, t := range timezoneInfos {
+		mapping.UpdateTimezoneDaylightSaving(t.wayID, t.tzStr, t.dstStr)
+	}
+
+	if !reflect.DeepEqual(mapping, expectMapping) {
+		t.Errorf("mapping update %+v, expect %+v but got %+v", timezoneInfos, expectMapping, mapping)
+	}
+}
+
 func TestParseWaysMappingRecordFailure(t *testing.T) {
 	cases := [][]string{
 		strings.Split("LINK_PVID,TRAVEL_DIRECTION,U,M,T,W,R,F,S", ","),
