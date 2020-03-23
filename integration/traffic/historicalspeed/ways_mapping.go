@@ -86,6 +86,36 @@ func (w *WaysMapping) Dump(filePath string, withCSVHeader bool) error {
 	return nil
 }
 
+// UpdateTimezoneDaylightSaving updates timezone and daylight saving on way.
+func (w *WaysMapping) UpdateTimezoneDaylightSaving(wayID int64, tzStr string, dstStr string) error {
+
+	forwardItem, forwardOK := (*w)[wayID]
+	backwardItem, backwardOK := (*w)[-wayID]
+	if !forwardOK && !backwardOK {
+		return fmt.Errorf("no historical speed on the way")
+	}
+
+	tz, err := timezone.ParseTimezone(tzStr)
+	if err != nil {
+		return err
+	}
+	dst, err := timezone.ParseDaylightSaving(dstStr)
+	if err != nil {
+		return err
+	}
+
+	if forwardOK {
+		forwardItem.timezone = tz
+		forwardItem.daylightSaving = dst
+	}
+	if backwardOK {
+		backwardItem.timezone = tz
+		backwardItem.daylightSaving = dst
+	}
+
+	return nil
+}
+
 func (w *WaysMapping) loadFromSingleFile(filePath string) error {
 
 	f, err := os.Open(filePath)
