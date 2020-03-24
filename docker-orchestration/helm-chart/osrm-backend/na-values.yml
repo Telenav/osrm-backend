@@ -2,7 +2,8 @@
   
 osrm:
   backend: 
-    requests:
-      memory: 40Gi
+    resources:
+      requests:
+        memory: 40Gi
 
 
