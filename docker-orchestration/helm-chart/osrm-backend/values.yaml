@@ -8,9 +8,6 @@ rollingUpdate:
   maxSurge: 1
   maxUnavailable: 0
   
-nodeSelector:
-  purpose: memory_optimized
-
 osrm:
   backend: 
     name: osrm-backend
@@ -19,8 +16,6 @@ osrm:
     mountPath: "/osrm-logs"
     containerPort: 5000
     exposePort: 80
-    requests:
-      memory: 35Gi
 
 logsVolume: 
   name: osrm-logs-volume
@@ -31,8 +26,3 @@ logsVolume:
 service:
   type: LoadBalancer
 
-labels:
-  Group: NavTeam
-  Owner: jiezhang2
-  Product: OSRM
-  TNService: OSRM 
