@@ -1,0 +1,6 @@
+
+  
+nodeSelector:
+  routing-osrm/role: routing-osrm
+
+

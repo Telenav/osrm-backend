@@ -7,9 +7,6 @@ fullnameOverride: ""
 rollingUpdate:
   maxSurge: 1
   maxUnavailable: 0
-  
-nodeSelector:
-  purpose: memory_optimized
 
 osrm:
   frontend:
@@ -23,8 +20,3 @@ osrm:
 service:
   type: LoadBalancer
 
-labels:
-  Group: NavTeam
-  Owner: jiezhang2
-  Product: OSRM
-  TNService: OSRM 

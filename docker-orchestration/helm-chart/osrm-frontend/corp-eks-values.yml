@@ -1,0 +1,9 @@
+
+nodeSelector:
+  purpose: memory_optimized
+
+labels:
+  Group: NavTeam
+  Owner: jiezhang2
+  Product: OSRM
+  TNService: OSRM 
