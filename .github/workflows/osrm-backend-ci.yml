@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        build_type: ["-DCMAKE_BUILD_TYPE=Debug", "-DCMAKE_BUILD_TYPE=Release"]
+        build_type: ["", "-DCMAKE_BUILD_TYPE=Debug"]
     steps:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
@@ -33,7 +33,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        build_type: ["-DCMAKE_BUILD_TYPE=Debug", "-DCMAKE_BUILD_TYPE=Release"]
+        build_type: ["", "-DCMAKE_BUILD_TYPE=Debug"]
     steps:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
