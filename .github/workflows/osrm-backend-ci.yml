@@ -19,19 +19,24 @@ jobs:
   ci-linux:
     name: osrm-backend CI ubuntu
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        build_type: ["-DCMAKE_BUILD_TYPE=Debug", "-DCMAKE_BUILD_TYPE=Release"]
     steps:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
     - name: Build
-      run: mkdir build && cd build && cmake ../ -DENABLE_MASON=1 && cmake --build . 
+      run: mkdir build && cd build && cmake ../ -DENABLE_MASON=1 ${{ matrix.build_type }} && cmake --build . 
 
   ci-macosx:
     name: osrm-backend CI osx
     runs-on: macos-latest
+    strategy:
+      matrix:
+        build_type: ["-DCMAKE_BUILD_TYPE=Debug", "-DCMAKE_BUILD_TYPE=Release"]
     steps:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
     - name: Build
-      run: mkdir build && cd build && cmake ../ -DENABLE_MASON=1 && cmake --build . 
+      run: mkdir build && cd build && cmake ../ -DENABLE_MASON=1 ${{ matrix.build_type }} && cmake --build . 
 
