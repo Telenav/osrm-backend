@@ -23,8 +23,7 @@ jobs:
       matrix:
         build_type: ["", "-DCMAKE_BUILD_TYPE=Debug"]
     steps:
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v2
     - name: Build
       run: mkdir build && cd build && cmake ../ -DENABLE_MASON=1 ${{ matrix.build_type }} && cmake --build . 
 
@@ -37,8 +36,7 @@ jobs:
     env:
       CMAKE_BUILD_EXTRA_PARAM: "-- -j"
     steps:
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v2
     - name: Build
       run: mkdir build && cd build && cmake ../ -DENABLE_MASON=1 ${{ matrix.build_type }} && cmake --build . ${CMAKE_BUILD_EXTRA_PARAM}
 
