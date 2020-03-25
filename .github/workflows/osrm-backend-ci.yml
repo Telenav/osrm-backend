@@ -41,5 +41,5 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build
-      run: mkdir build && cd build && cmake ../ -DENABLE_MASON=1 ${{ matrix.build_type }} && cmake --build . ${CMAKE_BUILD_EXTRA_PARAM}
+      run: mkdir build && cd build && cmake ../ -DENABLE_MASON=1 ${{ matrix.build_type }} && cmake --build . ${{ env.CMAKE_BUILD_EXTRA_PARAM }}
 
