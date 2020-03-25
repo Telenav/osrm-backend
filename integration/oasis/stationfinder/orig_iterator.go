@@ -1,13 +1,15 @@
 package stationfinder
 
+import "github.com/Telenav/osrm-backend/integration/nav"
+
 // OrigLocationID defines name for orig
 const OrigLocationID string = "orig_location"
 
 type origIterator struct {
-	location *StationCoordinate
+	location *nav.Location
 }
 
-func NewOrigIter(location *StationCoordinate) *origIterator {
+func NewOrigIter(location *nav.Location) *origIterator {
 	return &origIterator{
 		location: location,
 	}

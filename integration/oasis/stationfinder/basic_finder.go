@@ -3,6 +3,7 @@ package stationfinder
 import (
 	"sync"
 
+	"github.com/Telenav/osrm-backend/integration/nav"
 	"github.com/Telenav/osrm-backend/integration/oasis/searchconnector"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 	"github.com/golang/glog"
@@ -59,7 +60,7 @@ func (bf *basicFinder) iterateNearbyStations() <-chan ChargeStationInfo {
 			}
 			station := ChargeStationInfo{
 				ID: result.ID,
-				Location: StationCoordinate{
+				Location: nav.Location{
 					Lat: result.Place.Address[0].GeoCoordinate.Latitude,
 					Lon: result.Place.Address[0].GeoCoordinate.Longitude},
 			}

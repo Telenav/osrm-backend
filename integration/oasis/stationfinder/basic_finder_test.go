@@ -5,34 +5,35 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/Telenav/osrm-backend/integration/nav"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 )
 
 var mockChargeStationInfo1 []ChargeStationInfo = []ChargeStationInfo{
 	ChargeStationInfo{
 		ID: "station1",
-		Location: StationCoordinate{
+		Location: nav.Location{
 			Lat: 32.333,
 			Lon: 122.333,
 		},
 	},
 	ChargeStationInfo{
 		ID: "station2",
-		Location: StationCoordinate{
+		Location: nav.Location{
 			Lat: -32.333,
 			Lon: -122.333,
 		},
 	},
 	ChargeStationInfo{
 		ID: "station3",
-		Location: StationCoordinate{
+		Location: nav.Location{
 			Lat: 32.333,
 			Lon: -122.333,
 		},
 	},
 	ChargeStationInfo{
 		ID: "station4",
-		Location: StationCoordinate{
+		Location: nav.Location{
 			Lat: -32.333,
 			Lon: 122.333,
 		},
@@ -42,21 +43,21 @@ var mockChargeStationInfo1 []ChargeStationInfo = []ChargeStationInfo{
 var mockChargeStationInfo2 []ChargeStationInfo = []ChargeStationInfo{
 	ChargeStationInfo{
 		ID: "station1",
-		Location: StationCoordinate{
+		Location: nav.Location{
 			Lat: 32.333,
 			Lon: 122.333,
 		},
 	},
 	ChargeStationInfo{
 		ID: "station2",
-		Location: StationCoordinate{
+		Location: nav.Location{
 			Lat: -32.333,
 			Lon: -122.333,
 		},
 	},
 	ChargeStationInfo{
 		ID: "station5",
-		Location: StationCoordinate{
+		Location: nav.Location{
 			Lat: -12.333,
 			Lon: 122.333,
 		},
@@ -66,14 +67,14 @@ var mockChargeStationInfo2 []ChargeStationInfo = []ChargeStationInfo{
 var mockChargeStationInfo3 []ChargeStationInfo = []ChargeStationInfo{
 	ChargeStationInfo{
 		ID: "station6",
-		Location: StationCoordinate{
+		Location: nav.Location{
 			Lat: 30.333,
 			Lon: 122.333,
 		},
 	},
 	ChargeStationInfo{
 		ID: "station7",
-		Location: StationCoordinate{
+		Location: nav.Location{
 			Lat: -10.333,
 			Lon: 122.333,
 		},

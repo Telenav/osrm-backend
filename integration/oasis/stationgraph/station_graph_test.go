@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/Telenav/osrm-backend/integration/nav"
 	"github.com/Telenav/osrm-backend/integration/oasis/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/oasis/solution"
 	"github.com/Telenav/osrm-backend/integration/oasis/stationfinder"
@@ -61,12 +62,12 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 	[]stationfinder.NeighborInfo{
 		stationfinder.NeighborInfo{
 			FromID: "orig_location",
-			FromLocation: stationfinder.StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 0.0,
 				Lon: 0.0,
 			},
 			ToID: "station1",
-			ToLocation: stationfinder.StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 1.1,
 				Lon: 1.1,
 			},
@@ -77,12 +78,12 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 		},
 		stationfinder.NeighborInfo{
 			FromID: "orig_location",
-			FromLocation: stationfinder.StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 0.0,
 				Lon: 0.0,
 			},
 			ToID: "station2",
-			ToLocation: stationfinder.StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 2.2,
 				Lon: 2.2,
 			},
@@ -93,7 +94,7 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 		},
 		stationfinder.NeighborInfo{
 			FromID: "orig_location",
-			FromLocation: stationfinder.StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 0.0,
 				Lon: 0.0,
 			},
@@ -102,7 +103,7 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 				Duration: 33.3,
 				Distance: 33.3,
 			},
-			ToLocation: stationfinder.StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 3.3,
 				Lon: 3.3,
 			},
@@ -111,12 +112,12 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 	[]stationfinder.NeighborInfo{
 		stationfinder.NeighborInfo{
 			FromID: "station1",
-			FromLocation: stationfinder.StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 1.1,
 				Lon: 1.1,
 			},
 			ToID: "station4",
-			ToLocation: stationfinder.StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 4.4,
 				Lon: 4.4,
 			},
@@ -127,12 +128,12 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 		},
 		stationfinder.NeighborInfo{
 			FromID: "station1",
-			FromLocation: stationfinder.StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 1.1,
 				Lon: 1.1,
 			},
 			ToID: "station5",
-			ToLocation: stationfinder.StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 5.5,
 				Lon: 5.5,
 			},
@@ -143,12 +144,12 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 		},
 		stationfinder.NeighborInfo{
 			FromID: "station2",
-			FromLocation: stationfinder.StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 2.2,
 				Lon: 2.2,
 			},
 			ToID: "station4",
-			ToLocation: stationfinder.StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 4.4,
 				Lon: 4.4,
 			},
@@ -159,12 +160,12 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 		},
 		stationfinder.NeighborInfo{
 			FromID: "station2",
-			FromLocation: stationfinder.StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 2.2,
 				Lon: 2.2,
 			},
 			ToID: "station5",
-			ToLocation: stationfinder.StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 5.5,
 				Lon: 5.5,
 			},
@@ -175,12 +176,12 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 		},
 		stationfinder.NeighborInfo{
 			FromID: "station3",
-			FromLocation: stationfinder.StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 3.3,
 				Lon: 3.3,
 			},
 			ToID: "station4",
-			ToLocation: stationfinder.StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 4.4,
 				Lon: 4.4,
 			},
@@ -191,12 +192,12 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 		},
 		stationfinder.NeighborInfo{
 			FromID: "station3",
-			FromLocation: stationfinder.StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 3.3,
 				Lon: 3.3,
 			},
 			ToID: "station5",
-			ToLocation: stationfinder.StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 5.5,
 				Lon: 5.5,
 			},
@@ -209,12 +210,12 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 	[]stationfinder.NeighborInfo{
 		stationfinder.NeighborInfo{
 			FromID: "station4",
-			FromLocation: stationfinder.StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 4.4,
 				Lon: 4.4,
 			},
 			ToID: stationfinder.DestLocationID,
-			ToLocation: stationfinder.StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 6.6,
 				Lon: 6.6,
 			},
@@ -225,12 +226,12 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 		},
 		stationfinder.NeighborInfo{
 			FromID: "station5",
-			FromLocation: stationfinder.StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 5.5,
 				Lon: 5.5,
 			},
 			ToID: stationfinder.DestLocationID,
-			ToLocation: stationfinder.StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 6.6,
 				Lon: 6.6,
 			},
@@ -285,7 +286,7 @@ func TestConstructStationGraph(t *testing.T) {
 }
 
 func testStart(t *testing.T, graph *stationGraph, currEnergyLevel, maxEnergyLevel float64) {
-	sn := graph.getChargeStationsNodes(stationfinder.OrigLocationID, stationfinder.StationCoordinate{}, currEnergyLevel, maxEnergyLevel)
+	sn := graph.getChargeStationsNodes(stationfinder.OrigLocationID, nav.Location{}, currEnergyLevel, maxEnergyLevel)
 	if len(sn) != 1 {
 		t.Errorf("incorrect start node generated expect only one node but got %d", len(sn))
 	}
@@ -349,7 +350,7 @@ func testStart(t *testing.T, graph *stationGraph, currEnergyLevel, maxEnergyLeve
 }
 
 func testEnd(t *testing.T, graph *stationGraph, currEnergyLevel, maxEnergyLevel float64) {
-	se := graph.getChargeStationsNodes(stationfinder.DestLocationID, stationfinder.StationCoordinate{}, currEnergyLevel, maxEnergyLevel)
+	se := graph.getChargeStationsNodes(stationfinder.DestLocationID, nav.Location{}, currEnergyLevel, maxEnergyLevel)
 	if len(se) != 1 {
 		t.Errorf("incorrect end node generated expect only one node but got %d", len(se))
 	}
@@ -384,7 +385,7 @@ func testEnd(t *testing.T, graph *stationGraph, currEnergyLevel, maxEnergyLevel 
 
 func testConnectivity(t *testing.T, graph *stationGraph, from string, fromLocation locationInfo,
 	tos []string, mockArray [][]stationfinder.NeighborInfo, currEnergyLevel, maxEnergyLevel float64) {
-	fns := graph.getChargeStationsNodes(from, stationfinder.StationCoordinate{}, 0.0, 0.0)
+	fns := graph.getChargeStationsNodes(from, nav.Location{}, 0.0, 0.0)
 
 	for _, fromNode := range fns {
 		if !util.FloatEquals(fromNode.locationInfo.lat, fromLocation.lat) ||
@@ -396,7 +397,7 @@ func testConnectivity(t *testing.T, graph *stationGraph, from string, fromLocati
 
 	index := 0
 	for _, to := range tos {
-		tns := graph.getChargeStationsNodes(to, stationfinder.StationCoordinate{}, 0.0, 0.0)
+		tns := graph.getChargeStationsNodes(to, nav.Location{}, 0.0, 0.0)
 
 		expectDuration := math.MaxFloat64
 		expectDistance := math.MaxFloat64
@@ -491,7 +492,7 @@ func TestGenerateChargeSolutions1(t *testing.T) {
 	}
 
 	expectStation1 := &solution.ChargeStation{
-		Location: solution.Location{
+		Location: nav.Location{
 			Lat: 2.2,
 			Lon: 2.2,
 		},
@@ -506,7 +507,7 @@ func TestGenerateChargeSolutions1(t *testing.T) {
 	}
 
 	expectStation2 := &solution.ChargeStation{
-		Location: solution.Location{
+		Location: nav.Location{
 			Lat: 5.5,
 			Lon: 5.5,
 		},

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/Telenav/osrm-backend/integration/nav"
 	"github.com/Telenav/osrm-backend/integration/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/oasis/osrmhelper"
 	"github.com/Telenav/osrm-backend/integration/oasis/searchconnector"
@@ -28,15 +29,12 @@ func FindOverlapBetweenStations(iterF nearbyStationsIterator, iterS nearbyStatio
 // ChargeStationInfo defines charge station information
 type ChargeStationInfo struct {
 	ID       string
-	Location StationCoordinate
+	Location nav.Location
 	err      error
 }
 
-// StationCoordinate represents location information
-type StationCoordinate struct {
-	Lat float64
-	Lon float64
-}
+// // nav.Location represents location information
+// type nav.Location nav.Location
 
 // CalcWeightBetweenChargeStationsPair accepts two iterators and calculates weights between each pair of iterators
 func CalcWeightBetweenChargeStationsPair(from nearbyStationsIterator, to nearbyStationsIterator, table osrmconnector.TableRequster) ([]NeighborInfo, error) {
@@ -98,12 +96,12 @@ func CalcWeightBetweenChargeStationsPair(from nearbyStationsIterator, to nearbyS
 		for j, targetPoint := range targetPoints {
 			result = append(result, NeighborInfo{
 				FromID: startIDs[i],
-				FromLocation: StationCoordinate{
+				FromLocation: nav.Location{
 					Lat: startPoint.Lat,
 					Lon: startPoint.Lon,
 				},
 				ToID: targetIDs[j],
-				ToLocation: StationCoordinate{
+				ToLocation: nav.Location{
 					Lat: targetPoint.Lat,
 					Lon: targetPoint.Lon,
 				},
@@ -127,9 +125,9 @@ type Cost struct {
 // NeighborInfo represent cost information between two charge stations
 type NeighborInfo struct {
 	FromID       string
-	FromLocation StationCoordinate
+	FromLocation nav.Location
 	ToID         string
-	ToLocation   StationCoordinate
+	ToLocation   nav.Location
 	Cost
 }
 
@@ -166,7 +164,7 @@ type WeightBetweenNeighbors struct {
 // - All iterators has been recorded in iterators array
 //   @Todo: isIteratorReady could be removed later.  When iterator is not ready, should
 //         pause inside iterator itself.  That need refactor the design of stationfinder.
-func CalculateWeightBetweenNeighbors(locations []*StationCoordinate, oc *osrmconnector.OSRMConnector, sc *searchconnector.TNSearchConnector) chan WeightBetweenNeighbors {
+func CalculateWeightBetweenNeighbors(locations []*nav.Location, oc *osrmconnector.OSRMConnector, sc *searchconnector.TNSearchConnector) chan WeightBetweenNeighbors {
 	c := make(chan WeightBetweenNeighbors)
 
 	if len(locations) > 2 {

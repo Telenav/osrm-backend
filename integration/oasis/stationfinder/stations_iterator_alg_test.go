@@ -9,6 +9,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/Telenav/osrm-backend/integration/nav"
 	"github.com/Telenav/osrm-backend/integration/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/oasis/searchconnector"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/table"
@@ -34,14 +35,14 @@ func TestBuildChargeStationInfoDict1(t *testing.T) {
 var overlapChargeStationInfo1 []ChargeStationInfo = []ChargeStationInfo{
 	ChargeStationInfo{
 		ID: "station1",
-		Location: StationCoordinate{
+		Location: nav.Location{
 			Lat: 32.333,
 			Lon: 122.333,
 		},
 	},
 	ChargeStationInfo{
 		ID: "station2",
-		Location: StationCoordinate{
+		Location: nav.Location{
 			Lat: -32.333,
 			Lon: -122.333,
 		},
@@ -89,12 +90,12 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 	expect := []NeighborInfo{
 		NeighborInfo{
 			FromID: "station1",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 32.333,
 				Lon: 122.333,
 			},
 			ToID: "station6",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 30.333,
 				Lon: 122.333,
 			},
@@ -105,12 +106,12 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station1",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 32.333,
 				Lon: 122.333,
 			},
 			ToID: "station7",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: -10.333,
 				Lon: 122.333,
 			},
@@ -121,12 +122,12 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station2",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: -32.333,
 				Lon: -122.333,
 			},
 			ToID: "station6",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 30.333,
 				Lon: 122.333,
 			},
@@ -137,12 +138,12 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station2",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: -32.333,
 				Lon: -122.333,
 			},
 			ToID: "station7",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: -10.333,
 				Lon: 122.333,
 			},
@@ -153,12 +154,12 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station3",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 32.333,
 				Lon: -122.333,
 			},
 			ToID: "station6",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 30.333,
 				Lon: 122.333,
 			},
@@ -169,12 +170,12 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station3",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 32.333,
 				Lon: -122.333,
 			},
 			ToID: "station7",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: -10.333,
 				Lon: 122.333,
 			},
@@ -185,12 +186,12 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station4",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: -32.333,
 				Lon: 122.333,
 			},
 			ToID: "station6",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 30.333,
 				Lon: 122.333,
 			},
@@ -201,12 +202,12 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station4",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: -32.333,
 				Lon: 122.333,
 			},
 			ToID: "station7",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: -10.333,
 				Lon: 122.333,
 			},
@@ -270,11 +271,11 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	locations := []*StationCoordinate{
-		&StationCoordinate{Lat: 1.1, Lon: 1.1},
-		&StationCoordinate{Lat: 2.2, Lon: 2.2},
-		&StationCoordinate{Lat: 3.3, Lon: 3.3},
-		&StationCoordinate{Lat: 4.4, Lon: 4.4},
+	locations := []*nav.Location{
+		&nav.Location{Lat: 1.1, Lon: 1.1},
+		&nav.Location{Lat: 2.2, Lon: 2.2},
+		&nav.Location{Lat: 3.3, Lon: 3.3},
+		&nav.Location{Lat: 4.4, Lon: 4.4},
 	}
 	oc := osrmconnector.NewOSRMConnector(ts.URL)
 	sc := searchconnector.NewTNSearchConnector(ts.URL, "apikey", "apisignature")
@@ -284,12 +285,12 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 	expect_arr0 := []NeighborInfo{
 		NeighborInfo{
 			FromID: "orig_location",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 1.1,
 				Lon: 1.1,
 			},
 			ToID: "station1",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 32.333,
 				Lon: 122.333,
 			},
@@ -300,12 +301,12 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "orig_location",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 1.1,
 				Lon: 1.1,
 			},
 			ToID: "station2",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: -32.333,
 				Lon: -122.333,
 			},
@@ -316,12 +317,12 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "orig_location",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 1.1,
 				Lon: 1.1,
 			},
 			ToID: "station3",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 32.333,
 				Lon: -122.333,
 			},
@@ -332,12 +333,12 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "orig_location",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 1.1,
 				Lon: 1.1,
 			},
 			ToID: "station4",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: -32.333,
 				Lon: 122.333,
 			},
@@ -351,12 +352,12 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 	expect_arr1 := []NeighborInfo{
 		NeighborInfo{
 			FromID: "station1",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 32.333,
 				Lon: 122.333,
 			},
 			ToID: "station6",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 30.333,
 				Lon: 122.333,
 			},
@@ -367,12 +368,12 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station1",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 32.333,
 				Lon: 122.333,
 			},
 			ToID: "station7",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: -10.333,
 				Lon: 122.333,
 			},
@@ -383,12 +384,12 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station2",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: -32.333,
 				Lon: -122.333,
 			},
 			ToID: "station6",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 30.333,
 				Lon: 122.333,
 			},
@@ -399,12 +400,12 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station2",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: -32.333,
 				Lon: -122.333,
 			},
 			ToID: "station7",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: -10.333,
 				Lon: 122.333,
 			},
@@ -415,12 +416,12 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station3",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 32.333,
 				Lon: -122.333,
 			},
 			ToID: "station6",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 30.333,
 				Lon: 122.333,
 			},
@@ -431,12 +432,12 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station3",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 32.333,
 				Lon: -122.333,
 			},
 			ToID: "station7",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: -10.333,
 				Lon: 122.333,
 			},
@@ -447,12 +448,12 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station4",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: -32.333,
 				Lon: 122.333,
 			},
 			ToID: "station6",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 30.333,
 				Lon: 122.333,
 			},
@@ -463,12 +464,12 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station4",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: -32.333,
 				Lon: 122.333,
 			},
 			ToID: "station7",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: -10.333,
 				Lon: 122.333,
 			},
@@ -482,12 +483,12 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 	expect_arr2 := []NeighborInfo{
 		NeighborInfo{
 			FromID: "station6",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: 30.333,
 				Lon: 122.333,
 			},
 			ToID: "dest_location",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 4.4,
 				Lon: 4.4,
 			},
@@ -498,12 +499,12 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 		},
 		NeighborInfo{
 			FromID: "station7",
-			FromLocation: StationCoordinate{
+			FromLocation: nav.Location{
 				Lat: -10.333,
 				Lon: 122.333,
 			},
 			ToID: "dest_location",
-			ToLocation: StationCoordinate{
+			ToLocation: nav.Location{
 				Lat: 4.4,
 				Lon: 4.4,
 			},

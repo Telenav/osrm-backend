@@ -1,13 +1,15 @@
 package stationfinder
 
+import "github.com/Telenav/osrm-backend/integration/nav"
+
 // DestLocationID defines name for dest
 const DestLocationID string = "dest_location"
 
 type destIterator struct {
-	location *StationCoordinate
+	location *nav.Location
 }
 
-func NewDestIter(location *StationCoordinate) *destIterator {
+func NewDestIter(location *nav.Location) *destIterator {
 	return &destIterator{
 		location: location,
 	}

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/Telenav/osrm-backend/integration/nav"
 	"github.com/Telenav/osrm-backend/integration/oasis/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/oasis/haversine"
 	"github.com/Telenav/osrm-backend/integration/oasis/osrmconnector"
@@ -49,21 +50,21 @@ func generateSolutionsWithEarlistArrival(oasisReq *oasis.Request, routeResp *rou
 	return targetSolutions
 }
 
-// For each route response, will generate an array of *stationfinder.StationCoordinate
+// For each route response, will generate an array of *nav.Location
 // Each array contains: start point, first charge point(could also be start point), second charge point, ..., end point
-func chargeLocationSelection(oasisReq *oasis.Request, routeResp *route.Response) [][]*stationfinder.StationCoordinate {
-	results := [][]*stationfinder.StationCoordinate{}
+func chargeLocationSelection(oasisReq *oasis.Request, routeResp *route.Response) [][]*nav.Location {
+	results := [][]*nav.Location{}
 	for _, route := range routeResp.Routes {
 
-		result := []*stationfinder.StationCoordinate{}
-		result = append(result, &stationfinder.StationCoordinate{
+		result := []*nav.Location{}
+		result = append(result, &nav.Location{
 			Lat: oasisReq.Coordinates[0].Lat,
 			Lon: oasisReq.Coordinates[0].Lon})
 		currEnergy := oasisReq.CurrRange
 
 		// if initial energy is too low
 		if currEnergy < oasisReq.PreferLevel {
-			result = append(result, &stationfinder.StationCoordinate{
+			result = append(result, &nav.Location{
 				Lat: oasisReq.Coordinates[0].Lat,
 				Lon: oasisReq.Coordinates[0].Lon})
 			currEnergy = oasisReq.MaxRange
@@ -71,7 +72,7 @@ func chargeLocationSelection(oasisReq *oasis.Request, routeResp *route.Response)
 
 		result, currEnergy = findChargeLocation4Route(route, result, currEnergy, oasisReq.PreferLevel, oasisReq.MaxRange)
 		if len(result) != 0 {
-			result = append(result, &stationfinder.StationCoordinate{
+			result = append(result, &nav.Location{
 				Lat: oasisReq.Coordinates[1].Lat,
 				Lon: oasisReq.Coordinates[1].Lon})
 			results = append(results, result)
@@ -80,7 +81,7 @@ func chargeLocationSelection(oasisReq *oasis.Request, routeResp *route.Response)
 	return results
 }
 
-func findChargeLocation4Route(route *route.Route, result []*stationfinder.StationCoordinate, currEnergy, preferLevel, maxRange float64) ([]*stationfinder.StationCoordinate, float64) {
+func findChargeLocation4Route(route *route.Route, result []*nav.Location, currEnergy, preferLevel, maxRange float64) ([]*nav.Location, float64) {
 	for _, leg := range route.Legs {
 		for _, step := range leg.Steps {
 			if (currEnergy - step.Distance) < preferLevel {
@@ -95,7 +96,7 @@ func findChargeLocation4Route(route *route.Route, result []*stationfinder.Statio
 					tmp += haversine.GreatCircleDistance(coords[i][0], coords[i][1], coords[i+1][0], coords[i+1][1])
 					if currEnergy-tmp < preferLevel {
 						currEnergy = maxRange
-						result = append(result, &stationfinder.StationCoordinate{
+						result = append(result, &nav.Location{
 							Lat: coords[i][0],
 							Lon: coords[i][1]})
 

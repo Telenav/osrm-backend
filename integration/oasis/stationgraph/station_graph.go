@@ -1,6 +1,7 @@
 package stationgraph
 
 import (
+	"github.com/Telenav/osrm-backend/integration/nav"
 	"github.com/Telenav/osrm-backend/integration/oasis/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/oasis/solution"
 	"github.com/Telenav/osrm-backend/integration/oasis/stationfinder"
@@ -77,7 +78,7 @@ func (sg *stationGraph) GenerateChargeSolutions() []*solution.Solution {
 		station.ArrivalEnergy = sg.g.getChargeInfo(stationNodes[i]).arrivalEnergy
 		station.ChargeRange = sg.g.getChargeInfo(stationNodes[i]).targetState.Energy
 		station.ChargeTime = sg.g.getChargeInfo(stationNodes[i]).chargeTime
-		station.Location = solution.Location{
+		station.Location = nav.Location{
 			Lat: sg.g.getLocationInfo(stationNodes[i]).lat,
 			Lon: sg.g.getLocationInfo(stationNodes[i]).lon,
 		}
@@ -106,7 +107,7 @@ func (sg *stationGraph) buildNeighborInfoBetweenNodes(neighborInfo stationfinder
 	}
 }
 
-func (sg *stationGraph) getChargeStationsNodes(id string, location stationfinder.StationCoordinate, currEnergyLevel, maxEnergyLevel float64) []*node {
+func (sg *stationGraph) getChargeStationsNodes(id string, location nav.Location, currEnergyLevel, maxEnergyLevel float64) []*node {
 	if _, ok := sg.stationID2Nodes[id]; !ok {
 		if sg.isStart(id) {
 			sg.constructStartNode(id, location, currEnergyLevel)
@@ -148,7 +149,7 @@ func (sg *stationGraph) getStationID(id nodeID) string {
 	return sg.num2StationID[uint32(id)]
 }
 
-func (sg *stationGraph) constructStartNode(id string, location stationfinder.StationCoordinate, currEnergyLevel float64) {
+func (sg *stationGraph) constructStartNode(id string, location nav.Location, currEnergyLevel float64) {
 
 	n := &node{
 		id: nodeID(sg.stationsCount),
@@ -169,7 +170,7 @@ func (sg *stationGraph) constructStartNode(id string, location stationfinder.Sta
 	sg.stationsCount += 1
 }
 
-func (sg *stationGraph) constructEndNode(id string, location stationfinder.StationCoordinate) {
+func (sg *stationGraph) constructEndNode(id string, location nav.Location) {
 
 	n := &node{
 		id: nodeID(sg.stationsCount),

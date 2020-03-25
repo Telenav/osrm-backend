@@ -3,7 +3,7 @@ package oasis
 import (
 	"testing"
 
-	"github.com/Telenav/osrm-backend/integration/oasis/stationfinder"
+	"github.com/Telenav/osrm-backend/integration/nav"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
 )
 
@@ -75,7 +75,7 @@ func TestFindChargeLocation4Route1(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		var expect []*stationfinder.StationCoordinate
+		var expect []*nav.Location
 		expect, _ = findChargeLocation4Route(&fakeRoute1, expect, c.currEnergy, c.preferLevel, c.maxRange)
 		if len(expect) != c.chargeCount {
 			t.Errorf("expect to charge %v times, but got %v times", c.chargeCount, len(expect))

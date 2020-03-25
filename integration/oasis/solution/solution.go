@@ -1,6 +1,7 @@
 package solution
 
 import (
+	"github.com/Telenav/osrm-backend/integration/nav"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 )
@@ -16,18 +17,12 @@ type Solution struct {
 
 // ChargeStation contains all information related with specific charge station
 type ChargeStation struct {
-	Location      Location
+	Location      nav.Location
 	StationID     string
 	ArrivalEnergy float64
 	WaitTime      float64
 	ChargeTime    float64
 	ChargeRange   float64
-}
-
-// Location defines the geo location of a station
-type Location struct {
-	Lat float64
-	Lon float64
 }
 
 // Convert2ExternalSolution convert internal solution format to external format defined in pkg/api/oasis/response
