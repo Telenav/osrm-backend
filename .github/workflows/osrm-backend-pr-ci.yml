@@ -17,7 +17,7 @@ on:
 jobs:
 
   pr-ci-linux:
-    name: osrm-backend PR CI on linux
+    name: osrm-backend PR CI (ubuntu)
     runs-on: ubuntu-latest
 
     steps:
@@ -27,7 +27,7 @@ jobs:
       run: mkdir build && cd build && cmake ../ -DENABLE_MASON=1 && cmake --build . -- -j
 
   pr-ci-macosx:
-    name: osrm-backend PR CI on macosx
+    name: osrm-backend PR CI (osx)
     runs-on: macos-latest
     steps:
     - name: Check out code into the Go module directory
