@@ -42,7 +42,7 @@ func ETL() {
 	// extract: load data from csv
 	csvFile, err := os.Open(flags.inputPath)
 	if err != nil {
-		glog.Fatal("While open file %s, met error %v", flags.inputPath, err)
+		glog.Fatalf("While open file %s, met error %v", flags.inputPath, err)
 	}
 	defer csvFile.Close()
 
@@ -51,7 +51,7 @@ func ETL() {
 	glog.Infof("Finish loading file of %s, it contains %d line of data\n", flags.inputPath, len(content))
 
 	if len(content) < 1 {
-		glog.Fatal("No content in given file %s\n", flags.inputPath)
+		glog.Fatalf("No content in given file %s\n", flags.inputPath)
 	}
 
 	// transformation: convert csv to json format
@@ -95,8 +95,8 @@ func ETL() {
 	// Load: save content to target file
 	rawMessage := json.RawMessage(buffer.String())
 	if err := ioutil.WriteFile(flags.outputPath, rawMessage, os.FileMode(0644)); err != nil {
-		glog.Fatal("While writing result to file %s, met error %v", flags.outputPath, err)
+		glog.Fatalf("While writing result to file %s, met error %v", flags.outputPath, err)
 	}
-	glog.Info("Finish generating target file %s\n", flags.outputPath)
+	glog.Infof("Finish generating target file %s\n", flags.outputPath)
 
 }
