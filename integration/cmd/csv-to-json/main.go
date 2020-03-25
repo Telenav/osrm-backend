@@ -19,16 +19,25 @@ func main() {
 }
 
 // ETL extracts result from csv and convert to json format
+//
 // Optimization for future: ETL could be a generic framework
-// Extraction part accepts input, and has many kind of reads(json, csv, etc)
-// Extraction put data into a channel of string
+//
+// Extraction
+// Extraction part load data from sources which could has many kind of readers(json, csv, etc)
+// Extraction put loaded data into a channel
+//
+// Transformation
 // Transformation part read data from Extraction's result, doing things(user
 // defined functions) and output result to another channel
 // There might be trick logic in this step when input information is not separated
 // by lines:
 // Input string might be: last part for object 1 | first part for object 2
 // It need to implement buffer to handling this
+// Transformation part could have a pool of worker to execute
+//
+// Loader
 // Loader part read data from channel and writes result to target format
+// Similar as reader, it could have many writers
 func ETL() {
 	// extract: load data from csv
 	csvFile, err := os.Open(flags.inputPath)
