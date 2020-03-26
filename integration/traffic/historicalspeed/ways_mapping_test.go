@@ -118,7 +118,7 @@ func TestParseWaysMappingRecordSucceed(t *testing.T) {
 	}
 }
 
-func TestToWaysMappingRecord(t *testing.T) {
+func TestFormatToWaysMappingRecord(t *testing.T) {
 	cases := []struct {
 		wayID int64
 		mappingItem
@@ -154,7 +154,7 @@ func TestToWaysMappingRecord(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		record := toWaysMappingRecord(c.wayID, &c.mappingItem)
+		record := formatToWaysMappingRecord(c.wayID, &c.mappingItem)
 		if !reflect.DeepEqual(record, c.record) {
 			t.Errorf("wayID %d mappingItem %v to record, expect %v but got %v", c.wayID, c.mappingItem, c.record, record)
 		}

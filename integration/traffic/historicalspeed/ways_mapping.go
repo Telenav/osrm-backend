@@ -76,7 +76,7 @@ func (w *WaysMapping) Dump(filePath string, withCSVHeader bool) error {
 
 	var count int
 	for k, v := range *w {
-		if err := writer.Write(toWaysMappingRecord(k, v)); err != nil {
+		if err := writer.Write(formatToWaysMappingRecord(k, v)); err != nil {
 			return err
 		}
 		count++
@@ -206,7 +206,7 @@ func parseWaysMappingRecord(record []string) (int64, *mappingItem, error) {
 	return wayID, &mapping, nil
 }
 
-func toWaysMappingRecord(wayID int64, item *mappingItem) []string {
+func formatToWaysMappingRecord(wayID int64, item *mappingItem) []string {
 	record := []string{}
 	if wayID >= 0 {
 		record = append(record, strconv.FormatInt(wayID, 10), "T")
