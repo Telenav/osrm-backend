@@ -44,7 +44,7 @@ func main() {
 		glog.V(1).Infof("timezone builder for unidb routine start.")
 		defer glog.V(1).Info("timezone builder for unidb routine exited.")
 
-		newTimezoneBuilderForUniDB(osmWaysChan, wayTimezoneInfoChan)
+		newTimezoneBuilder(osmWaysChan, wayTimezoneInfoChan)
 		close(wayTimezoneInfoChan)
 		errChan <- nil
 	}()

@@ -14,7 +14,7 @@ type wayTimezoneInfo struct {
 	daylightSaving string
 }
 
-func newTimezoneBuilderForUniDB(in <-chan *osmpbf.Way, out chan<- *wayTimezoneInfo) {
+func newTimezoneBuilder(in <-chan *osmpbf.Way, out chan<- *wayTimezoneInfo) {
 	startTime := time.Now()
 
 	var waysCount, invalidWaysCount, noTimezoneInfoWaysCount, succeedWaysCount int
@@ -25,6 +25,7 @@ func newTimezoneBuilderForUniDB(in <-chan *osmpbf.Way, out chan<- *wayTimezoneIn
 		}
 		waysCount++
 
+		/// The parse processing only support UniDB now since OSM almost has no timezone information.
 		if !unidbpatch.IsValidWay(way.ID) {
 			invalidWaysCount++
 			continue
@@ -47,5 +48,5 @@ func newTimezoneBuilderForUniDB(in <-chan *osmpbf.Way, out chan<- *wayTimezoneIn
 
 		succeedWaysCount++
 	}
-	glog.Infof("Built timezone info for unidb, total ways %d, succeed ways %d, invalid ways %d, no timezone and daylight saving ways %d, takes %f seconds", waysCount, succeedWaysCount, invalidWaysCount, noTimezoneInfoWaysCount, time.Now().Sub(startTime).Seconds())
+	glog.Infof("Built timezone info, total ways %d, succeed ways %d, invalid ways %d, no timezone and daylight saving ways %d, takes %f seconds", waysCount, succeedWaysCount, invalidWaysCount, noTimezoneInfoWaysCount, time.Now().Sub(startTime).Seconds())
 }
