@@ -3,7 +3,7 @@ name: Release Docker - osrm-backend
 on: 
   push:
     tags:
-    - 'osrm-backend/**'
+    - 'v*' # semver, e.g., v10.1.0
 
 env:
   IMAGE_NAME: osrm-backend
