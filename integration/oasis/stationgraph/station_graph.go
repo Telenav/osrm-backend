@@ -1,10 +1,10 @@
 package stationgraph
 
 import (
-	"github.com/Telenav/osrm-backend/integration/nav"
 	"github.com/Telenav/osrm-backend/integration/oasis/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/oasis/solution"
 	"github.com/Telenav/osrm-backend/integration/oasis/stationfinder"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/nav"
 	"github.com/golang/glog"
 )
 

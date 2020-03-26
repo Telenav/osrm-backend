@@ -1,6 +1,6 @@
 package stationfinder
 
-import "github.com/Telenav/osrm-backend/integration/nav"
+import "github.com/Telenav/osrm-backend/integration/pkg/api/nav"
 
 // DestLocationID defines name for dest
 const DestLocationID string = "dest_location"

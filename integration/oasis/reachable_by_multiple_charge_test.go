@@ -3,7 +3,7 @@ package oasis
 import (
 	"testing"
 
-	"github.com/Telenav/osrm-backend/integration/nav"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/nav"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
 )
 

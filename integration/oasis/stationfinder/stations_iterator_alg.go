@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/Telenav/osrm-backend/integration/nav"
 	"github.com/Telenav/osrm-backend/integration/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/oasis/osrmhelper"
 	"github.com/Telenav/osrm-backend/integration/oasis/searchconnector"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/nav"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/coordinate"
 	"github.com/golang/glog"
 )

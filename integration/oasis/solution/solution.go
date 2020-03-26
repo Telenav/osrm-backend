@@ -1,7 +1,7 @@
 package solution
 
 import (
-	"github.com/Telenav/osrm-backend/integration/nav"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/nav"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 )

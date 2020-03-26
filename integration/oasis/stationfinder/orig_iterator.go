@@ -1,6 +1,6 @@
 package stationfinder
 
-import "github.com/Telenav/osrm-backend/integration/nav"
+import "github.com/Telenav/osrm-backend/integration/pkg/api/nav"
 
 // OrigLocationID defines name for orig
 const OrigLocationID string = "orig_location"
