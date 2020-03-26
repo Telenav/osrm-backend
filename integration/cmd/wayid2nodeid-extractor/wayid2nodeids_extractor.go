@@ -13,6 +13,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Telenav/osrm-backend/integration/mapsource"
+
 	"github.com/Telenav/osrm-backend/integration/unidbpatch"
 
 	"github.com/qedus/osmpbf"
@@ -67,7 +69,7 @@ func wayid2nodeids(infile io.Reader, outfile io.Writer) {
 			case *osmpbf.Node:
 			case *osmpbf.Way:
 				wayID := v.ID
-				if flags.pbfSource == pbfSourceUniDB {
+				if flags.mapSource == mapsource.UniDB {
 					if !unidbpatch.IsValidWay(wayID) {
 						invalidWaysCount++
 						continue

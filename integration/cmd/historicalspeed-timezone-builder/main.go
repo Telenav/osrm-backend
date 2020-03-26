@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Telenav/osrm-backend/integration/mapsource"
 	"github.com/qedus/osmpbf"
 
 	"github.com/golang/glog"
@@ -14,8 +15,8 @@ import (
 func main() {
 	flag.Parse()
 
-	if flags.pbfSource != pbfSourceUniDB {
-		glog.Errorf("Only support %s at the moment.", pbfSourceUniDB)
+	if flags.mapSource != mapsource.UniDB {
+		glog.Errorf("Only support %s at the moment.", mapsource.UniDB)
 		os.Exit(1)
 		return
 	}
