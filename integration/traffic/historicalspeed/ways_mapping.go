@@ -32,6 +32,13 @@ const (
 	outputCSVHeader = "LINK_PVID,TRAVEL_DIRECTION,U,M,T,W,R,F,S,TIME_ZONE,DAYLIGHT_SAVING"
 )
 
+func (m *mappingItem) getDailyPatternID(weekday time.Weekday) uint32 {
+
+	// NOTE: Currently we don't need to do switch...case since they're the same by defintion.
+	// https://golang.org/pkg/time/#Weekday
+	return uint32(weekday)
+}
+
 // Count returns how many ways(directed) mapping records.
 func (w WaysMapping) Count() int {
 	return len(w)
