@@ -1,6 +1,10 @@
 package historicalspeed
 
-import "time"
+import (
+	"time"
+
+	"github.com/golang/glog"
+)
 
 // Speeds stores historical speeds.
 type Speeds struct {
@@ -39,9 +43,26 @@ func (s *Speeds) Load() error {
 // QueryHistoricalSpeed return the speed for a way at a specified time
 // wayID: positive means forward, negative means backward
 // t: UTC time
-func (s *Speeds) QueryHistoricalSpeed(wayID int64, t time.Time) float64 {
-	//TODO:
-	return 0.0
+func (s *Speeds) QueryHistoricalSpeed(wayID int64, t time.Time) (float64, bool) {
+
+	m, ok := s.WaysMapping[wayID]
+	if !ok {
+		return 0, false
+	}
+
+	//TODO: t from UTC to way's Local
+
+	// find dailyPatternID
+	patternID := m.getDailyPatternID(t.Weekday())
+
+	// find pattern
+	pattern, ok := s.dailyPatterns[patternID]
+	if !ok {
+		glog.Fatalf("Can not find daily pattern for PatternID %d on wayID %d.", patternID, wayID)
+		return 0, false
+	}
+
+	return float64(pattern.querySpeed(t)), true
 }
 
 // DailyPatternsCount returns how many daily patterns.
