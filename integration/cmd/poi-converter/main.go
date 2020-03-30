@@ -15,12 +15,12 @@ import (
 
 func main() {
 	flag.Parse()
-	ETL()
+	Pipeline()
 }
 
-// ETL extracts result from csv and convert to json format
+// Pipeline extracts result from csv and convert to json format
 //
-// Optimization for future: ETL could be a generic framework
+// Optimization for future: Pipeline could be a generic framework
 //
 // Extraction
 // Extraction part load data from sources which could has many kind of readers(json, csv, etc)
@@ -35,10 +35,10 @@ func main() {
 // It need to implement buffer to handling this
 // Transformation part could have a pool of worker to execute
 //
-// Loader
+// Loader/Publisher
 // Loader part read data from channel and writes result to target format
 // Similar as reader, it could have many writers
-func ETL() {
+func Pipeline() {
 	// extract: load data from csv
 	csvFile, err := os.Open(flags.inputPath)
 	if err != nil {
