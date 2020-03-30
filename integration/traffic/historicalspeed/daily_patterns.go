@@ -7,6 +7,7 @@ import (
 	"math"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/golang/glog"
 )
@@ -16,11 +17,27 @@ type dailyPattern []uint8
 type dailyPatterns map[uint32]dailyPattern // patternID->dailyPattern mapping
 
 const (
-	dailyPatternIntervalInMinutes = 15                                      // 15 minutes per value, e.g. speed_0 represents [00:00~00:15)
-	patternsPerDay                = 24 * 60 / dailyPatternIntervalInMinutes // 96 per day
+	dailyPatternIntervalInMinutes = 15 // 15 minutes per value, e.g. speed_0 represents [00:00~00:15)
+
+	hoursPerDay    = 24
+	minutesPerHour = 60
+	patternsPerDay = hoursPerDay * minutesPerHour / dailyPatternIntervalInMinutes // 96 per day
 
 	fieldsPerPattern = 1 + patternsPerDay // patternID and patterns
 )
+
+// querySpeed only cares hours/minutes of the time.
+func (d dailyPattern) querySpeed(t time.Time) uint8 {
+
+	minutesWithinDay := t.Hour()*minutesPerHour + t.Minute()
+	speedIndex := minutesWithinDay / dailyPatternIntervalInMinutes
+	if speedIndex >= patternsPerDay || speedIndex < 0 {
+		glog.Fatalln("Invalid index: ", speedIndex)
+		return 0
+	}
+
+	return d[speedIndex]
+}
 
 func (d dailyPatterns) count() int {
 	return len(d)

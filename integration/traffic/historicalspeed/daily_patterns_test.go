@@ -4,7 +4,35 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 )
+
+func TestQuerySpeedOnDailyPattern(t *testing.T) {
+
+	pattern := make(dailyPattern, patternsPerDay)
+	for i := 0; i < patternsPerDay; i++ {
+		pattern[i] = uint8(i + 1) // 1,2,3,...,96
+	}
+
+	cases := []struct {
+		t     time.Time
+		speed uint8
+	}{
+		{time.Date(2020, time.March, 30, 0, 0, 0, 0, time.UTC), 1},
+		{time.Date(2020, time.March, 30, 0, 14, 59, 0, time.UTC), 1},
+		{time.Date(2020, time.March, 30, 0, 15, 00, 0, time.UTC), 2},
+		{time.Date(2020, time.March, 30, 23, 44, 59, 0, time.UTC), 95},
+		{time.Date(2020, time.March, 30, 23, 45, 00, 0, time.UTC), 96},
+		{time.Date(2020, time.March, 30, 23, 59, 59, 0, time.UTC), 96},
+	}
+
+	for _, c := range cases {
+		speed := pattern.querySpeed(c.t)
+		if speed != c.speed {
+			t.Errorf("Query speed on time %s, expect %d but got %d", c.t, c.speed, speed)
+		}
+	}
+}
 
 func TestParseDailyPatternRecordFailure(t *testing.T) {
 	cases := [][]string{
