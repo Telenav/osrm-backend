@@ -41,7 +41,7 @@ func (s *Speeds) Load() error {
 }
 
 // QueryHistoricalSpeed return the speed for a way at a specified time
-// wayID: positive means forward, negative means backward
+// wayID: positive means travel forward, which is travel following edge's point sequence, negative means backward
 // t: UTC time
 func (s *Speeds) QueryHistoricalSpeed(wayID int64, t time.Time) (float64, bool) {
 
