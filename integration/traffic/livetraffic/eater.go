@@ -1,4 +1,4 @@
-package trafficeater
+package livetraffic
 
 import "github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxy"
 

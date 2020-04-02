@@ -6,23 +6,23 @@ import (
 
 	"github.com/golang/glog"
 
-	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficeater"
+	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic"
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxy"
 )
 
 // Feeder will continuesly feed traffic flows and incidents.
 type Feeder struct {
-	e []trafficeater.Eater
+	e []livetraffic.Eater
 }
 
 // NewFeeder creates a new traffic flows and incidents Feeder.
 func NewFeeder() *Feeder {
-	tf := Feeder{[]trafficeater.Eater{}}
+	tf := Feeder{[]livetraffic.Eater{}}
 	return &tf
 }
 
 // RegisterEaters add eaters for this feeder.
-func (f *Feeder) RegisterEaters(e ...trafficeater.Eater) {
+func (f *Feeder) RegisterEaters(e ...livetraffic.Eater) {
 	f.e = append(f.e, e...)
 }
 
@@ -91,7 +91,7 @@ func (f *Feeder) feed(in <-chan trafficproxy.TrafficResponse) {
 		var wg sync.WaitGroup
 		for _, e := range f.e {
 			wg.Add(1)
-			go func(e trafficeater.Eater) {
+			go func(e livetraffic.Eater) {
 				e.Eat(resp)
 				wg.Done()
 			}(e)
