@@ -1,4 +1,4 @@
-package rankingservice
+package ranking
 
 import (
 	"encoding/json"
@@ -9,7 +9,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/code"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route/options"
-	"github.com/Telenav/osrm-backend/integration/rankingstrategy/rankbyduration"
+	"github.com/Telenav/osrm-backend/integration/service/ranking/strategy/rankbyduration"
 
 	"github.com/Telenav/osrm-backend/integration/trafficcache/querytrafficbyedge"
 	"github.com/golang/glog"
