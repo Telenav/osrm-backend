@@ -11,7 +11,7 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/service/ranking"
 	"github.com/Telenav/osrm-backend/integration/traffic/historicalspeed"
-	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficcache/trafficcacheindexedbyedge"
+	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficcache"
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxyclient"
 	"github.com/Telenav/osrm-backend/integration/wayid2nodeids"
 
@@ -49,7 +49,7 @@ func main() {
 	}
 
 	// prepare traffic cache
-	trafficCache := trafficcacheindexedbyedge.New(wayID2NodeIDsMapping)
+	trafficCache := trafficcache.NewCacheIndexedByEdge(wayID2NodeIDsMapping)
 	feeder := trafficproxyclient.NewFeeder()
 	feeder.RegisterEaters(trafficCache)
 	go func() {

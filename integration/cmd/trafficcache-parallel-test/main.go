@@ -4,8 +4,7 @@ import (
 	"flag"
 	"time"
 
-	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficcache/trafficcache"
-	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficcache/trafficcacheindexedbyedge"
+	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficcache"
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxyclient"
 	"github.com/Telenav/osrm-backend/integration/wayid2nodeids"
 
@@ -17,14 +16,14 @@ func main() {
 	defer glog.Flush()
 
 	var cacheByWay *trafficcache.Cache
-	var cacheByEdge *trafficcacheindexedbyedge.Cache
+	var cacheByEdge *trafficcache.CacheIndexedByEdge
 	if flags.indexedByEdge {
 		wayID2NodeIDsMapping := wayid2nodeids.NewMappingFrom(flags.wayID2NodeIDsMappingFile)
 		if err := wayID2NodeIDsMapping.Load(); err != nil {
 			glog.Error(err)
 			return
 		}
-		cacheByEdge = trafficcacheindexedbyedge.New(wayID2NodeIDsMapping)
+		cacheByEdge = trafficcache.NewCacheIndexedByEdge(wayID2NodeIDsMapping)
 	}
 	if flags.indexedByWayID {
 		cacheByWay = trafficcache.New()
