@@ -11,18 +11,18 @@ import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route/options"
 	"github.com/Telenav/osrm-backend/integration/service/ranking/strategy/rankbyduration"
 
-	"github.com/Telenav/osrm-backend/integration/trafficcache/querytrafficbyedge"
+	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic"
 	"github.com/golang/glog"
 )
 
 // Handler represents a handler for ranking.
 type Handler struct {
-	trafficInquirer querytrafficbyedge.Inquirer
+	trafficInquirer livetraffic.QuerierByEdge
 	osrmBackend     string
 }
 
 // New creates a new handler for ranking.
-func New(osrmBackend string, trafficInquirer querytrafficbyedge.Inquirer) *Handler {
+func New(osrmBackend string, trafficInquirer livetraffic.QuerierByEdge) *Handler {
 	if trafficInquirer == nil {
 		glog.Fatal("nil traffic inquirer")
 		return nil

@@ -6,8 +6,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
-	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxyclient"
+	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxyclient"
 	"github.com/golang/glog"
 )
 

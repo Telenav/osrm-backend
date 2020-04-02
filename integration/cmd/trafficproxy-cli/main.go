@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
-	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxyclient"
-	"github.com/Telenav/osrm-backend/integration/trafficdumper"
+	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficdumper"
+	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxyclient"
 	"github.com/golang/glog"
 )
 

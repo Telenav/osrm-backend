@@ -2,9 +2,9 @@ package trafficcacheindexedbyedge
 
 import (
 	"github.com/Telenav/osrm-backend/integration/graph"
-	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
-	"github.com/Telenav/osrm-backend/integration/trafficcache/flowscacheindexedbyedge"
-	"github.com/Telenav/osrm-backend/integration/trafficcache/incidentscache"
+	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficcache/flowscacheindexedbyedge"
+	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficcache/incidentscache"
+	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxy"
 	"github.com/Telenav/osrm-backend/integration/wayidsmap"
 	"github.com/golang/glog"
 )

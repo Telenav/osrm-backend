@@ -6,8 +6,8 @@ import (
 
 	"github.com/golang/glog"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/trafficeater"
-	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficeater"
+	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxy"
 )
 
 // Feeder will continuesly feed traffic flows and incidents.

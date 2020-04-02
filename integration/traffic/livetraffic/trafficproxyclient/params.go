@@ -4,7 +4,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxy"
 )
 
 // params is used to group request parameters together.

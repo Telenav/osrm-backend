@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxy"
 )
 
 func TestFlowsCache(t *testing.T) {

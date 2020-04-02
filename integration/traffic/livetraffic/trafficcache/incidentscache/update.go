@@ -1,7 +1,7 @@
 package incidentscache
 
 import (
-	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxy"
 	"github.com/golang/glog"
 )
 

@@ -9,10 +9,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/trafficproxyclient"
 	"github.com/Telenav/osrm-backend/integration/service/ranking"
 	"github.com/Telenav/osrm-backend/integration/traffic/historicalspeed"
-	"github.com/Telenav/osrm-backend/integration/trafficcache/trafficcacheindexedbyedge"
+	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficcache/trafficcacheindexedbyedge"
+	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxyclient"
 	"github.com/Telenav/osrm-backend/integration/wayid2nodeids"
 
 	"github.com/golang/glog"
