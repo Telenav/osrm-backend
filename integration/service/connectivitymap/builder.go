@@ -78,7 +78,7 @@ func (builder *connectivityMapBuilder) work(workerID int, source <-chan spatiali
 	for p := range source {
 		counter += 1
 		nearbyIDs := builder.finder.FindNearByPointIDs(p.Location, builder.distanceLimit, spatialindexer.UnlimitedCount)
-		rankedResults := builder.ranker.RankPointIDsByShortestDistance(p.Location, nearbyIDs)
+		rankedResults := builder.ranker.RankPointIDsByGreatCircleDistance(p.Location, nearbyIDs)
 
 		ids := make([]IDAndDistance, 0, len(rankedResults))
 		for _, r := range rankedResults {
