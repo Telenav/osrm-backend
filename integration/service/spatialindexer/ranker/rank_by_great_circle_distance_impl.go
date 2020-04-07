@@ -8,7 +8,7 @@ import (
 
 func rankPointsByGreatCircleDistanceToCenter(center spatialindexer.Location, targets []*spatialindexer.PointInfo) []*spatialindexer.RankedPointInfo {
 	if len(targets) == 0 {
-		glog.Warning("When try to rankPointsByGreatCircleDistanceToCenter, input array is empty\n")
+		glog.Warningf("When try to rankPointsByGreatCircleDistanceToCenter, input array is empty, center = %+v\n", center)
 		return nil
 	}
 

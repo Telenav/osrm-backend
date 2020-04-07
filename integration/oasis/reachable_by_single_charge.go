@@ -142,10 +142,10 @@ func pickChargeStationWithEarlistArrival(req *oasis.Request, overlapPoints coord
 	}
 	return &singleChargeStationCandidate{
 		location:         overlapPoints[index],
-		distanceFromOrig: *respOrig.Resp.Distances[0][index],
-		durationFromOrig: *respOrig.Resp.Durations[0][index],
-		distanceToDest:   *respDest.Resp.Distances[index][0],
-		durationToDest:   *respDest.Resp.Durations[index][0],
+		distanceFromOrig: respOrig.Resp.Distances[0][index],
+		durationFromOrig: respOrig.Resp.Durations[0][index],
+		distanceToDest:   respDest.Resp.Distances[index][0],
+		durationToDest:   respDest.Resp.Durations[index][0],
 	}, nil
 }
 
@@ -166,7 +166,7 @@ func rankingSingleChargeStation(orig2Stations, stations2Dest *table.Response) (i
 	var totalTimes []routePassSingleStation
 	for i := 0; i < size; i++ {
 		var route routePassSingleStation
-		route.time = *orig2Stations.Durations[0][i] + *stations2Dest.Durations[i][0]
+		route.time = orig2Stations.Durations[0][i] + stations2Dest.Durations[i][0]
 		route.index = i
 		totalTimes = append(totalTimes, route)
 	}

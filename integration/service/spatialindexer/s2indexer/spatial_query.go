@@ -52,6 +52,14 @@ func queryNearByPoints(indexer *S2Indexer, point spatialindexer.Location, radius
 	return result
 }
 
+func generateDebugInfo4Query(point spatialindexer.Location, radius float64, cellIDs []s2.CellID) {
+	glog.Infof("During spatial_query, point = %+v, radius = %v {", point, radius)
+	for _, cellID := range cellIDs {
+		glog.Infof("%s,", cellID.ToToken())
+	}
+	glog.Info("}\n")
+}
+
 func generateDebugInfo4CellIDs(cellIDs []s2.CellID) {
 	glog.Info("=================================\n")
 	glog.Info("generateDebugInfo4CellIDs\n")

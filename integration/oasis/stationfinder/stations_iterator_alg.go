@@ -106,8 +106,8 @@ func CalcWeightBetweenChargeStationsPair(from nearbyStationsIterator, to nearbyS
 					Lon: targetPoint.Lon,
 				},
 				Cost: Cost{
-					Duration: *resp.Resp.Durations[i][j],
-					Distance: *resp.Resp.Distances[i][j],
+					Duration: resp.Resp.Durations[i][j],
+					Distance: resp.Resp.Distances[i][j],
 				},
 			})
 		}

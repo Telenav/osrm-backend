@@ -30,16 +30,42 @@ func NewConnectivityMap(maxRange float64) *ConnectivityMap {
 }
 
 // Build creates ConnectivityMap
-func (cm *ConnectivityMap) Build() {
-	glog.Info("Successfully finished GenerateConnectivityMap\n")
+func (cm *ConnectivityMap) Build(iterator spatialindexer.PointsIterator, finder spatialindexer.Finder,
+	ranker spatialindexer.Ranker, numOfWorkers int) *ConnectivityMap {
+	glog.Info("Start ConnectivityMap's Build().\n")
+
+	cm.id2nearByIDs = newConnectivityMapBuilder(iterator, finder, ranker, cm.maxRange, numOfWorkers).build()
+	cm.statistic = cm.statistic.build(cm.id2nearByIDs, cm.maxRange)
+
+	glog.Info("Finished ConnectivityMap's Build().\n")
+	return cm
 }
 
 // Dump dump ConnectivityMap's content to given folderPath
 func (cm *ConnectivityMap) Dump(folderPath string) {
+	glog.Info("Start ConnectivityMap's Dump().\n")
+
+	if err := removeAllDumpFiles(folderPath); err != nil {
+		glog.Fatalf("removeAllDumpFiles for ConnectivityMap failed with error %+v\n", err)
+	}
+
+	if err := serializeConnectivityMap(cm, folderPath); err != nil {
+		glog.Fatalf("serializeConnectivityMap failed with error %+v\n", err)
+	}
+
+	glog.Infof("Finished ConnectivityMap's Dump() into %s.\n", folderPath)
 }
 
 // Load rebuild ConnectivityMap from dumpped data in given folderPath
-func (cm *ConnectivityMap) Load(folderPath string) {
+func (cm *ConnectivityMap) Load(folderPath string) *ConnectivityMap {
+	glog.Info("Start ConnectivityMap's Load().\n")
+
+	if err := deSerializeConnectivityMap(cm, folderPath); err != nil {
+		glog.Fatalf("deSerializeConnectivityMap failed with error %+v\n", err)
+	}
+
+	glog.Infof("Finished ConnectivityMap's Load() from %s.\n", folderPath)
+	return cm
 }
 
 // QueryConnectivity answers connectivity query for given placeInfo

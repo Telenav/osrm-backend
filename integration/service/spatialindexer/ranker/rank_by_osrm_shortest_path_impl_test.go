@@ -111,7 +111,7 @@ func TestGenerateTableRequest(t *testing.T) {
 				Annotations: "distance,duration",
 			},
 		},
-		// case 2: test center -> {2, 3, 4}
+		// case 2: test center -> {1, 2, 3}
 		{
 			center: spatialindexer.Location{
 				Lat: 0,
@@ -182,9 +182,9 @@ func TestGenerateTableRequest(t *testing.T) {
 					"0",
 				},
 				Destinations: genericoptions.Elements{
+					"1",
 					"2",
 					"3",
-					"4",
 				},
 				Annotations: "distance,duration",
 			},
@@ -337,21 +337,42 @@ func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 
 		if strings.HasPrefix(r.URL.EscapedPath(), "/table/v1/driving/") {
 			req, _ := table.ParseRequestURL(r.URL)
+
 			s := len(req.Sources)
 			d := len(req.Destinations)
 			if s == 1 && d == 6 {
 				var tableResponseBytes, _ = json.Marshal(mock1To6TableResponse)
 				w.Write(tableResponseBytes)
-			} else if s == 1 && d == 3 && reflect.DeepEqual(req.Destinations, genericoptions.Elements{"1", "2", "3"}) {
+			} else if s == 1 && d == 3 &&
+				reflect.DeepEqual(req.Coordinates, coordinate.Coordinates{
+					coordinate.Coordinate{Lat: 0, Lon: 0},
+					coordinate.Coordinate{Lat: 1.1, Lon: 1.1},
+					coordinate.Coordinate{Lat: 2.2, Lon: 2.2},
+					coordinate.Coordinate{Lat: 3.3, Lon: 3.3}}) {
 				var tableResponseBytes, _ = json.Marshal(mock1To3TableResponsePart1)
 				w.Write(tableResponseBytes)
-			} else if s == 1 && d == 3 && reflect.DeepEqual(req.Destinations, genericoptions.Elements{"4", "5", "6"}) {
+			} else if s == 1 && d == 3 &&
+				reflect.DeepEqual(req.Coordinates, coordinate.Coordinates{
+					coordinate.Coordinate{Lat: 0, Lon: 0},
+					coordinate.Coordinate{Lat: 4.4, Lon: 4.4},
+					coordinate.Coordinate{Lat: 5.5, Lon: 5.5},
+					coordinate.Coordinate{Lat: 6.6, Lon: 6.6}}) {
 				var tableResponseBytes, _ = json.Marshal(mock1To3TableResponsePart2)
 				w.Write(tableResponseBytes)
-			} else if s == 1 && d == 4 && reflect.DeepEqual(req.Destinations, genericoptions.Elements{"1", "2", "3", "4"}) {
+			} else if s == 1 && d == 4 &&
+				reflect.DeepEqual(req.Coordinates, coordinate.Coordinates{
+					coordinate.Coordinate{Lat: 0, Lon: 0},
+					coordinate.Coordinate{Lat: 1.1, Lon: 1.1},
+					coordinate.Coordinate{Lat: 2.2, Lon: 2.2},
+					coordinate.Coordinate{Lat: 3.3, Lon: 3.3},
+					coordinate.Coordinate{Lat: 4.4, Lon: 4.4}}) {
 				var tableResponseBytes, _ = json.Marshal(mock1To4TableResponsePart1)
 				w.Write(tableResponseBytes)
-			} else if s == 1 && d == 2 && reflect.DeepEqual(req.Destinations, genericoptions.Elements{"5", "6"}) {
+			} else if s == 1 && d == 2 &&
+				reflect.DeepEqual(req.Coordinates, coordinate.Coordinates{
+					coordinate.Coordinate{Lat: 0, Lon: 0},
+					coordinate.Coordinate{Lat: 5.5, Lon: 5.5},
+					coordinate.Coordinate{Lat: 6.6, Lon: 6.6}}) {
 				var tableResponseBytes, _ = json.Marshal(mock1To4TableResponsePart2)
 				w.Write(tableResponseBytes)
 			}

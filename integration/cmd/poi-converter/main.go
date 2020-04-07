@@ -85,7 +85,7 @@ func Pipeline() {
 
 		buffer.WriteString("}")
 		if i < len(content)-1 {
-			buffer.WriteString(",")
+			buffer.WriteString(",\n")
 		}
 	}
 

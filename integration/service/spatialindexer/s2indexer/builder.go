@@ -24,7 +24,7 @@ func build(points []spatialindexer.PointInfo, minLevel, maxLevel int) map[s2.Cel
 		var cellIDs []s2.CellID
 		// For level = 30, its parent equal to current
 		// So no need append leafCellID into cellIDs outside of for loop
-		for i := leafCellID.Level(); i > minLevel; i-- {
+		for i := leafCellID.Level(); i >= minLevel; i-- {
 			if i > maxLevel {
 				continue
 			}

@@ -88,6 +88,11 @@ func (s *statistic) build(m ID2NearByIDsMap, MaxRange float64) *statistic {
 		s.MinOfMaxDistance = math.Min(s.MinOfMaxDistance, maxDistance)
 	}
 
+	if s.ValidCount == 0 {
+		glog.Warningf("connectivity's statistic detect 0 valid result.\n")
+		return s
+	}
+
 	s.AverageNearByIDsCount = totalNearByIDsCount / s.ValidCount
 	s.AverageMaxDistance = totalMaxDistance / (float64)(s.ValidCount)
 
@@ -111,7 +116,7 @@ func (s *statistic) dump(folderPath string) error {
 		return err
 	}
 
-	glog.Infof("Successfully dump statistic file of %s to %s\n", statisticFileName, folderPath)
+	glog.Infof("Finished dumpping statistic file of %s to %s\n", statisticFileName, folderPath)
 	return nil
 }
 

@@ -14,6 +14,8 @@ import (
 const id2NearByIDsMapFileName = "id2nearbyidsmap.gob"
 
 func serializeConnectivityMap(cm *ConnectivityMap, folderPath string) error {
+	glog.Info("Start serializeConnectivityMap()\n")
+
 	if !strings.HasSuffix(folderPath, api.Slash) {
 		folderPath += api.Slash
 	}
@@ -26,12 +28,14 @@ func serializeConnectivityMap(cm *ConnectivityMap, folderPath string) error {
 		return err
 	}
 
-	glog.Infof("Successfully deserialize ConnectivityMap from folder %s.\n", folderPath)
+	glog.Infof("Finished serializeConnectivityMap() to folder %s.\n", folderPath)
 
 	return nil
 }
 
 func deSerializeConnectivityMap(cm *ConnectivityMap, folderPath string) error {
+	glog.Info("Start deSerializeConnectivityMap()")
+
 	if !strings.HasSuffix(folderPath, api.Slash) {
 		folderPath += api.Slash
 	}
@@ -44,6 +48,8 @@ func deSerializeConnectivityMap(cm *ConnectivityMap, folderPath string) error {
 		return err
 	}
 	cm.maxRange = cm.statistic.MaxRange
+
+	glog.Infof("Finished deSerializeConnectivityMap() to folder %s.\n", folderPath)
 
 	return nil
 }

@@ -29,6 +29,11 @@ func TestStatisticBuild(t *testing.T) {
 			distanceLimit:   fakeDistanceLimit,
 			expect:          &fakeStatisticResult1,
 		},
+		{
+			id2NearByIDsMap: make(ID2NearByIDsMap),
+			distanceLimit:   0.0,
+			expect:          newStatistic(),
+		},
 	}
 
 	for _, c := range cases {
@@ -37,5 +42,4 @@ func TestStatisticBuild(t *testing.T) {
 			t.Errorf("Incorrect statistic build() result, expect \n%+v \nbut got \n%+v\n", c.expect, actual)
 		}
 	}
-
 }

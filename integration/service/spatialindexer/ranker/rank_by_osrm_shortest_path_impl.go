@@ -1,11 +1,13 @@
 package ranker
 
 import (
+	"fmt"
 	"strconv"
 	"sync"
 
 	"github.com/Telenav/osrm-backend/integration/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/pkg/api"
+	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/code"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/coordinate"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route/options"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/table"
@@ -17,7 +19,7 @@ import (
 // During pre-processing, its possible to calculate distance between thousands of points, which will
 // cause too big request and might reach potential limitation of different parts.
 // The scenario here is 1-to-N table request, use pointsLimit4SingleTableRequest to limit N
-const pointsThresholdPerRequest = 1000
+const pointsThresholdPerRequest = 500
 
 func rankPointsByOSRMShortestPath(center spatialindexer.Location, targets []*spatialindexer.PointInfo,
 	oc *osrmconnector.OSRMConnector, pointsThreshold int) []*spatialindexer.RankedPointInfo {
@@ -45,8 +47,8 @@ func rankPointsByOSRMShortestPath(center spatialindexer.Location, targets []*spa
 			rankedPoints, err := calcCenter2TargetsDistanceViaShortestPath(center, targets, oc, startIndex, endIndex)
 
 			if err != nil {
-				glog.Errorf("Failed to calculate shortest path for range [%d, %d] for center = %+v, targets = %+v\n",
-					startIndex, endIndex, center, targets)
+				glog.Errorf("Failed to calculate shortest path for range [%d, %d] for center = %+v, len(targets) = %+v, err = %+v\n",
+					startIndex, endIndex, center, len(targets), err)
 				// @todo: add retry logic when failed or may be put retry logic in connector
 			} else {
 				for _, item := range rankedPoints {
@@ -77,7 +79,19 @@ func calcCenter2TargetsDistanceViaShortestPath(center spatialindexer.Location, t
 		glog.Errorf("Failed to generate table response for \n %s with \n err =%v \n", req.RequestURI(), resp.Err)
 		return nil, resp.Err
 	}
-	glog.Infof("Inside ranker, get table response for request %s\n", req.RequestURI())
+
+	if resp.Resp.Code != code.OK {
+		err := fmt.Errorf("failed to get correct table response for Request = %+v \n Resp = %+v", req.RequestURI(), resp.Resp)
+		return nil, err
+	}
+
+	if len(resp.Resp.Distances[0]) != endIndex-startIndex+1 {
+		err := fmt.Errorf("incorrect table response for request %+v, expect %d items but returns %d", req.RequestURI(), endIndex-startIndex+1, len(resp.Resp.Distances[0]))
+		return nil, err
+	}
+
+	glog.V(3).Infof("Inside ranker, get table response for request %+v\n", resp.Resp)
+	glog.V(3).Infof("In the response,  len(resp.Resp.Distances[0]) = %+v\n", len(resp.Resp.Distances[0]))
 
 	result := make([]*spatialindexer.RankedPointInfo, 0, endIndex-startIndex+1)
 	for i := 0; i < endIndex-startIndex+1; i++ {
@@ -86,7 +100,7 @@ func calcCenter2TargetsDistanceViaShortestPath(center spatialindexer.Location, t
 				ID:       targets[startIndex+i].ID,
 				Location: targets[startIndex+i].Location,
 			},
-			Distance: *resp.Resp.Distances[0][i],
+			Distance: resp.Resp.Distances[0][i],
 		})
 	}
 	return result, nil
@@ -105,7 +119,7 @@ func generateTableRequest(center spatialindexer.Location, targets []*spatialinde
 
 	req.Sources = append(req.Sources, strconv.Itoa(0))
 	pointsCount4Sources := 1
-	for i := startIndex; i <= endIndex; i++ {
+	for i := 0; i <= endIndex-startIndex; i++ {
 		str := strconv.Itoa(i + pointsCount4Sources)
 		req.Destinations = append(req.Destinations, str)
 	}

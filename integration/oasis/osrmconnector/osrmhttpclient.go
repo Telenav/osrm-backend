@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/Telenav/osrm-backend/integration/pkg/api"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/table"
 	"github.com/Telenav/osrm-backend/integration/pkg/backend"
@@ -18,6 +19,8 @@ type osrmHTTPClient struct {
 }
 
 func newOsrmHTTPClient(osrmEndpoint string) *osrmHTTPClient {
+	osrmEndpoint = strings.TrimSuffix(osrmEndpoint, api.Slash)
+
 	return &osrmHTTPClient{
 		osrmBackendEndpoint: osrmEndpoint,
 		httpclient:          http.Client{Timeout: backend.Timeout()},
@@ -34,7 +37,7 @@ func (oc *osrmHTTPClient) submitRouteReq(r *route.Request) <-chan RouteResponse 
 
 	req := newOsrmRequest(url, OSRMRoute)
 	oc.requestC <- req
-	glog.Info("[osrmHTTPClient]Submit route request " + url)
+	glog.V(3).Infof("[osrmHTTPClient]Submit route request " + url + "\n")
 	return req.routeRespC
 }
 
@@ -47,12 +50,12 @@ func (oc *osrmHTTPClient) submitTableReq(r *table.Request) <-chan TableResponse 
 
 	req := newOsrmRequest(url, OSRMTable)
 	oc.requestC <- req
-	glog.Info("[osrmHTTPClient]Submit table request " + url)
+	glog.V(3).Infof("[osrmHTTPClient]Submit table request " + url + "\n")
 	return req.tableRespC
 }
 
 func (oc *osrmHTTPClient) start() {
-	glog.Info("osrm connector started.\n")
+	glog.V(0).Info("osrm connector started.\n")
 	c := make(chan message)
 
 	for {
@@ -73,7 +76,7 @@ type message struct {
 
 func (oc *osrmHTTPClient) send(req *request, c chan<- message) {
 	resp, err := oc.httpclient.Get(req.url)
-	glog.Infof("[osrmHTTPClient] send function succeed with request %s" + req.url)
+	glog.V(3).Infof("[osrmHTTPClient] send function succeed with request %s.\n" + req.url)
 	m := message{req: req, resp: resp, err: err}
 	c <- m
 }
@@ -94,7 +97,7 @@ func (oc *osrmHTTPClient) response(m *message) {
 			tableResp.Err = m.err
 			m.req.tableRespC <- tableResp
 		} else {
-			glog.Fatal("Unsupported request type for osrmHTTPClient")
+			glog.Fatal("Unsupported request type for osrmHTTPClient.\n")
 		}
 
 		return
@@ -108,9 +111,8 @@ func (oc *osrmHTTPClient) response(m *message) {
 		tableResp.Err = json.NewDecoder(m.resp.Body).Decode(&tableResp.Resp)
 		m.req.tableRespC <- tableResp
 	} else {
-		glog.Fatal("Unsupported request type for osrmHTTPClient")
+		glog.Fatal("Unsupported request type for osrmHTTPClient.\n")
 	}
-	glog.Infof("[osrmHTTPClient] Response for request %s" + m.req.url + " is generated.")
+	glog.V(3).Infof("[osrmHTTPClient] Response for request %s" + m.req.url + " is generated.\n")
 
-	return
 }

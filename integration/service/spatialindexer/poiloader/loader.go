@@ -22,5 +22,7 @@ func LoadData(filePath string) ([]Element, error) {
 		glog.Errorf("While unmarshal json file %s, met error %v\n", filePath, err)
 		return elements, err
 	}
+
+	glog.Infof("Finished loading %d items from json file %s", len(elements), filePath)
 	return elements, nil
 }
