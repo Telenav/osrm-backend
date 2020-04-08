@@ -5,11 +5,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/Telenav/osrm-backend/integration/oasis/osrmconnector"
-	"github.com/Telenav/osrm-backend/integration/service/connectivitymap"
-	"github.com/Telenav/osrm-backend/integration/service/spatialindexer"
-	"github.com/Telenav/osrm-backend/integration/service/spatialindexer/ranker"
-	"github.com/Telenav/osrm-backend/integration/service/spatialindexer/s2indexer"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/connectivitymap"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer/ranker"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer/s2indexer"
 	"github.com/golang/glog"
 )
 

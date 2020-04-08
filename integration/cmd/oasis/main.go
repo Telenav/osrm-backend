@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Telenav/osrm-backend/integration/oasis"
+	"github.com/Telenav/osrm-backend/integration/service/oasis"
 	"github.com/golang/glog"
 )
 
