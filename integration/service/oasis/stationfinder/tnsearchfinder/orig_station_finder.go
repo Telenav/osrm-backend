@@ -1,10 +1,11 @@
-package stationfinder
+package tnsearchfinder
 
 import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/searchcoordinate"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/searchconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/searchhelper"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 )
 
 //@todo: This number need to be adjusted based on charge station profile
@@ -36,6 +37,6 @@ func (sf *origStationFinder) prepare() {
 	return
 }
 
-func (sf *origStationFinder) iterateNearbyStations() <-chan ChargeStationInfo {
-	return sf.bf.iterateNearbyStations()
+func (sf *origStationFinder) IterateNearbyStations() <-chan stationfindertype.ChargeStationInfo {
+	return sf.bf.IterateNearbyStations()
 }

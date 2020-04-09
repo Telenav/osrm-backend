@@ -4,7 +4,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/solution"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 	"github.com/golang/glog"
 )
 
@@ -19,7 +19,7 @@ type stationGraph struct {
 }
 
 // NewStationGraph creates station graph from channel
-func NewStationGraph(c chan stationfinder.WeightBetweenNeighbors, currEnergyLevel, maxEnergyLevel float64, strategy chargingstrategy.Strategy) *stationGraph {
+func NewStationGraph(c chan stationfindertype.WeightBetweenNeighbors, currEnergyLevel, maxEnergyLevel float64, strategy chargingstrategy.Strategy) *stationGraph {
 	sg := &stationGraph{
 		g: &graph{
 			startNodeID: invalidNodeID,
@@ -61,7 +61,7 @@ func (sg *stationGraph) GenerateChargeSolutions() []*solution.Solution {
 	var totalDistance, totalDuration float64
 
 	// accumulate information: start node -> first charge station
-	startNodeID := sg.stationID2Nodes[stationfinder.OrigLocationID][0].id
+	startNodeID := sg.stationID2Nodes[stationfindertype.OrigLocationID][0].id
 	sg.g.accumulateDistanceAndDuration(startNodeID, stationNodes[0], &totalDistance, &totalDuration)
 
 	// accumulate information: first charge station -> second charge station -> ... -> end node
@@ -69,7 +69,7 @@ func (sg *stationGraph) GenerateChargeSolutions() []*solution.Solution {
 		if i != len(stationNodes)-1 {
 			sg.g.accumulateDistanceAndDuration(stationNodes[i], stationNodes[i+1], &totalDistance, &totalDuration)
 		} else {
-			endNodeID := sg.stationID2Nodes[stationfinder.DestLocationID][0].id
+			endNodeID := sg.stationID2Nodes[stationfindertype.DestLocationID][0].id
 			sg.g.accumulateDistanceAndDuration(stationNodes[i], endNodeID, &totalDistance, &totalDuration)
 		}
 
@@ -89,13 +89,13 @@ func (sg *stationGraph) GenerateChargeSolutions() []*solution.Solution {
 
 	sol.Distance = totalDistance
 	sol.Duration = totalDuration
-	sol.RemainingRage = sg.stationID2Nodes[stationfinder.DestLocationID][0].arrivalEnergy
+	sol.RemainingRage = sg.stationID2Nodes[stationfindertype.DestLocationID][0].arrivalEnergy
 
 	result = append(result, sol)
 	return result
 }
 
-func (sg *stationGraph) buildNeighborInfoBetweenNodes(neighborInfo stationfinder.NeighborInfo, currEnergyLevel, maxEnergyLevel float64) {
+func (sg *stationGraph) buildNeighborInfoBetweenNodes(neighborInfo stationfindertype.NeighborInfo, currEnergyLevel, maxEnergyLevel float64) {
 	for _, fromNode := range sg.getChargeStationsNodes(neighborInfo.FromID, neighborInfo.FromLocation, currEnergyLevel, maxEnergyLevel) {
 		for _, toNode := range sg.getChargeStationsNodes(neighborInfo.ToID, neighborInfo.ToLocation, currEnergyLevel, maxEnergyLevel) {
 			fromNode.neighbors = append(fromNode.neighbors, &neighbor{
@@ -138,11 +138,11 @@ func (sg *stationGraph) getChargeStationsNodes(id string, location nav.Location,
 }
 
 func (sg *stationGraph) isStart(id string) bool {
-	return id == stationfinder.OrigLocationID
+	return id == stationfindertype.OrigLocationID
 }
 
 func (sg *stationGraph) isEnd(id string) bool {
-	return id == stationfinder.DestLocationID
+	return id == stationfindertype.DestLocationID
 }
 
 func (sg *stationGraph) getStationID(id nodeID) string {

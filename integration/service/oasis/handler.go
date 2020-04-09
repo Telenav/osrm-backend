@@ -8,23 +8,35 @@ import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmhelper"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/searchconnector"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder"
 	"github.com/golang/glog"
 )
 
 // Handler handles oasis request and provide response
 type Handler struct {
-	osrmConnector     *osrmconnector.OSRMConnector
-	tnSearchConnector *searchconnector.TNSearchConnector
+	osrmConnector *osrmconnector.OSRMConnector
+	finder        stationfinder.StationFinder
 }
 
 // New creates new Handler object
-func New(osrmBackend, searchEndpoint, apiKey, apiSignature string) *Handler {
+func New(osrmBackend, finderType, searchEndpoint, apiKey, apiSignature string) (*Handler, error) {
 	// @todo: need make sure connectivity is on and continues available
-	return &Handler{
-		osrmConnector:     osrmconnector.NewOSRMConnector(osrmBackend),
-		tnSearchConnector: searchconnector.NewTNSearchConnector(searchEndpoint, apiKey, apiSignature),
+	//        simple request to guarantee server is alive after init
+	if len(osrmBackend) == 0 {
+		err := fmt.Errorf("empty osrmBackend end point")
+		return nil, err
 	}
+
+	finder, err := stationfinder.CreateStationsFinder(finderType, searchEndpoint, apiKey, apiSignature)
+	if err != nil {
+		glog.Errorf("Failed in Handler's New() when try to call CreateStationsFinder(), met error = %+v\n", err)
+		return nil, err
+	}
+
+	return &Handler{
+		osrmConnector: osrmconnector.NewOSRMConnector(osrmBackend),
+		finder:        finder,
+	}, nil
 }
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
@@ -71,14 +83,14 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// check whether could achieve by single charge
-	overlap := getOverlapChargeStations4OrigDest(oasisReq, routeResp.Routes[0].Distance, h.osrmConnector, h.tnSearchConnector)
+	overlap := getOverlapChargeStations4OrigDest(oasisReq, routeResp.Routes[0].Distance, h.osrmConnector, h.finder)
 	if len(overlap) > 0 {
 		generateResponse4SingleChargeStation(w, oasisReq, overlap, h.osrmConnector)
 		return
 	}
 
 	// generate result for multiple charge
-	generateSolutions4MultipleCharge(w, oasisReq, routeResp, h.osrmConnector, h.tnSearchConnector)
+	generateSolutions4MultipleCharge(w, oasisReq, routeResp, h.osrmConnector, h.finder)
 	return
 }
 

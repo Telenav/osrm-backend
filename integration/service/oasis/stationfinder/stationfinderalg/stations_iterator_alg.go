@@ -1,4 +1,4 @@
-package stationfinder
+package stationfinderalg
 
 import (
 	"fmt"
@@ -8,15 +8,16 @@ import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/coordinate"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmhelper"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/searchconnector"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 	"github.com/golang/glog"
 )
 
 // FindOverlapBetweenStations finds overlap charge stations based on two iterator
-func FindOverlapBetweenStations(iterF nearbyStationsIterator, iterS nearbyStationsIterator) []ChargeStationInfo {
-	var overlap []ChargeStationInfo
+func FindOverlapBetweenStations(iterF stationfindertype.NearbyStationsIterator, iterS stationfindertype.NearbyStationsIterator) []stationfindertype.ChargeStationInfo {
+	var overlap []stationfindertype.ChargeStationInfo
 	dict := buildChargeStationInfoDict(iterF)
-	c := iterS.iterateNearbyStations()
+	c := iterS.IterateNearbyStations()
 	for item := range c {
 		if _, has := dict[item.ID]; has {
 			overlap = append(overlap, item)
@@ -26,22 +27,15 @@ func FindOverlapBetweenStations(iterF nearbyStationsIterator, iterS nearbyStatio
 	return overlap
 }
 
-// ChargeStationInfo defines charge station information
-type ChargeStationInfo struct {
-	ID       string
-	Location nav.Location
-	err      error
-}
-
 // // nav.Location represents location information
 // type nav.Location nav.Location
 
 // CalcWeightBetweenChargeStationsPair accepts two iterators and calculates weights between each pair of iterators
-func CalcWeightBetweenChargeStationsPair(from nearbyStationsIterator, to nearbyStationsIterator, table osrmconnector.TableRequster) ([]NeighborInfo, error) {
+func CalcWeightBetweenChargeStationsPair(from stationfindertype.NearbyStationsIterator, to stationfindertype.NearbyStationsIterator, table osrmconnector.TableRequster) ([]stationfindertype.NeighborInfo, error) {
 	// collect (lat,lon)&ID for current location's nearby charge stations
 	var startPoints coordinate.Coordinates
 	var startIDs []string
-	for v := range from.iterateNearbyStations() {
+	for v := range from.IterateNearbyStations() {
 		startPoints = append(startPoints, coordinate.Coordinate{
 			Lat: v.Location.Lat,
 			Lon: v.Location.Lon,
@@ -57,7 +51,7 @@ func CalcWeightBetweenChargeStationsPair(from nearbyStationsIterator, to nearbyS
 	// collect (lat,lon)&ID for target location's nearby charge stations
 	var targetPoints coordinate.Coordinates
 	var targetIDs []string
-	for v := range to.iterateNearbyStations() {
+	for v := range to.IterateNearbyStations() {
 		targetPoints = append(targetPoints, coordinate.Coordinate{
 			Lat: v.Location.Lat,
 			Lon: v.Location.Lon,
@@ -91,10 +85,10 @@ func CalcWeightBetweenChargeStationsPair(from nearbyStationsIterator, to nearbyS
 	}
 
 	// iterate table response result
-	var result []NeighborInfo
+	var result []stationfindertype.NeighborInfo
 	for i, startPoint := range startPoints {
 		for j, targetPoint := range targetPoints {
-			result = append(result, NeighborInfo{
+			result = append(result, stationfindertype.NeighborInfo{
 				FromID: startIDs[i],
 				FromLocation: nav.Location{
 					Lat: startPoint.Lat,
@@ -105,7 +99,7 @@ func CalcWeightBetweenChargeStationsPair(from nearbyStationsIterator, to nearbyS
 					Lat: targetPoint.Lat,
 					Lon: targetPoint.Lon,
 				},
-				Cost: Cost{
+				Weight: stationfindertype.Weight{
 					Duration: resp.Resp.Durations[i][j],
 					Distance: resp.Resp.Distances[i][j],
 				},
@@ -116,34 +110,14 @@ func CalcWeightBetweenChargeStationsPair(from nearbyStationsIterator, to nearbyS
 	return result, nil
 }
 
-// Cost represent cost information
-type Cost struct {
-	Duration float64
-	Distance float64
-}
-
-// NeighborInfo represent cost information between two charge stations
-type NeighborInfo struct {
-	FromID       string
-	FromLocation nav.Location
-	ToID         string
-	ToLocation   nav.Location
-	Cost
-}
-
-func buildChargeStationInfoDict(iter nearbyStationsIterator) map[string]bool {
+func buildChargeStationInfoDict(iter stationfindertype.NearbyStationsIterator) map[string]bool {
 	dict := make(map[string]bool)
-	c := iter.iterateNearbyStations()
+	c := iter.IterateNearbyStations()
 	for item := range c {
 		dict[item.ID] = true
 	}
 
 	return dict
-}
-
-type WeightBetweenNeighbors struct {
-	NeighborsInfo []NeighborInfo
-	Err           error
 }
 
 // CalculateWeightBetweenNeighbors accepts locations array, which will search for nearby
@@ -157,18 +131,18 @@ type WeightBetweenNeighbors struct {
 // - CalcWeightBetweenChargeStationsPair needs two iterators, one for nearbystationiterator
 //   represents from location and one for next location.  An array of channel is created
 //   to represent whether specific iterator is ready or not.
-// - The result of this function is channel of WeightBetweenNeighbors, the sequence of
-//   WeightBetweenNeighbors is important for future logic: first result is start -> first
+// - The result of this function is channel of stationfindertype.WeightBetweenNeighbors, the sequence of
+//   stationfindertype.WeightBetweenNeighbors is important for future logic: first result is start -> first
 //   group of low energy charge stations, first group -> second group, ..., xxx group to
 //   end
 // - All iterators has been recorded in iterators array
 //   @Todo: isIteratorReady could be removed later.  When iterator is not ready, should
 //         pause inside iterator itself.  That need refactor the design of stationfinder.
-func CalculateWeightBetweenNeighbors(locations []*nav.Location, oc *osrmconnector.OSRMConnector, sc *searchconnector.TNSearchConnector) chan WeightBetweenNeighbors {
-	c := make(chan WeightBetweenNeighbors)
+func CalculateWeightBetweenNeighbors(locations []*nav.Location, oc *osrmconnector.OSRMConnector, finder stationfinder.StationFinder) chan stationfindertype.WeightBetweenNeighbors {
+	c := make(chan stationfindertype.WeightBetweenNeighbors)
 
 	if len(locations) > 2 {
-		iterators := make([]nearbyStationsIterator, len(locations))
+		iterators := make([]stationfindertype.NearbyStationsIterator, len(locations))
 		isIteratorReady := make([]chan bool, len(locations))
 		for i := range isIteratorReady {
 			isIteratorReady[i] = make(chan bool)
@@ -203,7 +177,7 @@ func CalculateWeightBetweenNeighbors(locations []*nav.Location, oc *osrmconnecto
 
 			wg.Add(1)
 			go func(index int) {
-				iterators[index] = NewLowEnergyLocationStationFinder(sc, locations[index])
+				iterators[index] = finder.NewLowEnergyLocationStationFinder(locations[index])
 				glog.Infof("Finish generating NewLowEnergyLocationStationFinder for %d", index)
 				<-isIteratorReady[index-1]
 				isIteratorReady[index] <- true
@@ -226,12 +200,12 @@ func CalculateWeightBetweenNeighbors(locations []*nav.Location, oc *osrmconnecto
 	return c
 }
 
-func putWeightBetweenChargeStationsIntoChannel(from nearbyStationsIterator, to nearbyStationsIterator, c chan WeightBetweenNeighbors, oc *osrmconnector.OSRMConnector) {
+func putWeightBetweenChargeStationsIntoChannel(from stationfindertype.NearbyStationsIterator, to stationfindertype.NearbyStationsIterator, c chan stationfindertype.WeightBetweenNeighbors, oc *osrmconnector.OSRMConnector) {
 	r, err := CalcWeightBetweenChargeStationsPair(from, to, oc)
 	if err != nil {
 		glog.Errorf("CalculateWeightBetweenNeighbors failed with error %v", err)
 	}
-	result := WeightBetweenNeighbors{
+	result := stationfindertype.WeightBetweenNeighbors{
 		NeighborsInfo: r,
 		Err:           err,
 	}

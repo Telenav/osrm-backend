@@ -10,8 +10,8 @@ import (
 	"github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/haversine"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/searchconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfinderalg"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationgraph"
 	"github.com/golang/glog"
 
@@ -19,8 +19,8 @@ import (
 )
 
 // @todo: handle negative situation
-func generateSolutions4MultipleCharge(w http.ResponseWriter, oasisReq *oasis.Request, routeResp *route.Response, oc *osrmconnector.OSRMConnector, sc *searchconnector.TNSearchConnector) {
-	solutions := generateSolutionsWithEarlistArrival(oasisReq, routeResp, oc, sc)
+func generateSolutions4MultipleCharge(w http.ResponseWriter, oasisReq *oasis.Request, routeResp *route.Response, oc *osrmconnector.OSRMConnector, finder stationfinder.StationFinder) {
+	solutions := generateSolutionsWithEarlistArrival(oasisReq, routeResp, oc, finder)
 
 	w.WriteHeader(http.StatusOK)
 	r := new(oasis.Response)
@@ -32,12 +32,12 @@ func generateSolutions4MultipleCharge(w http.ResponseWriter, oasisReq *oasis.Req
 	json.NewEncoder(w).Encode(r)
 }
 
-func generateSolutionsWithEarlistArrival(oasisReq *oasis.Request, routeResp *route.Response, oc *osrmconnector.OSRMConnector, sc *searchconnector.TNSearchConnector) []*oasis.Solution {
+func generateSolutionsWithEarlistArrival(oasisReq *oasis.Request, routeResp *route.Response, oc *osrmconnector.OSRMConnector, finder stationfinder.StationFinder) []*oasis.Solution {
 	targetSolutions := make([]*oasis.Solution, 0)
 
 	chargeLocations := chargeLocationSelection(oasisReq, routeResp)
 	for _, locations := range chargeLocations {
-		c := stationfinder.CalculateWeightBetweenNeighbors(locations, oc, sc)
+		c := stationfinderalg.CalculateWeightBetweenNeighbors(locations, oc, finder)
 		internalSolutions := stationgraph.NewStationGraph(c, oasisReq.CurrRange, oasisReq.MaxRange,
 			chargingstrategy.NewFakeChargingStrategy(oasisReq.MaxRange)).GenerateChargeSolutions()
 

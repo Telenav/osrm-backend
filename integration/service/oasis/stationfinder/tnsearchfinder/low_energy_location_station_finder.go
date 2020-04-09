@@ -1,10 +1,11 @@
-package stationfinder
+package tnsearchfinder
 
 import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/nav"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/searchcoordinate"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/searchconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/searchhelper"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 )
 
 const lowEnergyLocationCandidateNumber = 20
@@ -34,6 +35,6 @@ func (sf *lowEnergyLocationStationFinder) prepare() {
 	return
 }
 
-func (sf *lowEnergyLocationStationFinder) iterateNearbyStations() <-chan ChargeStationInfo {
-	return sf.bf.iterateNearbyStations()
+func (sf *lowEnergyLocationStationFinder) IterateNearbyStations() <-chan stationfindertype.ChargeStationInfo {
+	return sf.bf.IterateNearbyStations()
 }

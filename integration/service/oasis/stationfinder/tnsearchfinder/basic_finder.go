@@ -1,4 +1,4 @@
-package stationfinder
+package tnsearchfinder
 
 import (
 	"sync"
@@ -6,6 +6,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/nav"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/searchconnector"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 	"github.com/golang/glog"
 )
 
@@ -36,9 +37,9 @@ func (bf *basicFinder) getNearbyChargeStations(req *nearbychargestation.Request)
 	bf.searchRespLock.Unlock()
 }
 
-func (bf *basicFinder) iterateNearbyStations() <-chan ChargeStationInfo {
+func (bf *basicFinder) IterateNearbyStations() <-chan stationfindertype.ChargeStationInfo {
 	if bf.searchResp == nil || len(bf.searchResp.Results) == 0 {
-		c := make(chan ChargeStationInfo)
+		c := make(chan stationfindertype.ChargeStationInfo)
 		go func() {
 			defer close(c)
 		}()
@@ -51,14 +52,14 @@ func (bf *basicFinder) iterateNearbyStations() <-chan ChargeStationInfo {
 	copy(results, bf.searchResp.Results)
 	bf.searchRespLock.RUnlock()
 
-	c := make(chan ChargeStationInfo, size)
+	c := make(chan stationfindertype.ChargeStationInfo, size)
 	go func() {
 		defer close(c)
 		for _, result := range results {
 			if len(result.Place.Address) == 0 {
 				continue
 			}
-			station := ChargeStationInfo{
+			station := stationfindertype.ChargeStationInfo{
 				ID: result.ID,
 				Location: nav.Location{
 					Lat: result.Place.Address[0].GeoCoordinate.Latitude,

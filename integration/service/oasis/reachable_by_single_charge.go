@@ -12,8 +12,8 @@ import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmhelper"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/searchconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfinderalg"
 	"github.com/golang/glog"
 )
 
@@ -25,15 +25,15 @@ const maxOverlapPointsNum = 500
 // The energy level is safeRange + nearest charge station's distance to destination
 // If there is one or several charge stations could be found in both origStationsResp and destStationsResp
 // We think the result is reachable by single charge station
-func getOverlapChargeStations4OrigDest(req *oasis.Request, routedistance float64, osrmConnector *osrmconnector.OSRMConnector, tnSearchConnector *searchconnector.TNSearchConnector) coordinate.Coordinates {
+func getOverlapChargeStations4OrigDest(req *oasis.Request, routedistance float64, osrmConnector *osrmconnector.OSRMConnector, finder stationfinder.StationFinder) coordinate.Coordinates {
 	// only possible when currRange + maxRange > distance + safeRange
 	if req.CurrRange+req.MaxRange < routedistance+req.SafeLevel {
 		return nil
 	}
 
-	origStations := stationfinder.NewOrigStationFinder(tnSearchConnector, req)
-	destStations := stationfinder.NewDestStationFinder(tnSearchConnector, req)
-	overlap := stationfinder.FindOverlapBetweenStations(origStations, destStations)
+	origStations := finder.NewOrigStationFinder(req)
+	destStations := finder.NewDestStationFinder(req)
+	overlap := stationfinderalg.FindOverlapBetweenStations(origStations, destStations)
 
 	if len(overlap) == 0 {
 		return nil

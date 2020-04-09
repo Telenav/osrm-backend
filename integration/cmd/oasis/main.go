@@ -14,7 +14,12 @@ func main() {
 	defer glog.Flush()
 	mux := http.NewServeMux()
 
-	oasisService := oasis.New(flags.osrmBackendEndpoint, flags.tnSearchEndpoint, flags.tnSearchAPIKey, flags.tnSearchAPISignature)
+	oasisService, err := oasis.New(flags.osrmBackendEndpoint, flags.finderType, flags.tnSearchEndpoint, flags.tnSearchAPIKey, flags.tnSearchAPISignature)
+	if err != nil {
+		glog.Errorf("Failed to create oasis handler due to err %+v.\n", err)
+		return
+	}
+
 	mux.Handle("/oasis/v1/earliest/", oasisService)
 
 	// listen

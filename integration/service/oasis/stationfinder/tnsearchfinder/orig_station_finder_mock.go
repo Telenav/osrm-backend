@@ -1,14 +1,13 @@
-package stationfinder
+package tnsearchfinder
 
 import (
-	"reflect"
 	"sync"
-	"testing"
 
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 )
 
-func createMockOrigStationFinder1() *origStationFinder {
+// CreateMockOrigStationFinder1 creates mock orig station finder with nearbychargestation.MockSearchResponse1
+func CreateMockOrigStationFinder1() *origStationFinder {
 	obj := &origStationFinder{
 		oasisReq: nil,
 		bf: &basicFinder{
@@ -20,7 +19,8 @@ func createMockOrigStationFinder1() *origStationFinder {
 	return obj
 }
 
-func createMockOrigStationFinder2() *origStationFinder {
+// CreateMockOrigStationFinder2 creates mock orig station finder with nearbychargestation.MockSearchResponse2
+func CreateMockOrigStationFinder2() *origStationFinder {
 	obj := &origStationFinder{
 		oasisReq: nil,
 		bf: &basicFinder{
@@ -32,7 +32,8 @@ func createMockOrigStationFinder2() *origStationFinder {
 	return obj
 }
 
-func createMockOrigStationFinder3() *origStationFinder {
+// CreateMockOrigStationFinder3 creates mock orig station finder with nearbychargestation.MockSearchResponse3
+func CreateMockOrigStationFinder3() *origStationFinder {
 	obj := &origStationFinder{
 		oasisReq: nil,
 		bf: &basicFinder{
@@ -42,18 +43,4 @@ func createMockOrigStationFinder3() *origStationFinder {
 		},
 	}
 	return obj
-}
-
-func TestOrigStationFinderIterator(t *testing.T) {
-	sf := createMockOrigStationFinder1()
-	c := sf.iterateNearbyStations()
-	var r []ChargeStationInfo
-	go func() {
-		for item := range c {
-			r = append(r, item)
-		}
-		if !reflect.DeepEqual(r, mockChargeStationInfo1) {
-			t.Errorf("expect %v but got %v", mockChargeStationInfo1, r)
-		}
-	}()
 }

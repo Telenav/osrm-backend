@@ -9,7 +9,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/solution"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 	"github.com/Telenav/osrm-backend/integration/util"
 )
 
@@ -58,9 +58,9 @@ start  -------   station 2  \ /           end
 	  + connection to station 5's node with 100% of total energy
   Each node with name `station1` will have different id, and each of them will have 6 neighbor nodes
 */
-var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
-	[]stationfinder.NeighborInfo{
-		stationfinder.NeighborInfo{
+var fakeNeighborsGraph = [][]stationfindertype.NeighborInfo{
+	[]stationfindertype.NeighborInfo{
+		stationfindertype.NeighborInfo{
 			FromID: "orig_location",
 			FromLocation: nav.Location{
 				Lat: 0.0,
@@ -71,12 +71,12 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 				Lat: 1.1,
 				Lon: 1.1,
 			},
-			Cost: stationfinder.Cost{
+			Weight: stationfindertype.Weight{
 				Duration: 22.2,
 				Distance: 22.2,
 			},
 		},
-		stationfinder.NeighborInfo{
+		stationfindertype.NeighborInfo{
 			FromID: "orig_location",
 			FromLocation: nav.Location{
 				Lat: 0.0,
@@ -87,19 +87,19 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 				Lat: 2.2,
 				Lon: 2.2,
 			},
-			Cost: stationfinder.Cost{
+			Weight: stationfindertype.Weight{
 				Duration: 11.1,
 				Distance: 11.1,
 			},
 		},
-		stationfinder.NeighborInfo{
+		stationfindertype.NeighborInfo{
 			FromID: "orig_location",
 			FromLocation: nav.Location{
 				Lat: 0.0,
 				Lon: 0.0,
 			},
 			ToID: "station3",
-			Cost: stationfinder.Cost{
+			Weight: stationfindertype.Weight{
 				Duration: 33.3,
 				Distance: 33.3,
 			},
@@ -109,8 +109,8 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 			},
 		},
 	},
-	[]stationfinder.NeighborInfo{
-		stationfinder.NeighborInfo{
+	[]stationfindertype.NeighborInfo{
+		stationfindertype.NeighborInfo{
 			FromID: "station1",
 			FromLocation: nav.Location{
 				Lat: 1.1,
@@ -121,12 +121,12 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 				Lat: 4.4,
 				Lon: 4.4,
 			},
-			Cost: stationfinder.Cost{
+			Weight: stationfindertype.Weight{
 				Duration: 44.4,
 				Distance: 44.4,
 			},
 		},
-		stationfinder.NeighborInfo{
+		stationfindertype.NeighborInfo{
 			FromID: "station1",
 			FromLocation: nav.Location{
 				Lat: 1.1,
@@ -137,12 +137,12 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 				Lat: 5.5,
 				Lon: 5.5,
 			},
-			Cost: stationfinder.Cost{
+			Weight: stationfindertype.Weight{
 				Duration: 34.4,
 				Distance: 34.4,
 			},
 		},
-		stationfinder.NeighborInfo{
+		stationfindertype.NeighborInfo{
 			FromID: "station2",
 			FromLocation: nav.Location{
 				Lat: 2.2,
@@ -153,12 +153,12 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 				Lat: 4.4,
 				Lon: 4.4,
 			},
-			Cost: stationfinder.Cost{
+			Weight: stationfindertype.Weight{
 				Duration: 11.1,
 				Distance: 11.1,
 			},
 		},
-		stationfinder.NeighborInfo{
+		stationfindertype.NeighborInfo{
 			FromID: "station2",
 			FromLocation: nav.Location{
 				Lat: 2.2,
@@ -169,12 +169,12 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 				Lat: 5.5,
 				Lon: 5.5,
 			},
-			Cost: stationfinder.Cost{
+			Weight: stationfindertype.Weight{
 				Duration: 14.4,
 				Distance: 14.4,
 			},
 		},
-		stationfinder.NeighborInfo{
+		stationfindertype.NeighborInfo{
 			FromID: "station3",
 			FromLocation: nav.Location{
 				Lat: 3.3,
@@ -185,12 +185,12 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 				Lat: 4.4,
 				Lon: 4.4,
 			},
-			Cost: stationfinder.Cost{
+			Weight: stationfindertype.Weight{
 				Duration: 22.2,
 				Distance: 22.2,
 			},
 		},
-		stationfinder.NeighborInfo{
+		stationfindertype.NeighborInfo{
 			FromID: "station3",
 			FromLocation: nav.Location{
 				Lat: 3.3,
@@ -201,41 +201,41 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 				Lat: 5.5,
 				Lon: 5.5,
 			},
-			Cost: stationfinder.Cost{
+			Weight: stationfindertype.Weight{
 				Duration: 15.5,
 				Distance: 15.5,
 			},
 		},
 	},
-	[]stationfinder.NeighborInfo{
-		stationfinder.NeighborInfo{
+	[]stationfindertype.NeighborInfo{
+		stationfindertype.NeighborInfo{
 			FromID: "station4",
 			FromLocation: nav.Location{
 				Lat: 4.4,
 				Lon: 4.4,
 			},
-			ToID: stationfinder.DestLocationID,
+			ToID: stationfindertype.DestLocationID,
 			ToLocation: nav.Location{
 				Lat: 6.6,
 				Lon: 6.6,
 			},
-			Cost: stationfinder.Cost{
+			Weight: stationfindertype.Weight{
 				Duration: 44.4,
 				Distance: 44.4,
 			},
 		},
-		stationfinder.NeighborInfo{
+		stationfindertype.NeighborInfo{
 			FromID: "station5",
 			FromLocation: nav.Location{
 				Lat: 5.5,
 				Lon: 5.5,
 			},
-			ToID: stationfinder.DestLocationID,
+			ToID: stationfindertype.DestLocationID,
 			ToLocation: nav.Location{
 				Lat: 6.6,
 				Lon: 6.6,
 			},
-			Cost: stationfinder.Cost{
+			Weight: stationfindertype.Weight{
 				Duration: 33.3,
 				Distance: 33.3,
 			},
@@ -246,10 +246,10 @@ var fakeNeighborsGraph = [][]stationfinder.NeighborInfo{
 func TestConstructStationGraph(t *testing.T) {
 	// generate channel contains neighbors information
 	// simulate real situation using different go-routine
-	c := make(chan stationfinder.WeightBetweenNeighbors)
+	c := make(chan stationfindertype.WeightBetweenNeighbors)
 	go func() {
 		for _, n := range fakeNeighborsGraph {
-			neighborsInfo := stationfinder.WeightBetweenNeighbors{
+			neighborsInfo := stationfindertype.WeightBetweenNeighbors{
 				NeighborsInfo: n,
 				Err:           nil,
 			}
@@ -279,19 +279,19 @@ func TestConstructStationGraph(t *testing.T) {
 		[]string{"station4", "station5"}, fakeNeighborsGraph, currEnergyLevel, maxEnergyLevel)
 
 	testConnectivity(t, graph, "station4", locationInfo{lat: 4.4, lon: 4.4},
-		[]string{stationfinder.DestLocationID}, fakeNeighborsGraph, currEnergyLevel, maxEnergyLevel)
+		[]string{stationfindertype.DestLocationID}, fakeNeighborsGraph, currEnergyLevel, maxEnergyLevel)
 
 	testConnectivity(t, graph, "station5", locationInfo{lat: 5.5, lon: 5.5},
-		[]string{stationfinder.DestLocationID}, fakeNeighborsGraph, currEnergyLevel, maxEnergyLevel)
+		[]string{stationfindertype.DestLocationID}, fakeNeighborsGraph, currEnergyLevel, maxEnergyLevel)
 }
 
 func testStart(t *testing.T, graph *stationGraph, currEnergyLevel, maxEnergyLevel float64) {
-	sn := graph.getChargeStationsNodes(stationfinder.OrigLocationID, nav.Location{}, currEnergyLevel, maxEnergyLevel)
+	sn := graph.getChargeStationsNodes(stationfindertype.OrigLocationID, nav.Location{}, currEnergyLevel, maxEnergyLevel)
 	if len(sn) != 1 {
 		t.Errorf("incorrect start node generated expect only one node but got %d", len(sn))
 	}
-	if graph.getStationID(sn[0].id) != stationfinder.OrigLocationID {
-		t.Errorf("incorrect name for start node expect %s but got %s", stationfinder.OrigLocationID, graph.getStationID(sn[0].id))
+	if graph.getStationID(sn[0].id) != stationfindertype.OrigLocationID {
+		t.Errorf("incorrect name for start node expect %s but got %s", stationfindertype.OrigLocationID, graph.getStationID(sn[0].id))
 	}
 	if !util.FloatEquals(sn[0].arrivalEnergy, currEnergyLevel) ||
 		!util.FloatEquals(sn[0].targetState.Energy, 0.0) ||
@@ -350,12 +350,12 @@ func testStart(t *testing.T, graph *stationGraph, currEnergyLevel, maxEnergyLeve
 }
 
 func testEnd(t *testing.T, graph *stationGraph, currEnergyLevel, maxEnergyLevel float64) {
-	se := graph.getChargeStationsNodes(stationfinder.DestLocationID, nav.Location{}, currEnergyLevel, maxEnergyLevel)
+	se := graph.getChargeStationsNodes(stationfindertype.DestLocationID, nav.Location{}, currEnergyLevel, maxEnergyLevel)
 	if len(se) != 1 {
 		t.Errorf("incorrect end node generated expect only one node but got %d", len(se))
 	}
-	if graph.getStationID(se[0].id) != stationfinder.DestLocationID {
-		t.Errorf("incorrect name for end node expect %s but got %s", stationfinder.DestLocationID, graph.getStationID(se[0].id))
+	if graph.getStationID(se[0].id) != stationfindertype.DestLocationID {
+		t.Errorf("incorrect name for end node expect %s but got %s", stationfindertype.DestLocationID, graph.getStationID(se[0].id))
 	}
 	if !util.FloatEquals(se[0].arrivalEnergy, 0.0) ||
 		!util.FloatEquals(se[0].targetState.Energy, 0.0) ||
@@ -384,7 +384,7 @@ func testEnd(t *testing.T, graph *stationGraph, currEnergyLevel, maxEnergyLevel 
 }
 
 func testConnectivity(t *testing.T, graph *stationGraph, from string, fromLocation locationInfo,
-	tos []string, mockArray [][]stationfinder.NeighborInfo, currEnergyLevel, maxEnergyLevel float64) {
+	tos []string, mockArray [][]stationfindertype.NeighborInfo, currEnergyLevel, maxEnergyLevel float64) {
 	fns := graph.getChargeStationsNodes(from, nav.Location{}, 0.0, 0.0)
 
 	for _, fromNode := range fns {
@@ -436,18 +436,18 @@ func testConnectivity(t *testing.T, graph *stationGraph, from string, fromLocati
 // station 2 -> station 5, time/duration = 14.4, this cause will choose charging for 80%
 func TestGenerateChargeSolutions1(t *testing.T) {
 
-	fakeGraph1 := make([][]stationfinder.NeighborInfo, len(fakeNeighborsGraph))
+	fakeGraph1 := make([][]stationfindertype.NeighborInfo, len(fakeNeighborsGraph))
 	for i := range fakeNeighborsGraph {
-		fakeGraph1[i] = make([]stationfinder.NeighborInfo, len(fakeNeighborsGraph[i]))
+		fakeGraph1[i] = make([]stationfindertype.NeighborInfo, len(fakeNeighborsGraph[i]))
 		copy(fakeGraph1[i], fakeNeighborsGraph[i])
 	}
 
 	// generate channel contains neighbors information
 	// simulate real situation using different go-routine
-	c := make(chan stationfinder.WeightBetweenNeighbors)
+	c := make(chan stationfindertype.WeightBetweenNeighbors)
 	go func() {
 		for _, n := range fakeGraph1 {
-			neighborsInfo := stationfinder.WeightBetweenNeighbors{
+			neighborsInfo := stationfindertype.WeightBetweenNeighbors{
 				NeighborsInfo: n,
 				Err:           nil,
 			}
