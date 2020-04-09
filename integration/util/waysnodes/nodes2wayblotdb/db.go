@@ -18,7 +18,8 @@ const (
 )
 
 var (
-	errEmptyDB = errors.New("empty db")
+	errEmptyDB  = errors.New("empty db")
+	errNotFound = errors.New("not found")
 )
 
 // Open creates/opens a DB structure to store the nodes2way mapping.
@@ -98,4 +99,71 @@ func (db *DB) Write(wayID int64, nodeIDs []int64) error {
 	}
 
 	return nil
+}
+
+// QueryWay queries directed wayID by fromNodeID,toNodeID pair.
+// returned wayID: positive means travel forward following the fromNodeID,toNodeID sequence, negative means backward
+func (db *DB) QueryWay(fromNodeID, toNodeID int64) (int64, error) {
+	if db.db == nil {
+		return 0, errEmptyDB
+	}
+
+	var wayID int64
+	if err := db.db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(defaultBucket))
+
+		v := b.Get(key(fromNodeID, toNodeID))
+		if v != nil {
+			wayID = parseValue(v)
+			return nil
+		}
+
+		// try again on backward
+		v = b.Get(key(toNodeID, fromNodeID))
+		if v == nil {
+			return errNotFound // both forward and backward not found
+		}
+		wayID = parseValue(v)
+		wayID = -wayID
+		return nil
+	}); err != nil {
+		return 0, err
+	}
+
+	return wayID, nil
+}
+
+// QueryWays queries directed wayIDs by nodeIDs.
+// `len(wayIDs) == len(nodeIDs)-1` since each way have to be decided by traveling from one node to another.
+// returned wayIDs: positive means travel forward following the nodeIDs sequence, negative means backward
+func (db *DB) QueryWays(nodeIDs []int64) ([]int64, error) {
+	if db.db == nil {
+		return nil, errEmptyDB
+	}
+
+	var wayIDs []int64
+	if err := db.db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(defaultBucket))
+
+		for i := 0; i < len(nodeIDs)-1; i++ {
+			v := b.Get(key(nodeIDs[i], nodeIDs[i+1]))
+			if v != nil {
+				wayIDs = append(wayIDs, parseValue(v))
+				continue
+			}
+
+			// try again on backward
+			v = b.Get(key(nodeIDs[i+1], nodeIDs[i]))
+			if v == nil {
+				return errNotFound
+			}
+			wayID := parseValue(v)
+			wayIDs = append(wayIDs, -wayID)
+		}
+		return nil
+	}); err != nil {
+		return nil, err
+	}
+
+	return wayIDs, nil
 }
