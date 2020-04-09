@@ -10,5 +10,6 @@ require (
 	github.com/golang/snappy v0.0.1
 	github.com/qedus/osmpbf v1.1.0
 	github.com/twpayne/go-polyline v1.0.0
+	go.etcd.io/bbolt v1.3.4
 	google.golang.org/grpc v1.22.0
 )
