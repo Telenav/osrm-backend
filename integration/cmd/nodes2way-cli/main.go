@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/Telenav/osrm-backend/integration/util/waysnodes/nodes2wayblotdb"
+	"github.com/golang/glog"
 )
 
 // output logs to stderr without timestamp
@@ -32,10 +34,14 @@ func query(dbFile string, nodeIDs []int64) ([]int64, error) {
 	}
 	defer db.Close()
 
+	startTime := time.Now()
+
 	wayIDs, err := db.QueryWays(nodeIDs)
 	if err != nil {
 		return nil, err
 	}
+
+	glog.Infof("Querying takes %f seconds", time.Now().Sub(startTime).Seconds()) // easy to measure querying time cost
 
 	return wayIDs, nil
 }
