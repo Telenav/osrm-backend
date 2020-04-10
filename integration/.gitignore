@@ -1,4 +1,7 @@
 
+# vscode
+.vscode/
+
 # binaries
 cmd/__debug_bin
 cmd/*/__debug_bin
@@ -10,6 +13,7 @@ cmd/osrm-ranking/osrm-ranking
 cmd/trafficcache-parallel-test/trafficcache-parallel-test
 cmd/osrm-files-extractor/osrm-files-extractor
 cmd/historicalspeed-timezone-builder/historicalspeed-timezone-builder
+cmd/nodes2way-db-builder/nodes2way-db-builder
 
 # test files
 cmd/trafficproxy-cli/*_flows.csv
