@@ -11,6 +11,12 @@ Command line tool [cmd/osrm-traffic-updater](cmd/osrm-traffic-updater/) is desig
 ## wayid2nodeids_extractor
 Command line tool for extract wayid to nodeids mapping from PBF. Code in [cmd/wayid2nodeid-extractor](cmd/wayid2nodeid-extractor/).        
 
+## nodes2way-builder
+Command line tool for build nodes2way mapping DB. Code in [cmd/nodes2way-builder](cmd/nodes2way-builder/).        
+
+## nodes2way-cli
+Command line tool for querying wayids from nodeids in DB. Code in [cmd/nodes2way-cli](cmd/nodes2way-cli/).        
+
 ## snappy
 Command line tool for [snappy](github.com/golang/snappy) compression. Code in [cmd/snappy](cmd/snappy/).  
 
