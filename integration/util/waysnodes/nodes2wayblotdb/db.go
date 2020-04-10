@@ -20,8 +20,8 @@ const (
 )
 
 var (
-	errEmptyDB  = errors.New("empty db")
-	errNotFound = errors.New("not found")
+	errEmptyDB     = errors.New("empty db")
+	errKeyNotFound = errors.New("key not found")
 )
 
 // Open creates/opens a DB structure to store the nodes2way mapping.
@@ -134,7 +134,7 @@ func (db *DB) QueryWay(fromNodeID, toNodeID int64) (int64, error) {
 		// try again on backward
 		v = b.Get(key(toNodeID, fromNodeID))
 		if v == nil {
-			return errNotFound // both forward and backward not found
+			return errKeyNotFound // both forward and backward not found
 		}
 		wayID = parseValue(v)
 		wayID = -wayID
@@ -168,7 +168,7 @@ func (db *DB) QueryWays(nodeIDs []int64) ([]int64, error) {
 			// try again on backward
 			v = b.Get(key(nodeIDs[i+1], nodeIDs[i]))
 			if v == nil {
-				return errNotFound
+				return errKeyNotFound
 			}
 			wayID := parseValue(v)
 			wayIDs = append(wayIDs, -wayID)
