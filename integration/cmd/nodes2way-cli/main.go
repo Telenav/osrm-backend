@@ -17,6 +17,17 @@ var cliLog = log.New(os.Stderr, "", 0)
 func main() {
 	flag.Parse()
 
+	if flags.dbStat {
+		s, err := dbStat(flags.db)
+		if err != nil {
+			cliLog.Println(err)
+			os.Exit(1)
+			return
+		}
+		fmt.Println(s)
+		return
+	}
+
 	wayIDs, err := query(flags.db, flags.nodeIDs)
 	if err != nil {
 		cliLog.Println(err)
@@ -44,4 +55,14 @@ func query(dbFile string, nodeIDs []int64) ([]int64, error) {
 	glog.Infof("Querying takes %f seconds", time.Now().Sub(startTime).Seconds()) // easy to measure querying time cost
 
 	return wayIDs, nil
+}
+
+func dbStat(dbFile string) (string, error) {
+	db, err := nodes2wayblotdb.Open(dbFile, true)
+	if err != nil {
+		return "", err
+	}
+	defer db.Close()
+
+	return db.Statistics(), nil
 }

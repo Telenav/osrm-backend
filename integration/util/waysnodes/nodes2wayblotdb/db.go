@@ -2,6 +2,7 @@
 package nodes2wayblotdb
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -82,6 +83,37 @@ func (db *DB) Close() error {
 	}
 
 	return db.db.Close()
+}
+
+// Statistics returns internal statistics information.
+func (db *DB) Statistics() string {
+	if db.db == nil {
+		return ""
+	}
+
+	s := struct {
+		DBStat     string `json:"dbstat"`
+		BucketStat string `json:"bucketstat"`
+	}{}
+
+	s.DBStat = fmt.Sprintf("%+v", db.db.Stats())
+	if err := db.db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(defaultBucket))
+
+		s.BucketStat = fmt.Sprintf("%+v", b.Stats()) // bucket stats
+		return nil
+	}); err != nil {
+		glog.Error(err)
+		return err.Error()
+	}
+
+	b, err := json.Marshal(&s)
+	if err != nil {
+		glog.Error(err)
+		return err.Error()
+	}
+
+	return string(b)
 }
 
 // Write writes wayID and its nodeIDs into cache or storage.
