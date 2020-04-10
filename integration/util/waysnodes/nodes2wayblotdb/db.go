@@ -200,7 +200,7 @@ func (db *DB) QueryWays(nodeIDs []int64) ([]int64, error) {
 			// try again on backward
 			v = b.Get(key(nodeIDs[i+1], nodeIDs[i]))
 			if v == nil {
-				return errKeyNotFound
+				return fmt.Errorf("%v: %d,%d", errKeyNotFound, nodeIDs[i], nodeIDs[i+1])
 			}
 			wayID := parseValue(v)
 			wayIDs = append(wayIDs, -wayID)
