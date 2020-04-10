@@ -14,6 +14,7 @@ cmd/trafficcache-parallel-test/trafficcache-parallel-test
 cmd/osrm-files-extractor/osrm-files-extractor
 cmd/historicalspeed-timezone-builder/historicalspeed-timezone-builder
 cmd/nodes2way-db-builder/nodes2way-db-builder
+cmd/nodes2way-cli/nodes2way-cli
 
 # test files
 cmd/trafficproxy-cli/*_flows.csv
