@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/golang/glog"
+
 	bolt "go.etcd.io/bbolt"
 )
 
@@ -47,6 +49,10 @@ func Open(dbFilePath string, readOnly bool) (*DB, error) {
 		return &db, nil
 	}
 
+	// to improve write performance, but will manually sync before close
+	db.db.NoSync = true
+	db.db.NoFreelistSync = true
+
 	// for write, make sure bucket available
 	err = db.db.Update(func(tx *bolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists([]byte(defaultBucket))
@@ -66,6 +72,13 @@ func Open(dbFilePath string, readOnly bool) (*DB, error) {
 func (db *DB) Close() error {
 	if db.db == nil {
 		return errEmptyDB
+	}
+
+	if !db.db.IsReadOnly() {
+		if err := db.db.Sync(); err != nil {
+			glog.Error(err)
+			//return err	// don't return since we still hope the Close can be called
+		}
 	}
 
 	return db.db.Close()
