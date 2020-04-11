@@ -3,12 +3,12 @@
 Package stationfinder provide functionality to find nearby charge stations and
 related algorithm.
 It's find functionality could be achieved by:
-- TNSearchFinder, which is implemented by Telenav's search web service.
+- cloudfinder, which is implemented by Telenav's search web service.
   + The data source is from professional data
   + Based on Lucence and hilbert value
   + Could potentially supports dynamic information
 
-- LocalIndexerFinder
+- localfinder, which is implemented by spatial index built on local
   + Support any kind of data sources as long as following format defined in https://github.com/Telenav/osrm-backend/issues/237#issue-585201041
   + For Telenav usage, uses the same source with Telenav search service
   + Spatial index is build based on google s2

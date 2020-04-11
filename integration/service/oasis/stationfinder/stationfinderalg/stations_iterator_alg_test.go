@@ -14,8 +14,8 @@ import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/cloudfinder"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/tnsearchfinder"
 	"github.com/Telenav/osrm-backend/integration/util"
 )
 
@@ -27,7 +27,7 @@ var mockDict1 map[string]bool = map[string]bool{
 }
 
 func TestBuildChargeStationInfoDict1(t *testing.T) {
-	sf := tnsearchfinder.CreateMockOrigStationFinder1()
+	sf := cloudfinder.CreateMockOrigStationFinder1()
 	m := buildChargeStationInfoDict(sf)
 	if !reflect.DeepEqual(m, mockDict1) {
 		t.Errorf("expect %v but got %v", mockDict1, m)
@@ -52,8 +52,8 @@ var overlapChargeStationInfo1 []stationfindertype.ChargeStationInfo = []stationf
 }
 
 func TestFindOverlapBetweenStations1(t *testing.T) {
-	sf1 := tnsearchfinder.CreateMockOrigStationFinder2()
-	sf2 := tnsearchfinder.CreateMockDestStationFinder1()
+	sf1 := cloudfinder.CreateMockOrigStationFinder2()
+	sf2 := cloudfinder.CreateMockDestStationFinder1()
 	r := FindOverlapBetweenStations(sf1, sf2)
 
 	if !reflect.DeepEqual(r, overlapChargeStationInfo1) {
@@ -79,9 +79,9 @@ func (ft *fakeTableResponse) Request4Table(r *table.Request) <-chan osrmconnecto
 
 func TestCalcNeighborInfoPair(t *testing.T) {
 	// from: station1, station2, station3, station4
-	sf1 := tnsearchfinder.CreateMockOrigStationFinder1()
+	sf1 := cloudfinder.CreateMockOrigStationFinder1()
 	// to: station6, station7
-	sf2 := tnsearchfinder.CreateMockOrigStationFinder3()
+	sf2 := cloudfinder.CreateMockOrigStationFinder3()
 
 	table := &fakeTableResponse{}
 	r, err := CalcWeightBetweenChargeStationsPair(sf1, sf2, table)

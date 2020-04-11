@@ -1,4 +1,4 @@
-package tnsearchfinder
+package cloudfinder
 
 import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/nav"

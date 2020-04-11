@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Telenav/osrm-backend/integration/service/oasis/searchconnector"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/tnsearchfinder"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/cloudfinder"
 	"github.com/golang/glog"
 )
 
@@ -25,7 +25,7 @@ func CreateStationsFinder(finderType, searchEndpoint, apiKey, apiSignature strin
 	switch finderType {
 	case TNSearchFinder:
 		searchFinder := searchconnector.NewTNSearchConnector(searchEndpoint, apiKey, apiSignature)
-		return tnsearchfinder.NewTnSearchStationFinder(searchFinder), nil
+		return cloudfinder.New(searchFinder), nil
 	}
 	return nil, nil
 }

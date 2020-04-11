@@ -1,4 +1,4 @@
-package tnsearchfinder
+package cloudfinder
 
 import (
 	"reflect"
@@ -11,6 +11,8 @@ func TestOrigStationFinderIterator(t *testing.T) {
 	sf := CreateMockOrigStationFinder1()
 	c := sf.IterateNearbyStations()
 	var r []stationfindertype.ChargeStationInfo
+
+	isdoneC := make(chan bool)
 	go func() {
 		for item := range c {
 			r = append(r, item)
@@ -19,5 +21,7 @@ func TestOrigStationFinderIterator(t *testing.T) {
 		if !reflect.DeepEqual(r, mockChargeStationInfo1) {
 			t.Errorf("expect %v but got %v", mockChargeStationInfo1, r)
 		}
+		isdoneC <- true
 	}()
+	<-isdoneC
 }

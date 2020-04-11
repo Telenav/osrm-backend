@@ -1,4 +1,4 @@
-package tnsearchfinder
+package cloudfinder
 
 import (
 	"sync"
@@ -6,9 +6,9 @@ import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
 )
 
-// CreateMockDestStationFinder1 creates mock dest station finder with nearbychargestation.MockSearchResponse1
-func CreateMockDestStationFinder1() *destStationFinder {
-	obj := &destStationFinder{
+// CreateMockOrigStationFinder1 creates mock orig station finder with nearbychargestation.MockSearchResponse1
+func CreateMockOrigStationFinder1() *origStationFinder {
+	obj := &origStationFinder{
 		oasisReq: nil,
 		bf: &basicFinder{
 			tnSearchConnector: nil,
@@ -19,9 +19,9 @@ func CreateMockDestStationFinder1() *destStationFinder {
 	return obj
 }
 
-// CreateMockDestStationFinder2 creates mock dest station finder with nearbychargestation.MockSearchResponse2
-func createMockDestStationFinder2() *destStationFinder {
-	obj := &destStationFinder{
+// CreateMockOrigStationFinder2 creates mock orig station finder with nearbychargestation.MockSearchResponse2
+func CreateMockOrigStationFinder2() *origStationFinder {
+	obj := &origStationFinder{
 		oasisReq: nil,
 		bf: &basicFinder{
 			tnSearchConnector: nil,
@@ -32,9 +32,9 @@ func createMockDestStationFinder2() *destStationFinder {
 	return obj
 }
 
-// CreateMockDestStationFinder3 creates mock dest station finder with nearbychargestation.MockSearchResponse3
-func createMockDestStationFinder3() *destStationFinder {
-	obj := &destStationFinder{
+// CreateMockOrigStationFinder3 creates mock orig station finder with nearbychargestation.MockSearchResponse3
+func CreateMockOrigStationFinder3() *origStationFinder {
+	obj := &origStationFinder{
 		oasisReq: nil,
 		bf: &basicFinder{
 			tnSearchConnector: nil,

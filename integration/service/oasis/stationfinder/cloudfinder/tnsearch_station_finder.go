@@ -1,4 +1,4 @@
-package tnsearchfinder
+package cloudfinder
 
 import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/nav"
@@ -11,8 +11,8 @@ type tnSearchStationFinder struct {
 	sc *searchconnector.TNSearchConnector
 }
 
-// NewTnSearchStationFinder creates finder based on telenav search
-func NewTnSearchStationFinder(sc *searchconnector.TNSearchConnector) *tnSearchStationFinder {
+// New creates finder based on telenav search web service
+func New(sc *searchconnector.TNSearchConnector) *tnSearchStationFinder {
 	return &tnSearchStationFinder{
 		sc: sc,
 	}

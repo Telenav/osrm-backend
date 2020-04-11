@@ -1,4 +1,4 @@
-package tnsearchfinder
+package cloudfinder
 
 import (
 	"reflect"
