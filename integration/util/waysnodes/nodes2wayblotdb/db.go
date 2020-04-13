@@ -17,7 +17,7 @@ type DB struct {
 }
 
 const (
-	defaultBucket = "bucket"
+	nodes2WayBucket = "nodes2way_bucket"
 )
 
 var (
@@ -56,7 +56,7 @@ func Open(dbFilePath string, readOnly bool) (*DB, error) {
 
 	// for write, make sure bucket available
 	err = db.db.Update(func(tx *bolt.Tx) error {
-		_, err := tx.CreateBucketIfNotExists([]byte(defaultBucket))
+		_, err := tx.CreateBucketIfNotExists([]byte(nodes2WayBucket))
 		if err != nil {
 			return fmt.Errorf("failed to create bucket: %s", err)
 		}
@@ -98,7 +98,7 @@ func (db *DB) Statistics() string {
 
 	s.DBStat = fmt.Sprintf("%+v", db.db.Stats())
 	if err := db.db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(defaultBucket))
+		b := tx.Bucket([]byte(nodes2WayBucket))
 
 		s.BucketStat = fmt.Sprintf("%+v", b.Stats()) // bucket stats
 		return nil
@@ -130,7 +130,7 @@ func (db *DB) Write(wayID int64, nodeIDs []int64) error {
 	}
 
 	err := db.db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(defaultBucket))
+		b := tx.Bucket([]byte(nodes2WayBucket))
 
 		for i := 0; i < len(nodeIDs)-1; i++ {
 			if err := b.Put(key(nodeIDs[i], nodeIDs[i+1]), value(wayID)); err != nil {
@@ -155,7 +155,7 @@ func (db *DB) QueryWay(fromNodeID, toNodeID int64) (int64, error) {
 
 	var wayID int64
 	if err := db.db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(defaultBucket))
+		b := tx.Bucket([]byte(nodes2WayBucket))
 
 		v := b.Get(key(fromNodeID, toNodeID))
 		if v != nil {
@@ -188,7 +188,7 @@ func (db *DB) QueryWays(nodeIDs []int64) ([]int64, error) {
 
 	var wayIDs []int64
 	if err := db.db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(defaultBucket))
+		b := tx.Bucket([]byte(nodes2WayBucket))
 
 		for i := 0; i < len(nodeIDs)-1; i++ {
 			v := b.Get(key(nodeIDs[i], nodeIDs[i+1]))
