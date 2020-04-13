@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/wayidsflag"
+	"github.com/Telenav/osrm-backend/integration/util/idsflag"
 )
 
 var flags struct {
-	nodeIDs wayidsflag.WayIDs //TODO: will refactor it to intsflag.Int64s later
+	nodeIDs idsflag.IDs
 	db      string
 	dbStat  bool
 }

@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/wayidsflag"
+	"github.com/Telenav/osrm-backend/integration/util/idsflag"
 )
 
 const (
@@ -15,7 +15,7 @@ const (
 
 var flags struct {
 	rpcMode string
-	wayIDs  wayidsflag.WayIDs
+	wayIDs  idsflag.IDs
 }
 
 func init() {
