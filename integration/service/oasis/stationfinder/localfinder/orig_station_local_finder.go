@@ -27,6 +27,7 @@ func newOrigStationFinder(localFinder spatialindexer.Finder, oasisReq *oasis.Req
 	return obj
 }
 
+// NearbyStationsIterator provides channel which contains near by station information for orig
 func (localFinder *origStationLocalFinder) IterateNearbyStations() <-chan *stationfindertype.ChargeStationInfo {
 	return localFinder.basicFinder.IterateNearbyStations()
 }

@@ -32,10 +32,12 @@ func newDestStationFinder(localFinder spatialindexer.Finder, oasisReq *oasis.Req
 	return obj
 }
 
+// NearbyStationsIterator provides channel which contains near by station information for dest
 func (localFinder *destStationLocalFinder) IterateNearbyStations() <-chan *stationfindertype.ChargeStationInfo {
 	return localFinder.basicFinder.IterateNearbyStations()
 }
 
+// Stop stops functionality of finder
 func (localFinder *destStationLocalFinder) Stop() {
 	localFinder.basicFinder.Stop()
 }

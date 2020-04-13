@@ -43,6 +43,7 @@ func (sf *destStationFinder) prepare() {
 	return
 }
 
+// NearbyStationsIterator provides channel which contains near by station information for dest
 func (sf *destStationFinder) IterateNearbyStations() <-chan *stationfindertype.ChargeStationInfo {
 	return sf.bf.IterateNearbyStations()
 }

@@ -36,6 +36,7 @@ func (sf *lowEnergyLocationStationFinder) prepare() {
 	return
 }
 
+// NearbyStationsIterator provides channel which contains near by station information for low energy location
 func (sf *lowEnergyLocationStationFinder) IterateNearbyStations() <-chan *stationfindertype.ChargeStationInfo {
 	return sf.bf.IterateNearbyStations()
 }

@@ -37,6 +37,7 @@ func (bf *basicFinder) getNearbyChargeStations(req *nearbychargestation.Request)
 	bf.searchRespLock.Unlock()
 }
 
+// NearbyStationsIterator provides channel which contains near by station information
 func (bf *basicFinder) IterateNearbyStations() <-chan *stationfindertype.ChargeStationInfo {
 	if bf.searchResp == nil || len(bf.searchResp.Results) == 0 {
 		c := make(chan *stationfindertype.ChargeStationInfo)
