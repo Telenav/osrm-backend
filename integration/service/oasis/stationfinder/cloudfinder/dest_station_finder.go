@@ -43,6 +43,6 @@ func (sf *destStationFinder) prepare() {
 	return
 }
 
-func (sf *destStationFinder) IterateNearbyStations() <-chan stationfindertype.ChargeStationInfo {
+func (sf *destStationFinder) IterateNearbyStations() <-chan *stationfindertype.ChargeStationInfo {
 	return sf.bf.IterateNearbyStations()
 }

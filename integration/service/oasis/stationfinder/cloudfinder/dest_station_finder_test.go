@@ -10,7 +10,7 @@ import (
 func TestDestStationFinderIterator(t *testing.T) {
 	sf := CreateMockDestStationFinder1()
 	c := sf.IterateNearbyStations()
-	var r []stationfindertype.ChargeStationInfo
+	var r []*stationfindertype.ChargeStationInfo
 	go func() {
 		for item := range c {
 			r = append(r, item)

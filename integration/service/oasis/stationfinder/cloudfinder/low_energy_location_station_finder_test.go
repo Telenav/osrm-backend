@@ -17,7 +17,7 @@ func TestLowEnergyLocationStationFinderIterator1(t *testing.T) {
 		defer wg.Done()
 
 		c := sf.IterateNearbyStations()
-		var r []stationfindertype.ChargeStationInfo
+		var r []*stationfindertype.ChargeStationInfo
 
 		for item := range c {
 			r = append(r, item)
@@ -37,7 +37,7 @@ func TestLowEnergyLocationStationFinderIterator2(t *testing.T) {
 		defer wg.Done()
 
 		c := sf.IterateNearbyStations()
-		var r []stationfindertype.ChargeStationInfo
+		var r []*stationfindertype.ChargeStationInfo
 		for item := range c {
 			r = append(r, item)
 		}
@@ -56,7 +56,7 @@ func TestLowEnergyLocationStationFinderIterator3(t *testing.T) {
 		defer wg.Done()
 
 		c := sf.IterateNearbyStations()
-		var r []stationfindertype.ChargeStationInfo
+		var r []*stationfindertype.ChargeStationInfo
 		for item := range c {
 			r = append(r, item)
 		}

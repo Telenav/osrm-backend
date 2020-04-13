@@ -10,7 +10,7 @@ import (
 func TestOrigStationFinderIterator(t *testing.T) {
 	sf := CreateMockOrigStationFinder1()
 	c := sf.IterateNearbyStations()
-	var r []stationfindertype.ChargeStationInfo
+	var r []*stationfindertype.ChargeStationInfo
 
 	isdoneC := make(chan bool)
 	go func() {

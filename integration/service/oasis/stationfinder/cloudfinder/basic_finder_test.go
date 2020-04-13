@@ -10,29 +10,29 @@ import (
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 )
 
-var mockChargeStationInfo1 []stationfindertype.ChargeStationInfo = []stationfindertype.ChargeStationInfo{
-	stationfindertype.ChargeStationInfo{
+var mockChargeStationInfo1 = []*stationfindertype.ChargeStationInfo{
+	{
 		ID: "station1",
 		Location: nav.Location{
 			Lat: 32.333,
 			Lon: 122.333,
 		},
 	},
-	stationfindertype.ChargeStationInfo{
+	{
 		ID: "station2",
 		Location: nav.Location{
 			Lat: -32.333,
 			Lon: -122.333,
 		},
 	},
-	stationfindertype.ChargeStationInfo{
+	{
 		ID: "station3",
 		Location: nav.Location{
 			Lat: 32.333,
 			Lon: -122.333,
 		},
 	},
-	stationfindertype.ChargeStationInfo{
+	{
 		ID: "station4",
 		Location: nav.Location{
 			Lat: -32.333,
@@ -41,22 +41,22 @@ var mockChargeStationInfo1 []stationfindertype.ChargeStationInfo = []stationfind
 	},
 }
 
-var mockChargeStationInfo2 []stationfindertype.ChargeStationInfo = []stationfindertype.ChargeStationInfo{
-	stationfindertype.ChargeStationInfo{
+var mockChargeStationInfo2 = []*stationfindertype.ChargeStationInfo{
+	{
 		ID: "station1",
 		Location: nav.Location{
 			Lat: 32.333,
 			Lon: 122.333,
 		},
 	},
-	stationfindertype.ChargeStationInfo{
+	{
 		ID: "station2",
 		Location: nav.Location{
 			Lat: -32.333,
 			Lon: -122.333,
 		},
 	},
-	stationfindertype.ChargeStationInfo{
+	{
 		ID: "station5",
 		Location: nav.Location{
 			Lat: -12.333,
@@ -65,15 +65,15 @@ var mockChargeStationInfo2 []stationfindertype.ChargeStationInfo = []stationfind
 	},
 }
 
-var mockChargeStationInfo3 []stationfindertype.ChargeStationInfo = []stationfindertype.ChargeStationInfo{
-	stationfindertype.ChargeStationInfo{
+var mockChargeStationInfo3 = []*stationfindertype.ChargeStationInfo{
+	{
 		ID: "station6",
 		Location: nav.Location{
 			Lat: 30.333,
 			Lon: 122.333,
 		},
 	},
-	stationfindertype.ChargeStationInfo{
+	{
 		ID: "station7",
 		Location: nav.Location{
 			Lat: -10.333,
@@ -85,7 +85,7 @@ var mockChargeStationInfo3 []stationfindertype.ChargeStationInfo = []stationfind
 func TestBasicFinderCorrectness(t *testing.T) {
 	cases := []struct {
 		input  []*nearbychargestation.Result
-		expect []stationfindertype.ChargeStationInfo
+		expect []*stationfindertype.ChargeStationInfo
 	}{
 		{
 			nearbychargestation.MockSearchResponse1.Results,
@@ -105,7 +105,7 @@ func TestBasicFinderCorrectness(t *testing.T) {
 			wg.Add(1)
 			defer wg.Done()
 
-			var r []stationfindertype.ChargeStationInfo
+			var r []*stationfindertype.ChargeStationInfo
 			for item := range c {
 				r = append(r, item)
 			}
@@ -122,7 +122,7 @@ func TestBasicFinderAsync(t *testing.T) {
 	cases := []struct {
 		input     []*nearbychargestation.Result
 		inputLock *sync.RWMutex
-		expect    []stationfindertype.ChargeStationInfo
+		expect    []*stationfindertype.ChargeStationInfo
 	}{
 		{
 			nearbychargestation.MockSearchResponse1.Results,
@@ -145,7 +145,7 @@ func TestBasicFinderAsync(t *testing.T) {
 				c := bf.IterateNearbyStations()
 				go func(wg *sync.WaitGroup) {
 					defer wg.Done()
-					var r []stationfindertype.ChargeStationInfo
+					var r []*stationfindertype.ChargeStationInfo
 					for item := range c {
 						r = append(r, item)
 					}

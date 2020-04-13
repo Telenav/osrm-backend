@@ -23,7 +23,7 @@ type StationFinder interface {
 type Algorithm interface {
 	// FindOverlapBetweenStations finds overlap charge stations based on two iterator
 	FindOverlapBetweenStations(iterF stationfindertype.NearbyStationsIterator,
-		iterS stationfindertype.NearbyStationsIterator) []stationfindertype.ChargeStationInfo
+		iterS stationfindertype.NearbyStationsIterator) []*stationfindertype.ChargeStationInfo
 
 	// CalcWeightBetweenChargeStationsPair accepts two iterators and calculates weights between each pair of iterators
 	CalcWeightBetweenChargeStationsPair(from stationfindertype.NearbyStationsIterator,

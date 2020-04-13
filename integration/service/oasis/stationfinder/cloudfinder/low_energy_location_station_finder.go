@@ -8,7 +8,8 @@ import (
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 )
 
-const lowEnergyLocationCandidateNumber = 20
+// LowEnergyLocationCandidateNumber indicates how much charge station to be searched for low energy point
+const LowEnergyLocationCandidateNumber = 20
 
 type lowEnergyLocationStationFinder struct {
 	location *nav.Location
@@ -29,12 +30,12 @@ func (sf *lowEnergyLocationStationFinder) prepare() {
 		searchcoordinate.Coordinate{
 			Lat: sf.location.Lat,
 			Lon: sf.location.Lon},
-		lowEnergyLocationCandidateNumber,
+		LowEnergyLocationCandidateNumber,
 		-1)
 	sf.bf.getNearbyChargeStations(req)
 	return
 }
 
-func (sf *lowEnergyLocationStationFinder) IterateNearbyStations() <-chan stationfindertype.ChargeStationInfo {
+func (sf *lowEnergyLocationStationFinder) IterateNearbyStations() <-chan *stationfindertype.ChargeStationInfo {
 	return sf.bf.IterateNearbyStations()
 }

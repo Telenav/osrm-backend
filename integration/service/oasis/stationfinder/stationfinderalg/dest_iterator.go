@@ -17,8 +17,8 @@ func NewDestIter(location *nav.Location) *destIterator {
 	}
 }
 
-func (di *destIterator) IterateNearbyStations() <-chan stationfindertype.ChargeStationInfo {
-	c := make(chan stationfindertype.ChargeStationInfo, 1)
+func (di *destIterator) IterateNearbyStations() <-chan *stationfindertype.ChargeStationInfo {
+	c := make(chan *stationfindertype.ChargeStationInfo, 1)
 
 	go func() {
 		defer close(c)
@@ -26,7 +26,7 @@ func (di *destIterator) IterateNearbyStations() <-chan stationfindertype.ChargeS
 			ID:       stationfindertype.DestLocationID,
 			Location: *di.location,
 		}
-		c <- station
+		c <- &station
 	}()
 
 	return c

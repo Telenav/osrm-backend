@@ -1,6 +1,7 @@
 package spatialindexer
 
-var mockPlaceInfo1 = []*PointInfo{
+// MockPlaceInfo1 contains 10 PointInfo items
+var MockPlaceInfo1 = []*PointInfo{
 	&PointInfo{
 		ID: 1,
 		Location: Location{
@@ -78,9 +79,9 @@ type MockFinder struct {
 }
 
 // FindNearByPointIDs returns mock result
-// It returns 10 places defined in mockPlaceInfo1
+// It returns 10 places defined in MockPlaceInfo1
 func (finder *MockFinder) FindNearByPointIDs(center Location, radius float64, limitCount int) []*PointInfo {
-	return mockPlaceInfo1
+	return MockPlaceInfo1
 }
 
 // MockPointsIterator implements PointsIterator's interface
@@ -89,10 +90,10 @@ type MockPointsIterator struct {
 
 // IteratePoints() iterate places with mock data
 func (iterator *MockPointsIterator) IteratePoints() <-chan PointInfo {
-	pointInfoC := make(chan PointInfo, len(mockPlaceInfo1))
+	pointInfoC := make(chan PointInfo, len(MockPlaceInfo1))
 
 	go func() {
-		for _, item := range mockPlaceInfo1 {
+		for _, item := range MockPlaceInfo1 {
 			pointInfoC <- *item
 		}
 

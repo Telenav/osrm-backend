@@ -11,6 +11,7 @@ var flags struct {
 	tnSearchEndpoint     string
 	tnSearchAPIKey       string
 	tnSearchAPISignature string
+	localDataPath        string
 }
 
 func init() {
@@ -19,5 +20,6 @@ func init() {
 	flag.StringVar(&flags.finderType, "finder", "", "Specify search finder to search for nearby charge stations for given location, use TNSearchFinder or LocalIndexerFinder")
 	flag.StringVar(&flags.tnSearchEndpoint, "search", "", "TN-Search-backend endpoint")
 	flag.StringVar(&flags.tnSearchAPIKey, "searchApiKey", "", "API key for TN-Search-backend")
-	flag.StringVar(&flags.tnSearchAPISignature, "searchApiSignature", "", "API Signature for  TN-Search-backend")
+	flag.StringVar(&flags.tnSearchAPISignature, "searchApiSignature", "", "API Signature for TN-Search-backend")
+	flag.StringVar(&flags.localDataPath, "datapath", "", "Local data path for index data")
 }

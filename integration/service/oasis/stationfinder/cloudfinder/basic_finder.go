@@ -37,9 +37,9 @@ func (bf *basicFinder) getNearbyChargeStations(req *nearbychargestation.Request)
 	bf.searchRespLock.Unlock()
 }
 
-func (bf *basicFinder) IterateNearbyStations() <-chan stationfindertype.ChargeStationInfo {
+func (bf *basicFinder) IterateNearbyStations() <-chan *stationfindertype.ChargeStationInfo {
 	if bf.searchResp == nil || len(bf.searchResp.Results) == 0 {
-		c := make(chan stationfindertype.ChargeStationInfo)
+		c := make(chan *stationfindertype.ChargeStationInfo)
 		go func() {
 			defer close(c)
 		}()
@@ -52,7 +52,7 @@ func (bf *basicFinder) IterateNearbyStations() <-chan stationfindertype.ChargeSt
 	copy(results, bf.searchResp.Results)
 	bf.searchRespLock.RUnlock()
 
-	c := make(chan stationfindertype.ChargeStationInfo, size)
+	c := make(chan *stationfindertype.ChargeStationInfo, size)
 	go func() {
 		defer close(c)
 		for _, result := range results {
@@ -65,7 +65,7 @@ func (bf *basicFinder) IterateNearbyStations() <-chan stationfindertype.ChargeSt
 					Lat: result.Place.Address[0].GeoCoordinate.Latitude,
 					Lon: result.Place.Address[0].GeoCoordinate.Longitude},
 			}
-			c <- station
+			c <- &station
 		}
 	}()
 

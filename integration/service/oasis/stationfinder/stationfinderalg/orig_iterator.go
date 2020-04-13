@@ -17,8 +17,8 @@ func NewOrigIter(location *nav.Location) *origIterator {
 	}
 }
 
-func (oi *origIterator) IterateNearbyStations() <-chan stationfindertype.ChargeStationInfo {
-	c := make(chan stationfindertype.ChargeStationInfo, 1)
+func (oi *origIterator) IterateNearbyStations() <-chan *stationfindertype.ChargeStationInfo {
+	c := make(chan *stationfindertype.ChargeStationInfo, 1)
 
 	go func() {
 		defer close(c)
@@ -26,7 +26,7 @@ func (oi *origIterator) IterateNearbyStations() <-chan stationfindertype.ChargeS
 			ID:       stationfindertype.OrigLocationID,
 			Location: *oi.location,
 		}
-		c <- station
+		c <- &station
 	}()
 
 	return c

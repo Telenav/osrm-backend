@@ -5,7 +5,7 @@ import "github.com/Telenav/osrm-backend/integration/pkg/api/nav"
 // NearbyStationsIterator provide interator for near by stations
 type NearbyStationsIterator interface {
 	// IterateNearbyStations returns a channel which contains near by charge station under certain conditions
-	IterateNearbyStations() <-chan ChargeStationInfo
+	IterateNearbyStations() <-chan *ChargeStationInfo
 }
 
 // ChargeStationInfo defines charge station information

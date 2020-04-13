@@ -14,8 +14,8 @@ import (
 )
 
 // FindOverlapBetweenStations finds overlap charge stations based on two iterator
-func FindOverlapBetweenStations(iterF stationfindertype.NearbyStationsIterator, iterS stationfindertype.NearbyStationsIterator) []stationfindertype.ChargeStationInfo {
-	var overlap []stationfindertype.ChargeStationInfo
+func FindOverlapBetweenStations(iterF stationfindertype.NearbyStationsIterator, iterS stationfindertype.NearbyStationsIterator) []*stationfindertype.ChargeStationInfo {
+	var overlap []*stationfindertype.ChargeStationInfo
 	dict := buildChargeStationInfoDict(iterF)
 	c := iterS.IterateNearbyStations()
 	for item := range c {

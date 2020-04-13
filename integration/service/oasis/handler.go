@@ -19,7 +19,7 @@ type Handler struct {
 }
 
 // New creates new Handler object
-func New(osrmBackend, finderType, searchEndpoint, apiKey, apiSignature string) (*Handler, error) {
+func New(osrmBackend, finderType, searchEndpoint, apiKey, apiSignature, dataFolderPath string) (*Handler, error) {
 	// @todo: need make sure connectivity is on and continues available
 	//        simple request to guarantee server is alive after init
 	if len(osrmBackend) == 0 {
@@ -27,7 +27,7 @@ func New(osrmBackend, finderType, searchEndpoint, apiKey, apiSignature string) (
 		return nil, err
 	}
 
-	finder, err := stationfinder.CreateStationsFinder(finderType, searchEndpoint, apiKey, apiSignature)
+	finder, err := stationfinder.CreateStationsFinder(finderType, searchEndpoint, apiKey, apiSignature, dataFolderPath)
 	if err != nil {
 		glog.Errorf("Failed in Handler's New() when try to call CreateStationsFinder(), met error = %+v\n", err)
 		return nil, err

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Telenav/osrm-backend/integration/service/oasis/searchconnector"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer/s2indexer"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/cloudfinder"
 	"github.com/golang/glog"
 )
@@ -17,16 +18,25 @@ const (
 )
 
 // CreateStationsFinder creates finder which implements StationFinder interface
-func CreateStationsFinder(finderType, searchEndpoint, apiKey, apiSignature string) (StationFinder, error) {
-	if err := checkInput(finderType, searchEndpoint, apiKey, apiSignature); err != nil {
+func CreateStationsFinder(finderType, searchEndpoint, apiKey, apiSignature, dataFolderPath string) (StationFinder, error) {
+	if err := checkInput(finderType, searchEndpoint, apiKey, apiSignature, dataFolderPath); err != nil {
 		return nil, err
 	}
 
 	switch finderType {
+
 	case TNSearchFinder:
 		searchFinder := searchconnector.NewTNSearchConnector(searchEndpoint, apiKey, apiSignature)
 		return cloudfinder.New(searchFinder), nil
+
+	case LocalIndexerFinder:
+		localIndex := s2indexer.NewS2Indexer().Load(dataFolderPath)
+		if localIndex == nil {
+			err := fmt.Errorf("failed to load s2Indexer")
+			return nil, err
+		}
 	}
+
 	return nil, nil
 }
 
@@ -35,7 +45,7 @@ func isValidStationFinderType(finderType string) bool {
 	return finderType == TNSearchFinder || finderType == LocalIndexerFinder
 }
 
-func checkInput(finderType, searchEndpoint, apiKey, apiSignature string) error {
+func checkInput(finderType, searchEndpoint, apiKey, apiSignature, dataFolderPath string) error {
 	if !isValidStationFinderType(finderType) {
 		glog.Error("Try to create finder not implemented yet, can only choose TNSearchFinder or LocalFinder for now.\n")
 		err := fmt.Errorf("invalid station finder type")
@@ -47,6 +57,12 @@ func checkInput(finderType, searchEndpoint, apiKey, apiSignature string) error {
 			len(apiKey) == 0 ||
 			len(apiSignature) == 0) {
 		err := fmt.Errorf("empty input for searchEndpoint/apiKey/apiSignature")
+		return err
+	}
+
+	if finderType == LocalIndexerFinder &&
+		len(dataFolderPath) == 0 {
+		err := fmt.Errorf("empty input for local index")
 		return err
 	}
 
