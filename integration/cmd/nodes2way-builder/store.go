@@ -19,6 +19,8 @@ func newStore(in <-chan *waysnodes.WayNodes, out string) (err error) {
 		err = db.Close()
 	}()
 
+	batchCountPerWrite := 100
+	wayNodesCache := make([]waysnodes.WayNodes, batchCountPerWrite)
 	var inCount, succeedCount int
 	for {
 		wayNodes, ok := <-in
@@ -26,14 +28,18 @@ func newStore(in <-chan *waysnodes.WayNodes, out string) (err error) {
 			break
 		}
 		inCount++
+		wayNodesCache = append(wayNodesCache, *wayNodes)
 
-		if err := db.Write(wayNodes.WayID, wayNodes.NodeIDs); err != nil {
-			if glog.V(3) { // avoid affect performance by verbose log
-				glog.Infof("Update %+v into db failed, err: %v", wayNodes, err)
-			}
+		if len(wayNodesCache) < batchCountPerWrite {
 			continue
 		}
-		succeedCount++
+
+		if err := db.BatchWrite(wayNodesCache); err != nil {
+			glog.Errorf("Write into db failed, err: %v", err)
+			break
+		}
+		succeedCount += len(wayNodesCache)
+		wayNodesCache = wayNodesCache[:0]
 	}
 
 	glog.V(1).Infof("Built DB %s, in count %d, succeed count %d, takes %f seconds", out, inCount, succeedCount, time.Now().Sub(startTime).Seconds())
