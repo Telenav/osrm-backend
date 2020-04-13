@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/Telenav/osrm-backend/integration/util/waysnodes"
 	"github.com/golang/glog"
 
 	bolt "go.etcd.io/bbolt"
@@ -143,6 +144,33 @@ func (db *DB) Write(wayID int64, nodeIDs []int64) error {
 		return err
 	}
 
+	return nil
+}
+
+// BatchWrite writes wayID and its nodeIDs into cache or storage by batching.
+func (db *DB) BatchWrite(wayNodes []waysnodes.WayNodes) error {
+	if db.db == nil {
+		return errEmptyDB
+	}
+
+	// Create several keys in a transaction.
+	tx, err := db.db.Begin(true)
+	if err != nil {
+		return err
+	}
+	b := tx.Bucket([]byte(nodes2WayBucket))
+
+	for _, wn := range wayNodes {
+		for i := 0; i < len(wn.NodeIDs)-1; i++ {
+			if err := b.Put(key(wn.NodeIDs[i], wn.NodeIDs[i+1]), value(wn.WayID)); err != nil {
+				return err
+			}
+		}
+	}
+
+	if err = tx.Commit(); err != nil {
+		return err
+	}
 	return nil
 }
 
