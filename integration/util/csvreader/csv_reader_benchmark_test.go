@@ -356,3 +356,51 @@ func BenchmarkConsumingRecordSliceFromCSVReadReuseRecord(b *testing.B) {
 	}
 
 }
+
+func BenchmarkGenerateRecordByConsumingTextSliceFromBufioScan(b *testing.B) {
+	cacheCount := testFlags.cachePerChanTransmission
+	parallelTransformCount := 3
+
+	for i := 0; i < b.N; i++ {
+
+		f, err := os.Open(testFlags.csvFile)
+		defer f.Close()
+		if err != nil {
+			b.Error(err)
+		}
+
+		stringSliceChan := makeStringSliceChan()
+
+		wg := sync.WaitGroup{}
+		for j := 0; j < parallelTransformCount; j++ {
+			wg.Add(1)
+			go func(in <-chan []string) {
+				for {
+					ss, ok := <-in
+					if !ok {
+						break
+					}
+
+					for _, s := range ss {
+						_ = strings.Split(s, ",")
+					}
+				}
+				wg.Done()
+			}(stringSliceChan)
+		}
+
+		scanner := bufio.NewScanner(makeBufferedReader(f))
+
+		stringSliceCache := make([]string, 0, cacheCount)
+		for scanner.Scan() {
+			stringSliceCache = append(stringSliceCache, scanner.Text())
+			if len(stringSliceCache) >= cacheCount {
+				stringSliceChan <- stringSliceCache
+				stringSliceCache = make([]string, 0, cacheCount)
+			}
+		}
+		close(stringSliceChan)
+
+		wg.Wait()
+	}
+}
