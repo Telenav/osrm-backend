@@ -420,3 +420,45 @@ func BenchmarkGenerateRecordByConsumingTextSliceFromBufioScan(b *testing.B) {
 		wg.Wait()
 	}
 }
+
+func BenchmarkGenerateRecordByConsumingTextSliceFromLinesAsyncReader(b *testing.B) {
+
+	parallelTransformCount := 3
+	options := Options{
+		MaxCacheCount: testFlags.chanCacheSize,
+		MaxReadCount:  testFlags.cachePerChanTransmission,
+	}
+	if testFlags.snappyCompressed {
+		options.Compression = CompressionTypeSnappy
+	}
+
+	for i := 0; i < b.N; i++ {
+
+		l := NewLinesAsyncReader(testFlags.csvFile, &options)
+
+		wg := sync.WaitGroup{}
+		for j := 0; j < parallelTransformCount; j++ {
+			wg.Add(1)
+			go func() {
+				for {
+					ss, ok := l.ReadLines()
+					if !ok {
+						break
+					}
+
+					for _, s := range ss {
+						_ = strings.Split(s, ",")
+					}
+				}
+				wg.Done()
+			}()
+		}
+
+		l.Start()
+		wg.Wait()
+
+		if err := l.Err(); err != nil {
+			b.Error(err)
+		}
+	}
+}
