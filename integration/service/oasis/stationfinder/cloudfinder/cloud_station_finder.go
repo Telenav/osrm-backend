@@ -20,15 +20,15 @@ func New(sc *searchconnector.TNSearchConnector) *cloudStationFinder {
 
 // NewOrigStationFinder creates finder to search for nearby charge stations near orig based on telenav search
 func (finder *cloudStationFinder) NewOrigStationFinder(oasisReq *oasis.Request) stationfindertype.NearbyStationsIterator {
-	return NewOrigStationFinder(finder.sc, oasisReq)
+	return newOrigStationFinder(finder.sc, oasisReq)
 }
 
 // NewDestStationFinder creates finder to search for nearby charge stations near destination based on telenav search
 func (finder *cloudStationFinder) NewDestStationFinder(oasisReq *oasis.Request) stationfindertype.NearbyStationsIterator {
-	return NewDestStationFinder(finder.sc, oasisReq)
+	return newDestStationFinder(finder.sc, oasisReq)
 }
 
 // NewLowEnergyLocationStationFinder creates finder to search for nearby charge stations when energy is low based on telenav search
 func (finder *cloudStationFinder) NewLowEnergyLocationStationFinder(location *nav.Location) stationfindertype.NearbyStationsIterator {
-	return NewLowEnergyLocationStationFinder(finder.sc, location)
+	return newLowEnergyLocationStationFinder(finder.sc, location)
 }

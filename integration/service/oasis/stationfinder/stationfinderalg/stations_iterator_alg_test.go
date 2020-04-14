@@ -282,7 +282,7 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 	oc := osrmconnector.NewOSRMConnector(ts.URL)
 
 	// create finder based on fake TNSearchService
-	finder, err := stationfinder.CreateStationsFinder(stationfinder.TNSearchFinder, ts.URL, "apikey", "apisignature", "")
+	finder, err := stationfinder.CreateStationsFinder(stationfinder.CloudFinder, ts.URL, "apikey", "apisignature", "")
 	if err != nil {
 		t.Errorf("Failed to create station finder during TestCalculateWeightBetweenNeighbors with error = %+v.\n", err)
 	}

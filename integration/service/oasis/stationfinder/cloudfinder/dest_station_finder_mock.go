@@ -9,8 +9,8 @@ import (
 // CreateMockDestStationFinder1 creates mock dest station finder with nearbychargestation.MockSearchResponse1
 func CreateMockDestStationFinder1() *destStationFinder {
 	obj := &destStationFinder{
-		oasisReq: nil,
-		bf: &basicFinder{
+		nil,
+		&basicFinder{
 			tnSearchConnector: nil,
 			searchResp:        nearbychargestation.MockSearchResponse1,
 			searchRespLock:    &sync.RWMutex{},
@@ -22,8 +22,8 @@ func CreateMockDestStationFinder1() *destStationFinder {
 // CreateMockDestStationFinder2 creates mock dest station finder with nearbychargestation.MockSearchResponse2
 func createMockDestStationFinder2() *destStationFinder {
 	obj := &destStationFinder{
-		oasisReq: nil,
-		bf: &basicFinder{
+		nil,
+		&basicFinder{
 			tnSearchConnector: nil,
 			searchResp:        nearbychargestation.MockSearchResponse2,
 			searchRespLock:    &sync.RWMutex{},
@@ -35,8 +35,8 @@ func createMockDestStationFinder2() *destStationFinder {
 // CreateMockDestStationFinder3 creates mock dest station finder with nearbychargestation.MockSearchResponse3
 func createMockDestStationFinder3() *destStationFinder {
 	obj := &destStationFinder{
-		oasisReq: nil,
-		bf: &basicFinder{
+		nil,
+		&basicFinder{
 			tnSearchConnector: nil,
 			searchResp:        nearbychargestation.MockSearchResponse3,
 			searchRespLock:    &sync.RWMutex{},

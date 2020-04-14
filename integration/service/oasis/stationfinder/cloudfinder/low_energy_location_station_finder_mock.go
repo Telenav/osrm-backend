@@ -9,8 +9,8 @@ import (
 // createMockLowEnergyLocationStationFinder1 creates mock low energy location station finder with nearbychargestation.MockSearchResponse1
 func createMockLowEnergyLocationStationFinder1() *lowEnergyLocationStationFinder {
 	obj := &lowEnergyLocationStationFinder{
-		location: nil,
-		bf: &basicFinder{
+		nil,
+		&basicFinder{
 			tnSearchConnector: nil,
 
 			searchResp:     nearbychargestation.MockSearchResponse1,
@@ -23,8 +23,8 @@ func createMockLowEnergyLocationStationFinder1() *lowEnergyLocationStationFinder
 // createMockLowEnergyLocationStationFinder2 creates mock low energy location station finder with nearbychargestation.MockSearchResponse2
 func createMockLowEnergyLocationStationFinder2() *lowEnergyLocationStationFinder {
 	obj := &lowEnergyLocationStationFinder{
-		location: nil,
-		bf: &basicFinder{
+		nil,
+		&basicFinder{
 			tnSearchConnector: nil,
 			searchResp:        nearbychargestation.MockSearchResponse2,
 			searchRespLock:    &sync.RWMutex{},
@@ -36,8 +36,8 @@ func createMockLowEnergyLocationStationFinder2() *lowEnergyLocationStationFinder
 // createMockLowEnergyLocationStationFinder3 creates mock low energy location station finder with nearbychargestation.MockSearchResponse3
 func createMockLowEnergyLocationStationFinder3() *lowEnergyLocationStationFinder {
 	obj := &lowEnergyLocationStationFinder{
-		location: nil,
-		bf: &basicFinder{
+		nil,
+		&basicFinder{
 			tnSearchConnector: nil,
 			searchResp:        nearbychargestation.MockSearchResponse3,
 			searchRespLock:    &sync.RWMutex{},

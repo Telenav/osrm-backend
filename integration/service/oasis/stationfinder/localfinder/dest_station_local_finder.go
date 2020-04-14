@@ -3,12 +3,11 @@ package localfinder
 import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 	"github.com/golang/glog"
 )
 
 type destStationLocalFinder struct {
-	basicFinder *basicLocalFinder
+	*basicLocalFinder
 }
 
 func newDestStationFinder(localFinder spatialindexer.Finder, oasisReq *oasis.Request) *destStationLocalFinder {
@@ -22,22 +21,12 @@ func newDestStationFinder(localFinder spatialindexer.Finder, oasisReq *oasis.Req
 	}
 
 	obj := &destStationLocalFinder{
-		basicFinder: newBasicLocalFinder(localFinder),
+		newBasicLocalFinder(localFinder),
 	}
-	obj.basicFinder.getNearbyChargeStations(spatialindexer.Location{
+	obj.getNearbyChargeStations(spatialindexer.Location{
 		Lat: oasisReq.Coordinates[1].Lat,
 		Lon: oasisReq.Coordinates[1].Lon},
 		oasisReq.MaxRange-oasisReq.SafeLevel)
 
 	return obj
-}
-
-// NearbyStationsIterator provides channel which contains near by station information for dest
-func (localFinder *destStationLocalFinder) IterateNearbyStations() <-chan *stationfindertype.ChargeStationInfo {
-	return localFinder.basicFinder.IterateNearbyStations()
-}
-
-// Stop stops functionality of finder
-func (localFinder *destStationLocalFinder) Stop() {
-	localFinder.basicFinder.Stop()
 }

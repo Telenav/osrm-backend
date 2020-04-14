@@ -10,11 +10,11 @@ import (
 )
 
 const (
-	// TNSearchFinder is powered by Telenav Search's web services.
-	TNSearchFinder = "TNSearchFinder"
+	// CloudFinder is powered by Telenav Search's web services.
+	CloudFinder = "CloudFinder"
 
-	// LocalIndexerFinder is supported by pre-processed spatial index(such as google:s2) which is recorded on local.
-	LocalIndexerFinder = "LocalIndexerFinder"
+	// LocalFinder is supported by pre-processed spatial index(such as google:s2) which is recorded on local.
+	LocalFinder = "LocalFinder"
 )
 
 // CreateStationsFinder creates finder which implements StationFinder interface
@@ -25,11 +25,11 @@ func CreateStationsFinder(finderType, searchEndpoint, apiKey, apiSignature, data
 
 	switch finderType {
 
-	case TNSearchFinder:
+	case CloudFinder:
 		searchFinder := searchconnector.NewTNSearchConnector(searchEndpoint, apiKey, apiSignature)
 		return cloudfinder.New(searchFinder), nil
 
-	case LocalIndexerFinder:
+	case LocalFinder:
 		localIndex := s2indexer.NewS2Indexer().Load(dataFolderPath)
 		if localIndex == nil {
 			err := fmt.Errorf("failed to load s2Indexer")
@@ -42,17 +42,17 @@ func CreateStationsFinder(finderType, searchEndpoint, apiKey, apiSignature, data
 
 // isValidStationFinderType returns false if finderType is unsupported, otherwise returns true
 func isValidStationFinderType(finderType string) bool {
-	return finderType == TNSearchFinder || finderType == LocalIndexerFinder
+	return finderType == CloudFinder || finderType == LocalFinder
 }
 
 func checkInput(finderType, searchEndpoint, apiKey, apiSignature, dataFolderPath string) error {
 	if !isValidStationFinderType(finderType) {
-		glog.Error("Try to create finder not implemented yet, can only choose TNSearchFinder or LocalFinder for now.\n")
+		glog.Error("Try to create finder not implemented yet, can only choose CloudFinder or LocalFinder for now.\n")
 		err := fmt.Errorf("invalid station finder type")
 		return err
 	}
 
-	if finderType == TNSearchFinder &&
+	if finderType == CloudFinder &&
 		(len(searchEndpoint) == 0 ||
 			len(apiKey) == 0 ||
 			len(apiSignature) == 0) {
@@ -60,7 +60,7 @@ func checkInput(finderType, searchEndpoint, apiKey, apiSignature, dataFolderPath
 		return err
 	}
 
-	if finderType == LocalIndexerFinder &&
+	if finderType == LocalFinder &&
 		len(dataFolderPath) == 0 {
 		err := fmt.Errorf("empty input for local index")
 		return err

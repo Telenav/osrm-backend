@@ -23,7 +23,7 @@ func TestLowEnergyLocationStationFinderIterator1(t *testing.T) {
 			r = append(r, item)
 		}
 		if !reflect.DeepEqual(r, mockChargeStationInfo1) {
-			t.Errorf("expect %v but got %v", mockChargeStationInfo1, r)
+			t.Errorf("expect %#v but got %#v", mockChargeStationInfo1, r)
 		}
 	}(&wg)
 	wg.Wait()
@@ -42,7 +42,7 @@ func TestLowEnergyLocationStationFinderIterator2(t *testing.T) {
 			r = append(r, item)
 		}
 		if !reflect.DeepEqual(r, mockChargeStationInfo2) {
-			t.Errorf("expect %v but got %v", mockChargeStationInfo2, r)
+			t.Errorf("expect %#v but got %#v", mockChargeStationInfo2, r)
 		}
 	}(&wg)
 	wg.Wait()
@@ -61,7 +61,7 @@ func TestLowEnergyLocationStationFinderIterator3(t *testing.T) {
 			r = append(r, item)
 		}
 		if !reflect.DeepEqual(r, mockChargeStationInfo3) {
-			t.Errorf("expect %v but got %v", mockChargeStationInfo3, r)
+			t.Errorf("expect %#v but got %#v", mockChargeStationInfo3, r)
 		}
 	}(&wg)
 	wg.Wait()

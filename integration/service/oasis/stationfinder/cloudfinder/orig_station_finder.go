@@ -5,7 +5,6 @@ import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/search/searchcoordinate"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/searchconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/searchhelper"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 )
 
 //@todo: This number need to be adjusted based on charge station profile
@@ -13,31 +12,26 @@ const origMaxSearchCandidateNumber = 999
 
 type origStationFinder struct {
 	oasisReq *oasis.Request
-	bf       *basicFinder
+	*basicFinder
 }
 
-func NewOrigStationFinder(sc *searchconnector.TNSearchConnector, oasisReq *oasis.Request) *origStationFinder {
+func newOrigStationFinder(sc *searchconnector.TNSearchConnector, oasisReq *oasis.Request) *origStationFinder {
 	obj := &origStationFinder{
-		oasisReq: oasisReq,
-		bf:       newBasicFinder(sc),
+		oasisReq,
+		newBasicFinder(sc),
 	}
 	obj.prepare()
 	return obj
 }
 
-func (sf *origStationFinder) prepare() {
+func (oFinder *origStationFinder) prepare() {
 	req, _ := searchhelper.GenerateSearchRequest(
 		searchcoordinate.Coordinate{
-			Lat: sf.oasisReq.Coordinates[0].Lat,
-			Lon: sf.oasisReq.Coordinates[0].Lon},
+			Lat: oFinder.oasisReq.Coordinates[0].Lat,
+			Lon: oFinder.oasisReq.Coordinates[0].Lon},
 		origMaxSearchCandidateNumber,
-		sf.oasisReq.CurrRange)
+		oFinder.oasisReq.CurrRange)
 
-	sf.bf.getNearbyChargeStations(req)
+	oFinder.getNearbyChargeStations(req)
 	return
-}
-
-// NearbyStationsIterator provides channel which contains near by station information for orig
-func (sf *origStationFinder) IterateNearbyStations() <-chan *stationfindertype.ChargeStationInfo {
-	return sf.bf.IterateNearbyStations()
 }
