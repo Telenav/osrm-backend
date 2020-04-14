@@ -10,6 +10,8 @@ import (
 	"strings"
 	"sync"
 	"testing"
+
+	"github.com/golang/snappy"
 )
 
 var testFlags struct {
@@ -17,6 +19,7 @@ var testFlags struct {
 	readBufferBytes          int
 	cachePerChanTransmission int
 	chanCacheSize            int
+	snappyCompressed         bool
 }
 
 func init() {
@@ -24,6 +27,7 @@ func init() {
 	flag.IntVar(&testFlags.readBufferBytes, "readbuf", 0, "Create specified size buffer for reading if > 0, otherwise use Reader's default.")
 	flag.IntVar(&testFlags.cachePerChanTransmission, "cache-per-trans", 500, "If cache before chan transmission, how many caches per trans.")
 	flag.IntVar(&testFlags.chanCacheSize, "cached-chan", 100, "Chan cache size. 0 if blocked chan.")
+	flag.BoolVar(&testFlags.snappyCompressed, "snappy-compressed", false, "Whether the csv snappy compressed or not.")
 }
 
 func makeStringChan() chan string {
@@ -73,12 +77,24 @@ func recordSliceConsumer(in <-chan [][]string) {
 	}
 }
 
+func makeCompressedReader(r io.Reader) io.Reader {
+	if testFlags.snappyCompressed {
+		return snappy.NewReader(r)
+	}
+	return r
+}
+
 func makeBufferedReader(r io.Reader) io.Reader {
 	if testFlags.readBufferBytes <= 0 {
 		return r
 	}
 	return bufio.NewReaderSize(r, testFlags.readBufferBytes)
 }
+
+func makeWrappedReader(r io.Reader) io.Reader {
+	return makeCompressedReader(makeBufferedReader(r))
+}
+
 func BenchmarkConsumingBytesInPlaceFromBufioScan(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 
@@ -88,7 +104,7 @@ func BenchmarkConsumingBytesInPlaceFromBufioScan(b *testing.B) {
 			b.Error(err)
 		}
 
-		scanner := bufio.NewScanner(makeBufferedReader(f))
+		scanner := bufio.NewScanner(makeWrappedReader(f))
 		for scanner.Scan() {
 			_ = scanner.Bytes()
 		}
@@ -104,7 +120,7 @@ func BenchmarkConsumingTextInPlaceFromBufioScan(b *testing.B) {
 			b.Error(err)
 		}
 
-		scanner := bufio.NewScanner(makeBufferedReader(f))
+		scanner := bufio.NewScanner(makeWrappedReader(f))
 		for scanner.Scan() {
 			_ = scanner.Text()
 		}
@@ -123,7 +139,7 @@ func BenchmarkConsumingTextFromBufioScan(b *testing.B) {
 		stringChan := makeStringChan()
 		go stringConsumer(stringChan)
 
-		scanner := bufio.NewScanner(makeBufferedReader(f))
+		scanner := bufio.NewScanner(makeWrappedReader(f))
 		for scanner.Scan() {
 			stringChan <- scanner.Text()
 		}
@@ -145,7 +161,7 @@ func BenchmarkConsumingTextSliceFromBufioScan(b *testing.B) {
 		stringSliceChan := makeStringSliceChan()
 		go stringSliceConsumer(stringSliceChan)
 
-		scanner := bufio.NewScanner(makeBufferedReader(f))
+		scanner := bufio.NewScanner(makeWrappedReader(f))
 
 		stringSliceCache := make([]string, 0, cacheCount)
 		for scanner.Scan() {
@@ -192,7 +208,7 @@ func BenchmarkConsumingTextSliceWithPoolFromBufioScan(b *testing.B) {
 			}
 		}(stringSliceChan)
 
-		scanner := bufio.NewScanner(makeBufferedReader(f))
+		scanner := bufio.NewScanner(makeWrappedReader(f))
 
 		stringSliceCache := bufPool.Get().(*[]string)
 		for scanner.Scan() {
@@ -218,7 +234,7 @@ func BenchmarkConsumingRecordFromBufioScanAndBytesSplit(b *testing.B) {
 		recordChan := makeRecordChan()
 		go recordConsumer(recordChan)
 
-		scanner := bufio.NewScanner(makeBufferedReader(f))
+		scanner := bufio.NewScanner(makeWrappedReader(f))
 		for scanner.Scan() {
 			bytes2DArray := bytes.Split(scanner.Bytes(), []byte{','})
 			record := make([]string, len(bytes2DArray))
@@ -242,7 +258,7 @@ func BenchmarkConsumingRecordFromBufioScanAndSplit(b *testing.B) {
 		recordChan := makeRecordChan()
 		go recordConsumer(recordChan)
 
-		scanner := bufio.NewScanner(makeBufferedReader(f))
+		scanner := bufio.NewScanner(makeWrappedReader(f))
 		for scanner.Scan() {
 			s := scanner.Text()
 			recordChan <- strings.Split(s, ",")
@@ -260,7 +276,7 @@ func benchmarkCSVPkg(b *testing.B, csvFile string, reuseRecord bool) {
 			b.Error(err)
 		}
 
-		r := csv.NewReader(makeBufferedReader(f))
+		r := csv.NewReader(makeWrappedReader(f))
 		r.ReuseRecord = reuseRecord
 		r.FieldsPerRecord = -1 // disable fields count check
 
@@ -304,7 +320,7 @@ func BenchmarkConsumingRecordSliceFromBufioScanAndSplit(b *testing.B) {
 		recordSliceChan := makeRecordSliceChan()
 		go recordSliceConsumer(recordSliceChan)
 
-		scanner := bufio.NewScanner(makeBufferedReader(f))
+		scanner := bufio.NewScanner(makeWrappedReader(f))
 
 		recordSliceCache := make([][]string, 0, cacheCount)
 		for scanner.Scan() {
@@ -330,7 +346,7 @@ func BenchmarkConsumingRecordSliceFromCSVReadReuseRecord(b *testing.B) {
 			b.Error(err)
 		}
 
-		r := csv.NewReader(makeBufferedReader(f))
+		r := csv.NewReader(makeWrappedReader(f))
 		r.ReuseRecord = true
 		r.FieldsPerRecord = -1 // disable fields count check
 
@@ -389,7 +405,7 @@ func BenchmarkGenerateRecordByConsumingTextSliceFromBufioScan(b *testing.B) {
 			}(stringSliceChan)
 		}
 
-		scanner := bufio.NewScanner(makeBufferedReader(f))
+		scanner := bufio.NewScanner(makeWrappedReader(f))
 
 		stringSliceCache := make([]string, 0, cacheCount)
 		for scanner.Scan() {
