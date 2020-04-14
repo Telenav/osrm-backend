@@ -1,11 +1,20 @@
 package nodes2wayblotdb
 
 import (
+	"flag"
 	"os"
 	"testing"
 
 	"github.com/Telenav/osrm-backend/integration/util/waysnodes"
 )
+
+var testFlags struct {
+	printDBStats bool
+}
+
+func init() {
+	flag.BoolVar(&testFlags.printDBStats, "print-db-stats", false, "Print DB stats.")
+}
 
 func benchmarkWrite(b *testing.B, cases []waysnodes.WayNodes) {
 
@@ -25,7 +34,9 @@ func benchmarkWrite(b *testing.B, cases []waysnodes.WayNodes) {
 		}
 	}
 
-	//b.Log(db.Statistics())
+	if testFlags.printDBStats {
+		b.Log(db.Statistics())
+	}
 
 	// Close database to release the file lock.
 	if err := db.Close(); err != nil {
@@ -58,7 +69,9 @@ func benchmarkBatchWriteDB(b *testing.B, cases []waysnodes.WayNodes) {
 		}
 	}
 
-	//b.Log(db.Statistics())
+	if testFlags.printDBStats {
+		b.Log(db.Statistics())
+	}
 
 	// Close database to release the file lock.
 	if err := db.Close(); err != nil {
