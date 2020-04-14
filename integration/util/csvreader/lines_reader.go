@@ -28,10 +28,7 @@ func NewLinesAsyncReader(file string, options *Options) *LinesAsyncReader {
 
 	l := LinesAsyncReader{}
 	l.file = file
-	if options == nil {
-		options = &defaultOptions
-	}
-	l.options = *options
+	l.options = *validateOptions(options)
 	l.linesChan = make(chan []string, options.MaxCacheCount)
 
 	return &l
@@ -50,7 +47,7 @@ func (l *LinesAsyncReader) Start() {
 }
 
 // ReadLines will block if no data to return.
-// It returns maximum MaxReadCount lines and true per call if data available.
+// It returns minimum MinReadCount lines(except last read) and true per call if data available.
 // If the second value returns false, the async reading process has been closed, and you'd better to check whether any Err() occurs.
 // It's safe to call it by multiple goroutines at the same time.
 func (l *LinesAsyncReader) ReadLines() ([]string, bool) {
@@ -85,7 +82,7 @@ func (l *LinesAsyncReader) reader() {
 
 	var total int
 
-	linesPerTrans := l.options.MaxReadCount
+	linesPerTrans := l.options.MinReadCount
 	lines := make([]string, 0, linesPerTrans)
 
 	scanner := bufio.NewScanner(l.newCompressedReader(f))

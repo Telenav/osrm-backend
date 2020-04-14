@@ -426,7 +426,7 @@ func BenchmarkGenerateRecordByConsumingTextSliceFromLinesAsyncReader(b *testing.
 	parallelTransformCount := 3
 	options := Options{
 		MaxCacheCount: testFlags.chanCacheSize,
-		MaxReadCount:  testFlags.cachePerChanTransmission,
+		MinReadCount:  testFlags.cachePerChanTransmission,
 	}
 	if testFlags.snappyCompressed {
 		options.Compression = CompressionTypeSnappy
@@ -462,3 +462,49 @@ func BenchmarkGenerateRecordByConsumingTextSliceFromLinesAsyncReader(b *testing.
 		}
 	}
 }
+
+func BenchmarkConsumingRecordSliceFromRecordsAsyncReader(b *testing.B) {
+
+	options := Options{
+		MaxCacheCount: testFlags.chanCacheSize,
+		MinReadCount:  testFlags.cachePerChanTransmission,
+	}
+	if testFlags.snappyCompressed {
+		options.Compression = CompressionTypeSnappy
+	}
+
+	for i := 0; i < b.N; i++ {
+
+		r := NewRecordsAsyncReader(testFlags.csvFile, &options)
+
+		wg := sync.WaitGroup{}
+		wg.Add(1)
+		go func() {
+			for {
+				_, ok := r.ReadRecords()
+				if !ok {
+					break
+				}
+			}
+			wg.Done()
+		}()
+
+		r.Start()
+		wg.Wait()
+
+		if err := r.Err(); err != nil {
+			b.Error(err)
+		}
+	}
+}
+
+// Uncomment below TestMain if want to see glog output in `go test` process.
+// func TestMain(m *testing.M) {
+// 	flag.Set("alsologtostderr", "true")
+// 	flag.Set("log_dir", ".")
+// 	flag.Set("v", "2")
+// 	flag.Parse()
+
+// 	ret := m.Run()
+// 	os.Exit(ret)
+// }
