@@ -47,7 +47,8 @@ var defaultOptions = Options{
 
 // DefaultOptions returns the default options.
 func DefaultOptions() *Options {
-	return &defaultOptions
+	options := defaultOptions // copy to avoid modify the defaultOptions directly
+	return &options
 }
 
 func validateOptions(options *Options) *Options {
