@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/Telenav/osrm-backend/integration/util/waysnodes"
 	"github.com/golang/glog"
@@ -77,10 +78,12 @@ func (db *DB) Close() error {
 	}
 
 	if !db.db.IsReadOnly() {
+		startTime := time.Now()
 		if err := db.db.Sync(); err != nil {
 			glog.Error(err)
 			//return err	// don't return since we still hope the Close can be called
 		}
+		glog.V(1).Infof("Flush DB to disk file %s takes %f seconds.", db.db.Path(), time.Now().Sub(startTime).Seconds())
 	}
 
 	return db.db.Close()
