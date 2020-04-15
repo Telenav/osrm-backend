@@ -1,4 +1,3 @@
-// Package csvreader is dedicated to read huge csv file as fast as possible.
 package csvreader
 
 import (
