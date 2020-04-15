@@ -9,7 +9,7 @@ import (
 	"github.com/golang/glog"
 )
 
-func newStore(in <-chan []waysnodes.WayNodes, out string) (err error) {
+func newDBBuilder(in <-chan []waysnodes.WayNodes, out string) (err error) {
 	startTime := time.Now()
 
 	db, err := nodes2wayblotdb.Open(out, false)

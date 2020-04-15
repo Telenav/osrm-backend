@@ -15,7 +15,7 @@ func pipeline(inFile string, outDBFile string, snappyCompressed bool) error {
 	wayNodesChan := make(chan []waysnodes.WayNodes, 1000)
 	errChan := make(chan error)
 	go func() {
-		errChan <- newStore(wayNodesChan, outDBFile)
+		errChan <- newDBBuilder(wayNodesChan, outDBFile)
 	}()
 
 	options := csvreader.DefaultOptions()
