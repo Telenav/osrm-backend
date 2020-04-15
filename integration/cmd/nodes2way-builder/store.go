@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/Telenav/osrm-backend/integration/util/waysnodes"
@@ -8,7 +9,7 @@ import (
 	"github.com/golang/glog"
 )
 
-func newStore(in <-chan *waysnodes.WayNodes, out string) (err error) {
+func newStore(in <-chan []waysnodes.WayNodes, out string) (err error) {
 	startTime := time.Now()
 
 	db, err := nodes2wayblotdb.Open(out, false)
@@ -18,30 +19,57 @@ func newStore(in <-chan *waysnodes.WayNodes, out string) (err error) {
 	defer func() {
 		err = db.Close()
 	}()
-
-	batchCountPerWrite := 100
-	wayNodesCache := make([]waysnodes.WayNodes, batchCountPerWrite)
 	var inCount, succeedCount int
 	for {
-		wayNodes, ok := <-in
+		wayNodesSlice, ok := <-in
 		if !ok {
 			break
 		}
-		inCount++
-		wayNodesCache = append(wayNodesCache, *wayNodes)
+		inCount += len(wayNodesSlice)
 
-		if len(wayNodesCache) < batchCountPerWrite {
-			continue
-		}
-
-		if err := db.BatchWrite(wayNodesCache); err != nil {
-			glog.Errorf("Write into db failed, err: %v", err)
+		written, err := writeDB(db, wayNodesSlice)
+		if err != nil {
+			glog.Error(err)
 			break
 		}
-		succeedCount += len(wayNodesCache)
-		wayNodesCache = wayNodesCache[:0]
+		succeedCount += written
 	}
 
-	glog.V(1).Infof("Built DB %s, in count %d, succeed count %d, takes %f seconds", out, inCount, succeedCount, time.Now().Sub(startTime).Seconds())
+	glog.Infof("Built DB %s, in count %d, succeed count %d, takes %f seconds", out, inCount, succeedCount, time.Now().Sub(startTime).Seconds())
 	return
+}
+
+func writeDB(db *nodes2wayblotdb.DB, wayNodesSlice []waysnodes.WayNodes) (int, error) {
+	if db == nil {
+		err := fmt.Errorf("empty db")
+		glog.Fatal(err)
+		return 0, err
+	}
+
+	// for best performance we possible to have
+	// See more in https://github.com/Telenav/osrm-backend/issues/272#issuecomment-612877931
+	const batchWriteCount = 100
+
+	var count int
+	for {
+		if len(wayNodesSlice) < batchWriteCount {
+			break
+		}
+
+		if err := db.BatchWrite(wayNodesSlice[:batchWriteCount]); err != nil {
+			return count, fmt.Errorf("Write into db failed, err: %v", err)
+		}
+
+		count += batchWriteCount
+		wayNodesSlice = wayNodesSlice[batchWriteCount:]
+	}
+
+	if len(wayNodesSlice) > 0 {
+		if err := db.BatchWrite(wayNodesSlice); err != nil {
+			return count, fmt.Errorf("Write into db failed, err: %v", err)
+		}
+		count += len(wayNodesSlice)
+	}
+
+	return count, nil
 }
