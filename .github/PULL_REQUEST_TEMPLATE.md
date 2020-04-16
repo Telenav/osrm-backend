@@ -1,8 +1,6 @@
 # Issue
 
-- Targeting issue: the issue will be CLOSED once the PR merged.          
-  - If there is no issue that addresses the problem, please open a corresponding issue and link it here.     
-  - Uses the [Closes keyword](https://help.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword) to close them automatically.     
+- Targeting issue: the issue will be CLOSED once the PR merged. If there is no issue that addresses the problem, please open a corresponding issue and link it here. Uses the [Closes keyword](https://help.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword) to close them automatically.     
 
 
 - Any other related issue? Mention them here.    
