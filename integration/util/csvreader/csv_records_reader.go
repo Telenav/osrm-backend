@@ -40,7 +40,7 @@ func (r *RecordsAsyncReader) Start() {
 		wg.Add(r.l.options.ParallelParser)
 		for i := 0; i < r.l.options.ParallelParser; i++ {
 			go func() {
-				r.parser()
+				r.parse()
 				wg.Done()
 			}()
 		}
@@ -58,7 +58,7 @@ func (r *RecordsAsyncReader) ReadRecords() ([][]string, bool) {
 	return records, ok
 }
 
-func (r *RecordsAsyncReader) parser() {
+func (r *RecordsAsyncReader) parse() {
 
 	startTime := time.Now()
 

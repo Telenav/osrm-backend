@@ -43,7 +43,7 @@ func (l *LinesAsyncReader) Err() error {
 
 // Start starts the async reader to read from file and returns immediatelly.
 func (l *LinesAsyncReader) Start() {
-	go l.reader()
+	go l.read()
 }
 
 // ReadLines will block if no data to return.
@@ -68,7 +68,7 @@ func (l *LinesAsyncReader) newCompressedReader(r io.Reader) io.Reader {
 	return r
 }
 
-func (l *LinesAsyncReader) reader() {
+func (l *LinesAsyncReader) read() {
 	defer close(l.linesChan)
 
 	startTime := time.Now()
