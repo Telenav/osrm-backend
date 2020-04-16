@@ -17,7 +17,9 @@ Changes from v10.1.0
 - Performance:    
   - CHANGED `nodes2way-builder` to improve the db building performance [#281](https://github.com/Telenav/osrm-backend/pull/281)
 - Tools:    
+  - CHANGED pull request template for easy using []()     
 - Docs:    
+  - ADDED CHANGELOG-FORK.md for keeping changelogs of this forked repo []()
 
 # v10.1.0
 Init release. Changes from Init fork(0a556fe45073e3c01d4ce90911017421c71129b3)
