@@ -8,9 +8,9 @@
 ## Tasklist
 
  - [ ] CHANGELOG-FORK.md entry ([CHANGELOG](https://github.com/Telenav/osrm-backend/wiki/CHANGELOG))
+ - [ ] [profiles/CHANGELOG.md](https://github.com/Telenav/osrm-backend/blob/master/profiles/CHANGELOG.md) entry if any `Lua` changes   
  - [ ] update relevant [Wiki pages](https://github.com/Project-OSRM/osrm-backend/wiki)
  - [ ] add tests (see [testing documentation](https://github.com/Project-OSRM/osrm-backend/blob/master/docs/testing.md)
- - [ ] review
 
 
 ## Prerequirements
