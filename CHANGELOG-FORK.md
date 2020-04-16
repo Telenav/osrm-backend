@@ -16,7 +16,6 @@ Changes from v10.1.0
 - Bugfix:    
 - Performance:    
   - CHANGED `nodes2way-builder` to improve the db building performance [#281](https://github.com/Telenav/osrm-backend/pull/281)
-- Refactor:    
 - Tools:    
 - Docs:    
 
