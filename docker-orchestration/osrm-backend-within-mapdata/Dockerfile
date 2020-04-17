@@ -30,7 +30,7 @@ COPY ./map/map.osrm.tls /osrm-data/
 COPY ./map/map.osrm.turn_duration_penalties /osrm-data/
 COPY ./map/map.osrm.turn_penalties_index /osrm-data/
 COPY ./map/map.osrm.turn_weight_penalties /osrm-data/
-COPY ./map/wayid2nodeids.csv.snappy /osrm-data/
+COPY ./map/*.snappy /osrm-data/
 
 EXPOSE 5000
 ENTRYPOINT ["/docker-entrypoint.sh"]
