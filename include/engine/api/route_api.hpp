@@ -327,7 +327,7 @@ class RouteAPI : public BaseAPI
                     nodes.values.reserve(leg_geometry.osm_node_ids.size());
                     for (const auto node_id : leg_geometry.osm_node_ids)
                     {
-                        nodes.values.push_back(static_cast<std::uint64_t>(node_id));
+                        nodes.values.push_back(std::to_string(static_cast<std::uint64_t>(node_id)));
                     }
                     annotation.values["nodes"] = std::move(nodes);
                 }
