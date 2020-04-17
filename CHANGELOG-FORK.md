@@ -13,6 +13,7 @@ Changes from v10.1.0
   - ADDED new cmd tool `nodes2way-builder` to generate the db from `wayid2nodeids.csv` or `wayid2nodeids.csv.snappy` [#274](https://github.com/Telenav/osrm-backend/pull/274)
   - ADDED new cmd tool `nodes2way-cli` to able to query ways from nodes [#274](https://github.com/Telenav/osrm-backend/pull/274)
   - CHANGED for internal refactoring, move `pkg/wayidsflag` to `util/idsflag` to extend its scope [#277](https://github.com/Telenav/osrm-backend/pull/277)
+  - CHANGED `annotation/nodes` from `Number` to `string` in `JSON` response to avoid conversion overflow **API CHANGE** []()    
 - Bugfix:    
 - Performance:    
   - CHANGED `nodes2way-builder` to improve the db building performance [#281](https://github.com/Telenav/osrm-backend/pull/281)
