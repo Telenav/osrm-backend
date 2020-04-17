@@ -18,6 +18,8 @@ Changes from v10.1.0
   - CHANGED `nodes2way-builder` to improve the db building performance [#281](https://github.com/Telenav/osrm-backend/pull/281)
 - Tools:    
   - CHANGED pull request template for easy using [#283](https://github.com/Telenav/osrm-backend/pull/283)     
+  - ADDED `nodes2way.db` build process when compile data [#286](https://github.com/Telenav/osrm-backend/pull/286)     
+  - ADDED `nodes2way.db.snappy` into `osrm-backend-within-mapdata` docker image [#286](https://github.com/Telenav/osrm-backend/pull/286)    
 - Docs:    
   - ADDED CHANGELOG-FORK.md for keeping changelogs of this forked repo [#283](https://github.com/Telenav/osrm-backend/pull/283)
 
