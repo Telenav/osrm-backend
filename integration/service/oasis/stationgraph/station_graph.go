@@ -48,7 +48,7 @@ func NewStationGraph(c chan stationfindertype.WeightBetweenNeighbors, currEnergy
 
 // GenerateChargeSolutions creates creates charge solutions for staion graph
 func (sg *stationGraph) GenerateChargeSolutions() []*solution.Solution {
-	stationNodes := sg.g.dijkstra()
+	stationNodes := dijkstra(sg.g)
 	if nil == stationNodes {
 		glog.Warning("Failed to generate charge stations for stationGraph.\n")
 		return nil

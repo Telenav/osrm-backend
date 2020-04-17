@@ -5,6 +5,11 @@ import (
 	"github.com/golang/glog"
 )
 
+type edge struct {
+	distance float64
+	duration float64
+}
+
 type graph struct {
 	nodes       []*node
 	startNodeID nodeID
@@ -12,36 +17,43 @@ type graph struct {
 	strategy    chargingstrategy.Strategy
 }
 
-func (g *graph) dijkstra() []nodeID {
-	m := newQueryHeap()
+func (g *graph) Node(id nodeID) *node {
+	// @todo: safety check
+	return g.nodes[id]
+}
 
-	// init
-	m.add(g.startNodeID, invalidNodeID, 0, 0)
+func (g *graph) AdjacentList(id nodeID) []nodeID {
+	// @todo: safety check
+	ids := make([]nodeID, 0, len(g.nodes[id].neighbors))
+	for _, neighbor := range g.nodes[id].neighbors {
+		ids = append(ids, neighbor.targetNodeID)
+	}
+	return ids
+}
 
-	for {
-		n := m.next()
-
-		// stop condition
-		if n == invalidNodeID {
-			glog.Warning("PriorityQueue is empty before solution is found.")
-			return nil
-		}
-		if n == g.endNodeID {
-			return m.retrieve(n)
-		}
-
-		// relax
-		node := g.nodes[n]
-		for _, neighbor := range node.neighbors {
-			if g.nodes[n].isLocationReachable(neighbor.distance) {
-				chargeTime := g.nodes[neighbor.targetNodeID].calcChargeTime(node, neighbor.distance, g.strategy)
-				if m.add(neighbor.targetNodeID, n, neighbor.distance, neighbor.duration+chargeTime) {
-					g.nodes[neighbor.targetNodeID].updateArrivalEnergy(node, neighbor.distance)
-					g.nodes[neighbor.targetNodeID].updateChargingTime(chargeTime)
-				}
+func (g *graph) Edge(from, to nodeID) *edge {
+	// @todo: safety check
+	for _, neighbor := range g.nodes[from].neighbors {
+		if neighbor.targetNodeID == to {
+			return &edge{
+				distance: neighbor.distance,
+				duration: neighbor.duration,
 			}
 		}
 	}
+	return nil
+}
+
+func (g *graph) StartNodeID() nodeID {
+	return g.startNodeID
+}
+
+func (g *graph) EndNodeID() nodeID {
+	return g.endNodeID
+}
+
+func (g *graph) ChargeStrategy() chargingstrategy.Strategy {
+	return g.strategy
 }
 
 func (g *graph) accumulateDistanceAndDuration(from nodeID, to nodeID, distance, duration *float64) {
