@@ -672,7 +672,7 @@ With `steps=false` and `annotations=true`:
     "duration": [15,15,40,15,15],
     "datasources": [1,0,0,0,1],
     "metadata": { "datasource_names": ["traffic","lua profile","lua profile","lua profile","traffic"] },
-    "nodes": [49772551,49772552,49786799,49786800,49786801,49786802],
+    "nodes": ["49772551","49772552","49786799","49786800","49786801","49786802"],
     "speed": [0.3, 0.3, 0.3, 0.3, 0.3]
   }
 }
@@ -701,7 +701,7 @@ Annotation of the whole route leg with fine-grained information about each segme
   "duration": [15,15,40,15,15],
   "datasources": [1,0,0,0,1],
   "metadata": { "datasource_names": ["traffic","lua profile","lua profile","lua profile","traffic"] },
-  "nodes": [49772551,49772552,49786799,49786800,49786801,49786802],
+  "nodes": ["49772551","49772552","49786799","49786800","49786801","49786802"],
   "weight": [15,15,40,15,15]
 }
 ```
