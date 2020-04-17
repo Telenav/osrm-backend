@@ -5,8 +5,9 @@ OSRM_EXTRA_COMMAND="-l DEBUG"
 OSRM_ROUTED_STARTUP_COMMAND=" -a MLD --max-table-size 8000 "
 MAPDATA_NAME_WITH_SUFFIX=map
 PBF_FILE_SUFFIX=".osm.pbf"
+SNAPPY_SUFFIX=".snappy"
 WAYID2NODEIDS_MAPPING_FILE=wayid2nodeids.csv
-WAYID2NODEIDS_MAPPING_FILE_COMPRESSED=${WAYID2NODEIDS_MAPPING_FILE}.snappy
+NODES2WAY_DB_FILE="nodes2way.db"
 
 _sig() {
   kill -TERM $child 2>/dev/null
@@ -54,16 +55,29 @@ elif [ "$1" = 'compile_mapdata' ]; then
   fi
 
   curl -sSL -f ${PBF_FILE_URL} > $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}${PBF_FILE_SUFFIX}
+
+  # osrm extract/partition/customize
   ${BUILD_PATH}/osrm-extract $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}${PBF_FILE_SUFFIX} -p ${BUILD_PATH}/${PROFILE_LUA} -d ${DATA_VERSION} ${OSRM_EXTRA_COMMAND}
   ${BUILD_PATH}/osrm-partition $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}.osrm ${OSRM_EXTRA_COMMAND}
   ${BUILD_PATH}/osrm-customize $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}.osrm ${OSRM_EXTRA_COMMAND}
+  
+  # extract way,node,node,... from PBF
   ${BUILD_PATH}/wayid2nodeid-extractor -i $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}${PBF_FILE_SUFFIX} -o $DATA_PATH/${WAYID2NODEIDS_MAPPING_FILE} -mapsource ${PBF_SOURCE}
-  ${BUILD_PATH}/snappy -i $DATA_PATH/${WAYID2NODEIDS_MAPPING_FILE} -o $DATA_PATH/${WAYID2NODEIDS_MAPPING_FILE_COMPRESSED}
+  ${BUILD_PATH}/snappy -i $DATA_PATH/${WAYID2NODEIDS_MAPPING_FILE} -o $DATA_PATH/${WAYID2NODEIDS_MAPPING_FILE}${SNAPPY_SUFFIX}
+  
+  # build fromNode,toNode->way DB
+  NODES2WAY_DB_FILE_BUILDING_PATH=${DATA_PATH}/${NODES2WAY_DB_FILE}
+  if [ x"${SHM_PATH}" != x ]; then # set SHM explicitly by env vars, then use it to speed up the DB building process
+    NODES2WAY_DB_FILE_BUILDING_PATH=${SHM_PATH}/${NODES2WAY_DB_FILE}
+  fi
+  ${BUILD_PATH}/nodes2way-builder -alsologtostderr -v 2 -snappy-compressed=false -i $DATA_PATH/${WAYID2NODEIDS_MAPPING_FILE} -o ${NODES2WAY_DB_FILE_BUILDING_PATH}
+  ${BUILD_PATH}/snappy -i ${NODES2WAY_DB_FILE_BUILDING_PATH} -o ${DATA_PATH}/${NODES2WAY_DB_FILE}${SNAPPY_SUFFIX}
   ls -lh ${DATA_PATH}/
 
   # clean source pbf and temp files
   rm -f $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}${PBF_FILE_SUFFIX}
   rm -f $DATA_PATH/${WAYID2NODEIDS_MAPPING_FILE}
+  rm -f ${NODES2WAY_DB_FILE_BUILDING_PATH}
   if [ "${KEEP_TEMP_OSRM_FILES}" != "true" ]; then # set KEEP_TEMP_OSRM_FILES explicitly by env vars.
     rm -f $DATA_PATH/${MAPDATA_NAME_WITH_SUFFIX}.osrm
   fi
