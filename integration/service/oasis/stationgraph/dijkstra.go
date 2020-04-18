@@ -23,7 +23,7 @@ func dijkstra(g IGraph) []nodeID {
 
 		// relax
 		node := g.Node(currID)
-		for _, targetID := range g.AdjacentList(currID) {
+		for _, targetID := range g.AdjacentNodes(currID) {
 			if g.Edge(currID, targetID) == nil {
 				glog.Errorf("No connectivity between %#v and %#v which is unexpected, check your logic.\n", currID, targetID)
 			}

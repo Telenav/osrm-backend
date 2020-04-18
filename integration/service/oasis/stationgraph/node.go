@@ -19,8 +19,7 @@ type locationInfo struct {
 }
 
 type node struct {
-	id        nodeID
-	neighbors []*neighbor
+	id nodeID
 	chargeInfo
 	locationInfo
 }
@@ -42,7 +41,7 @@ func newNode() *node {
 	}
 }
 
-// Function reachableByDistance is used to test whether target node is reachable
+// reachableByDistance is used to test whether target distance is reachable by current status
 func (n *node) reachableByDistance(distance float64) bool {
 	return n.targetState.Energy > distance
 }

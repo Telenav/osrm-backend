@@ -48,7 +48,9 @@ func NewStationGraph(c chan stationfindertype.WeightBetweenNeighbors, currEnergy
 
 // GenerateChargeSolutions creates creates charge solutions for staion graph
 func (sg *stationGraph) GenerateChargeSolutions() []*solution.Solution {
-	stationNodes := dijkstra(sg.g)
+	//stationNodes := dijkstra(sg.g)
+	// @todo
+	var stationNodes []nodeID
 	if nil == stationNodes {
 		glog.Warning("Failed to generate charge stations for stationGraph.\n")
 		return nil
@@ -96,15 +98,15 @@ func (sg *stationGraph) GenerateChargeSolutions() []*solution.Solution {
 }
 
 func (sg *stationGraph) buildNeighborInfoBetweenNodes(neighborInfo stationfindertype.NeighborInfo, currEnergyLevel, maxEnergyLevel float64) {
-	for _, fromNode := range sg.getChargeStationsNodes(neighborInfo.FromID, neighborInfo.FromLocation, currEnergyLevel, maxEnergyLevel) {
-		for _, toNode := range sg.getChargeStationsNodes(neighborInfo.ToID, neighborInfo.ToLocation, currEnergyLevel, maxEnergyLevel) {
-			fromNode.neighbors = append(fromNode.neighbors, &neighbor{
-				targetNodeID: toNode.id,
-				distance:     neighborInfo.Distance,
-				duration:     neighborInfo.Duration,
-			})
-		}
-	}
+	// for _, fromNode := range sg.getChargeStationsNodes(neighborInfo.FromID, neighborInfo.FromLocation, currEnergyLevel, maxEnergyLevel) {
+	// 	for _, toNode := range sg.getChargeStationsNodes(neighborInfo.ToID, neighborInfo.ToLocation, currEnergyLevel, maxEnergyLevel) {
+	// 		fromNode.neighbors = append(fromNode.neighbors, &neighbor{
+	// 			targetNodeID: toNode.id,
+	// 			distance:     neighborInfo.Distance,
+	// 			duration:     neighborInfo.Duration,
+	// 		})
+	// 	}
+	// }
 }
 
 func (sg *stationGraph) getChargeStationsNodes(id string, location nav.Location, currEnergyLevel, maxEnergyLevel float64) []*node {

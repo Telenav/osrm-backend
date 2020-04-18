@@ -1,11 +1,11 @@
 package stationgraph
 
-type neighborer interface {
-	neighbors() *[]neighbor
+type edgeID struct {
+	fromNodeID nodeID
+	toNodeID   nodeID
 }
 
-type neighbor struct {
-	targetNodeID nodeID
-	distance     float64
-	duration     float64
+type edge struct {
+	distance float64
+	duration float64
 }

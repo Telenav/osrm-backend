@@ -1,6 +1,8 @@
 package spatialindexer
 
-import "math"
+import (
+	"math"
+)
 
 // Location for poi point
 // @todo: will be replaced by the one in map
