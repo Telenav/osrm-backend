@@ -8,6 +8,7 @@ type IGraph interface {
 	Node(id nodeID) *node
 
 	// AdjacentNodes returns a group of node ids which connect with given node id
+	// The connectivity between nodes is build during running time.
 	AdjacentNodes(id nodeID) []nodeID
 
 	// Edge returns edge information between given two nodes
@@ -20,13 +21,12 @@ type IGraph interface {
 	EndNodeID() nodeID
 
 	// ChargeStrategy returns charge strategy used for graph construction
-	// @todo: remove this function, make IGraph more generic, charge strategy go with node
 	ChargeStrategy() chargingstrategy.Strategy
 }
 
 // IStationInfo defines station related information
 type IStationInfo interface {
-	GetStationID(id nodeID) string
+	StationID(id nodeID) string
 
-	GetStationLocation(id nodeID) *locationInfo
+	StationLocation(id nodeID) *locationInfo
 }

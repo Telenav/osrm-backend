@@ -3,11 +3,11 @@ package stationgraph
 import "github.com/golang/glog"
 
 // dijkstra accepts IGraph and returns all node ids in the shortest path, except start node and end node
-func dijkstra(g IGraph) []nodeID {
+func dijkstra(g IGraph, start, end nodeID) []nodeID {
 	m := newQueryHeap()
 
 	// init
-	m.add(g.StartNodeID(), invalidNodeID, 0, 0)
+	m.add(start, invalidNodeID, 0, 0)
 
 	for {
 		currID := m.next()
@@ -17,7 +17,7 @@ func dijkstra(g IGraph) []nodeID {
 			glog.Warning("PriorityQueue is empty before solution is found.")
 			return nil
 		}
-		if currID == g.EndNodeID() {
+		if currID == end {
 			return m.retrieve(currID)
 		}
 

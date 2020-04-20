@@ -187,32 +187,32 @@ func (sg *stationGraph) constructEndNode(id string, location nav.Location) {
 }
 
 func (sg *stationGraph) constructGraph() *stationGraph {
-	sg.g.nodes = make([]*node, int(sg.stationsCount))
+	// sg.g.nodes = make([]*node, int(sg.stationsCount))
 
-	for k, v := range sg.stationID2Nodes {
-		if sg.isStart(k) {
-			sg.g.startNodeID = v[0].id
-		}
+	// for k, v := range sg.stationID2Nodes {
+	// 	if sg.isStart(k) {
+	// 		sg.g.startNodeID = v[0].id
+	// 	}
 
-		if sg.isEnd(k) {
-			sg.g.endNodeID = v[0].id
-		}
+	// 	if sg.isEnd(k) {
+	// 		sg.g.endNodeID = v[0].id
+	// 	}
 
-		for _, n := range v {
-			sg.g.nodes[n.id] = n
-		}
-	}
+	// 	for _, n := range v {
+	// 		sg.g.nodes[n.id] = n
+	// 	}
+	// }
 
-	if sg.g.startNodeID == invalidNodeID {
-		glog.Error("Invalid nodeid generated for start node.\n")
-		return nil
-	} else if sg.g.endNodeID == invalidNodeID {
-		glog.Error("Invalid nodeid generated for start node.\n")
-		return nil
-	} else if len(sg.g.nodes) != int(sg.stationsCount) {
-		glog.Errorf("Invalid nodes generated, len(sg.g.nodes) is %d while sg.stationsCount is %d.\n", len(sg.g.nodes), sg.stationsCount)
-		return nil
-	}
+	// if sg.g.startNodeID == invalidNodeID {
+	// 	glog.Error("Invalid nodeid generated for start node.\n")
+	// 	return nil
+	// } else if sg.g.endNodeID == invalidNodeID {
+	// 	glog.Error("Invalid nodeid generated for start node.\n")
+	// 	return nil
+	// } else if len(sg.g.nodes) != int(sg.stationsCount) {
+	// 	glog.Errorf("Invalid nodes generated, len(sg.g.nodes) is %d while sg.stationsCount is %d.\n", len(sg.g.nodes), sg.stationsCount)
+	// 	return nil
+	// }
 
 	return sg
 }

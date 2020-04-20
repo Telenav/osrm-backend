@@ -61,7 +61,7 @@ func (n *node) calcChargeTime(prev *node, distance float64, strategy chargingstr
 }
 
 func (n *node) updateChargingTime(chargingTime float64) {
-	// @todo: maybe node record chargestate
+	// @todo: maybe node record chargestate, hide charging time information in charge status
 	n.chargeTime = chargingTime
 }
 
