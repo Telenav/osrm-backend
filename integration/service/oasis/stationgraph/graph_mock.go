@@ -78,6 +78,13 @@ func NewMockGraph1() IGraph {
 				},
 			},
 		},
+		[]string{
+			"node_0",
+			"node_1",
+			"node_2",
+			"node_3",
+			"node_4",
+		},
 		map[nodeID][]*edgeIDAndData{
 			// node_0 -> node_1, duration = 30, distance = 30
 			// node_0 -> node_2, duration = 20, distance = 20
@@ -294,6 +301,17 @@ func NewMockGraph2() IGraph {
 					lon: 8.8,
 				},
 			},
+		},
+		[]string{
+			"node_0",
+			"node_1",
+			"node_2",
+			"node_3",
+			"node_4",
+			"node_5",
+			"node_6",
+			"node_7",
+			"node_8",
 		},
 		map[nodeID][]*edgeIDAndData{
 			// node_0 -> node_1, duration = 30, distance = 30
@@ -618,6 +636,17 @@ func NewMockGraph3() IGraph {
 					lon: 8.8,
 				},
 			},
+		},
+		[]string{
+			"node_0",
+			"node_1",
+			"node_2",
+			"node_3",
+			"node_4",
+			"node_5",
+			"node_6",
+			"node_7",
+			"node_8",
 		},
 		map[nodeID][]*edgeIDAndData{
 			// node_0 -> node_1, duration = 15, distance = 15
@@ -944,6 +973,17 @@ func NewMockGraph4() IGraph {
 				},
 			},
 		},
+		[]string{
+			"node_0",
+			"node_1",
+			"node_2",
+			"node_3",
+			"node_4",
+			"node_5",
+			"node_6",
+			"node_7",
+			"node_8",
+		},
 		map[nodeID][]*edgeIDAndData{
 			// node_0 -> node_1, duration = 15, distance = 15
 			// node_0 -> node_2, duration = 20, distance = 20
@@ -1132,9 +1172,10 @@ func NewMockGraph4() IGraph {
 }
 
 type mockGraph struct {
-	nodes    []*node
-	edges    map[nodeID][]*edgeIDAndData
-	strategy chargingstrategy.Strategy
+	nodes      []*node
+	stationIDs []string
+	edges      map[nodeID][]*edgeIDAndData
+	strategy   chargingstrategy.Strategy
 }
 
 func (graph *mockGraph) Node(id nodeID) *node {
@@ -1173,6 +1214,16 @@ func (graph *mockGraph) Edge(from, to nodeID) *edge {
 	return nil
 }
 
+// SetStart generates start node for the graph
+func (graph *mockGraph) SetStart(stationID string, targetState chargingstrategy.State, location locationInfo) IGraph {
+	return graph
+}
+
+// SetEnd generates end node for the graph
+func (graph *mockGraph) SetEnd(stationID string, targetState chargingstrategy.State, location locationInfo) IGraph {
+	return graph
+}
+
 func (graph *mockGraph) StartNodeID() nodeID {
 	return invalidNodeID
 }
@@ -1190,4 +1241,11 @@ func (graph *mockGraph) isValidNodeID(id nodeID) bool {
 		return false
 	}
 	return true
+}
+
+func (graph *mockGraph) StationID(id nodeID) string {
+	if id < 0 || int(id) >= len(graph.stationIDs) {
+		return invalidStationID
+	}
+	return graph.stationIDs[id]
 }

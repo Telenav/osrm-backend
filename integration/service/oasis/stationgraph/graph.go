@@ -16,7 +16,20 @@ type graph struct {
 	startNodeID   nodeID
 	endNodeID     nodeID
 	strategy      chargingstrategy.Strategy
-	query         connectivitymap.Querier
+	querier       connectivitymap.Querier
+}
+
+// NewGraph creates new graph which implements IGraph
+func NewGraph(strategy chargingstrategy.Strategy, query connectivitymap.Querier) IGraph {
+	return &graph{
+		nodeContainer: newNodeContainer(),
+		adjacentList:  make(map[nodeID][]nodeID),
+		edgeData:      make(map[edgeID]*edge),
+		startNodeID:   invalidNodeID,
+		endNodeID:     invalidNodeID,
+		strategy:      strategy,
+		querier:       query,
+	}
 }
 
 func (g *graph) Node(id nodeID) *node {
@@ -48,6 +61,20 @@ func (g *graph) Edge(from, to nodeID) *edge {
 	return g.edgeData[edgeID]
 }
 
+// SetStart generates start node for the graph
+func (g *graph) SetStart(stationID string, targetState chargingstrategy.State, location locationInfo) IGraph {
+	n := g.nodeContainer.addNode(stationID, targetState, location)
+	g.startNodeID = n.id
+	return g
+}
+
+// SetEnd generates end node for the graph
+func (g *graph) SetEnd(stationID string, targetState chargingstrategy.State, location locationInfo) IGraph {
+	n := g.nodeContainer.addNode(stationID, targetState, location)
+	g.endNodeID = n.id
+	return g
+}
+
 func (g *graph) StartNodeID() nodeID {
 	return g.startNodeID
 }
@@ -60,16 +87,20 @@ func (g *graph) ChargeStrategy() chargingstrategy.Strategy {
 	return g.strategy
 }
 
+func (g *graph) StationID(id nodeID) string {
+	return g.nodeContainer.stationID(id)
+}
+
 func (g *graph) getPhysicalAdjacentNodes(id nodeID) []*connectivitymap.QueryResult {
 	stationID := g.nodeContainer.stationID(id)
 	if stationID == invalidStationID {
 		glog.Errorf("Query getPhysicalAdjacentNodes with invalid node %#v and result %#v\n", id, invalidStationID)
 		return nil
 	}
-	return g.query.NearByStationQuery(stationID)
+	return g.querier.NearByStationQuery(stationID)
 }
 
-func (g *graph) createLogicalNodes(from nodeID, toStationID string, toLocation nav.Location, distance, duration float64) []*node {
+func (g *graph) createLogicalNodes(from nodeID, toStationID string, toLocation *nav.Location, distance, duration float64) []*node {
 	results := make([]*node, 0, 10)
 
 	for _, state := range g.strategy.CreateChargingStates() {
@@ -107,38 +138,4 @@ func (g *graph) buildAdjacentList(id nodeID) []nodeID {
 	}
 
 	return adjacentNodeIDs
-}
-
-func (g *graph) accumulateDistanceAndDuration(from nodeID, to nodeID, distance, duration *float64) {
-	if g.Node(from) == nil {
-		glog.Fatalf("While calling accumulateDistanceAndDuration, incorrect nodeID passed into graph %v\n", from)
-	}
-
-	if g.Node(to) == nil {
-		glog.Fatalf("While calling accumulateDistanceAndDuration, incorrect nodeID passed into graph %v\n", to)
-	}
-
-	if g.Edge(from, to) == nil {
-		glog.Errorf("Passing un-connect fromNodeID %#v and toNodeID %#v into accumulateDistanceAndDuration.\n", from, to)
-	}
-
-	*distance += g.Edge(from, to).distance
-	*duration += g.Edge(from, to).duration + g.Node(to).chargeTime
-
-}
-
-func (g *graph) getChargeInfo(n nodeID) chargeInfo {
-	if g.Node(n) == nil {
-		glog.Fatalf("While calling getChargeInfo, incorrect nodeID passed into graph %v\n", n)
-	}
-
-	return g.Node(n).chargeInfo
-}
-
-func (g *graph) getLocationInfo(n nodeID) locationInfo {
-	if g.Node(n) == nil {
-		glog.Fatalf("While calling getLocationInfo, incorrect nodeID passed into graph %v\n", n)
-	}
-
-	return g.Node(n).locationInfo
 }

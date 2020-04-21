@@ -38,8 +38,10 @@ func generateSolutionsWithEarlistArrival(oasisReq *oasis.Request, routeResp *rou
 	chargeLocations := chargeLocationSelection(oasisReq, routeResp)
 	for _, locations := range chargeLocations {
 		c := stationfinderalg.CalculateWeightBetweenNeighbors(locations, oc, finder)
-		internalSolutions := stationgraph.NewStationGraph(c, oasisReq.CurrRange, oasisReq.MaxRange,
-			chargingstrategy.NewFakeChargingStrategy(oasisReq.MaxRange)).GenerateChargeSolutions()
+		querier := stationfinderalg.NewQuerierBasedOnWeightBetweenNeighborsChan(c)
+		internalSolutions := stationgraph.NewStationGraph(oasisReq.CurrRange, oasisReq.MaxRange,
+			chargingstrategy.NewFakeChargingStrategy(oasisReq.MaxRange),
+			querier).GenerateChargeSolutions()
 
 		for _, sol := range internalSolutions {
 			targetSolution := sol.Convert2ExternalSolution()

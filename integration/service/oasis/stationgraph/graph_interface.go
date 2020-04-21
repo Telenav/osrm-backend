@@ -14,6 +14,12 @@ type IGraph interface {
 	// Edge returns edge information between given two nodes
 	Edge(from, to nodeID) *edge
 
+	// SetStart generates start node for the graph
+	SetStart(stationID string, targetState chargingstrategy.State, location locationInfo) IGraph
+
+	// SetEnd generates end node for the graph
+	SetEnd(stationID string, targetState chargingstrategy.State, location locationInfo) IGraph
+
 	// StartNodeID returns start node's ID for given graph
 	StartNodeID() nodeID
 
@@ -22,11 +28,7 @@ type IGraph interface {
 
 	// ChargeStrategy returns charge strategy used for graph construction
 	ChargeStrategy() chargingstrategy.Strategy
-}
 
-// IStationInfo defines station related information
-type IStationInfo interface {
+	// StationID returns original stationID from internal nodeID
 	StationID(id nodeID) string
-
-	StationLocation(id nodeID) *locationInfo
 }
