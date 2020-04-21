@@ -90,7 +90,7 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 		t.Errorf("expect no error but generate error of %v", err)
 	}
 	expect := []stationfindertype.NeighborInfo{
-		stationfindertype.NeighborInfo{
+		{
 			FromID: "station1",
 			FromLocation: nav.Location{
 				Lat: 32.333,
@@ -106,7 +106,7 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 				Distance: 2,
 			},
 		},
-		stationfindertype.NeighborInfo{
+		{
 			FromID: "station1",
 			FromLocation: nav.Location{
 				Lat: 32.333,
@@ -122,7 +122,7 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 				Distance: 3,
 			},
 		},
-		stationfindertype.NeighborInfo{
+		{
 			FromID: "station2",
 			FromLocation: nav.Location{
 				Lat: -32.333,
@@ -138,7 +138,7 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 				Distance: 4,
 			},
 		},
-		stationfindertype.NeighborInfo{
+		{
 			FromID: "station2",
 			FromLocation: nav.Location{
 				Lat: -32.333,
@@ -154,7 +154,7 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 				Distance: 5,
 			},
 		},
-		stationfindertype.NeighborInfo{
+		{
 			FromID: "station3",
 			FromLocation: nav.Location{
 				Lat: 32.333,
@@ -170,7 +170,7 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 				Distance: 6,
 			},
 		},
-		stationfindertype.NeighborInfo{
+		{
 			FromID: "station3",
 			FromLocation: nav.Location{
 				Lat: 32.333,
@@ -186,7 +186,7 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 				Distance: 7,
 			},
 		},
-		stationfindertype.NeighborInfo{
+		{
 			FromID: "station4",
 			FromLocation: nav.Location{
 				Lat: -32.333,
@@ -202,7 +202,7 @@ func TestCalcNeighborInfoPair(t *testing.T) {
 				Distance: 8,
 			},
 		},
-		stationfindertype.NeighborInfo{
+		{
 			FromID: "station4",
 			FromLocation: nav.Location{
 				Lat: -32.333,
@@ -274,10 +274,10 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 	defer ts.Close()
 
 	locations := []*nav.Location{
-		&nav.Location{Lat: 1.1, Lon: 1.1},
-		&nav.Location{Lat: 2.2, Lon: 2.2},
-		&nav.Location{Lat: 3.3, Lon: 3.3},
-		&nav.Location{Lat: 4.4, Lon: 4.4},
+		{Lat: 1.1, Lon: 1.1},
+		{Lat: 2.2, Lon: 2.2},
+		{Lat: 3.3, Lon: 3.3},
+		{Lat: 4.4, Lon: 4.4},
 	}
 	oc := osrmconnector.NewOSRMConnector(ts.URL)
 
@@ -288,238 +288,11 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 	}
 	c := CalculateWeightBetweenNeighbors(locations, oc, finder)
 
-	expect_arr0 := []stationfindertype.NeighborInfo{
-		stationfindertype.NeighborInfo{
-			FromID: "orig_location",
-			FromLocation: nav.Location{
-				Lat: 1.1,
-				Lon: 1.1,
-			},
-			ToID: "station1",
-			ToLocation: nav.Location{
-				Lat: 32.333,
-				Lon: 122.333,
-			},
-			Weight: stationfindertype.Weight{
-				Duration: 22.2,
-				Distance: 22.2,
-			},
-		},
-		stationfindertype.NeighborInfo{
-			FromID: "orig_location",
-			FromLocation: nav.Location{
-				Lat: 1.1,
-				Lon: 1.1,
-			},
-			ToID: "station2",
-			ToLocation: nav.Location{
-				Lat: -32.333,
-				Lon: -122.333,
-			},
-			Weight: stationfindertype.Weight{
-				Duration: 11.1,
-				Distance: 11.1,
-			},
-		},
-		stationfindertype.NeighborInfo{
-			FromID: "orig_location",
-			FromLocation: nav.Location{
-				Lat: 1.1,
-				Lon: 1.1,
-			},
-			ToID: "station3",
-			ToLocation: nav.Location{
-				Lat: 32.333,
-				Lon: -122.333,
-			},
-			Weight: stationfindertype.Weight{
-				Duration: 33.3,
-				Distance: 33.3,
-			},
-		},
-		stationfindertype.NeighborInfo{
-			FromID: "orig_location",
-			FromLocation: nav.Location{
-				Lat: 1.1,
-				Lon: 1.1,
-			},
-			ToID: "station4",
-			ToLocation: nav.Location{
-				Lat: -32.333,
-				Lon: 122.333,
-			},
-			Weight: stationfindertype.Weight{
-				Duration: 44.4,
-				Distance: 44.4,
-			},
-		},
-	}
+	expect_arr0 := stationfindertype.NeighborInfoArray0
 
-	expect_arr1 := []stationfindertype.NeighborInfo{
-		stationfindertype.NeighborInfo{
-			FromID: "station1",
-			FromLocation: nav.Location{
-				Lat: 32.333,
-				Lon: 122.333,
-			},
-			ToID: "station6",
-			ToLocation: nav.Location{
-				Lat: 30.333,
-				Lon: 122.333,
-			},
-			Weight: stationfindertype.Weight{
-				Duration: 2,
-				Distance: 2,
-			},
-		},
-		stationfindertype.NeighborInfo{
-			FromID: "station1",
-			FromLocation: nav.Location{
-				Lat: 32.333,
-				Lon: 122.333,
-			},
-			ToID: "station7",
-			ToLocation: nav.Location{
-				Lat: -10.333,
-				Lon: 122.333,
-			},
-			Weight: stationfindertype.Weight{
-				Duration: 3,
-				Distance: 3,
-			},
-		},
-		stationfindertype.NeighborInfo{
-			FromID: "station2",
-			FromLocation: nav.Location{
-				Lat: -32.333,
-				Lon: -122.333,
-			},
-			ToID: "station6",
-			ToLocation: nav.Location{
-				Lat: 30.333,
-				Lon: 122.333,
-			},
-			Weight: stationfindertype.Weight{
-				Duration: 4,
-				Distance: 4,
-			},
-		},
-		stationfindertype.NeighborInfo{
-			FromID: "station2",
-			FromLocation: nav.Location{
-				Lat: -32.333,
-				Lon: -122.333,
-			},
-			ToID: "station7",
-			ToLocation: nav.Location{
-				Lat: -10.333,
-				Lon: 122.333,
-			},
-			Weight: stationfindertype.Weight{
-				Duration: 5,
-				Distance: 5,
-			},
-		},
-		stationfindertype.NeighborInfo{
-			FromID: "station3",
-			FromLocation: nav.Location{
-				Lat: 32.333,
-				Lon: -122.333,
-			},
-			ToID: "station6",
-			ToLocation: nav.Location{
-				Lat: 30.333,
-				Lon: 122.333,
-			},
-			Weight: stationfindertype.Weight{
-				Duration: 6,
-				Distance: 6,
-			},
-		},
-		stationfindertype.NeighborInfo{
-			FromID: "station3",
-			FromLocation: nav.Location{
-				Lat: 32.333,
-				Lon: -122.333,
-			},
-			ToID: "station7",
-			ToLocation: nav.Location{
-				Lat: -10.333,
-				Lon: 122.333,
-			},
-			Weight: stationfindertype.Weight{
-				Duration: 7,
-				Distance: 7,
-			},
-		},
-		stationfindertype.NeighborInfo{
-			FromID: "station4",
-			FromLocation: nav.Location{
-				Lat: -32.333,
-				Lon: 122.333,
-			},
-			ToID: "station6",
-			ToLocation: nav.Location{
-				Lat: 30.333,
-				Lon: 122.333,
-			},
-			Weight: stationfindertype.Weight{
-				Duration: 8,
-				Distance: 8,
-			},
-		},
-		stationfindertype.NeighborInfo{
-			FromID: "station4",
-			FromLocation: nav.Location{
-				Lat: -32.333,
-				Lon: 122.333,
-			},
-			ToID: "station7",
-			ToLocation: nav.Location{
-				Lat: -10.333,
-				Lon: 122.333,
-			},
-			Weight: stationfindertype.Weight{
-				Duration: 9,
-				Distance: 9,
-			},
-		},
-	}
+	expect_arr1 := stationfindertype.NeighborInfoArray1
 
-	expect_arr2 := []stationfindertype.NeighborInfo{
-		stationfindertype.NeighborInfo{
-			FromID: "station6",
-			FromLocation: nav.Location{
-				Lat: 30.333,
-				Lon: 122.333,
-			},
-			ToID: "dest_location",
-			ToLocation: nav.Location{
-				Lat: 4.4,
-				Lon: 4.4,
-			},
-			Weight: stationfindertype.Weight{
-				Duration: 66.6,
-				Distance: 66.6,
-			},
-		},
-		stationfindertype.NeighborInfo{
-			FromID: "station7",
-			FromLocation: nav.Location{
-				Lat: -10.333,
-				Lon: 122.333,
-			},
-			ToID: "dest_location",
-			ToLocation: nav.Location{
-				Lat: 4.4,
-				Lon: 4.4,
-			},
-			Weight: stationfindertype.Weight{
-				Duration: 11.1,
-				Distance: 11.1,
-			},
-		},
-	}
+	expect_arr2 := stationfindertype.NeighborInfoArray2
 
 	for arr := range c {
 		switch len(arr.NeighborsInfo) {
