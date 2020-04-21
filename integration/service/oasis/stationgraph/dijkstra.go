@@ -2,8 +2,8 @@ package stationgraph
 
 import "github.com/golang/glog"
 
-// dijkstra accepts IGraph and returns all node ids in the shortest path, except start node and end node
-func dijkstra(g IGraph, start, end nodeID) []nodeID {
+// dijkstra accepts Graph and returns all node ids in the shortest path, except start node and end node
+func dijkstra(g Graph, start, end nodeID) []nodeID {
 	m := newQueryHeap()
 
 	// init

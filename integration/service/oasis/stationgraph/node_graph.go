@@ -7,24 +7,25 @@ import (
 	"github.com/golang/glog"
 )
 
-// NearByStationQuery(center Location, distanceLimit float64, limitCount int) []*RankedPointInfo
+type nodeID2AdjacentNodes map[nodeID][]nodeID
+type edgeID2EdgeData map[edgeID]*edge
 
-type graph struct {
+type nodeGraph struct {
 	nodeContainer *nodeContainer
-	adjacentList  map[nodeID][]nodeID
-	edgeData      map[edgeID]*edge
+	adjacentList  nodeID2AdjacentNodes
+	edgeData      edgeID2EdgeData
 	startNodeID   nodeID
 	endNodeID     nodeID
 	strategy      chargingstrategy.Strategy
 	querier       connectivitymap.Querier
 }
 
-// NewGraph creates new graph which implements IGraph
-func NewGraph(strategy chargingstrategy.Strategy, query connectivitymap.Querier) IGraph {
-	return &graph{
+// NewNodeGraph creates new node based graph which implements Graph
+func NewNodeGraph(strategy chargingstrategy.Strategy, query connectivitymap.Querier) Graph {
+	return &nodeGraph{
 		nodeContainer: newNodeContainer(),
-		adjacentList:  make(map[nodeID][]nodeID),
-		edgeData:      make(map[edgeID]*edge),
+		adjacentList:  make(nodeID2AdjacentNodes),
+		edgeData:      make(edgeID2EdgeData),
 		startNodeID:   invalidNodeID,
 		endNodeID:     invalidNodeID,
 		strategy:      strategy,
@@ -32,11 +33,14 @@ func NewGraph(strategy chargingstrategy.Strategy, query connectivitymap.Querier)
 	}
 }
 
-func (g *graph) Node(id nodeID) *node {
+// Node returns node object by its nodeID
+func (g *nodeGraph) Node(id nodeID) *node {
 	return g.nodeContainer.getNode(id)
 }
 
-func (g *graph) AdjacentNodes(id nodeID) []nodeID {
+// AdjacentNodes returns a group of node ids which connect with given node id
+// The connectivity between nodes is build during running time.
+func (g *nodeGraph) AdjacentNodes(id nodeID) []nodeID {
 	if !g.nodeContainer.isNodeVisited(id) {
 		glog.Errorf("While calling AdjacentNodes with un-added nodeID %#v, check your algorithm.\n", id)
 		return nil
@@ -52,7 +56,8 @@ func (g *graph) AdjacentNodes(id nodeID) []nodeID {
 
 }
 
-func (g *graph) Edge(from, to nodeID) *edge {
+// Edge returns edge information between given two nodes
+func (g *nodeGraph) Edge(from, to nodeID) *edge {
 	edgeID := edgeID{
 		fromNodeID: from,
 		toNodeID:   to,
@@ -61,37 +66,41 @@ func (g *graph) Edge(from, to nodeID) *edge {
 	return g.edgeData[edgeID]
 }
 
-// SetStart generates start node for the graph
-func (g *graph) SetStart(stationID string, targetState chargingstrategy.State, location locationInfo) IGraph {
+// SetStart generates start node for the nodeGraph
+func (g *nodeGraph) SetStart(stationID string, targetState chargingstrategy.State, location locationInfo) Graph {
 	n := g.nodeContainer.addNode(stationID, targetState, location)
 	g.startNodeID = n.id
 	return g
 }
 
-// SetEnd generates end node for the graph
-func (g *graph) SetEnd(stationID string, targetState chargingstrategy.State, location locationInfo) IGraph {
+// SetEnd generates end node for the nodeGraph
+func (g *nodeGraph) SetEnd(stationID string, targetState chargingstrategy.State, location locationInfo) Graph {
 	n := g.nodeContainer.addNode(stationID, targetState, location)
 	g.endNodeID = n.id
 	return g
 }
 
-func (g *graph) StartNodeID() nodeID {
+// StartNodeID returns start node's ID for given graph
+func (g *nodeGraph) StartNodeID() nodeID {
 	return g.startNodeID
 }
 
-func (g *graph) EndNodeID() nodeID {
+// EndNodeID returns end node's ID for given graph
+func (g *nodeGraph) EndNodeID() nodeID {
 	return g.endNodeID
 }
 
-func (g *graph) ChargeStrategy() chargingstrategy.Strategy {
+// ChargeStrategy returns charge strategy used for graph construction
+func (g *nodeGraph) ChargeStrategy() chargingstrategy.Strategy {
 	return g.strategy
 }
 
-func (g *graph) StationID(id nodeID) string {
+// StationID returns original stationID from internal nodeID
+func (g *nodeGraph) StationID(id nodeID) string {
 	return g.nodeContainer.stationID(id)
 }
 
-func (g *graph) getPhysicalAdjacentNodes(id nodeID) []*connectivitymap.QueryResult {
+func (g *nodeGraph) getPhysicalAdjacentNodes(id nodeID) []*connectivitymap.QueryResult {
 	stationID := g.nodeContainer.stationID(id)
 	if stationID == invalidStationID {
 		glog.Errorf("Query getPhysicalAdjacentNodes with invalid node %#v and result %#v\n", id, invalidStationID)
@@ -100,7 +109,7 @@ func (g *graph) getPhysicalAdjacentNodes(id nodeID) []*connectivitymap.QueryResu
 	return g.querier.NearByStationQuery(stationID)
 }
 
-func (g *graph) createLogicalNodes(from nodeID, toStationID string, toLocation *nav.Location, distance, duration float64) []*node {
+func (g *nodeGraph) createLogicalNodes(from nodeID, toStationID string, toLocation *nav.Location, distance, duration float64) []*node {
 	results := make([]*node, 0, 10)
 
 	for _, state := range g.strategy.CreateChargingStates() {
@@ -119,7 +128,7 @@ func (g *graph) createLogicalNodes(from nodeID, toStationID string, toLocation *
 	return results
 }
 
-func (g *graph) buildAdjacentList(id nodeID) []nodeID {
+func (g *nodeGraph) buildAdjacentList(id nodeID) []nodeID {
 	adjacentNodeIDs := make([]nodeID, 0, 500)
 
 	physicalNodes := g.getPhysicalAdjacentNodes(id)

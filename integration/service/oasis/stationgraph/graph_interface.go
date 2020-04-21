@@ -2,8 +2,9 @@ package stationgraph
 
 import "github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
 
-// IGraph defines interface used for Graph
-type IGraph interface {
+// Graph defines interface used for Graph
+type Graph interface {
+	
 	// Node returns node object by its nodeID
 	Node(id nodeID) *node
 
@@ -15,10 +16,10 @@ type IGraph interface {
 	Edge(from, to nodeID) *edge
 
 	// SetStart generates start node for the graph
-	SetStart(stationID string, targetState chargingstrategy.State, location locationInfo) IGraph
+	SetStart(stationID string, targetState chargingstrategy.State, location locationInfo) Graph
 
 	// SetEnd generates end node for the graph
-	SetEnd(stationID string, targetState chargingstrategy.State, location locationInfo) IGraph
+	SetEnd(stationID string, targetState chargingstrategy.State, location locationInfo) Graph
 
 	// StartNodeID returns start node's ID for given graph
 	StartNodeID() nodeID

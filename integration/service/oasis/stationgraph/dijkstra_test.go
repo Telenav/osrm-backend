@@ -7,7 +7,7 @@ import (
 
 func TestDijkstraAlgorithm(t *testing.T) {
 	cases := []struct {
-		graph          IGraph
+		graph          Graph
 		start          nodeID
 		end            nodeID
 		chargeStations []nodeID

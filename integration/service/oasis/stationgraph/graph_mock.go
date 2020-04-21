@@ -9,7 +9,7 @@ import "github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrate
 // node_2 -> node_3, duration = 50, distance = 50
 // node_3 -> node_4, duration = 10, distance = 10
 // Set charge information to fixed status to ignore situation of lack of energy
-func NewMockGraph1() IGraph {
+func NewMockGraph1() Graph {
 	return &mockGraph{
 		[]*node{
 			{
@@ -181,7 +181,7 @@ func NewMockGraph1() IGraph {
 // node_6 -> node_8, duration = 20, distance = 20
 // node_7 -> node_8, duration = 30, distance = 30
 // Set charge information to fixed status to ignore situation of lack of energy
-func NewMockGraph2() IGraph {
+func NewMockGraph2() Graph {
 	return &mockGraph{
 		[]*node{
 			{
@@ -516,7 +516,7 @@ func NewMockGraph2() IGraph {
 // node_6 -> node_8, duration = 20, distance = 20
 // node_7 -> node_8, duration = 30, distance = 30
 // Set charge information to fixed status to ignore situation of lack of energy
-func NewMockGraph3() IGraph {
+func NewMockGraph3() Graph {
 	return &mockGraph{
 		[]*node{
 			{
@@ -852,7 +852,7 @@ func NewMockGraph3() IGraph {
 // node_7 -> node_8, duration = 30, distance = 30
 // Charge information
 // each station only charges 16 unit of energy
-func NewMockGraph4() IGraph {
+func NewMockGraph4() Graph {
 	return &mockGraph{
 		[]*node{
 			{
@@ -1178,6 +1178,7 @@ type mockGraph struct {
 	strategy   chargingstrategy.Strategy
 }
 
+// Node returns node object by its nodeID
 func (graph *mockGraph) Node(id nodeID) *node {
 	if graph.isValidNodeID(id) {
 		return graph.nodes[id]
@@ -1185,6 +1186,8 @@ func (graph *mockGraph) Node(id nodeID) *node {
 	return nil
 }
 
+// AdjacentNodes returns a group of node ids which connect with given node id
+// The connectivity between nodes is build during running time.
 func (graph *mockGraph) AdjacentNodes(id nodeID) []nodeID {
 	var nodeIDs []nodeID
 	if graph.isValidNodeID(id) {
@@ -1199,6 +1202,7 @@ func (graph *mockGraph) AdjacentNodes(id nodeID) []nodeID {
 	return nodeIDs
 }
 
+// Edge returns edge information between given two nodes
 func (graph *mockGraph) Edge(from, to nodeID) *edge {
 	if graph.isValidNodeID(from) && graph.isValidNodeID(to) {
 		edges, ok := graph.edges[from]
@@ -1215,25 +1219,36 @@ func (graph *mockGraph) Edge(from, to nodeID) *edge {
 }
 
 // SetStart generates start node for the graph
-func (graph *mockGraph) SetStart(stationID string, targetState chargingstrategy.State, location locationInfo) IGraph {
+func (graph *mockGraph) SetStart(stationID string, targetState chargingstrategy.State, location locationInfo) Graph {
 	return graph
 }
 
 // SetEnd generates end node for the graph
-func (graph *mockGraph) SetEnd(stationID string, targetState chargingstrategy.State, location locationInfo) IGraph {
+func (graph *mockGraph) SetEnd(stationID string, targetState chargingstrategy.State, location locationInfo) Graph {
 	return graph
 }
 
+// StartNodeID returns start node's ID for given graph
 func (graph *mockGraph) StartNodeID() nodeID {
 	return invalidNodeID
 }
 
+// EndNodeID returns end node's ID for given graph
 func (graph *mockGraph) EndNodeID() nodeID {
 	return invalidNodeID
 }
 
+// ChargeStrategy returns charge strategy used for graph construction
 func (graph *mockGraph) ChargeStrategy() chargingstrategy.Strategy {
 	return graph.strategy
+}
+
+// StationID returns original stationID from internal nodeID
+func (graph *mockGraph) StationID(id nodeID) string {
+	if id < 0 || int(id) >= len(graph.stationIDs) {
+		return invalidStationID
+	}
+	return graph.stationIDs[id]
 }
 
 func (graph *mockGraph) isValidNodeID(id nodeID) bool {
@@ -1241,11 +1256,4 @@ func (graph *mockGraph) isValidNodeID(id nodeID) bool {
 		return false
 	}
 	return true
-}
-
-func (graph *mockGraph) StationID(id nodeID) string {
-	if id < 0 || int(id) >= len(graph.stationIDs) {
-		return invalidStationID
-	}
-	return graph.stationIDs[id]
 }
