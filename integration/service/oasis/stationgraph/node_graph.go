@@ -118,7 +118,7 @@ func (g *nodeGraph) createLogicalNodes(from nodeID, toStationID string, toLocati
 
 		edgeID := edgeID{
 			fromNodeID: from,
-			toNodeID:   1,
+			toNodeID:   n.id,
 		}
 		g.edgeData[edgeID] = &edge{
 			distance: distance,
@@ -133,7 +133,7 @@ func (g *nodeGraph) buildAdjacentList(id nodeID) []nodeID {
 
 	physicalNodes := g.getPhysicalAdjacentNodes(id)
 	if physicalNodes == nil {
-		glog.Errorf("Failed to build buildAdjacentList\n")
+		glog.Errorf("Failed to build buildAdjacentList.\n")
 		return nil
 	}
 

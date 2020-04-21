@@ -10,27 +10,25 @@ import (
 )
 
 type stationGraph struct {
-	g        IGraph
-	querier  connectivitymap.Querier
-	strategy chargingstrategy.Strategy
+	g       Graph
+	querier connectivitymap.Querier
 }
 
 // NewStationGraph creates station graph from channel
 func NewStationGraph(currEnergyLevel, maxEnergyLevel float64, strategy chargingstrategy.Strategy, querier connectivitymap.Querier) *stationGraph {
 	sg := &stationGraph{
-		g:        NewGraph(strategy, querier),
-		querier:  querier,
-		strategy: strategy,
+		g:       NewNodeGraph(strategy, querier),
+		querier: querier,
 	}
 
-	if !sg.setStartAndEnd(currEnergyLevel, maxEnergyLevel) {
+	if !sg.setStartAndEndForGraph(currEnergyLevel, maxEnergyLevel) {
 		return nil
 	}
 
 	return sg
 }
 
-func (sg *stationGraph) setStartAndEnd(currEnergyLevel, maxEnergyLevel float64) bool {
+func (sg *stationGraph) setStartAndEndForGraph(currEnergyLevel, maxEnergyLevel float64) bool {
 	startLocation := sg.querier.GetLocation(stationfindertype.OrigLocationID)
 	if startLocation == nil {
 		glog.Errorf("Failed to find %#v from Querier's GetLocation()\n", stationfindertype.OrigLocationID)
@@ -60,7 +58,7 @@ func (sg *stationGraph) setStartAndEnd(currEnergyLevel, maxEnergyLevel float64) 
 	return true
 }
 
-// GenerateChargeSolutions creates creates charge solutions for staion graph
+// GenerateChargeSolutions creates charge solutions for staion graph
 func (sg *stationGraph) GenerateChargeSolutions() []*solution.Solution {
 	stationNodes := dijkstra(sg.g, sg.g.StartNodeID(), sg.g.EndNodeID())
 	if nil == stationNodes {
@@ -68,6 +66,10 @@ func (sg *stationGraph) GenerateChargeSolutions() []*solution.Solution {
 		return nil
 	}
 
+	return sg.generateSolutionsBasedOnStationCandidates(stationNodes)
+}
+
+func (sg *stationGraph) generateSolutionsBasedOnStationCandidates(stationNodes []nodeID) []*solution.Solution {
 	var result []*solution.Solution
 
 	sol := &solution.Solution{}
@@ -109,7 +111,7 @@ func (sg *stationGraph) GenerateChargeSolutions() []*solution.Solution {
 	return result
 }
 
-func accumulateDistanceAndDuration(g IGraph, from nodeID, to nodeID, distance, duration *float64) {
+func accumulateDistanceAndDuration(g Graph, from nodeID, to nodeID, distance, duration *float64) {
 	if g.Node(from) == nil {
 		glog.Fatalf("While calling accumulateDistanceAndDuration, incorrect nodeID passed into graph %v\n", from)
 	}
@@ -127,7 +129,7 @@ func accumulateDistanceAndDuration(g IGraph, from nodeID, to nodeID, distance, d
 
 }
 
-func getChargeInfo(g IGraph, n nodeID) chargeInfo {
+func getChargeInfo(g Graph, n nodeID) chargeInfo {
 	if g.Node(n) == nil {
 		glog.Fatalf("While calling getChargeInfo, incorrect nodeID passed into graph %v\n", n)
 	}
@@ -135,7 +137,7 @@ func getChargeInfo(g IGraph, n nodeID) chargeInfo {
 	return g.Node(n).chargeInfo
 }
 
-func getLocationInfo(g IGraph, n nodeID) locationInfo {
+func getLocationInfo(g Graph, n nodeID) locationInfo {
 	if g.Node(n) == nil {
 		glog.Fatalf("While calling getLocationInfo, incorrect nodeID passed into graph %v\n", n)
 	}
