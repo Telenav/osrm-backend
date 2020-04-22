@@ -78,6 +78,7 @@ func (a *Annotation) UnmarshalJSON(bs []byte) error {
 		Duration    []float64     `json:"duration,omitempty"`
 		DataSources []int         `json:"datasources,omitempty"`
 		Nodes       []json.Number `json:"nodes,omitempty"`
+		Ways        []int64       `json:"ways,omitempty"` // NOT osrm original
 		Weight      []float64     `json:"weight,omitempty"`
 		Speed       []float64     `json:"speed,omitempty"`
 		Metadata    *Metadata     `json:"metadata,omitempty"`
@@ -102,6 +103,7 @@ func (a *Annotation) UnmarshalJSON(bs []byte) error {
 	a.Distance = tmp.Distance
 	a.Duration = tmp.Duration
 	a.DataSources = tmp.DataSources
+	a.Ways = tmp.Ways
 	a.Weight = tmp.Weight
 	a.Speed = tmp.Speed
 	a.Metadata = tmp.Metadata
