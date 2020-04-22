@@ -49,19 +49,22 @@ func main() {
 	}
 
 	// prepare traffic cache
-	trafficCache := trafficcache.New()
-	feeder := trafficproxyclient.NewFeeder()
-	feeder.RegisterEaters(trafficCache)
-	go func() {
-		for {
-			err := feeder.Run()
-			if err != nil {
-				glog.Warning(err)
+	var liveTrafficCache *trafficcache.Cache
+	if flags.liveTraffic {
+		liveTrafficCache := trafficcache.New()
+		feeder := trafficproxyclient.NewFeeder()
+		feeder.RegisterEaters(liveTrafficCache)
+		go func() {
+			for {
+				err := feeder.Run()
+				if err != nil {
+					glog.Warning(err)
+				}
+				liveTrafficCache.Clear()
+				time.Sleep(5 * time.Second) // try again later
 			}
-			trafficCache.Clear()
-			time.Sleep(5 * time.Second) // try again later
-		}
-	}()
+		}()
+	}
 
 	//start http listening
 	mux := http.NewServeMux()
@@ -71,18 +74,20 @@ func main() {
 		monitorContents.UpTime = jsonDuration(time.Now().Sub(upClock))
 
 		// update traffic cache contents
-		monitorContents.TrafficCacheMonitorContents.Flows = trafficCache.Flows.Count()
-		monitorContents.TrafficCacheMonitorContents.Incidents = trafficCache.Incidents.Count()
-		glog.Infof("monitor live traffic, [flows] %d, [incidents] blocking-only %d, affectedways %d affectededges %d",
-			monitorContents.TrafficCacheMonitorContents.Flows,
-			monitorContents.TrafficCacheMonitorContents.Incidents, monitorContents.TrafficCacheMonitorContents.IncidentsAffectedWays, monitorContents.TrafficCacheMonitorContents.IncidentsAffectedEdges)
+		if liveTrafficCache != nil {
+			monitorContents.TrafficCacheMonitorContents.Flows = liveTrafficCache.Flows.Count()
+			monitorContents.TrafficCacheMonitorContents.Incidents = liveTrafficCache.Incidents.Count()
+			glog.Infof("monitor live traffic, [flows] %d, [incidents] blocking-only %d, affectedways %d affectededges %d",
+				monitorContents.TrafficCacheMonitorContents.Flows,
+				monitorContents.TrafficCacheMonitorContents.Incidents, monitorContents.TrafficCacheMonitorContents.IncidentsAffectedWays, monitorContents.TrafficCacheMonitorContents.IncidentsAffectedEdges)
+		}
 
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(monitorContents)
 	})
 
 	//start ranking service
-	rankingService := ranking.New(flags.osrmBackendEndpoint, nodes2wayDB, trafficCache)
+	rankingService := ranking.New(flags.osrmBackendEndpoint, nodes2wayDB, liveTrafficCache)
 	mux.Handle("/route/v1/driving/", rankingService)
 
 	// listen
