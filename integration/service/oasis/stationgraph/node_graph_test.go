@@ -268,14 +268,14 @@ func generateMockNodeGraph() Graph {
 	return graph
 }
 
-type mockQuerier struct {
+type mockQuerier4NodeGraph struct {
 }
 
 func newMockQuerier() connectivitymap.Querier {
-	return &mockQuerier{}
+	return &mockQuerier4NodeGraph{}
 }
 
-func (querier *mockQuerier) NearByStationQuery(stationID string) []*connectivitymap.QueryResult {
+func (querier *mockQuerier4NodeGraph) NearByStationQuery(stationID string) []*connectivitymap.QueryResult {
 	if stationID == testStationID1 {
 		return mockStationID2QueryResult[testStationID1]
 	}
@@ -283,7 +283,7 @@ func (querier *mockQuerier) NearByStationQuery(stationID string) []*connectivity
 	return nil
 }
 
-func (querier *mockQuerier) GetLocation(stationID string) *nav.Location {
+func (querier *mockQuerier4NodeGraph) GetLocation(stationID string) *nav.Location {
 	if stationID == testStationID1 {
 		return mockStationID2Location[testStationID1]
 	}

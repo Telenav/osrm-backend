@@ -31,13 +31,13 @@ func NewStationGraph(currEnergyLevel, maxEnergyLevel float64, strategy chargings
 func (sg *stationGraph) setStartAndEndForGraph(currEnergyLevel, maxEnergyLevel float64) bool {
 	startLocation := sg.querier.GetLocation(stationfindertype.OrigLocationID)
 	if startLocation == nil {
-		glog.Errorf("Failed to find %#v from Querier's GetLocation()\n", stationfindertype.OrigLocationID)
+		glog.Errorf("Failed to find %#v from Querier GetLocation()\n", stationfindertype.OrigLocationID)
 		return false
 	}
 
 	endLocation := sg.querier.GetLocation(stationfindertype.DestLocationID)
 	if startLocation == nil {
-		glog.Errorf("Failed to find %#v from Querier's GetLocation()\n", stationfindertype.DestLocationID)
+		glog.Errorf("Failed to find %#v from Querier GetLocation()\n", stationfindertype.DestLocationID)
 		return false
 	}
 
