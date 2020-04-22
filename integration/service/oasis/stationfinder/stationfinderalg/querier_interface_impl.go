@@ -15,6 +15,7 @@ type querier struct {
 	id2Location     stationID2Location
 }
 
+// NewQuerierBasedOnWeightBetweenNeighborsChan creates connectivitymap.Querier based on channel of charge station's WeightBetweenNeighbors
 func NewQuerierBasedOnWeightBetweenNeighborsChan(c chan stationfindertype.WeightBetweenNeighbors) connectivitymap.Querier {
 	querier := &querier{
 		id2QueryResults: make(stationID2QueryResults),
