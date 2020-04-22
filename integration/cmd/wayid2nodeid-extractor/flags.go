@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/Telenav/osrm-backend/integration/mapsource"
+	"github.com/Telenav/osrm-backend/integration/util/mapsource"
 )
 
 var flags struct {
