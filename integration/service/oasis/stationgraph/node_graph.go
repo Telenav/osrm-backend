@@ -112,18 +112,22 @@ func (g *nodeGraph) getPhysicalAdjacentNodes(id nodeID) []*connectivitymap.Query
 func (g *nodeGraph) createLogicalNodes(from nodeID, toStationID string, toLocation *nav.Location, distance, duration float64) []*node {
 	results := make([]*node, 0, 10)
 
+	endNodeID := g.EndNodeID()
+	if toStationID == g.StationID(endNodeID) {
+		results = append(results, g.Node(endNodeID))
+		g.edgeData[edgeID{from, endNodeID}] = &edge{
+			distance: distance,
+			duration: duration}
+		return results
+	}
+
 	for _, state := range g.strategy.CreateChargingStates() {
 		n := g.nodeContainer.addNode(toStationID, state, locationInfo{toLocation.Lat, toLocation.Lon})
 		results = append(results, n)
 
-		edgeID := edgeID{
-			fromNodeID: from,
-			toNodeID:   n.id,
-		}
-		g.edgeData[edgeID] = &edge{
+		g.edgeData[edgeID{from, n.id}] = &edge{
 			distance: distance,
-			duration: duration,
-		}
+			duration: duration}
 	}
 	return results
 }
