@@ -2,6 +2,7 @@
 # Unreleased
 Changes from v10.2.0      
 - Feature:    
+  - CHANGED: for internal refactoring, moved `unidbpatch` and `mapsource` packages into `integration/util` folder [#300](https://github.com/Telenav/osrm-backend/pull/300)
 - Bugfix:    
 - Performance:    
 - Tools:    
