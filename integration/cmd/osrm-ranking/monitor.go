@@ -7,25 +7,17 @@ import (
 
 type monitorContents struct {
 	UpTime                         jsonDuration                    `json:"uptime"`
-	HistoricalSpeedMonitorContents *historicalSpeedMonitorContents `json:"historical_speed"`
-	TrafficCacheMonitorContents    *trafficCacheMonitorContents    `json:"traffic_cache"`
-	WayID2NodeIDsMonitorContents   *wayID2NodeIDsMonitorContents   `json:"wayid2nodeids"`
+	HistoricalSpeedMonitorContents *historicalSpeedMonitorContents `json:"historical speed"`
+	TrafficCacheMonitorContents    *trafficCacheMonitorContents    `json:"live traffic"`
 	Nodes2WayDB                    string                          `json:"nodes2way"`
 	CmdlineArgs                    []string                        `json:"cmdline"`
 }
 
 type trafficCacheMonitorContents struct {
-	Name                   string `json:"name"`
-	Flows                  int64  `json:"flows"`
-	FlowsAffectedWays      int64  `json:"flows_affected_ways"`
-	Incidents              int    `json:"incidents"`
-	IncidentsAffectedWays  int    `json:"incidents_affected_ways"`
-	IncidentsAffectedEdges int    `json:"incidents_affected_edges"`
-}
-
-type wayID2NodeIDsMonitorContents struct {
-	IsReady bool `json:"is_ready"`
-	Ways    int  `json:"ways"`
+	Flows                  int64 `json:"flows"`
+	Incidents              int   `json:"block_incidents"`
+	IncidentsAffectedWays  int   `json:"incidents_affected_ways"`
+	IncidentsAffectedEdges int   `json:"incidents_affected_edges"`
 }
 
 type historicalSpeedMonitorContents struct {
@@ -35,7 +27,7 @@ type historicalSpeedMonitorContents struct {
 
 func newMonitorContents() *monitorContents {
 	return &monitorContents{
-		0, &historicalSpeedMonitorContents{}, &trafficCacheMonitorContents{}, &wayID2NodeIDsMonitorContents{}, "", nil,
+		0, &historicalSpeedMonitorContents{}, &trafficCacheMonitorContents{}, "", nil,
 	}
 }
 

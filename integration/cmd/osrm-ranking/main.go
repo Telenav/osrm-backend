@@ -14,7 +14,6 @@ import (
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficcache"
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxyclient"
 	"github.com/Telenav/osrm-backend/integration/util/waysnodes/nodes2wayblotdb"
-	"github.com/Telenav/osrm-backend/integration/wayid2nodeids"
 
 	"github.com/golang/glog"
 )
@@ -27,7 +26,6 @@ func main() {
 	upClock := time.Now()
 	monitorContents := newMonitorContents()
 	monitorContents.CmdlineArgs = os.Args
-	monitorContents.TrafficCacheMonitorContents.Name = "traffic cache(indexed by edge)"
 
 	// prepare nodes2way
 	nodes2wayDB, err := nodes2wayblotdb.Open(flags.nodes2WayDB, true)
@@ -50,15 +48,8 @@ func main() {
 		monitorContents.HistoricalSpeedMonitorContents.Way2PatternsMapping = hs.WaysCount()
 	}
 
-	// wayid2nodeids mapping
-	wayID2NodeIDsMapping := wayid2nodeids.NewMappingFrom(flags.wayID2NodeIDsMappingFile)
-	if err := wayID2NodeIDsMapping.Load(); err != nil {
-		glog.Error(err)
-		return
-	}
-
 	// prepare traffic cache
-	trafficCache := trafficcache.NewCacheIndexedByEdge(wayID2NodeIDsMapping)
+	trafficCache := trafficcache.New()
 	feeder := trafficproxyclient.NewFeeder()
 	feeder.RegisterEaters(trafficCache)
 	go func() {
@@ -79,18 +70,11 @@ func main() {
 	mux.HandleFunc("/monitor/", func(w http.ResponseWriter, req *http.Request) {
 		monitorContents.UpTime = jsonDuration(time.Now().Sub(upClock))
 
-		// update wayid2nodeids contents
-		monitorContents.WayID2NodeIDsMonitorContents.IsReady = wayID2NodeIDsMapping.IsReady()
-		monitorContents.WayID2NodeIDsMonitorContents.Ways = wayID2NodeIDsMapping.WayIDsCount()
-
 		// update traffic cache contents
 		monitorContents.TrafficCacheMonitorContents.Flows = trafficCache.Flows.Count()
-		monitorContents.TrafficCacheMonitorContents.FlowsAffectedWays = trafficCache.Flows.AffectedWaysCount()
 		monitorContents.TrafficCacheMonitorContents.Incidents = trafficCache.Incidents.Count()
-		monitorContents.TrafficCacheMonitorContents.IncidentsAffectedWays = trafficCache.Incidents.AffectedWaysCount()
-		monitorContents.TrafficCacheMonitorContents.IncidentsAffectedEdges = trafficCache.Incidents.AffectedEdgesCount()
-		glog.Infof("monitor %s, [flows] %d affectedways %d, [incidents] blocking-only %d, affectedways %d affectededges %d",
-			monitorContents.TrafficCacheMonitorContents.Name, monitorContents.TrafficCacheMonitorContents.Flows, monitorContents.TrafficCacheMonitorContents.FlowsAffectedWays,
+		glog.Infof("monitor live traffic, [flows] %d, [incidents] blocking-only %d, affectedways %d affectededges %d",
+			monitorContents.TrafficCacheMonitorContents.Flows,
 			monitorContents.TrafficCacheMonitorContents.Incidents, monitorContents.TrafficCacheMonitorContents.IncidentsAffectedWays, monitorContents.TrafficCacheMonitorContents.IncidentsAffectedEdges)
 
 		w.WriteHeader(http.StatusOK)

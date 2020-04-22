@@ -20,12 +20,12 @@ import (
 // Handler represents a handler for ranking.
 type Handler struct {
 	nodes2WayQuerier waysnodes.WaysQuerier
-	trafficInquirer  livetraffic.QuerierByEdge
+	trafficQuerier   livetraffic.Querier
 	osrmBackend      string
 }
 
 // New creates a new handler for ranking.
-func New(osrmBackend string, nodes2WayQuerier waysnodes.WaysQuerier, trafficInquirer livetraffic.QuerierByEdge) *Handler {
+func New(osrmBackend string, nodes2WayQuerier waysnodes.WaysQuerier, trafficQuerier livetraffic.Querier) *Handler {
 	if nodes2WayQuerier == nil {
 		glog.Fatal("nil nodes2WayQuerier")
 		return nil
@@ -33,7 +33,7 @@ func New(osrmBackend string, nodes2WayQuerier waysnodes.WaysQuerier, trafficInqu
 
 	return &Handler{
 		nodes2WayQuerier,
-		trafficInquirer,
+		trafficQuerier,
 		osrmBackend,
 	}
 }
@@ -72,7 +72,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		if h.trafficInquirer != nil {
+		if h.trafficQuerier != nil {
 			// update speeds,durations,datasources by traffic
 			osrmResponse.Routes = h.updateRoutesByTraffic(osrmResponse.Routes)
 		}

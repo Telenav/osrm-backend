@@ -7,8 +7,7 @@ import (
 var flags struct {
 	listenPort int
 
-	wayID2NodeIDsMappingFile string
-	nodes2WayDB              string
+	nodes2WayDB string
 
 	historicalSpeed                 bool // whether enable historical speed or not
 	historicalSpeedDailyPatternFile string
@@ -20,7 +19,6 @@ var flags struct {
 func init() {
 	flag.IntVar(&flags.listenPort, "p", 8080, "Listen port.")
 
-	flag.StringVar(&flags.wayID2NodeIDsMappingFile, "m", "wayid2nodeids.csv.snappy", "OSRM way id to node ids mapping table, snappy compressed.")
 	flag.StringVar(&flags.nodes2WayDB, "nodes2way", "nodes2way.db", "BoltDB for querying wayIDs from nodeIDs.")
 
 	flag.BoolVar(&flags.historicalSpeed, "hs", false, "Enable historical speed. The historical speed related files won't be loaded if disabled.")
