@@ -129,7 +129,7 @@ func accumulateDistanceAndDuration(g Graph, from nodeID, to nodeID, distance, du
 
 }
 
-// There will be multiple remaning range for destination node for multiple solutions
+// There will be different remaning range for destination node for multiple solutions
 // For example:
 // Solution 1: via station 111 -> station 222 -> Destination with remaning range 123
 // Solution 2: via station 333 -> Destination with remaning range 45

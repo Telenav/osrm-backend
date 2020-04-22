@@ -26,6 +26,7 @@ Data structure
          * station 1, charge to 60% of maximum energy then left
          * station 1, charge to 80% of maximum energy then left
          * station 1, charge to 100% of maximum energy then left
+         * Logical node is identified by unique station ID + chargingStatus
     + connectivity: first built physical connectivity, then built logical
          * physical connectivity is ansowered by interface of connectivitymap.Querier, eg, station 1 connects station 4 and station 5
          * logical connectivity is build considering physical connection + final charging status
