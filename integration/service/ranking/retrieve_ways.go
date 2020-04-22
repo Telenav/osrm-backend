@@ -11,7 +11,7 @@ func (h *Handler) retrieveWayIDs(routes []*route.Route) error {
 
 	startTime := time.Now()
 
-	var waysCount, nodesCount int
+	var legsCount, waysCount, nodesCount int
 	for _, r := range routes {
 		for _, l := range r.Legs {
 			if l != nil && l.Annotation != nil {
@@ -21,12 +21,13 @@ func (h *Handler) retrieveWayIDs(routes []*route.Route) error {
 				}
 				l.Annotation.Ways = wayIDs
 
+				legsCount++
 				nodesCount += len(l.Annotation.Nodes)
 				waysCount += len(l.Annotation.Ways)
 			}
 		}
 	}
 
-	glog.V(2).Infof("Retrieved %d wayIDs from %d nodeIDs, takes %f seconds.", waysCount, nodesCount, time.Now().Sub(startTime).Seconds())
+	glog.V(2).Infof("Retrieved %d wayIDs from %d nodeIDs for %d legs(%d routes), takes %f seconds.", waysCount, nodesCount, legsCount, len(routes), time.Now().Sub(startTime).Seconds())
 	return nil
 }
