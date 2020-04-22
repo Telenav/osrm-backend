@@ -2,7 +2,9 @@
 # Unreleased
 Changes from v10.2.0      
 - Feature:    
+  - ADDED **HTTP API** `annotation/ways` in OSRM route response after `osrm-ranking` process(retrieve `annotation/ways` from `annotation/nodes`) [#296](https://github.com/Telenav/osrm-backend/pull/296)     
 - Bugfix:    
+  - CHANGED `osrm-ranking` parsing of OSRM route response to compatible with `string` array `annotation/nodes` [#296](https://github.com/Telenav/osrm-backend/pull/296)     
 - Performance:    
 - Tools:    
 - Docs:    
