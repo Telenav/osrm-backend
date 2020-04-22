@@ -25,7 +25,7 @@ func dijkstra(g Graph, start, end nodeID) []nodeID {
 		node := g.Node(currID)
 		for _, targetID := range g.AdjacentNodes(currID) {
 			if g.Edge(currID, targetID) == nil {
-				glog.Errorf("No connectivity between %#v and %#v which is unexpected, check your logic.\n", currID, targetID)
+				glog.Errorf("No connectivity between %+v and %+v which is unexpected, check your logic.\n", currID, targetID)
 			}
 
 			len := g.Edge(currID, targetID).distance

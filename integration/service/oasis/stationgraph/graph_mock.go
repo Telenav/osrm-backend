@@ -15,7 +15,6 @@ func NewMockGraph1() Graph {
 			{
 				0,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -28,7 +27,6 @@ func NewMockGraph1() Graph {
 			{
 				1,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -41,7 +39,6 @@ func NewMockGraph1() Graph {
 			{
 				2,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -54,7 +51,6 @@ func NewMockGraph1() Graph {
 			{
 				3,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -67,7 +63,6 @@ func NewMockGraph1() Graph {
 			{
 				4,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -89,76 +84,22 @@ func NewMockGraph1() Graph {
 			// node_0 -> node_1, duration = 30, distance = 30
 			// node_0 -> node_2, duration = 20, distance = 20
 			0: {
-				{
-					edgeID{
-						0,
-						1,
-					},
-					&edge{
-						30,
-						30,
-					},
-				},
-				{
-					edgeID{
-						0,
-						2,
-					},
-					&edge{
-						20,
-						20,
-					},
-				},
+				{edgeID{0, 1}, &edge{30, 30}},
+				{edgeID{0, 2}, &edge{20, 20}},
 			},
 			// node_1 -> node_3, duration = 10, distance = 10
 			1: {
-				{
-					edgeID{
-						1,
-						3,
-					},
-					&edge{
-						10,
-						10,
-					},
-				},
+				{edgeID{1, 3}, &edge{10, 10}},
 			},
 			// node_2 -> node_4, duration = 50, distance = 50
 			// node_2 -> node_3, duration = 50, distance = 50
 			2: {
-				{
-					edgeID{
-						2,
-						4,
-					},
-					&edge{
-						50,
-						50,
-					},
-				},
-				{
-					edgeID{
-						2,
-						3,
-					},
-					&edge{
-						50,
-						50,
-					},
-				},
+				{edgeID{2, 4}, &edge{50, 50}},
+				{edgeID{2, 3}, &edge{50, 50}},
 			},
 			// node_3 -> node_4, duration = 10, distance = 10
 			3: {
-				{
-					edgeID{
-						3,
-						4,
-					},
-					&edge{
-						10,
-						10,
-					},
-				},
+				{edgeID{3, 4}, &edge{10, 10}},
 			},
 		},
 		chargingstrategy.NewNullChargeStrategy(),
@@ -187,7 +128,6 @@ func NewMockGraph2() Graph {
 			{
 				0,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -200,7 +140,6 @@ func NewMockGraph2() Graph {
 			{
 				1,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -213,7 +152,6 @@ func NewMockGraph2() Graph {
 			{
 				2,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -226,7 +164,6 @@ func NewMockGraph2() Graph {
 			{
 				3,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -239,7 +176,6 @@ func NewMockGraph2() Graph {
 			{
 				4,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -252,7 +188,6 @@ func NewMockGraph2() Graph {
 			{
 				5,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -265,7 +200,6 @@ func NewMockGraph2() Graph {
 			{
 				6,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -278,7 +212,6 @@ func NewMockGraph2() Graph {
 			{
 				7,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -291,7 +224,6 @@ func NewMockGraph2() Graph {
 			{
 				8,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -522,7 +454,6 @@ func NewMockGraph3() Graph {
 			{
 				0,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -535,7 +466,6 @@ func NewMockGraph3() Graph {
 			{
 				1,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -548,7 +478,6 @@ func NewMockGraph3() Graph {
 			{
 				2,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -561,7 +490,6 @@ func NewMockGraph3() Graph {
 			{
 				3,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -574,7 +502,6 @@ func NewMockGraph3() Graph {
 			{
 				4,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -587,7 +514,6 @@ func NewMockGraph3() Graph {
 			{
 				5,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -600,7 +526,6 @@ func NewMockGraph3() Graph {
 			{
 				6,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -613,7 +538,6 @@ func NewMockGraph3() Graph {
 			{
 				7,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -626,7 +550,6 @@ func NewMockGraph3() Graph {
 			{
 				8,
 				chargeInfo{
-					arrivalEnergy: 999,
 					targetState: chargingstrategy.State{
 						Energy: 999,
 					},
@@ -858,7 +781,6 @@ func NewMockGraph4() Graph {
 			{
 				0,
 				chargeInfo{
-					arrivalEnergy: 16,
 					targetState: chargingstrategy.State{
 						Energy: 16,
 					},
@@ -871,7 +793,6 @@ func NewMockGraph4() Graph {
 			{
 				1,
 				chargeInfo{
-					arrivalEnergy: 0,
 					targetState: chargingstrategy.State{
 						Energy: 16,
 					},
@@ -884,7 +805,6 @@ func NewMockGraph4() Graph {
 			{
 				2,
 				chargeInfo{
-					arrivalEnergy: 0,
 					targetState: chargingstrategy.State{
 						Energy: 16,
 					},
@@ -897,7 +817,6 @@ func NewMockGraph4() Graph {
 			{
 				3,
 				chargeInfo{
-					arrivalEnergy: 0,
 					targetState: chargingstrategy.State{
 						Energy: 16,
 					},
@@ -910,7 +829,6 @@ func NewMockGraph4() Graph {
 			{
 				4,
 				chargeInfo{
-					arrivalEnergy: 0,
 					targetState: chargingstrategy.State{
 						Energy: 16,
 					},
@@ -923,7 +841,6 @@ func NewMockGraph4() Graph {
 			{
 				5,
 				chargeInfo{
-					arrivalEnergy: 0,
 					targetState: chargingstrategy.State{
 						Energy: 16,
 					},
@@ -936,7 +853,6 @@ func NewMockGraph4() Graph {
 			{
 				6,
 				chargeInfo{
-					arrivalEnergy: 0,
 					targetState: chargingstrategy.State{
 						Energy: 16,
 					},
@@ -949,7 +865,6 @@ func NewMockGraph4() Graph {
 			{
 				7,
 				chargeInfo{
-					arrivalEnergy: 0,
 					targetState: chargingstrategy.State{
 						Energy: 16,
 					},
@@ -962,7 +877,6 @@ func NewMockGraph4() Graph {
 			{
 				8,
 				chargeInfo{
-					arrivalEnergy: 0,
 					targetState: chargingstrategy.State{
 						Energy: 0,
 					},

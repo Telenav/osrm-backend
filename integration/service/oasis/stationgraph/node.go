@@ -66,8 +66,13 @@ func (n *node) updateChargingTime(chargingTime float64) {
 }
 
 func (n *node) updateArrivalEnergy(prev *node, distance float64) {
-	n.arrivalEnergy = prev.targetState.Energy - distance
-	if n.arrivalEnergy < 0 {
+	n.arrivalEnergy = calculateArrivalEnergy(prev, distance)
+}
+
+func calculateArrivalEnergy(prev *node, distance float64) float64 {
+	energy := prev.targetState.Energy - distance
+	if energy < 0 {
 		glog.Fatalf("Before updateNode should check reachableByDistance() prev.arrivalEnergy=%#v distance=%#v", prev.arrivalEnergy, distance)
 	}
+	return energy
 }

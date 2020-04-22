@@ -269,15 +269,46 @@ func generateMockNodeGraph() Graph {
 }
 
 type mockQuerier4NodeGraph struct {
+	mockStationID2QueryResult map[string][]*connectivitymap.QueryResult
+	mockStationID2Location    map[string]*nav.Location
 }
 
 func newMockQuerier() connectivitymap.Querier {
-	return &mockQuerier4NodeGraph{}
+	return &mockQuerier4NodeGraph{
+		mockStationID2QueryResult: map[string][]*connectivitymap.QueryResult{
+			testStationID1: {
+				{
+					StationID:       testStationID2,
+					StationLocation: &nav.Location{Lat: 2.2, Lon: 2.2},
+					Distance:        2,
+					Duration:        2,
+				},
+				{
+					StationID:       testStationID3,
+					StationLocation: &nav.Location{Lat: 3.3, Lon: 3.3},
+					Distance:        3,
+					Duration:        3,
+				},
+				{
+					StationID:       testStationID4,
+					StationLocation: &nav.Location{Lat: 4.4, Lon: 4.4},
+					Distance:        4,
+					Duration:        4,
+				},
+			},
+		},
+		mockStationID2Location: map[string]*nav.Location{
+			testStationID1: {Lat: 1.1, Lon: 1.1},
+			testStationID2: {Lat: 2.2, Lon: 2.2},
+			testStationID3: {Lat: 3.3, Lon: 3.3},
+			testStationID4: {Lat: 4.4, Lon: 4.4},
+		},
+	}
 }
 
 func (querier *mockQuerier4NodeGraph) NearByStationQuery(stationID string) []*connectivitymap.QueryResult {
 	if stationID == testStationID1 {
-		return mockStationID2QueryResult[testStationID1]
+		return querier.mockStationID2QueryResult[testStationID1]
 	}
 	glog.Fatal("Un-implemented mapping key for mockStationID2QueryResult.\n")
 	return nil
@@ -285,7 +316,7 @@ func (querier *mockQuerier4NodeGraph) NearByStationQuery(stationID string) []*co
 
 func (querier *mockQuerier4NodeGraph) GetLocation(stationID string) *nav.Location {
 	if stationID == testStationID1 {
-		return mockStationID2Location[testStationID1]
+		return querier.mockStationID2Location[testStationID1]
 	}
 	glog.Fatal("Un-implemented mapping key for mockStationID2Location.\n")
 	return nil
@@ -295,33 +326,3 @@ var testStationID1 = stationfindertype.OrigLocationID
 var testStationID2 = "test_station_id_2"
 var testStationID3 = "test_station_id_3"
 var testStationID4 = "test_station_id_4"
-
-var mockStationID2QueryResult = map[string][]*connectivitymap.QueryResult{
-	testStationID1: {
-		{
-			StationID:       testStationID2,
-			StationLocation: &nav.Location{Lat: 2.2, Lon: 2.2},
-			Distance:        2,
-			Duration:        2,
-		},
-		{
-			StationID:       testStationID3,
-			StationLocation: &nav.Location{Lat: 3.3, Lon: 3.3},
-			Distance:        3,
-			Duration:        3,
-		},
-		{
-			StationID:       testStationID4,
-			StationLocation: &nav.Location{Lat: 4.4, Lon: 4.4},
-			Distance:        4,
-			Duration:        4,
-		},
-	},
-}
-
-var mockStationID2Location = map[string]*nav.Location{
-	testStationID1: {Lat: 1.1, Lon: 1.1},
-	testStationID2: {Lat: 2.2, Lon: 2.2},
-	testStationID3: {Lat: 3.3, Lon: 3.3},
-	testStationID4: {Lat: 4.4, Lon: 4.4},
-}

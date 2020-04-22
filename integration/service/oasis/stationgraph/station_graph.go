@@ -105,7 +105,7 @@ func (sg *stationGraph) generateSolutionsBasedOnStationCandidates(stationNodes [
 
 	sol.Distance = totalDistance
 	sol.Duration = totalDuration
-	sol.RemainingRage = getChargeInfo(sg.g, sg.g.EndNodeID()).arrivalEnergy
+	sol.RemainingRage = calcRemaningRange(sg.g, stationNodes[len(stationNodes)-1])
 
 	result = append(result, sol)
 	return result
@@ -127,6 +127,17 @@ func accumulateDistanceAndDuration(g Graph, from nodeID, to nodeID, distance, du
 	*distance += g.Edge(from, to).distance
 	*duration += g.Edge(from, to).duration + g.Node(to).chargeTime
 
+}
+
+// There will be multiple remaning range for destination node for multiple solutions
+// For example:
+// Solution 1: via station 111 -> station 222 -> Destination with remaning range 123
+// Solution 2: via station 333 -> Destination with remaning range 45
+// We decide to re-calculate remaning range instead of create multiple virtual node for destination
+func calcRemaningRange(g Graph, lastStation nodeID) float64 {
+	var distance, duration float64
+	accumulateDistanceAndDuration(g, lastStation, g.EndNodeID(), &distance, &duration)
+	return calculateArrivalEnergy(g.Node(lastStation), distance)
 }
 
 func getChargeInfo(g Graph, n nodeID) chargeInfo {
