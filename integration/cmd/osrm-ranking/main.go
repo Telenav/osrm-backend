@@ -35,6 +35,7 @@ func main() {
 		glog.Errorf("Load nodes2way DB failed, err: %v", err)
 		return
 	}
+	monitorContents.Nodes2WayDB = nodes2wayDB.Statistics()
 
 	// prepare historical speeds if available
 	var hs *historicalspeed.Speeds
