@@ -66,10 +66,9 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if osrmResponse.Code == code.OK {
-
 		if err := h.retrieveWayIDs(osrmResponse.Routes); err != nil {
 			glog.Warning(err)
-			fmt.Fprintf(w, "%v", err)
+			fmt.Fprintf(w, "Retrieve ways from nodes failed, err: %v", err)
 			return
 		}
 

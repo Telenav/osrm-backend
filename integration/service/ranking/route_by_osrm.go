@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
 	"github.com/Telenav/osrm-backend/integration/pkg/backend"
@@ -14,6 +15,8 @@ func (h *Handler) routeByOSRM(osrmRequest *route.Request) (*route.Response, int,
 	if osrmRequest == nil {
 		return nil, http.StatusBadRequest, fmt.Errorf("empty osrm request")
 	}
+
+	startTime := time.Now()
 
 	osrmRequestURL := "http://" + h.osrmBackend + osrmRequest.RequestURI()
 	glog.Infof("osrm request to backend: %s", osrmRequestURL)
@@ -33,8 +36,8 @@ func (h *Handler) routeByOSRM(osrmRequest *route.Request) (*route.Response, int,
 		glog.V(3).Info(resp.Body)
 		return nil, resp.StatusCode, err
 	}
-	glog.Infof("osrm response from backend, http status %d, response code %s, message %s, data_version %s",
-		resp.StatusCode, routeResponse.Code, routeResponse.Message, routeResponse.DataVersion)
+	glog.Infof("osrm response received from backend, http status %d, response code %s, message %s, data_version %s, takes %f seconds.",
+		resp.StatusCode, routeResponse.Code, routeResponse.Message, routeResponse.DataVersion, time.Now().Sub(startTime).Seconds())
 	glog.V(3).Infof("osrm response from backend: %v", routeResponse)
 
 	return &routeResponse, resp.StatusCode, nil
