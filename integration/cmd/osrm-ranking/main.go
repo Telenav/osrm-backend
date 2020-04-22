@@ -13,6 +13,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/traffic/historicalspeed"
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficcache"
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxyclient"
+	"github.com/Telenav/osrm-backend/integration/util/waysnodes/nodes2wayblotdb"
 	"github.com/Telenav/osrm-backend/integration/wayid2nodeids"
 
 	"github.com/golang/glog"
@@ -27,6 +28,13 @@ func main() {
 	monitorContents := newMonitorContents()
 	monitorContents.CmdlineArgs = os.Args
 	monitorContents.TrafficCacheMonitorContents.Name = "traffic cache(indexed by edge)"
+
+	// prepare nodes2way
+	nodes2wayDB, err := nodes2wayblotdb.Open(flags.nodes2WayDB, true)
+	if err != nil {
+		glog.Errorf("Load nodes2way DB failed, err: %v", err)
+		return
+	}
 
 	// prepare historical speeds if available
 	var hs *historicalspeed.Speeds
@@ -89,7 +97,7 @@ func main() {
 	})
 
 	//start ranking service
-	rankingService := ranking.New(flags.osrmBackendEndpoint, trafficCache)
+	rankingService := ranking.New(flags.osrmBackendEndpoint, nodes2wayDB, trafficCache)
 	mux.Handle("/route/v1/driving/", rankingService)
 
 	// listen

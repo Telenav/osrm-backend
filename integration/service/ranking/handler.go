@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Telenav/osrm-backend/integration/util/waysnodes"
+
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/code"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route/options"
@@ -17,18 +19,20 @@ import (
 
 // Handler represents a handler for ranking.
 type Handler struct {
-	trafficInquirer livetraffic.QuerierByEdge
-	osrmBackend     string
+	nodes2WayQuerier waysnodes.WaysQuerier
+	trafficInquirer  livetraffic.QuerierByEdge
+	osrmBackend      string
 }
 
 // New creates a new handler for ranking.
-func New(osrmBackend string, trafficInquirer livetraffic.QuerierByEdge) *Handler {
-	if trafficInquirer == nil {
-		glog.Fatal("nil traffic inquirer")
+func New(osrmBackend string, nodes2WayQuerier waysnodes.WaysQuerier, trafficInquirer livetraffic.QuerierByEdge) *Handler {
+	if nodes2WayQuerier == nil {
+		glog.Fatal("nil nodes2WayQuerier")
 		return nil
 	}
 
 	return &Handler{
+		nodes2WayQuerier,
 		trafficInquirer,
 		osrmBackend,
 	}
@@ -54,16 +58,25 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	// route against backend OSRM
 	osrmResponse, osrmHTTPStatus, err := h.routeByOSRM(osrmRequest)
+	w.WriteHeader(osrmHTTPStatus)
 	if err != nil {
 		glog.Warning(err)
-		w.WriteHeader(osrmHTTPStatus)
 		fmt.Fprintf(w, "%v", err)
 		return
 	}
 
 	if osrmResponse.Code == code.OK {
-		// update speeds,durations,datasources by traffic
-		osrmResponse.Routes = h.updateRoutesByTraffic(osrmResponse.Routes)
+
+		if err := h.retrieveWayIDs(osrmResponse.Routes); err != nil {
+			glog.Warning(err)
+			fmt.Fprintf(w, "%v", err)
+			return
+		}
+
+		if h.trafficInquirer != nil {
+			// update speeds,durations,datasources by traffic
+			osrmResponse.Routes = h.updateRoutesByTraffic(osrmResponse.Routes)
+		}
 
 		// rank
 		osrmResponse.Routes = rankbyduration.Rank(osrmResponse.Routes)
@@ -76,6 +89,5 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// return
-	w.WriteHeader(osrmHTTPStatus)
 	json.NewEncoder(w).Encode(osrmResponse)
 }
