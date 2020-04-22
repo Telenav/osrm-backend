@@ -57,6 +57,7 @@ type Annotation struct {
 	Duration    []float64 `json:"duration,omitempty"`
 	DataSources []int     `json:"datasources,omitempty"`
 	Nodes       []int64   `json:"nodes,omitempty"`
+	Ways        []int64   `json:"ways,omitempty"` // NOT osrm original
 	Weight      []float64 `json:"weight,omitempty"`
 	Speed       []float64 `json:"speed,omitempty"`
 	Metadata    *Metadata `json:"metadata,omitempty"`
