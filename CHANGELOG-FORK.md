@@ -8,6 +8,7 @@ Changes from v10.2.0
   - CHANGED `osrm-ranking` parsing of OSRM route response to compatible with `string` array `annotation/nodes` [#296](https://github.com/Telenav/osrm-backend/pull/296)     
 - Performance:    
 - Tools:    
+  - ADDED `merge=union` for resolving merge conflicits automatically on `CHANGELOG-FORK.md` []()
 - Docs:    
 
 
