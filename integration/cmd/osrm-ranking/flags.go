@@ -28,9 +28,9 @@ func init() {
 	flag.StringVar(&flags.nodes2WayDB, "nodes2way", "nodes2way.db", "BoltDB for querying wayIDs from nodeIDs.")
 
 	flag.BoolVar(&flags.liveTraffic, "live-traffic", false, "Enable live traffic. ")
-	flag.BoolVar(&flags.historicalSpeed, "hs", false, "Enable historical speed. The historical speed related files won't be loaded if disabled.")
-	flag.StringVar(&flags.historicalSpeedDailyPatternFile, "hs-dailypattern", "", "Historical speed daily patterns csv file.")
-	flag.StringVar(&flags.historicalSpeedWaysMappingFile, "hs-waysmapping", "", "Historical speed wayIDs to daily patterns mapping csv file. Pass in multiple files separated by ','.")
+	flag.BoolVar(&flags.historicalSpeed, "historical-speed", false, "Enable historical speed. The historical speed related files won't be loaded if disabled.")
+	flag.StringVar(&flags.historicalSpeedDailyPatternFile, "historical-speed-dailypattern", "", "Historical speed daily patterns csv file.")
+	flag.StringVar(&flags.historicalSpeedWaysMappingFile, "historical-speed-waysmapping", "", "Historical speed wayIDs to daily patterns mapping csv file. Pass in multiple files separated by ','.")
 
 	flag.StringVar(&flags.trafficApplyingModel, "traffic-applying-model", modelfactory.DefaultModelName(), "Model to apply traffic on route, options: "+strings.Join(modelfactory.AvailableModelNames(), ","))
 
