@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Telenav/osrm-backend/integration/service/ranking/trafficapplyingmodel"
+
 	"github.com/Telenav/osrm-backend/integration/util/waysnodes"
 
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/code"
@@ -13,19 +15,19 @@ import (
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route/options"
 	"github.com/Telenav/osrm-backend/integration/service/ranking/strategy/rankbyduration"
 
-	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic"
 	"github.com/golang/glog"
 )
 
 // Handler represents a handler for ranking.
 type Handler struct {
 	nodes2WayQuerier waysnodes.WaysQuerier
-	trafficQuerier   livetraffic.Querier
-	osrmBackend      string
+	trafficApplier   trafficapplyingmodel.Applier
+
+	osrmBackend string
 }
 
 // New creates a new handler for ranking.
-func New(osrmBackend string, nodes2WayQuerier waysnodes.WaysQuerier, trafficQuerier livetraffic.Querier) *Handler {
+func New(osrmBackend string, nodes2WayQuerier waysnodes.WaysQuerier, trafficApplier trafficapplyingmodel.Applier) *Handler {
 	if nodes2WayQuerier == nil {
 		glog.Fatal("nil nodes2WayQuerier")
 		return nil
@@ -33,7 +35,7 @@ func New(osrmBackend string, nodes2WayQuerier waysnodes.WaysQuerier, trafficQuer
 
 	return &Handler{
 		nodes2WayQuerier,
-		trafficQuerier,
+		trafficApplier,
 		osrmBackend,
 	}
 }
@@ -72,9 +74,14 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		if h.trafficQuerier != nil {
+		if h.trafficApplier != nil {
 			// update speeds,durations,datasources by traffic
-			osrmResponse.Routes = h.updateRoutesByTraffic(osrmResponse.Routes)
+			osrmResponse.Routes, err = h.updateRoutesByTraffic(osrmResponse.Routes)
+			if err != nil {
+				glog.Warning(err)
+				fmt.Fprintf(w, "Apply traffic on routes failed, err: %v", err)
+				return
+			}
 		}
 
 		// rank

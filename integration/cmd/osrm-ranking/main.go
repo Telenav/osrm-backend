@@ -10,6 +10,8 @@ import (
 	"time"
 
 	"github.com/Telenav/osrm-backend/integration/service/ranking"
+	"github.com/Telenav/osrm-backend/integration/service/ranking/trafficapplyingmodel"
+	"github.com/Telenav/osrm-backend/integration/service/ranking/trafficapplyingmodel/modelfactory"
 	"github.com/Telenav/osrm-backend/integration/traffic/historicalspeed"
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficcache"
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxyclient"
@@ -51,7 +53,7 @@ func main() {
 	// prepare traffic cache
 	var liveTrafficCache *trafficcache.Cache
 	if flags.liveTraffic {
-		liveTrafficCache := trafficcache.New()
+		liveTrafficCache = trafficcache.New()
 		feeder := trafficproxyclient.NewFeeder()
 		feeder.RegisterEaters(liveTrafficCache)
 		go func() {
@@ -87,7 +89,16 @@ func main() {
 	})
 
 	//start ranking service
-	rankingService := ranking.New(flags.osrmBackendEndpoint, nodes2wayDB, liveTrafficCache)
+	var trafficApplier trafficapplyingmodel.Applier
+	if liveTrafficCache != nil || hs != nil {
+		var err error
+		trafficApplier, err = modelfactory.NewApplier(flags.trafficApplyingModel, liveTrafficCache, hs)
+		if err != nil {
+			glog.Errorf("New traffic applying model failed, err %v", err)
+			return
+		}
+	}
+	rankingService := ranking.New(flags.osrmBackendEndpoint, nodes2wayDB, trafficApplier)
 	mux.Handle("/route/v1/driving/", rankingService)
 
 	// listen
