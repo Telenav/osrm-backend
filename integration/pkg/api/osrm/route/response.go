@@ -53,14 +53,18 @@ type Waypoint struct {
 
 // Annotation of the whole route leg with fine-grained information about each segment or node id.
 type Annotation struct {
-	Distance    []float64 `json:"distance,omitempty"`
-	Duration    []float64 `json:"duration,omitempty"`
-	DataSources []int     `json:"datasources,omitempty"`
-	Nodes       []int64   `json:"nodes,omitempty"`
-	Ways        []int64   `json:"ways,omitempty"` // NOT osrm original
-	Weight      []float64 `json:"weight,omitempty"`
-	Speed       []float64 `json:"speed,omitempty"`
-	Metadata    *Metadata `json:"metadata,omitempty"`
+	Distance         []float64 `json:"distance,omitempty"`
+	Duration         []float64 `json:"duration,omitempty"`
+	DataSources      []int     `json:"datasources,omitempty"`
+	Nodes            []int64   `json:"nodes,omitempty"`
+	Ways             []int64   `json:"ways,omitempty"` // NOT osrm original
+	Weight           []float64 `json:"weight,omitempty"`
+	Speed            []float64 `json:"speed,omitempty"`
+	LiveTrafficSpeed []float64 `json:"live_traffic_speed,omitempty"` // NOT osrm original
+	LiveTrafficLevel []int     `json:"live_traffic_level,omitempty"` // NOT osrm original
+	BlockIncident    []bool    `json:"block_incident,omitempty"`     // NOT osrm original
+	HistoricalSpeed  []float64 `json:"historical_speed,omitempty"`   // NOT osrm original
+	Metadata         *Metadata `json:"metadata,omitempty"`
 }
 
 // Metadata related to other annotations
@@ -74,14 +78,18 @@ func (a *Annotation) UnmarshalJSON(bs []byte) error {
 
 	// A temporary type that uses json.Number instead of int64
 	var tmp struct {
-		Distance    []float64     `json:"distance,omitempty"`
-		Duration    []float64     `json:"duration,omitempty"`
-		DataSources []int         `json:"datasources,omitempty"`
-		Nodes       []json.Number `json:"nodes,omitempty"`
-		Ways        []int64       `json:"ways,omitempty"` // NOT osrm original
-		Weight      []float64     `json:"weight,omitempty"`
-		Speed       []float64     `json:"speed,omitempty"`
-		Metadata    *Metadata     `json:"metadata,omitempty"`
+		Distance         []float64     `json:"distance,omitempty"`
+		Duration         []float64     `json:"duration,omitempty"`
+		DataSources      []int         `json:"datasources,omitempty"`
+		Nodes            []json.Number `json:"nodes,omitempty"`
+		Ways             []int64       `json:"ways,omitempty"` // NOT osrm original
+		Weight           []float64     `json:"weight,omitempty"`
+		Speed            []float64     `json:"speed,omitempty"`
+		LiveTrafficSpeed []float64     `json:"live_traffic_speed,omitempty"` // NOT osrm original
+		LiveTrafficLevel []int         `json:"live_traffic_level,omitempty"` // NOT osrm original
+		BlockIncident    []bool        `json:"block_incident,omitempty"`     // NOT osrm original
+		HistoricalSpeed  []float64     `json:"historical_speed,omitempty"`   // NOT osrm original
+		Metadata         *Metadata     `json:"metadata,omitempty"`
 	}
 
 	// Unmarshal into the temporary
