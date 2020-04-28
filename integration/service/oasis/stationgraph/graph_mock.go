@@ -1126,7 +1126,7 @@ func (graph *mockGraph) Edge(from, to nodeID) *edgeMetric {
 		if ok {
 			for _, edge := range edges {
 				if edge.edgeId.toNodeID == to {
-					return edge.edgeData
+					return edge.edgeMetric
 				}
 			}
 		}

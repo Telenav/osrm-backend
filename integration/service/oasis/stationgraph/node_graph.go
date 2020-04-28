@@ -13,7 +13,7 @@ type edgeID2EdgeData map[edgeID]*edgeMetric
 type nodeGraph struct {
 	nodeContainer *nodeContainer
 	adjacentList  nodeID2AdjacentNodes
-	edgeData      edgeID2EdgeData
+	edgeMetric    edgeID2EdgeData
 	startNodeID   nodeID
 	endNodeID     nodeID
 	strategy      chargingstrategy.Strategy
@@ -25,7 +25,7 @@ func NewNodeGraph(strategy chargingstrategy.Strategy, query connectivitymap.Quer
 	return &nodeGraph{
 		nodeContainer: newNodeContainer(),
 		adjacentList:  make(nodeID2AdjacentNodes),
-		edgeData:      make(edgeID2EdgeData),
+		edgeMetric:    make(edgeID2EdgeData),
 		startNodeID:   invalidNodeID,
 		endNodeID:     invalidNodeID,
 		strategy:      strategy,
@@ -63,7 +63,7 @@ func (g *nodeGraph) Edge(from, to nodeID) *edgeMetric {
 		toNodeID:   to,
 	}
 
-	return g.edgeData[edgeID]
+	return g.edgeMetric[edgeID]
 }
 
 // SetStart generates start node for the nodeGraph
@@ -115,7 +115,7 @@ func (g *nodeGraph) createLogicalNodes(from nodeID, toStationID string, toLocati
 	endNodeID := g.EndNodeID()
 	if toStationID == g.StationID(endNodeID) {
 		results = append(results, g.Node(endNodeID))
-		g.edgeData[edgeID{from, endNodeID}] = &edgeMetric{
+		g.edgeMetric[edgeID{from, endNodeID}] = &edgeMetric{
 			distance: distance,
 			duration: duration}
 		return results
@@ -127,7 +127,7 @@ func (g *nodeGraph) createLogicalNodes(from nodeID, toStationID string, toLocati
 			Lon: toLocation.Lon})
 		results = append(results, n)
 
-		g.edgeData[edgeID{from, n.id}] = &edgeMetric{
+		g.edgeMetric[edgeID{from, n.id}] = &edgeMetric{
 			distance: distance,
 			duration: duration}
 	}

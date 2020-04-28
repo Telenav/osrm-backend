@@ -11,6 +11,6 @@ type edgeMetric struct {
 }
 
 type edge struct {
-	edgeId   edgeID
-	edgeData *edgeMetric
+	edgeId     edgeID
+	edgeMetric *edgeMetric
 }
