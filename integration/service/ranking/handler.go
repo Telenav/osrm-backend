@@ -10,6 +10,7 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/util/waysnodes"
 
+	"github.com/Telenav/osrm-backend/integration/pkg/api"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/code"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route/options"
@@ -52,6 +53,10 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// support traffic options on the fly
+	originalRequestValues := api.ParseQueryDiscardError(req.URL.RawQuery)
+	enableLiveTraffic, enableHistoricalSpeed := parseTrafficOptions(originalRequestValues.Get(liveTrafficQueryKey), originalRequestValues.Get(historicalSpeedQueryKey))
+
 	// modify
 	originalAlternativesNum := osrmRequest.AlternativesNumber()
 	originalAnnotations := osrmRequest.Annotations
@@ -76,7 +81,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 		if h.trafficApplier != nil {
 			// update speeds,durations,datasources by traffic
-			osrmResponse.Routes, err = h.updateRoutesByTraffic(osrmResponse.Routes)
+			osrmResponse.Routes, err = h.updateRoutesByTraffic(osrmResponse.Routes, enableLiveTraffic, enableHistoricalSpeed)
 			if err != nil {
 				glog.Warning(err)
 				fmt.Fprintf(w, "Apply traffic on routes failed, err: %v", err)
