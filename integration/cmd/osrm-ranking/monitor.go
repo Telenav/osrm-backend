@@ -14,10 +14,9 @@ type monitorContents struct {
 }
 
 type trafficCacheMonitorContents struct {
-	Flows                  int64 `json:"flows"`
-	Incidents              int   `json:"block_incidents"`
-	IncidentsAffectedWays  int   `json:"incidents_affected_ways"`
-	IncidentsAffectedEdges int   `json:"incidents_affected_edges"`
+	Flows                 int64 `json:"flows"`
+	Incidents             int   `json:"block_incidents"`
+	IncidentsAffectedWays int   `json:"incidents_affected_ways"`
 }
 
 type historicalSpeedMonitorContents struct {

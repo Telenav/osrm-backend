@@ -79,9 +79,10 @@ func main() {
 		if liveTrafficCache != nil {
 			monitorContents.TrafficCacheMonitorContents.Flows = liveTrafficCache.Flows.Count()
 			monitorContents.TrafficCacheMonitorContents.Incidents = liveTrafficCache.Incidents.Count()
-			glog.Infof("monitor live traffic, [flows] %d, [incidents] blocking-only %d, affectedways %d affectededges %d",
+			monitorContents.TrafficCacheMonitorContents.IncidentsAffectedWays = liveTrafficCache.Incidents.AffectedWaysCount()
+			glog.Infof("monitor live traffic, [flows] %d, [incidents] blocking-only %d, affectedways %d.",
 				monitorContents.TrafficCacheMonitorContents.Flows,
-				monitorContents.TrafficCacheMonitorContents.Incidents, monitorContents.TrafficCacheMonitorContents.IncidentsAffectedWays, monitorContents.TrafficCacheMonitorContents.IncidentsAffectedEdges)
+				monitorContents.TrafficCacheMonitorContents.Incidents, monitorContents.TrafficCacheMonitorContents.IncidentsAffectedWays)
 		}
 
 		w.WriteHeader(http.StatusOK)
