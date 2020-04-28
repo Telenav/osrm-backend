@@ -38,16 +38,16 @@ func main() {
 	monitorContents.Nodes2WayDB = nodes2wayDB.Statistics()
 
 	// prepare historical speeds if available
-	var hs *historicalspeed.Speeds
+	var historicalSpeedCache *historicalspeed.Speeds
 	if flags.historicalSpeed {
-		hs = historicalspeed.New(strings.Split(flags.historicalSpeedDailyPatternFile, ","), strings.Split(flags.historicalSpeedWaysMappingFile, ","))
-		if err := hs.Load(); err != nil {
+		historicalSpeedCache = historicalspeed.New(strings.Split(flags.historicalSpeedDailyPatternFile, ","), strings.Split(flags.historicalSpeedWaysMappingFile, ","))
+		if err := historicalSpeedCache.Load(); err != nil {
 			glog.Errorf("Load historical speed failed, err: %v", err)
 			return
 		}
-		glog.Infof("Historical speeds loaded: daily patterns count %d, ways(directed) count %d.", hs.DailyPatternsCount(), hs.WaysCount())
-		monitorContents.HistoricalSpeedMonitorContents.DailyPatterns = hs.DailyPatternsCount()
-		monitorContents.HistoricalSpeedMonitorContents.Way2PatternsMapping = hs.WaysCount()
+		glog.Infof("Historical speeds loaded: daily patterns count %d, ways(directed) count %d.", historicalSpeedCache.DailyPatternsCount(), historicalSpeedCache.WaysCount())
+		monitorContents.HistoricalSpeedMonitorContents.DailyPatterns = historicalSpeedCache.DailyPatternsCount()
+		monitorContents.HistoricalSpeedMonitorContents.Way2PatternsMapping = historicalSpeedCache.WaysCount()
 	}
 
 	// prepare traffic cache
@@ -91,9 +91,9 @@ func main() {
 
 	//start ranking service
 	var trafficApplier trafficapplyingmodel.Applier
-	if liveTrafficCache != nil || hs != nil {
+	if liveTrafficCache != nil || historicalSpeedCache != nil {
 		var err error
-		trafficApplier, err = modelfactory.NewApplier(flags.trafficApplyingModel, liveTrafficCache, hs)
+		trafficApplier, err = modelfactory.NewApplier(flags.trafficApplyingModel, liveTrafficCache, historicalSpeedCache)
 		if err != nil {
 			glog.Errorf("New traffic applying model failed, err %v", err)
 			return
