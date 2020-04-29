@@ -29,7 +29,7 @@ if [ "$1" = 'routed_startup' ] || [ "$1" = 'routed_blocking_traffic_startup' ]; 
   fi
 
   cd ${DATA_PATH}
-  ${BUILD_PATH}/osrm-traffic-updater -c ${TRAFFIC_PROXY_IP} -m ${WAYID2NODEIDS_MAPPING_FILE_COMPRESSED} -f ${TRAFFIC_FILE} -map ${MAP_PROVIDER} -traffic ${TRAFFIC_PROVIDER} -region ${REGION} ${BLOCKING_ONLY}
+  ${BUILD_PATH}/osrm-traffic-updater -c ${TRAFFIC_PROXY_IP} -m ${WAYID2NODEIDS_MAPPING_FILE}${SNAPPY_SUFFIX} -f ${TRAFFIC_FILE} -map ${MAP_PROVIDER} -traffic ${TRAFFIC_PROVIDER} -region ${REGION} ${BLOCKING_ONLY}
   ls -lh
   ${BUILD_PATH}/osrm-customize ${MAPDATA_NAME_WITH_SUFFIX}.osrm  --segment-speed-file ${TRAFFIC_FILE} ${OSRM_EXTRA_COMMAND} ${INCREMENTAL_CUSTOMIZE}
   ${BUILD_PATH}/osrm-routed ${MAPDATA_NAME_WITH_SUFFIX}.osrm ${OSRM_ROUTED_STARTUP_COMMAND} &
