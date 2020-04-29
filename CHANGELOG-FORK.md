@@ -11,6 +11,7 @@ Changes from v10.2.0
 - Performance:    
 - Tools:    
   - ADDED `merge=union` for resolving merge conflicits automatically on `CHANGELOG-FORK.md` [#305](https://github.com/Telenav/osrm-backend/pull/305)
+  - ADDED automatically data compiliation and publish `telenavmap/osrm-backend-within-mapdata` [#313](https://github.com/Telenav/osrm-backend/pull/313)
 - Docs:    
 
 
