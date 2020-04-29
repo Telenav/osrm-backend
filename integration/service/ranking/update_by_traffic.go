@@ -3,7 +3,6 @@ package ranking
 import (
 	"math"
 
-	"github.com/Telenav/osrm-backend/integration/graph"
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
 	"github.com/golang/glog"
 )
@@ -49,26 +48,13 @@ func (h *Handler) updateLegByTraffic(leg *route.Leg) {
 		glog.Error("empty leg")
 		return
 	}
-	edges := nodesToEdges(leg.Annotation.Nodes)
-	edgesCount := len(edges)
-	if len(leg.Annotation.Distance) != edgesCount ||
-		len(leg.Annotation.Duration) != edgesCount ||
-		len(leg.Annotation.Speed) != edgesCount ||
-		len(leg.Annotation.Weight) != edgesCount ||
-		len(leg.Annotation.DataSources) != edgesCount {
+	waysCount := len(leg.Annotation.Ways)
+	if len(leg.Annotation.Distance) != waysCount ||
+		len(leg.Annotation.Duration) != waysCount ||
+		len(leg.Annotation.Speed) != waysCount ||
+		len(leg.Annotation.Weight) != waysCount ||
+		len(leg.Annotation.DataSources) != waysCount {
 		glog.Errorf("annotation counts not match")
-		return
-	}
-
-	if blocked, _ := h.trafficInquirer.EdgesBlockedByIncidents(edges); blocked {
-		glog.Warningf("leg blocked by incident, set duration to infinity")
-		leg.Duration = math.Inf(0)
-		leg.Weight = math.Inf(0)
-		return
-	}
-	flows := h.trafficInquirer.QueryFlows(edges)
-	if len(flows) != edgesCount {
-		glog.Fatalf("query flow return count %d doesn't match edges count %d", len(flows), edgesCount)
 		return
 	}
 
@@ -76,14 +62,24 @@ func (h *Handler) updateLegByTraffic(leg *route.Leg) {
 	trafficDataSourceNameIndex := len(leg.Annotation.Metadata.DataSourceNames)
 	var sumOriginalAnnotationDuration, sumOriginalAnnotationDistance, sumOriginalAnnotationWeight float64
 	var newLegDuration, newLegWeight float64
-	for i := range flows {
+	for i := 0; i < waysCount; i++ {
 		sumOriginalAnnotationDistance += leg.Annotation.Distance[i]
 		sumOriginalAnnotationDuration += leg.Annotation.Duration[i]
 		sumOriginalAnnotationWeight += leg.Annotation.Weight[i]
 
-		if flows[i] != nil {
-			if flows[i].IsBlocking() {
-				glog.Warningf("leg blocked by flow, set duration to infinity")
+		wayID := leg.Annotation.Ways[i]
+
+		if h.trafficQuerier.BlockedByIncident(wayID) {
+			glog.Warningf("way %d on leg blocked by incident, set duration to infinity", wayID)
+			leg.Duration = math.Inf(0)
+			leg.Weight = math.Inf(0)
+			return
+		}
+
+		flow := h.trafficQuerier.QueryFlow(wayID)
+		if flow != nil {
+			if flow.IsBlocking() {
+				glog.Warningf("way %d on leg blocked by flow %v, set duration to infinity", wayID, flow)
 				leg.Duration = math.Inf(0)
 				leg.Weight = math.Inf(0)
 				return // exit the update once found blocking flow
@@ -91,7 +87,7 @@ func (h *Handler) updateLegByTraffic(leg *route.Leg) {
 
 			validFlowsCount++
 			leg.Annotation.DataSources[i] = trafficDataSourceNameIndex
-			leg.Annotation.Speed[i] = float64(flows[i].Speed)
+			leg.Annotation.Speed[i] = float64(flow.Speed)
 			leg.Annotation.Duration[i] = leg.Annotation.Distance[i] / leg.Annotation.Speed[i] // not include turn duration
 			leg.Annotation.Weight[i] = leg.Annotation.Distance[i] / leg.Annotation.Speed[i]   // not include turn weight
 		}
@@ -104,23 +100,13 @@ func (h *Handler) updateLegByTraffic(leg *route.Leg) {
 	legTurnWeight := leg.Weight - sumOriginalAnnotationWeight
 	newLegDuration += legTurnDuration
 	newLegWeight += legTurnWeight
-	glog.V(2).Infof("leg edges count %d, leg distance %f(%f sum by annotation), valid flows count %d, duration,weight %f,%f(%f,%f sum by annotation, %f,%f on turn) -> %f,%f (reduced %f,%f)",
-		edgesCount, leg.Distance, sumOriginalAnnotationDistance, validFlowsCount,
+	glog.V(2).Infof("leg ways count %d, leg distance %f(%f sum by annotation), valid flows count %d, duration,weight %f,%f(%f,%f sum by annotation, %f,%f on turn) -> %f,%f (reduced %f,%f)",
+		waysCount, leg.Distance, sumOriginalAnnotationDistance, validFlowsCount,
 		leg.Duration, leg.Weight, sumOriginalAnnotationDuration, sumOriginalAnnotationWeight, legTurnDuration, legTurnWeight, newLegDuration, newLegWeight, leg.Duration-newLegDuration, leg.Weight-newLegWeight)
 
 	if validFlowsCount > 0 {
-		leg.Annotation.Metadata.DataSourceNames = append(leg.Annotation.Metadata.DataSourceNames, "traffic cache")
+		leg.Annotation.Metadata.DataSourceNames = append(leg.Annotation.Metadata.DataSourceNames, "live traffic")
 		leg.Duration = newLegDuration
 		leg.Weight = newLegWeight
 	}
-}
-
-func nodesToEdges(nodes []int64) []graph.Edge {
-	edges := []graph.Edge{}
-
-	for i := 0; i < len(nodes)-1; i++ {
-		edges = append(edges, graph.Edge{From: nodes[i], To: nodes[i+1]})
-	}
-
-	return edges
 }

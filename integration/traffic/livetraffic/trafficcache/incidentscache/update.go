@@ -24,15 +24,9 @@ func (c *Cache) unsafeUpdate(incident *trafficproxy.Incident) {
 			return // ignore older incident
 		}
 		c.unsafeDeleteWayIDsBlockedByIncidentID(incidentInCache.AffectedWayIDs, incidentInCache.IncidentID)
-		if c.wayID2Edges != nil && c.edgeBlockedByIncidentIDs != nil {
-			c.unsafeDeleteEdgesBlockedByIncidentID(incidentInCache.AffectedWayIDs, incidentInCache.IncidentID)
-		}
 	}
 	c.incidents[incident.IncidentID] = incident
 	c.unsafeAddWayIDsBlockedByIncidentID(incident.AffectedWayIDs, incident.IncidentID)
-	if c.wayID2Edges != nil && c.edgeBlockedByIncidentIDs != nil {
-		c.unsafeAddEdgesBlockedByIncidentID(incident.AffectedWayIDs, incident.IncidentID)
-	}
 }
 
 func (c *Cache) unsafeDelete(incident *trafficproxy.Incident) {
@@ -44,9 +38,6 @@ func (c *Cache) unsafeDelete(incident *trafficproxy.Incident) {
 	incidentInCache, foundIncidentInCache := c.incidents[incident.IncidentID]
 	if foundIncidentInCache {
 		c.unsafeDeleteWayIDsBlockedByIncidentID(incidentInCache.AffectedWayIDs, incidentInCache.IncidentID)
-		if c.wayID2Edges != nil && c.edgeBlockedByIncidentIDs != nil {
-			c.unsafeDeleteEdgesBlockedByIncidentID(incidentInCache.AffectedWayIDs, incidentInCache.IncidentID)
-		}
 		delete(c.incidents, incident.IncidentID)
 	}
 }
@@ -70,37 +61,6 @@ func (c *Cache) unsafeAddWayIDsBlockedByIncidentID(wayIDs []int64, incidentID st
 		}
 		c.wayIDBlockedByIncidentIDs[wayID] = map[string]struct{}{
 			incidentID: struct{}{},
-		}
-	}
-}
-
-func (c *Cache) unsafeDeleteEdgesBlockedByIncidentID(wayIDs []int64, incidentID string) {
-	for _, wayID := range wayIDs {
-		edges := c.wayID2Edges.WayID2Edges(wayID)
-
-		for _, edge := range edges {
-			if incidentIDs, ok := c.edgeBlockedByIncidentIDs[edge]; ok {
-				delete(incidentIDs, incidentID)
-				if len(incidentIDs) == 0 { // the edge doesn't blocked by incident anymore
-					delete(c.edgeBlockedByIncidentIDs, edge)
-				}
-			}
-		}
-	}
-}
-
-func (c *Cache) unsafeAddEdgesBlockedByIncidentID(wayIDs []int64, incidentID string) {
-	for _, wayID := range wayIDs {
-		edges := c.wayID2Edges.WayID2Edges(wayID)
-
-		for _, edge := range edges {
-			if incidentIDs, ok := c.edgeBlockedByIncidentIDs[edge]; ok {
-				incidentIDs[incidentID] = struct{}{} //will do nothing if it's already exist
-				continue
-			}
-			c.edgeBlockedByIncidentIDs[edge] = map[string]struct{}{
-				incidentID: struct{}{},
-			}
 		}
 	}
 }
