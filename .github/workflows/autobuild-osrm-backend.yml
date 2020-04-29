@@ -51,7 +51,7 @@ jobs:
     needs: build
     env:
       BUILT_OSRM_BACKEND_IMAGE_TAG: ${{ needs.build.outputs.image-tag }}
-      COMPILED_DATA_PATH: mapdata
+      COMPILED_DATA_PATH: map
       SAMPLE_PROFILE: profiles/car.lua
       SAMPLE_OSM_MAPDATA: https://download.geofabrik.de/north-america/us/nevada-latest.osm.pbf
     steps: 
@@ -71,7 +71,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Compile data
         run: |
-          cd ${{ env.OSRM_BACKEND_WITHIN_MAPDATA_DOCKERFILE_PATH }} && docker run --mount "src=$(pwd)/${{ env.COMPILED_DATA_PATH }},dst=/compiled-data,type=bind" "${{ env.DOCKERHUB_REGISTRY }}/${{ env.OSRM_BACKEND_IMAGE_NAME }}:${{ env.BUILT_OSRM_BACKEND_IMAGE_TAG }}" compile_mapdata "${{ env.SAMPLE_PROFILE }}" "${{ env.SAMPLE_OSM_MAPDATA }}" 
+          cd ${{ env.OSRM_BACKEND_WITHIN_MAPDATA_DOCKERFILE_PATH }} && mkdir -p ${{ env.COMPILED_DATA_PATH }} && docker run --mount "src=$(pwd)/${{ env.COMPILED_DATA_PATH }},dst=/compiled-data,type=bind" "${{ env.DOCKERHUB_REGISTRY }}/${{ env.OSRM_BACKEND_IMAGE_NAME }}:${{ env.BUILT_OSRM_BACKEND_IMAGE_TAG }}" compile_mapdata "${{ env.SAMPLE_PROFILE }}" "${{ env.SAMPLE_OSM_MAPDATA }}" 
       - name: Build & Publish osrm-backend-within-mapdata to DockerHub
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
