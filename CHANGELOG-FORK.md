@@ -6,6 +6,10 @@ Changes from v10.2.0
   - CHANGED for internal refactoring, moved `unidbpatch` and `mapsource` packages into `integration/util` folder [#300](https://github.com/Telenav/osrm-backend/pull/300)
   - CHANGED live traffic cache from edge indexed to way indexed in `osrm-ranking` [#303](https://github.com/Telenav/osrm-backend/pull/303)
   - REMOVED edge indexed live traffic cache in `osrm-ranking` [#308](https://github.com/Telenav/osrm-backend/pull/308)
+  - ADDED **HTTP API** `annotation/live_traffic_speed`, `annotation/live_traffic_level`, `annotation/block_incident`, `annotation/historical_speed` in OSRM route response after `osrm-ranking` process [#310](https://github.com/Telenav/osrm-backend/pull/310)    
+  - ADDED **HTTP API** query parameters `live_traffic=true/false`, `historical_speed=true/false` in request against `osrm-ranking` to support enable/disable traffic on the fly [#310](https://github.com/Telenav/osrm-backend/pull/310)      
+  - ADDED cmd parameter `-live-traffic` to enable/disable live traffic when startup `osrm-ranking` [#310](https://github.com/Telenav/osrm-backend/pull/310)      
+  - ADDED re-calculate `duration/weight` by traffic applying model `preferlivetraffic` in `osrm-ranking`, also support to use model `appendonly` by cmd parameter [#310](https://github.com/Telenav/osrm-backend/pull/310)    
 - Bugfix:    
   - CHANGED `osrm-ranking` parsing of OSRM route response to compatible with `string` array `annotation/nodes` [#296](https://github.com/Telenav/osrm-backend/pull/296)     
 - Performance:    
