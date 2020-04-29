@@ -4,6 +4,16 @@ on:
   push:
     branches:
     - '**'
+    paths:
+    - 'cmake/**'
+    - 'docker-orchestration/osrm-backend/**'
+    - 'fuzz/**'
+    - 'include/**'
+    - 'integration/**'
+    - 'profiles/**'
+    - 'src/**'
+    - 'third_party/**'
+    - 'unit_tests/**'
 
 env:
   DOCKERHUB_REGISTRY: telenavmap
