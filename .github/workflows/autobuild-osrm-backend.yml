@@ -4,16 +4,6 @@ on:
   push:
     branches:
     - '**'
-    paths:
-    - 'cmake/**'
-    - 'docker-orchestration/osrm-backend/**'
-    - 'fuzz/**'
-    - 'include/**'
-    - 'integration/**'
-    - 'profiles/**'
-    - 'src/**'
-    - 'third_party/**'
-    - 'unit_tests/**'
 
 env:
   IMAGE_NAME: osrm-backend
