@@ -6,9 +6,12 @@ on:
     - '**'
 
 env:
-  IMAGE_NAME: osrm-backend
-  DOCKERFILE_PATH: docker-orchestration/osrm-backend/
   DOCKERHUB_REGISTRY: telenavmap
+
+  OSRM_BACKEND_IMAGE_NAME: osrm-backend
+  OSRM_BACKEND_DOCKERFILE_PATH: docker-orchestration/osrm-backend/
+  OSRM_BACKEND_WITHIN_MAPDATA_IMAGE_NAME: osrm-backend-within-mapdata
+  OSRM_BACKEND_WITHIN_MAPDATA_DOCKERFILE_PATH: docker-orchestration/osrm-backend-within-mapdata/
 
 jobs:
 
@@ -17,17 +20,13 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       image-tag: ${{ steps.step-output-image-tag.outputs.output_var }}
-
     steps:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Set IMAGE_TAG env # env IMAGE_TAG=BranchName-CommitID-Timestamp
       run: echo ::set-env name=IMAGE_TAG::$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev )-$(echo ${GITHUB_SHA} | cut -c 1-7)-$(date -u +"%Y%m%d")
     - id: step-output-image-tag
-      run: echo "::set-output name=output_var::${{ env.IMAGE_TAG }}"
-    - name: Environment Printer
-      uses: managedkaos/print-env@v1.0
-      
+      run: echo "::set-output name=output_var::${{ env.IMAGE_TAG }}"      
     - name: Comma-separated image tags 
       run: echo ::set-env name=COMMA_SEPARATED_IMAGE_TAGS::${IMAGE_TAG}
     - name: Append latest if on master branch # env '${IMAGE_TAG},latest'
@@ -35,15 +34,14 @@ jobs:
       run: echo ::set-env name=COMMA_SEPARATED_IMAGE_TAGS::${COMMA_SEPARATED_IMAGE_TAGS},latest
     - name: Environment Printer
       uses: managedkaos/print-env@v1.0
-
     - name: Build & Publish to DockerHub
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
-        name: ${{ env.DOCKERHUB_REGISTRY }}/${{ env.IMAGE_NAME }}
+        name: ${{ env.DOCKERHUB_REGISTRY }}/${{ env.OSRM_BACKEND_IMAGE_NAME }}
         username: ${{ secrets.TELENAVMAP_DOCKERHUB_USERNAME }}
         password: ${{ secrets.TELENAVMAP_DOCKERHUB_TOKEN }}
         snapshot: false
-        workdir: ${{ env.DOCKERFILE_PATH }}
+        workdir: ${{ env.OSRM_BACKEND_DOCKERFILE_PATH }}
         tags: "${{ env.COMMA_SEPARATED_IMAGE_TAGS }}"
         buildargs: "GIT_COMMIT=${{ github.sha }},IMAGE_TAG=${{ env.IMAGE_TAG }}"
 
@@ -54,8 +52,6 @@ jobs:
     env:
       BUILT_OSRM_BACKEND_IMAGE_TAG: ${{ needs.build.outputs.image-tag }}
       COMPILED_DATA_PATH: mapdata
-      OSRM_BACKEND_WITHIN_MAPDATA_IMAGE_NAME: osrm-backend-within-mapdata
-      OSRM_BACKEND_WITHIN_MAPDATA_DOCKERFILE_PATH: docker-orchestration/osrm-backend/
       SAMPLE_PROFILE: profiles/car.lua
       SAMPLE_OSM_MAPDATA: https://download.geofabrik.de/north-america/us/nevada-latest.osm.pbf
     steps: 
@@ -75,7 +71,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Compile data
         run: |
-          cd ${{ env.OSRM_BACKEND_WITHIN_MAPDATA_DOCKERFILE_PATH }} && docker run --mount "src=$(pwd)/${{ env.COMPILED_DATA_PATH }},dst=/compiled-data,type=bind" "${{ env.DOCKERHUB_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image-tag }}" compile_mapdata "${{ env.SAMPLE_PROFILE }}" "${{ env.SAMPLE_OSM_MAPDATA }}" 
+          cd ${{ env.OSRM_BACKEND_WITHIN_MAPDATA_DOCKERFILE_PATH }} && docker run --mount "src=$(pwd)/${{ env.COMPILED_DATA_PATH }},dst=/compiled-data,type=bind" "${{ env.DOCKERHUB_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.BUILT_OSRM_BACKEND_IMAGE_TAG }}" compile_mapdata "${{ env.SAMPLE_PROFILE }}" "${{ env.SAMPLE_OSM_MAPDATA }}" 
       - name: Build & Publish osrm-backend-within-mapdata to DockerHub
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
