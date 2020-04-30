@@ -14,6 +14,7 @@ Changes from v10.2.0
   - ADDED re-calculate `duration/weight` by traffic applying model `preferlivetraffic` in `osrm-ranking`, also support to use model `appendonly` by cmd parameter [#310](https://github.com/Telenav/osrm-backend/pull/310)    
   - CHANGED for internal refactoring, move `integration/pkg/api` to `integration/api`, and `integration/pkg/backend` to `integration/util/backend` [#315](https://github.com/Telenav/osrm-backend/pull/315)
 
+  - CHANGED for internal refactoring, rename `cmd/osrm-ranking` to `cmd/osrm-rankd` []()
 - Bugfix:    
   - CHANGED `osrm-ranking` parsing of OSRM route response to compatible with `string` array `annotation/nodes` [#296](https://github.com/Telenav/osrm-backend/pull/296)     
   - FIXED wrong variable `docker-entrypoint.sh` [#311](https://github.com/Telenav/osrm-backend/pull/311)
