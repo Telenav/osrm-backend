@@ -12,7 +12,7 @@ Changes from v10.2.0
   - ADDED **HTTP API** query parameters `live_traffic=true/false`, `historical_speed=true/false` in request against `osrm-ranking` to support enable/disable traffic on the fly [#310](https://github.com/Telenav/osrm-backend/pull/310)      
   - ADDED cmd parameter `-live-traffic` to enable/disable live traffic when startup `osrm-ranking` [#310](https://github.com/Telenav/osrm-backend/pull/310)      
   - ADDED re-calculate `duration/weight` by traffic applying model `preferlivetraffic` in `osrm-ranking`, also support to use model `appendonly` by cmd parameter [#310](https://github.com/Telenav/osrm-backend/pull/310)    
-  - CHANGED for internal refactoring, move `integration/pkg/api` to `integration/api`, and `integration/pkg/backend` to `integration/util/backend` []()
+  - CHANGED for internal refactoring, move `integration/pkg/api` to `integration/api`, and `integration/pkg/backend` to `integration/util/backend` [#315](https://github.com/Telenav/osrm-backend/pull/315)
 
 - Bugfix:    
   - CHANGED `osrm-ranking` parsing of OSRM route response to compatible with `string` array `annotation/nodes` [#296](https://github.com/Telenav/osrm-backend/pull/296)     
