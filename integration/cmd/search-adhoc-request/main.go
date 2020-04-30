@@ -8,7 +8,7 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/api/search/nearbychargestation"
 	"github.com/Telenav/osrm-backend/integration/api/search/searchcoordinate"
-	"github.com/Telenav/osrm-backend/integration/pkg/backend"
+	"github.com/Telenav/osrm-backend/integration/util/backend"
 )
 
 func main() {

@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/Telenav/osrm-backend/integration/api/osrm/route"
-	"github.com/Telenav/osrm-backend/integration/pkg/backend"
+	"github.com/Telenav/osrm-backend/integration/util/backend"
 	"github.com/golang/glog"
 )
 
