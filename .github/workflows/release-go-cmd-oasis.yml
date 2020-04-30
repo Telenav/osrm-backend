@@ -19,10 +19,19 @@ jobs:
         goarch: [amd64]
     steps:
     - uses: actions/checkout@v2
-    - uses: wangyoucao577/go-release-action@v1.2
+    
+    - name: Set APP_VERSION env
+      run: echo ::set-env name=APP_VERSION::$(basename ${GITHUB_REF})
+    - name: Set BUILD_TIME env
+      run: echo ::set-env name=BUILD_TIME::$(date --iso-8601=seconds)
+    - name: Environment Printer
+      uses: managedkaos/print-env@v1.0
+
+    - uses: wangyoucao577/go-release-action@v1.4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         goos: ${{ matrix.goos }}
         goarch: ${{ matrix.goarch }}
         project_path: "${{ env.CMD_PATH }}"
         binary_name: "${{ env.BINARY_NAME }}"
+        ldflags: -X "main.appVersion=${{ env.APP_VERSION }}" -X "main.buildTime=${{ env.BUILD_TIME }}" -X main.gitCommit=${{ github.sha }}
