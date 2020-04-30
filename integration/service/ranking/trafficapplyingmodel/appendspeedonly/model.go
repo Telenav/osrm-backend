@@ -15,7 +15,7 @@ import (
 
 // Name represents the name of traffic applying model.
 func Name() string {
-	return "append-only"
+	return "append-speed-only"
 }
 
 // Model represents the model of applying traffic.
