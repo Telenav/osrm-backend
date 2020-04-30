@@ -1,5 +1,5 @@
 // Package preferlivetraffic re-calculate duration/weight for a route, prefer to use live traffic, if no live traffic on a way then use historical speed, otherwise use the speed from Lua profile.
-// Both live traffic and historical speed will be appended to annotations on a OSRM route, same as what package appendonly provides.
+// Both live traffic and historical speed will be appended to annotations on a OSRM route, same as what package appendspeedonly provides.
 package preferlivetraffic
 
 import (
@@ -10,7 +10,7 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
 	"github.com/Telenav/osrm-backend/integration/service/ranking/trafficapplyingmodel"
-	"github.com/Telenav/osrm-backend/integration/service/ranking/trafficapplyingmodel/appendonly"
+	"github.com/Telenav/osrm-backend/integration/service/ranking/trafficapplyingmodel/appendspeedonly"
 	"github.com/Telenav/osrm-backend/integration/traffic"
 	"github.com/golang/glog"
 )
@@ -25,7 +25,7 @@ type Model struct {
 	traffic.LiveTrafficQuerier
 	traffic.HistoricalSpeedQuerier
 
-	appendOnly *appendonly.Model
+	appendOnly *appendspeedonly.Model
 }
 
 // New creates a new model object.
@@ -34,7 +34,7 @@ func New(l traffic.LiveTrafficQuerier, h traffic.HistoricalSpeedQuerier) (*Model
 		return nil, trafficapplyingmodel.ErrNoValidTrafficQuerier
 	}
 
-	appendOnly, err := appendonly.New(l, h)
+	appendOnly, err := appendspeedonly.New(l, h)
 	if err != nil {
 		return nil, err
 	}

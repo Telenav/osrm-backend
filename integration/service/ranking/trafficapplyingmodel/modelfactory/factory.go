@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/Telenav/osrm-backend/integration/service/ranking/trafficapplyingmodel"
-	"github.com/Telenav/osrm-backend/integration/service/ranking/trafficapplyingmodel/appendonly"
+	"github.com/Telenav/osrm-backend/integration/service/ranking/trafficapplyingmodel/appendspeedonly"
 	"github.com/Telenav/osrm-backend/integration/service/ranking/trafficapplyingmodel/preferlivetraffic"
 	"github.com/Telenav/osrm-backend/integration/traffic"
 	"github.com/golang/glog"
@@ -36,8 +36,8 @@ func NewApplier(name string, l traffic.LiveTrafficQuerier, h traffic.HistoricalS
 	var applier trafficapplyingmodel.Applier
 	var err error
 	switch name {
-	case appendonly.Name():
-		applier, err = appendonly.New(l, h)
+	case appendspeedonly.Name():
+		applier, err = appendspeedonly.New(l, h)
 	case preferlivetraffic.Name():
 		applier, err = preferlivetraffic.New(l, h)
 	default:
@@ -52,7 +52,7 @@ func NewApplier(name string, l traffic.LiveTrafficQuerier, h traffic.HistoricalS
 
 var (
 	availableModels = map[string]struct{}{
-		appendonly.Name():        struct{}{},
+		appendspeedonly.Name():   struct{}{},
 		preferlivetraffic.Name(): struct{}{},
 	}
 	defaultModel = preferlivetraffic.Name()

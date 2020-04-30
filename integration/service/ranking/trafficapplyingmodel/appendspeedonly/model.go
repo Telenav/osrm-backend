@@ -1,7 +1,7 @@
-// Package appendonly only additional live traffic and historical speed append to OSRM response, keep original response's duration/weight for a route.
+// Package appendspeedonly only additional live traffic and historical speed append to OSRM response, keep original response's duration/weight for a route.
 // It queries live traffic and historical speed at current clock and append to annotations on a OSRM route.
 // The live/historical speed will be set < 0 if no valid data.
-package appendonly
+package appendspeedonly
 
 import (
 	"time"
