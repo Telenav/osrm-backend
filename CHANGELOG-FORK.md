@@ -15,7 +15,7 @@ Changes from v10.2.0
 - Bugfix:    
   - CHANGED `osrm-ranking` parsing of OSRM route response to compatible with `string` array `annotation/nodes` [#296](https://github.com/Telenav/osrm-backend/pull/296)     
   - FIXED wrong variable `docker-entrypoint.sh` [#311](https://github.com/Telenav/osrm-backend/pull/311)
-  - FIXED test file that always been marked as modified by `Git` after run `go test` []()
+  - FIXED test file that always been marked as modified by `Git` after run `go test` [#319](https://github.com/Telenav/osrm-backend/pull/319)
 - Performance:    
 - Tools:    
   - ADDED `merge=union` for resolving merge conflicits automatically on `CHANGELOG-FORK.md` [#305](https://github.com/Telenav/osrm-backend/pull/305)
