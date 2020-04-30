@@ -52,6 +52,11 @@ func main() {
 	flag.Parse()
 	defer glog.Flush()
 
+	if flags.version {
+		printVersion()
+		return
+	}
+
 	suffixIndex := strings.LastIndex(flags.filePath, dotOSRMSuffix)
 	if suffixIndex < 0 {
 		glog.Errorf("file path %s should end by .osrm[.xxx]\n", flags.filePath)
