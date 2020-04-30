@@ -24,9 +24,17 @@ func main() {
 	flag.Parse()
 	defer glog.Flush()
 
+	if flags.version {
+		printVersion()
+		return
+	}
+
 	// monitor
 	upClock := time.Now()
 	monitorContents := newMonitorContents()
+	monitorContents.Versions.AppVersion = appVersion
+	monitorContents.Versions.GitCommit = gitCommit
+	monitorContents.Versions.BuildTime = buildTime
 	monitorContents.CmdlineArgs = os.Args
 
 	// prepare nodes2way
