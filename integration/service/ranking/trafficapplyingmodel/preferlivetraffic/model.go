@@ -1,4 +1,4 @@
-// Package preferlivetraffic prefers to apply live traffic as much as possible, otherwise applys historical speed for no live traffic ways.
+// Package preferlivetraffic re-calculate duration/weight for a route, prefer to use live traffic, if no live traffic on a way then use historical speed, otherwise use the speed from Lua profile.
 // Both live traffic and historical speed will be appended to annotations on a OSRM route, same as what package appendonly provides.
 package preferlivetraffic
 
