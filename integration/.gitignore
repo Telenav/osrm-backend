@@ -20,4 +20,4 @@ cmd/nodes2way-cli/nodes2way-cli
 cmd/trafficproxy-cli/*_flows.csv
 cmd/trafficproxy-cli/*_incidents.csv
 cmd/historicalspeed-timezone-builder/*mapping.csv
-
+cmd/osrm-traffic-updater/testdata/target.csv
