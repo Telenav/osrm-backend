@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/code"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/table"
+	"github.com/Telenav/osrm-backend/integration/api/osrm/code"
+	"github.com/Telenav/osrm-backend/integration/api/osrm/table"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
 )

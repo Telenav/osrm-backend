@@ -1,6 +1,6 @@
 package trafficapplyingmodel
 
-import "github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
+import "github.com/Telenav/osrm-backend/integration/api/osrm/route"
 
 // Applier wraps interfaces for applying traffic on OSRM route.
 type Applier interface {

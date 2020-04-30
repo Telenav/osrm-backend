@@ -1,6 +1,6 @@
 package stationfindertype
 
-import "github.com/Telenav/osrm-backend/integration/pkg/api/nav"
+import "github.com/Telenav/osrm-backend/integration/api/nav"
 
 // NearbyStationsIterator provide interator for near by stations
 type NearbyStationsIterator interface {

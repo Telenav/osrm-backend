@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/coordinate"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/genericoptions"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/table"
+	"github.com/Telenav/osrm-backend/integration/api/osrm/coordinate"
+	"github.com/Telenav/osrm-backend/integration/api/osrm/genericoptions"
+	"github.com/Telenav/osrm-backend/integration/api/osrm/table"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
 )

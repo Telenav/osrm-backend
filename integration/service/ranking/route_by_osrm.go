@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
+	"github.com/Telenav/osrm-backend/integration/api/osrm/route"
 	"github.com/Telenav/osrm-backend/integration/pkg/backend"
 	"github.com/golang/glog"
 )

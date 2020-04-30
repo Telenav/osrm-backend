@@ -1,7 +1,7 @@
 package oasis
 
 import (
-	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
+	"github.com/Telenav/osrm-backend/integration/api/search/nearbychargestation"
 )
 
 // GenerateFakeResponse generate response based on oasis request

@@ -3,7 +3,7 @@ package genericoptions
 import (
 	"strings"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api"
+	"github.com/Telenav/osrm-backend/integration/api"
 )
 
 // Classes represents OSRM exclude classes.

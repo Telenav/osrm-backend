@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/search/searchcoordinate"
+	"github.com/Telenav/osrm-backend/integration/api/search/nearbychargestation"
+	"github.com/Telenav/osrm-backend/integration/api/search/searchcoordinate"
 	"github.com/Telenav/osrm-backend/integration/pkg/backend"
 )
 

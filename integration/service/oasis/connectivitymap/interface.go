@@ -1,6 +1,6 @@
 package connectivitymap
 
-import "github.com/Telenav/osrm-backend/integration/pkg/api/nav"
+import "github.com/Telenav/osrm-backend/integration/api/nav"
 
 // QueryResult records topological query result
 type QueryResult struct {

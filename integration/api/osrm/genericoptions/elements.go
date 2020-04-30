@@ -3,7 +3,7 @@ package genericoptions
 import (
 	"strings"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api"
+	"github.com/Telenav/osrm-backend/integration/api"
 )
 
 // Elements represents values split by `;`, i.e. bearings, radiuses, hints, approaches

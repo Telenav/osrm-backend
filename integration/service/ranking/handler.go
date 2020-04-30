@@ -10,10 +10,10 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/util/waysnodes"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/code"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route/options"
+	"github.com/Telenav/osrm-backend/integration/api"
+	"github.com/Telenav/osrm-backend/integration/api/osrm/code"
+	"github.com/Telenav/osrm-backend/integration/api/osrm/route"
+	"github.com/Telenav/osrm-backend/integration/api/osrm/route/options"
 	"github.com/Telenav/osrm-backend/integration/service/ranking/strategy/rankbyduration"
 
 	"github.com/golang/glog"

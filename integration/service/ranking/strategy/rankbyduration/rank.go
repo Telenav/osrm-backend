@@ -3,7 +3,7 @@ package rankbyduration
 import (
 	"sort"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
+	"github.com/Telenav/osrm-backend/integration/api/osrm/route"
 )
 
 type rankItems []*route.Route

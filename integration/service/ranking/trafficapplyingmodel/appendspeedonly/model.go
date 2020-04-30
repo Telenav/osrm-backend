@@ -8,7 +8,7 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxy"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
+	"github.com/Telenav/osrm-backend/integration/api/osrm/route"
 	"github.com/Telenav/osrm-backend/integration/service/ranking/trafficapplyingmodel"
 	"github.com/Telenav/osrm-backend/integration/traffic"
 )

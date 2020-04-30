@@ -1,9 +1,9 @@
 package solution
 
 import (
-	"github.com/Telenav/osrm-backend/integration/pkg/api/nav"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
+	"github.com/Telenav/osrm-backend/integration/api/nav"
+	"github.com/Telenav/osrm-backend/integration/api/oasis"
+	"github.com/Telenav/osrm-backend/integration/api/search/nearbychargestation"
 )
 
 // Solution contains summary and selected charge stations
@@ -25,7 +25,7 @@ type ChargeStation struct {
 	ChargeRange   float64
 }
 
-// Convert2ExternalSolution convert internal solution format to external format defined in pkg/api/oasis/response
+// Convert2ExternalSolution convert internal solution format to external format defined in api/oasis/response
 func (sol *Solution) Convert2ExternalSolution() *oasis.Solution {
 	target := &oasis.Solution{}
 

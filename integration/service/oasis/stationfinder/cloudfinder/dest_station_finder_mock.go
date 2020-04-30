@@ -3,7 +3,7 @@ package cloudfinder
 import (
 	"sync"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
+	"github.com/Telenav/osrm-backend/integration/api/search/nearbychargestation"
 )
 
 // CreateMockDestStationFinder1 creates mock dest station finder with nearbychargestation.MockSearchResponse1

@@ -1,8 +1,8 @@
 package cloudfinder
 
 import (
-	"github.com/Telenav/osrm-backend/integration/pkg/api/nav"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
+	"github.com/Telenav/osrm-backend/integration/api/nav"
+	"github.com/Telenav/osrm-backend/integration/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/searchconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 )

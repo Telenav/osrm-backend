@@ -1,7 +1,7 @@
 package stationgraph
 
 import (
-	"github.com/Telenav/osrm-backend/integration/pkg/api/nav"
+	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
 )
 

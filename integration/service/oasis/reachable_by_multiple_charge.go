@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api/nav"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
+	"github.com/Telenav/osrm-backend/integration/api/nav"
+	"github.com/Telenav/osrm-backend/integration/api/oasis"
+	"github.com/Telenav/osrm-backend/integration/api/osrm/route"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/haversine"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"

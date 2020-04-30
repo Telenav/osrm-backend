@@ -9,9 +9,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api/nav"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/table"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/search/nearbychargestation"
+	"github.com/Telenav/osrm-backend/integration/api/nav"
+	"github.com/Telenav/osrm-backend/integration/api/osrm/table"
+	"github.com/Telenav/osrm-backend/integration/api/search/nearbychargestation"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/cloudfinder"

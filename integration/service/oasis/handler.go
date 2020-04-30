@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
+	"github.com/Telenav/osrm-backend/integration/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmhelper"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder"

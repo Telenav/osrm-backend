@@ -3,8 +3,8 @@ package oasis
 import (
 	"testing"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api/nav"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
+	"github.com/Telenav/osrm-backend/integration/api/nav"
+	"github.com/Telenav/osrm-backend/integration/api/osrm/route"
 )
 
 var fakeRoute1 route.Route = route.Route{

@@ -4,7 +4,7 @@ import (
 	"math"
 	"strconv"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
+	"github.com/Telenav/osrm-backend/integration/api/osrm/route"
 )
 
 func (h *Handler) updateRoutesByTraffic(routes []*route.Route, enableLiveTraffic, enableHistoricalSpeed bool) ([]*route.Route, error) {

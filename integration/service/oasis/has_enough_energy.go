@@ -6,8 +6,8 @@ import (
 	"math"
 	"net/http"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/route"
+	"github.com/Telenav/osrm-backend/integration/api/oasis"
+	"github.com/Telenav/osrm-backend/integration/api/osrm/route"
 )
 
 // currRange: current energy level, represent by distance(unit: meters)

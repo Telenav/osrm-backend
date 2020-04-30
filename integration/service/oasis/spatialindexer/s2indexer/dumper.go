@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api"
+	"github.com/Telenav/osrm-backend/integration/api"
 	"github.com/golang/glog"
 )
 

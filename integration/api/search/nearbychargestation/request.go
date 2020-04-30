@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Telenav/osrm-backend/integration/pkg/api"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/search/options"
-	"github.com/Telenav/osrm-backend/integration/pkg/api/search/searchcoordinate"
+	"github.com/Telenav/osrm-backend/integration/api"
+	"github.com/Telenav/osrm-backend/integration/api/search/options"
+	"github.com/Telenav/osrm-backend/integration/api/search/searchcoordinate"
 	"github.com/golang/glog"
 )
 

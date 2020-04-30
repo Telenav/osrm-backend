@@ -1,7 +1,7 @@
 package table
 
 import (
-	"github.com/Telenav/osrm-backend/integration/pkg/api/osrm/osrmtype"
+	"github.com/Telenav/osrm-backend/integration/api/osrm/osrmtype"
 )
 
 // Response represents OSRM api v1 table response.

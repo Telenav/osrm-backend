@@ -1,7 +1,7 @@
 package localfinder
 
 import (
-	"github.com/Telenav/osrm-backend/integration/pkg/api/oasis"
+	"github.com/Telenav/osrm-backend/integration/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
 	"github.com/golang/glog"
 )
