@@ -13,6 +13,11 @@ func main() {
 	flag.Parse()
 	defer glog.Flush()
 
+	if flags.version {
+		printVersion()
+		return
+	}
+
 	if flags.rpcMode == rpcModeGetWays {
 		if len(flags.wayIDs) == 0 {
 			glog.Error("please provide wayIDs for 'getways' mode by '-ways xxx', e.g. '-ways 829733412,-104489539'")
