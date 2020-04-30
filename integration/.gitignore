@@ -9,7 +9,7 @@ cmd/osrm-traffic-updater/osrm-traffic-updater
 cmd/snappy/snappy
 cmd/wayid2nodeid-extractor/wayid2nodeid-extractor
 cmd/trafficproxy-cli/trafficproxy-cli
-cmd/osrm-ranking/osrm-ranking
+cmd/osrm-rankd/osrm-rankd
 cmd/trafficcache-parallel-test/trafficcache-parallel-test
 cmd/osrm-files-extractor/osrm-files-extractor
 cmd/historicalspeed-timezone-builder/historicalspeed-timezone-builder
