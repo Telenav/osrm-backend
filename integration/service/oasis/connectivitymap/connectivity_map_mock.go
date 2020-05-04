@@ -64,3 +64,23 @@ var fakeID2NearByIDsMap1 = ID2NearByIDsMap{
 		},
 	},
 }
+
+var fakeID2NearByIDsMap2 = ID2NearByIDsMap{
+	1: []IDAndDistance{
+		{
+			ID:       2,
+			Distance: 1,
+		},
+	},
+	2: []IDAndDistance{
+		{
+			ID:       3,
+			Distance: 2,
+		},
+	},
+}
+
+// MockConnectivityMap constructs simple connectivity map for integration test
+var MockConnectivityMap = ConnectivityMap{
+	id2nearByIDs: fakeID2NearByIDsMap2,
+}

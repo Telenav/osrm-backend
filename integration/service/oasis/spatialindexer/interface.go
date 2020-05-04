@@ -2,10 +2,13 @@ package spatialindexer
 
 import (
 	"math"
+	"strconv"
+
+	"github.com/Telenav/osrm-backend/integration/api/nav"
 )
 
 // Location for poi point
-// @todo: will be replaced by the one in map
+// todo codebear801 will be replaced by the one in nav
 type Location struct {
 	Lat float64
 	Lon float64
@@ -27,6 +30,11 @@ type RankedPointInfo struct {
 // Only the data used for pre-processing contains valid PointID
 type PointID int64
 
+// String converts PointID to string
+func (p PointID) String() string {
+	return strconv.FormatInt((int64)(p), 10)
+}
+
 // UnlimitedCount means all spatial search result will be returned
 const UnlimitedCount = math.MaxInt32
 
@@ -45,6 +53,14 @@ type Ranker interface {
 
 	// RankPointIDsByShortestDistance ranks a group of points based on shortest path distance to given location
 	RankPointIDsByShortestDistance(center Location, targets []*PointInfo) []*RankedPointInfo
+}
+
+// PlaceLocationQuerier returns *nav.location for given location
+type PlaceLocationQuerier interface {
+
+	// GetLocation returns *nav.Location for given placeID
+	// Returns nil if given placeID is not found
+	GetLocation(placeID string) *nav.Location
 }
 
 // PointsIterator provides iterateability for PointInfo

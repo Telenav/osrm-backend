@@ -68,9 +68,13 @@ func (cm *ConnectivityMap) Load(folderPath string) *ConnectivityMap {
 	return cm
 }
 
-// QueryConnectivity answers connectivity query for given placeInfo
-func (cm *ConnectivityMap) QueryConnectivity(placeInfo spatialindexer.PointInfo, limitDistance float64) {
-	// for each everything recorded in data, apply limit option on that
+// QueryConnectivity answers connectivity query for given placeID
+// Return true and IDAndDistance array for given placeID, otherwise false and nil
+func (cm *ConnectivityMap) QueryConnectivity(placeID spatialindexer.PointID) ([]IDAndDistance, bool) {
+	if result, ok := cm.id2nearByIDs[placeID]; ok {
+		return result, true
+	}
+	return nil, false
 }
 
 // MaxRange tells the value used to pre-process place data.
