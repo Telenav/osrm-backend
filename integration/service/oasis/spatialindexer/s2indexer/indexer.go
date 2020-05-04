@@ -1,8 +1,10 @@
 package s2indexer
 
 import (
+	"strconv"
 	"time"
 
+	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer/poiloader"
 	"github.com/golang/geo/s2"
@@ -118,6 +120,25 @@ func (indexer *S2Indexer) FindNearByPointIDs(center spatialindexer.Location, rad
 	return results
 }
 
+// GetLocation returns *nav.Location for given placeID
+// Returns nil if given placeID is not found
+func (indexer *S2Indexer) GetLocation(placeID string) *nav.Location {
+	id, err := strconv.Atoi(placeID)
+	if err != nil {
+		glog.Errorf("Incorrect station ID passed to NearByStationQuery %+v, got error %#v", placeID, err)
+		return nil
+	}
+	if location, ok := indexer.pointID2Location[(spatialindexer.PointID)(id)]; ok {
+		return &nav.Location{
+			Lat: location.Lat,
+			Lon: location.Lon,
+		}
+	}
+
+	return nil
+}
+
+//TODO codebear801 This function should be replaced by GetLocation
 func (indexer S2Indexer) getPointLocationByPointID(id spatialindexer.PointID) (spatialindexer.Location, bool) {
 	location, ok := indexer.pointID2Location[id]
 	return location, ok
