@@ -18,9 +18,9 @@ Construct graph as follows
             /      |      \
            /       |       \
   orig    ---   station_2   ---    dest
-		   \       |       /
-			\      |      /
-			   station_3
+           \       |       /
+            \      |      /
+               station_3
 
 Expects for connectivity:
 orig: station_1, station_2, station_3
