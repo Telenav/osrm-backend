@@ -2,7 +2,6 @@ package stationfinderalg
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -65,7 +64,6 @@ type fakeTableResponse struct {
 }
 
 func (ft *fakeTableResponse) Request4Table(r *table.Request) <-chan osrmconnector.TableResponse {
-	fmt.Printf("fuck")
 	c := make(chan osrmconnector.TableResponse)
 	go func() {
 		defer close(c)
