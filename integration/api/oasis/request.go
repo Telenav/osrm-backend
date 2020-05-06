@@ -9,17 +9,17 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/api"
 	"github.com/Telenav/osrm-backend/integration/api/oasis/options"
-	"github.com/Telenav/osrm-backend/integration/api/osrm/coordinate"
+	"github.com/Telenav/osrm-backend/integration/api/osrm"
 	"github.com/Telenav/osrm-backend/integration/util"
 	"github.com/golang/glog"
 )
 
 // Request for oasis service
 type Request struct {
-	Service     string
-	Version     string
-	Profile     string
-	Coordinates coordinate.Coordinates
+	Service string
+	Version string
+	Profile string
+	osrm.Coordinates
 
 	MaxRange    float64
 	CurrRange   float64
@@ -34,7 +34,7 @@ func NewRequest() *Request {
 		Service:     "oasis",
 		Version:     "v1",
 		Profile:     "earliest",
-		Coordinates: coordinate.Coordinates{},
+		Coordinates: osrm.Coordinates{},
 
 		// generic options
 		MaxRange:    options.InvalidMaxRangeValue,
@@ -89,7 +89,7 @@ func (r *Request) parsePath(path string) error {
 	r.Profile = s[2]
 
 	var err error
-	if r.Coordinates, err = coordinate.ParseCoordinates(s[3]); err != nil {
+	if r.Coordinates, err = osrm.ParseCoordinates(s[3]); err != nil {
 		return err
 	}
 

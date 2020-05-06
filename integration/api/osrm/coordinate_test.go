@@ -1,4 +1,4 @@
-package coordinate
+package osrm
 
 import (
 	"reflect"

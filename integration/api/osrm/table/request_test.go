@@ -3,7 +3,7 @@ package table
 import (
 	"testing"
 
-	"github.com/Telenav/osrm-backend/integration/api/osrm/coordinate"
+	"github.com/Telenav/osrm-backend/integration/api/osrm"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/genericoptions"
 )
 
@@ -17,7 +17,7 @@ func TestTableRequestURI(t *testing.T) {
 				Service:     "table",
 				Version:     "v1",
 				Profile:     "driving",
-				Coordinates: coordinate.Coordinates{coordinate.Coordinate{Lat: 37.364336, Lon: -122.006349}, coordinate.Coordinate{Lat: 37.313767, Lon: -121.875654}},
+				Coordinates: osrm.Coordinates{osrm.Coordinate{Lat: 37.364336, Lon: -122.006349}, osrm.Coordinate{Lat: 37.313767, Lon: -121.875654}},
 			},
 			"/table/v1/driving/-122.006349,37.364336;-121.875654,37.313767",
 		},
@@ -26,7 +26,7 @@ func TestTableRequestURI(t *testing.T) {
 				Service:     "table",
 				Version:     "v1",
 				Profile:     "driving",
-				Coordinates: coordinate.Coordinates{coordinate.Coordinate{Lat: 37.364336, Lon: -122.006349}, coordinate.Coordinate{Lat: 37.313767, Lon: -121.875654}, coordinate.Coordinate{Lat: 37.313769, Lon: -121.875655}},
+				Coordinates: osrm.Coordinates{osrm.Coordinate{Lat: 37.364336, Lon: -122.006349}, osrm.Coordinate{Lat: 37.313767, Lon: -121.875654}, osrm.Coordinate{Lat: 37.313769, Lon: -121.875655}},
 			},
 			"/table/v1/driving/-122.006349,37.364336;-121.875654,37.313767;-121.875655,37.313769",
 		},
@@ -35,7 +35,7 @@ func TestTableRequestURI(t *testing.T) {
 				Service:     "table",
 				Version:     "v1",
 				Profile:     "driving",
-				Coordinates: coordinate.Coordinates{coordinate.Coordinate{Lat: 37.364336, Lon: -122.006349}, coordinate.Coordinate{Lat: 37.313767, Lon: -121.875654}, coordinate.Coordinate{Lat: 37.313769, Lon: -121.875655}},
+				Coordinates: osrm.Coordinates{osrm.Coordinate{Lat: 37.364336, Lon: -122.006349}, osrm.Coordinate{Lat: 37.313767, Lon: -121.875654}, osrm.Coordinate{Lat: 37.313769, Lon: -121.875655}},
 				Sources:     genericoptions.Elements{"0"},
 			},
 			"/table/v1/driving/-122.006349,37.364336;-121.875654,37.313767;-121.875655,37.313769?sources=0",
@@ -45,7 +45,7 @@ func TestTableRequestURI(t *testing.T) {
 				Service:      "table",
 				Version:      "v1",
 				Profile:      "driving",
-				Coordinates:  coordinate.Coordinates{coordinate.Coordinate{Lat: 37.364336, Lon: -122.006349}, coordinate.Coordinate{Lat: 37.313767, Lon: -121.875654}, coordinate.Coordinate{Lat: 37.313769, Lon: -121.875655}},
+				Coordinates:  osrm.Coordinates{osrm.Coordinate{Lat: 37.364336, Lon: -122.006349}, osrm.Coordinate{Lat: 37.313767, Lon: -121.875654}, osrm.Coordinate{Lat: 37.313769, Lon: -121.875655}},
 				Sources:      genericoptions.Elements{"0"},
 				Destinations: genericoptions.Elements{"1", "2"},
 			},
@@ -56,7 +56,7 @@ func TestTableRequestURI(t *testing.T) {
 				Service:      "table",
 				Version:      "v1",
 				Profile:      "driving",
-				Coordinates:  coordinate.Coordinates{coordinate.Coordinate{Lat: 37.364336, Lon: -122.006349}, coordinate.Coordinate{Lat: 37.313767, Lon: -121.875654}, coordinate.Coordinate{Lat: 37.313769, Lon: -121.875655}},
+				Coordinates:  osrm.Coordinates{osrm.Coordinate{Lat: 37.364336, Lon: -122.006349}, osrm.Coordinate{Lat: 37.313767, Lon: -121.875654}, osrm.Coordinate{Lat: 37.313769, Lon: -121.875655}},
 				Sources:      genericoptions.Elements{"0"},
 				Destinations: genericoptions.Elements{"1", "2"},
 				Annotations:  "duration",
@@ -68,7 +68,7 @@ func TestTableRequestURI(t *testing.T) {
 				Service:      "table",
 				Version:      "v1",
 				Profile:      "driving",
-				Coordinates:  coordinate.Coordinates{coordinate.Coordinate{Lat: 37.364336, Lon: -122.006349}, coordinate.Coordinate{Lat: 37.313767, Lon: -121.875654}, coordinate.Coordinate{Lat: 37.313769, Lon: -121.875655}},
+				Coordinates:  osrm.Coordinates{osrm.Coordinate{Lat: 37.364336, Lon: -122.006349}, osrm.Coordinate{Lat: 37.313767, Lon: -121.875654}, osrm.Coordinate{Lat: 37.313769, Lon: -121.875655}},
 				Sources:      genericoptions.Elements{"0"},
 				Destinations: genericoptions.Elements{"1", "2"},
 				Annotations:  "distance",
@@ -80,7 +80,7 @@ func TestTableRequestURI(t *testing.T) {
 				Service:      "table",
 				Version:      "v1",
 				Profile:      "driving",
-				Coordinates:  coordinate.Coordinates{coordinate.Coordinate{Lat: 37.364336, Lon: -122.006349}, coordinate.Coordinate{Lat: 37.313767, Lon: -121.875654}, coordinate.Coordinate{Lat: 37.313769, Lon: -121.875655}},
+				Coordinates:  osrm.Coordinates{osrm.Coordinate{Lat: 37.364336, Lon: -122.006349}, osrm.Coordinate{Lat: 37.313767, Lon: -121.875654}, osrm.Coordinate{Lat: 37.313769, Lon: -121.875655}},
 				Sources:      genericoptions.Elements{"0"},
 				Destinations: genericoptions.Elements{"1", "2"},
 				Annotations:  "duration,distance",

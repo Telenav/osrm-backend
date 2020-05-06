@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Telenav/osrm-backend/integration/api/osrm/coordinate"
+	"github.com/Telenav/osrm-backend/integration/api/osrm"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/genericoptions"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/table"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
@@ -72,28 +72,28 @@ func TestGenerateTableRequest(t *testing.T) {
 				Service: "table",
 				Version: "v1",
 				Profile: "driving",
-				Coordinates: coordinate.Coordinates{
-					coordinate.Coordinate{
+				Coordinates: osrm.Coordinates{
+					osrm.Coordinate{
 						Lat: 0,
 						Lon: 0,
 					},
-					coordinate.Coordinate{
+					osrm.Coordinate{
 						Lat: 1.1,
 						Lon: 1.1,
 					},
-					coordinate.Coordinate{
+					osrm.Coordinate{
 						Lat: 2.2,
 						Lon: 2.2,
 					},
-					coordinate.Coordinate{
+					osrm.Coordinate{
 						Lat: 3.3,
 						Lon: 3.3,
 					},
-					coordinate.Coordinate{
+					osrm.Coordinate{
 						Lat: 4.4,
 						Lon: 4.4,
 					},
-					coordinate.Coordinate{
+					osrm.Coordinate{
 						Lat: 5.5,
 						Lon: 5.5,
 					},
@@ -160,20 +160,20 @@ func TestGenerateTableRequest(t *testing.T) {
 				Service: "table",
 				Version: "v1",
 				Profile: "driving",
-				Coordinates: coordinate.Coordinates{
-					coordinate.Coordinate{
+				Coordinates: osrm.Coordinates{
+					osrm.Coordinate{
 						Lat: 0,
 						Lon: 0,
 					},
-					coordinate.Coordinate{
+					osrm.Coordinate{
 						Lat: 2.2,
 						Lon: 2.2,
 					},
-					coordinate.Coordinate{
+					osrm.Coordinate{
 						Lat: 3.3,
 						Lon: 3.3,
 					},
-					coordinate.Coordinate{
+					osrm.Coordinate{
 						Lat: 4.4,
 						Lon: 4.4,
 					},
@@ -344,35 +344,35 @@ func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 				var tableResponseBytes, _ = json.Marshal(mock1To6TableResponse)
 				w.Write(tableResponseBytes)
 			} else if s == 1 && d == 3 &&
-				reflect.DeepEqual(req.Coordinates, coordinate.Coordinates{
-					coordinate.Coordinate{Lat: 0, Lon: 0},
-					coordinate.Coordinate{Lat: 1.1, Lon: 1.1},
-					coordinate.Coordinate{Lat: 2.2, Lon: 2.2},
-					coordinate.Coordinate{Lat: 3.3, Lon: 3.3}}) {
+				reflect.DeepEqual(req.Coordinates, osrm.Coordinates{
+					osrm.Coordinate{Lat: 0, Lon: 0},
+					osrm.Coordinate{Lat: 1.1, Lon: 1.1},
+					osrm.Coordinate{Lat: 2.2, Lon: 2.2},
+					osrm.Coordinate{Lat: 3.3, Lon: 3.3}}) {
 				var tableResponseBytes, _ = json.Marshal(mock1To3TableResponsePart1)
 				w.Write(tableResponseBytes)
 			} else if s == 1 && d == 3 &&
-				reflect.DeepEqual(req.Coordinates, coordinate.Coordinates{
-					coordinate.Coordinate{Lat: 0, Lon: 0},
-					coordinate.Coordinate{Lat: 4.4, Lon: 4.4},
-					coordinate.Coordinate{Lat: 5.5, Lon: 5.5},
-					coordinate.Coordinate{Lat: 6.6, Lon: 6.6}}) {
+				reflect.DeepEqual(req.Coordinates, osrm.Coordinates{
+					osrm.Coordinate{Lat: 0, Lon: 0},
+					osrm.Coordinate{Lat: 4.4, Lon: 4.4},
+					osrm.Coordinate{Lat: 5.5, Lon: 5.5},
+					osrm.Coordinate{Lat: 6.6, Lon: 6.6}}) {
 				var tableResponseBytes, _ = json.Marshal(mock1To3TableResponsePart2)
 				w.Write(tableResponseBytes)
 			} else if s == 1 && d == 4 &&
-				reflect.DeepEqual(req.Coordinates, coordinate.Coordinates{
-					coordinate.Coordinate{Lat: 0, Lon: 0},
-					coordinate.Coordinate{Lat: 1.1, Lon: 1.1},
-					coordinate.Coordinate{Lat: 2.2, Lon: 2.2},
-					coordinate.Coordinate{Lat: 3.3, Lon: 3.3},
-					coordinate.Coordinate{Lat: 4.4, Lon: 4.4}}) {
+				reflect.DeepEqual(req.Coordinates, osrm.Coordinates{
+					osrm.Coordinate{Lat: 0, Lon: 0},
+					osrm.Coordinate{Lat: 1.1, Lon: 1.1},
+					osrm.Coordinate{Lat: 2.2, Lon: 2.2},
+					osrm.Coordinate{Lat: 3.3, Lon: 3.3},
+					osrm.Coordinate{Lat: 4.4, Lon: 4.4}}) {
 				var tableResponseBytes, _ = json.Marshal(mock1To4TableResponsePart1)
 				w.Write(tableResponseBytes)
 			} else if s == 1 && d == 2 &&
-				reflect.DeepEqual(req.Coordinates, coordinate.Coordinates{
-					coordinate.Coordinate{Lat: 0, Lon: 0},
-					coordinate.Coordinate{Lat: 5.5, Lon: 5.5},
-					coordinate.Coordinate{Lat: 6.6, Lon: 6.6}}) {
+				reflect.DeepEqual(req.Coordinates, osrm.Coordinates{
+					osrm.Coordinate{Lat: 0, Lon: 0},
+					osrm.Coordinate{Lat: 5.5, Lon: 5.5},
+					osrm.Coordinate{Lat: 6.6, Lon: 6.6}}) {
 				var tableResponseBytes, _ = json.Marshal(mock1To4TableResponsePart2)
 				w.Write(tableResponseBytes)
 			}

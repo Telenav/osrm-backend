@@ -6,8 +6,8 @@ import (
 	"sync"
 
 	"github.com/Telenav/osrm-backend/integration/api"
+	"github.com/Telenav/osrm-backend/integration/api/osrm"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/code"
-	"github.com/Telenav/osrm-backend/integration/api/osrm/coordinate"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/route/options"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/table"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
@@ -129,19 +129,19 @@ func generateTableRequest(center spatialindexer.Location, targets []*spatialinde
 	return req
 }
 
-func convertLocation2Coordinates(location spatialindexer.Location) coordinate.Coordinates {
-	result := make(coordinate.Coordinates, 0, 1)
-	result = append(result, coordinate.Coordinate{
+func convertLocation2Coordinates(location spatialindexer.Location) osrm.Coordinates {
+	result := make(osrm.Coordinates, 0, 1)
+	result = append(result, osrm.Coordinate{
 		Lat: location.Lat,
 		Lon: location.Lon,
 	})
 	return result
 }
 
-func convertPointInfos2Coordinates(targets []*spatialindexer.PointInfo, startIndex, endIndex int) coordinate.Coordinates {
-	result := make(coordinate.Coordinates, 0, endIndex-startIndex+1)
+func convertPointInfos2Coordinates(targets []*spatialindexer.PointInfo, startIndex, endIndex int) osrm.Coordinates {
+	result := make(osrm.Coordinates, 0, endIndex-startIndex+1)
 	for i := startIndex; i <= endIndex; i++ {
-		result = append(result, coordinate.Coordinate{
+		result = append(result, osrm.Coordinate{
 			Lat: targets[i].Location.Lat,
 			Lon: targets[i].Location.Lon,
 		})

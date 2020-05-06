@@ -7,7 +7,7 @@ import (
 	"sort"
 
 	"github.com/Telenav/osrm-backend/integration/api/oasis"
-	"github.com/Telenav/osrm-backend/integration/api/osrm/coordinate"
+	"github.com/Telenav/osrm-backend/integration/api/osrm"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/table"
 	"github.com/Telenav/osrm-backend/integration/api/search/nearbychargestation"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
@@ -25,7 +25,7 @@ const maxOverlapPointsNum = 500
 // The energy level is safeRange + nearest charge station's distance to destination
 // If there is one or several charge stations could be found in both origStationsResp and destStationsResp
 // We think the result is reachable by single charge station
-func getOverlapChargeStations4OrigDest(req *oasis.Request, routedistance float64, osrmConnector *osrmconnector.OSRMConnector, finder stationfinder.StationFinder) coordinate.Coordinates {
+func getOverlapChargeStations4OrigDest(req *oasis.Request, routedistance float64, osrmConnector *osrmconnector.OSRMConnector, finder stationfinder.StationFinder) osrm.Coordinates {
 	// only possible when currRange + maxRange > distance + safeRange
 	if req.CurrRange+req.MaxRange < routedistance+req.SafeLevel {
 		return nil
@@ -39,10 +39,10 @@ func getOverlapChargeStations4OrigDest(req *oasis.Request, routedistance float64
 		return nil
 	}
 
-	var overlapPoints coordinate.Coordinates
+	var overlapPoints osrm.Coordinates
 	for i, item := range overlap {
 		overlapPoints = append(overlapPoints,
-			coordinate.Coordinate{
+			osrm.Coordinate{
 				Lat: item.Location.Lat,
 				Lon: item.Location.Lon,
 			})
@@ -54,7 +54,7 @@ func getOverlapChargeStations4OrigDest(req *oasis.Request, routedistance float64
 }
 
 type singleChargeStationCandidate struct {
-	location         coordinate.Coordinate
+	location         osrm.Coordinate
 	distanceFromOrig float64
 	durationFromOrig float64
 	distanceToDest   float64
@@ -62,7 +62,7 @@ type singleChargeStationCandidate struct {
 }
 
 // @todo these logic might refactored later: charge station status calculation should be moved away
-func generateResponse4SingleChargeStation(w http.ResponseWriter, req *oasis.Request, overlapPoints coordinate.Coordinates, osrmConnector *osrmconnector.OSRMConnector) bool {
+func generateResponse4SingleChargeStation(w http.ResponseWriter, req *oasis.Request, overlapPoints osrm.Coordinates, osrmConnector *osrmconnector.OSRMConnector) bool {
 	candidate, err := pickChargeStationWithEarlistArrival(req, overlapPoints, osrmConnector)
 
 	if err != nil {
@@ -101,7 +101,7 @@ func generateResponse4SingleChargeStation(w http.ResponseWriter, req *oasis.Requ
 	return true
 }
 
-func pickChargeStationWithEarlistArrival(req *oasis.Request, overlapPoints coordinate.Coordinates, osrmConnector *osrmconnector.OSRMConnector) (*singleChargeStationCandidate, error) {
+func pickChargeStationWithEarlistArrival(req *oasis.Request, overlapPoints osrm.Coordinates, osrmConnector *osrmconnector.OSRMConnector) (*singleChargeStationCandidate, error) {
 	if len(overlapPoints) == 0 {
 		err := fmt.Errorf("pickChargeStationWithEarlistArrival must be called with none empty overlapPoints")
 		glog.Fatalf("%v", err)
@@ -109,12 +109,12 @@ func pickChargeStationWithEarlistArrival(req *oasis.Request, overlapPoints coord
 	}
 
 	// request table for orig->overlap stations
-	origPoint := coordinate.Coordinates{req.Coordinates[0]}
+	origPoint := osrm.Coordinates{req.Coordinates[0]}
 	reqOrig, _ := osrmhelper.GenerateTableReq4Points(origPoint, overlapPoints)
 	respOrigC := osrmConnector.Request4Table(reqOrig)
 
 	// request table for overlap stations -> dest
-	destPoint := coordinate.Coordinates{req.Coordinates[1]}
+	destPoint := osrm.Coordinates{req.Coordinates[1]}
 	reqDest, _ := osrmhelper.GenerateTableReq4Points(overlapPoints, destPoint)
 	respDestC := osrmConnector.Request4Table(reqDest)
 
