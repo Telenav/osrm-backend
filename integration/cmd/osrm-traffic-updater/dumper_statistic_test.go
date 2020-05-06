@@ -26,6 +26,6 @@ func TestDumperStatistic(t *testing.T) {
 }
 
 func accumulateDumper(d *dumperStatistic, wg *sync.WaitGroup) {
-	d.Update(1, 2, 3, 4, 5, 6, 7, 8)
+	d.Update(1, 2, 3, 4, 5, 6, 7, 8, 9)
 	wg.Done()
 }

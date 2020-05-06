@@ -38,6 +38,8 @@ func main() {
 
 	isFlowDoneChan := make(chan bool, 1)
 	wayid2speed := make(map[int64]int)
+	segmentsOfWay := make(map[int64][]*trafficproxy.SegmentedFlow)
+
 	go func() {
 		trafficData, err := trafficproxyclient.GetFlowsIncidents(nil)
 		if err != nil {
@@ -45,8 +47,7 @@ func main() {
 			isFlowDoneChan <- false
 			return
 		}
-
-		trafficData2map(*trafficData, wayid2speed)
+		trafficData2map(*trafficData, wayid2speed, segmentsOfWay)
 		isFlowDoneChan <- true
 	}()
 
@@ -60,7 +61,7 @@ func main() {
 	if isFlowDone {
 		var ds dumperStatistic
 		ds.Init(TASKNUM)
-		dumpSpeedTable4Customize(wayid2speed, sources, flags.csvFile, &ds)
+		dumpSpeedTable4Customize(wayid2speed, segmentsOfWay, sources, flags.csvFile, &ds)
 		ds.Output()
 	}
 }
@@ -83,7 +84,7 @@ loop:
 	return isFlowDone
 }
 
-func trafficData2map(trafficData trafficproxy.TrafficResponse, m map[int64]int) {
+func trafficData2map(trafficData trafficproxy.TrafficResponse, m map[int64]int, s map[int64][]*trafficproxy.SegmentedFlow) {
 	startTime := time.Now()
 	defer func() {
 		log.Printf("Processing time for building traffic map takes %f seconds\n", time.Now().Sub(startTime).Seconds())
@@ -102,6 +103,7 @@ func trafficData2map(trafficData trafficproxy.TrafficResponse, m map[int64]int) 
 
 		wayid := flow.Flow.WayID
 		m[wayid] = int(flow.Flow.Speed)
+		s[wayid] = flow.Flow.SegmentedFlow
 
 		if wayid > 0 {
 			fwdCnt++

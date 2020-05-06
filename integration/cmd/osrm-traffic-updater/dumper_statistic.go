@@ -13,6 +13,7 @@ type dumperStatisticItems struct {
 	nodeMatchedCnt       uint64
 	fwdTrafficMatchedCnt uint64
 	bwdTrafficMatchedCnt uint64
+	skippedSegmentsCnt   uint64
 }
 
 type dumperStatistic struct {
@@ -41,6 +42,7 @@ func (d *dumperStatistic) Close() {
 		d.sum.nodeMatchedCnt += item.nodeMatchedCnt
 		d.sum.fwdTrafficMatchedCnt += item.fwdTrafficMatchedCnt
 		d.sum.bwdTrafficMatchedCnt += item.bwdTrafficMatchedCnt
+		d.sum.skippedSegmentsCnt += item.skippedSegmentsCnt
 	}
 	d.close = true
 }
@@ -51,12 +53,12 @@ func (d *dumperStatistic) Sum() dumperStatisticItems {
 
 func (d *dumperStatistic) Update(wayCnt uint64, nodeCnt uint64, fwdRecordCnt uint64,
 	bwdRecordCnt uint64, wayMatchedCnt uint64, nodeMatchedCnt uint64,
-	fwdTrafficMatchedCnt uint64, bwdTrafficMatchedCnt uint64) {
+	fwdTrafficMatchedCnt uint64, bwdTrafficMatchedCnt uint64, skippedSegmentsCnt uint64) {
 	if !d.init {
 		fmt.Printf("dumperStatistic->Update() failed, please call Init() first otherwise will block all functions. \n")
 		return
 	}
-	d.c <- (dumperStatisticItems{wayCnt, nodeCnt, fwdRecordCnt, bwdRecordCnt, wayMatchedCnt, nodeMatchedCnt, fwdTrafficMatchedCnt, bwdTrafficMatchedCnt})
+	d.c <- (dumperStatisticItems{wayCnt, nodeCnt, fwdRecordCnt, bwdRecordCnt, wayMatchedCnt, nodeMatchedCnt, fwdTrafficMatchedCnt, bwdTrafficMatchedCnt, skippedSegmentsCnt})
 }
 
 func (d *dumperStatistic) Output() {
@@ -69,6 +71,8 @@ func (d *dumperStatistic) Output() {
 	fmt.Printf("Load %d way from data with %d nodes.\n", d.sum.wayCnt, d.sum.nodeCnt)
 	fmt.Printf("%d way with %d nodes matched with traffic record.\n",
 		d.sum.wayMatchedCnt, d.sum.nodeMatchedCnt)
+	fmt.Printf("%d traffic segments have been skipped.\n",
+		d.sum.skippedSegmentsCnt)
 	fmt.Printf("%d traffic records(%d forward and %d backward) have been matched.\n",
 		d.sum.fwdTrafficMatchedCnt+d.sum.bwdTrafficMatchedCnt, d.sum.fwdTrafficMatchedCnt, d.sum.bwdTrafficMatchedCnt)
 	fmt.Printf("Generate %d records in final result with %d of them from forward traffic and %d from backword.\n",

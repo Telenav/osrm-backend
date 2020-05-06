@@ -11,6 +11,8 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxy"
 )
 
 func TestSpeedTableDumper1(t *testing.T) {
@@ -23,14 +25,39 @@ func TestSpeedTableDumper1(t *testing.T) {
 
 	// construct mock traffic
 	wayid2speed := make(map[int64]int)
+	segmentsOfWay := make(map[int64][]*trafficproxy.SegmentedFlow)
 	loadMockTrafficFlow2Map(wayid2speed)
 
 	var ds dumperStatistic
 	ds.Init(TASKNUM)
-	dumpSpeedTable4Customize(wayid2speed, sources, "./testdata/target.csv", &ds)
+	dumpSpeedTable4Customize(wayid2speed, segmentsOfWay, sources, "./testdata/target.csv", &ds)
 
 	compareFileContentUnstable("./testdata/target.csv", "./testdata/expect.csv", t)
 	validateStatistic(&ds, t)
+}
+
+func TestSpeedTableDumper2(t *testing.T) {
+	// load result into sources
+	var sources [TASKNUM]chan string
+	for i := range sources {
+		sources[i] = make(chan string, 10000)
+	}
+	go loadWay2NodeidsTable("./testdata/id-mapping-segment.csv.snappy", sources)
+
+	// construct mock traffic
+	wayid2speed := make(map[int64]int)
+	wayid2speed[733690162] = 60
+	wayid2speed[-733689924] = 60
+
+	segmentsOfWay := make(map[int64][]*trafficproxy.SegmentedFlow)
+	loadMockTrafficFlowSegment2Map(segmentsOfWay)
+
+	var ds dumperStatistic
+	ds.Init(TASKNUM)
+	dumpSpeedTable4Customize(wayid2speed, segmentsOfWay, sources, "./testdata/target-segment.csv", &ds)
+
+	compareFileContentUnstable("./testdata/target-segment.csv", "./testdata/expect-segment.csv", t)
+	// validateStatistic(&ds, t)
 }
 
 func TestGenerateSingleRecord1(t *testing.T) {
@@ -60,6 +87,19 @@ func loadMockTrafficFlow2Map(wayid2speed map[int64]int) {
 	wayid2speed[24418332] = 87
 	wayid2speed[24418343] = 47
 	wayid2speed[-24418344] = 59
+}
+
+func loadMockTrafficFlowSegment2Map(segmentsOfWay map[int64][]*trafficproxy.SegmentedFlow) {
+	segmentsOfWay[733690162] = []*trafficproxy.SegmentedFlow{
+		{Speed: 25, Begin: 25, End: 75},
+		{Speed: 42, Begin: 80, End: 175}, // negative case
+	}
+	segmentsOfWay[-733689924] = []*trafficproxy.SegmentedFlow{
+		{Speed: 10, Begin: 0, End: 25},
+		{Speed: 20, Begin: 26, End: 50},
+		{Speed: 30, Begin: 51, End: 100},
+		{Speed: 42, Begin: 50, End: 25}, // negative case
+	}
 }
 
 type tNodePair struct {

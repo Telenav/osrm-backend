@@ -62,11 +62,19 @@ message FlowResponse {
   string trasctionID = 3; // unique ID for tracking the Flow from provider to end user
 }
 
+message SegmentedFlow {
+  float speed = 1;  // unit: meter per second. always >= 0
+  TrafficLevel trafficLevel = 2;  // `trafficLevel==CLOSED` means blocking Flow
+  int32 begin = 3;  // begin offset percentage, range [0,100)
+  int32 end = 4;    // end offset percentage, range (0, 100], end > begin
+}
+
 message Flow {
   sint64 wayID = 1; // positive means forward, negative means backward
   float speed = 2;  // unit: meter per second. always >= 0
   TrafficLevel trafficLevel = 3;  // `trafficLevel==CLOSED` means blocking Flow
   int64 timestamp = 4; // received timestamp from provider, number of milliseconds since the Epoch
+  repeated SegmentedFlow segmentedFlow = 5; // optional segmented flow, leave empty if no partial flow on the way. 
 }
 
 enum TrafficLevel {
