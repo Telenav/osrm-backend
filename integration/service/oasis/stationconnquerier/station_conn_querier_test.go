@@ -117,14 +117,14 @@ func TestStationConnQuerier(t *testing.T) {
 				{
 					StationID:       "2",
 					StationLocation: mockStation2Location,
-					Distance:        1,
-					Duration:        1,
+					Distance:        1, // hard code value from mock ConnectivityMap
+					Duration:        1, // hard code value from mock ConnectivityMap
 				},
 				{
 					StationID:       stationfindertype.DestLocationID,
 					StationLocation: mockDestLocation,
 					Distance:        4873.817197753869,
-					Duration:        4873.817197753869,
+					Duration:        219.54131521413822,
 				},
 			},
 		},
@@ -134,14 +134,14 @@ func TestStationConnQuerier(t *testing.T) {
 				{
 					StationID:       "3",
 					StationLocation: mockStation3Location,
-					Distance:        2,
-					Duration:        2,
+					Distance:        2, // hard code value from mock ConnectivityMap
+					Duration:        2, // hard code value from mock ConnectivityMap
 				},
 				{
 					StationID:       stationfindertype.DestLocationID,
 					StationLocation: mockDestLocation,
 					Distance:        7277.313067724465,
-					Duration:        7277.313067724465,
+					Duration:        327.80689494254347,
 				},
 			},
 		},
@@ -152,7 +152,7 @@ func TestStationConnQuerier(t *testing.T) {
 					StationID:       stationfindertype.DestLocationID,
 					StationLocation: mockDestLocation,
 					Distance:        7083.8672907090095,
-					Duration:        7083.8672907090095,
+					Duration:        319.0931212031085,
 				},
 			},
 		},

@@ -118,35 +118,35 @@ func TestGenerateTableRequest(t *testing.T) {
 				Lon: 0,
 			},
 			targets: []*spatialindexer.PointInfo{
-				&spatialindexer.PointInfo{
+				{
 					ID: 1,
 					Location: spatialindexer.Location{
 						Lat: 1.1,
 						Lon: 1.1,
 					},
 				},
-				&spatialindexer.PointInfo{
+				{
 					ID: 2,
 					Location: spatialindexer.Location{
 						Lat: 2.2,
 						Lon: 2.2,
 					},
 				},
-				&spatialindexer.PointInfo{
+				{
 					ID: 3,
 					Location: spatialindexer.Location{
 						Lat: 3.3,
 						Lon: 3.3,
 					},
 				},
-				&spatialindexer.PointInfo{
+				{
 					ID: 4,
 					Location: spatialindexer.Location{
 						Lat: 4.4,
 						Lon: 4.4,
 					},
 				},
-				&spatialindexer.PointInfo{
+				{
 					ID: 5,
 					Location: spatialindexer.Location{
 						Lat: 5.5,
@@ -219,42 +219,42 @@ func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 				Lon: 0,
 			},
 			targets: []*spatialindexer.PointInfo{
-				&spatialindexer.PointInfo{
+				{
 					ID: 1,
 					Location: spatialindexer.Location{
 						Lat: 1.1,
 						Lon: 1.1,
 					},
 				},
-				&spatialindexer.PointInfo{
+				{
 					ID: 2,
 					Location: spatialindexer.Location{
 						Lat: 2.2,
 						Lon: 2.2,
 					},
 				},
-				&spatialindexer.PointInfo{
+				{
 					ID: 3,
 					Location: spatialindexer.Location{
 						Lat: 3.3,
 						Lon: 3.3,
 					},
 				},
-				&spatialindexer.PointInfo{
+				{
 					ID: 4,
 					Location: spatialindexer.Location{
 						Lat: 4.4,
 						Lon: 4.4,
 					},
 				},
-				&spatialindexer.PointInfo{
+				{
 					ID: 5,
 					Location: spatialindexer.Location{
 						Lat: 5.5,
 						Lon: 5.5,
 					},
 				},
-				&spatialindexer.PointInfo{
+				{
 					ID: 6,
 					Location: spatialindexer.Location{
 						Lat: 6.6,
@@ -263,7 +263,7 @@ func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 				},
 			},
 			expect: []*spatialindexer.RankedPointInfo{
-				&spatialindexer.RankedPointInfo{
+				{
 					PointInfo: spatialindexer.PointInfo{
 						ID: 1,
 						Location: spatialindexer.Location{
@@ -272,8 +272,9 @@ func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 						},
 					},
 					Distance: 1.1,
+					Duration: 1.1,
 				},
-				&spatialindexer.RankedPointInfo{
+				{
 					PointInfo: spatialindexer.PointInfo{
 						ID: 2,
 						Location: spatialindexer.Location{
@@ -282,8 +283,9 @@ func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 						},
 					},
 					Distance: 2.2,
+					Duration: 2.2,
 				},
-				&spatialindexer.RankedPointInfo{
+				{
 					PointInfo: spatialindexer.PointInfo{
 						ID: 3,
 						Location: spatialindexer.Location{
@@ -292,8 +294,9 @@ func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 						},
 					},
 					Distance: 3.3,
+					Duration: 3.3,
 				},
-				&spatialindexer.RankedPointInfo{
+				{
 					PointInfo: spatialindexer.PointInfo{
 						ID: 4,
 						Location: spatialindexer.Location{
@@ -302,8 +305,9 @@ func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 						},
 					},
 					Distance: 4.4,
+					Duration: 4.4,
 				},
-				&spatialindexer.RankedPointInfo{
+				{
 					PointInfo: spatialindexer.PointInfo{
 						ID: 5,
 						Location: spatialindexer.Location{
@@ -312,8 +316,9 @@ func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 						},
 					},
 					Distance: 5.5,
+					Duration: 5.5,
 				},
-				&spatialindexer.RankedPointInfo{
+				{
 					PointInfo: spatialindexer.PointInfo{
 						ID: 6,
 						Location: spatialindexer.Location{
@@ -322,6 +327,7 @@ func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 						},
 					},
 					Distance: 6.6,
+					Duration: 6.6,
 				},
 			},
 		},

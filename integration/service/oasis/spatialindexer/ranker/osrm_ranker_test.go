@@ -79,6 +79,7 @@ func TestRankerInterfaceViaOSRMRanker(t *testing.T) {
 						},
 					},
 					Distance: 1.1,
+					Duration: 1.1,
 				},
 				&spatialindexer.RankedPointInfo{
 					PointInfo: spatialindexer.PointInfo{
@@ -89,6 +90,7 @@ func TestRankerInterfaceViaOSRMRanker(t *testing.T) {
 						},
 					},
 					Distance: 2.2,
+					Duration: 2.2,
 				},
 				&spatialindexer.RankedPointInfo{
 					PointInfo: spatialindexer.PointInfo{
@@ -99,6 +101,7 @@ func TestRankerInterfaceViaOSRMRanker(t *testing.T) {
 						},
 					},
 					Distance: 3.3,
+					Duration: 3.3,
 				},
 				&spatialindexer.RankedPointInfo{
 					PointInfo: spatialindexer.PointInfo{
@@ -109,6 +112,7 @@ func TestRankerInterfaceViaOSRMRanker(t *testing.T) {
 						},
 					},
 					Distance: 4.4,
+					Duration: 4.4,
 				},
 				&spatialindexer.RankedPointInfo{
 					PointInfo: spatialindexer.PointInfo{
@@ -119,6 +123,7 @@ func TestRankerInterfaceViaOSRMRanker(t *testing.T) {
 						},
 					},
 					Distance: 5.5,
+					Duration: 5.5,
 				},
 				&spatialindexer.RankedPointInfo{
 					PointInfo: spatialindexer.PointInfo{
@@ -129,6 +134,7 @@ func TestRankerInterfaceViaOSRMRanker(t *testing.T) {
 						},
 					},
 					Distance: 6.6,
+					Duration: 6.6,
 				},
 			},
 		},

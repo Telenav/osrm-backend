@@ -15,6 +15,9 @@ var fakeStatisticResult1 = statistic{
 	AverageMaxDistance:    15,
 	MaxOfMaxDistance:      23,
 	MinOfMaxDistance:      5,
+	AverageMaxDuration:    24.8,
+	MaxOfMaxDuration:      61,
+	MinOfMaxDuration:      5,
 	MaxRange:              123,
 }
 

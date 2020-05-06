@@ -19,21 +19,21 @@ func TestRankerInterfaceViaSimpleRanker(t *testing.T) {
 				Lon: -121.976633,
 			},
 			targets: []*spatialindexer.PointInfo{
-				&spatialindexer.PointInfo{
+				{
 					ID: 1,
 					Location: spatialindexer.Location{
 						Lat: 37.388840,
 						Lon: -121.981736,
 					},
 				},
-				&spatialindexer.PointInfo{
+				{
 					ID: 2,
 					Location: spatialindexer.Location{
 						Lat: 37.375515,
 						Lon: -121.942812,
 					},
 				},
-				&spatialindexer.PointInfo{
+				{
 					ID: 3,
 					Location: spatialindexer.Location{
 						Lat: 37.336954,
@@ -42,7 +42,7 @@ func TestRankerInterfaceViaSimpleRanker(t *testing.T) {
 				},
 			},
 			expect: []*spatialindexer.RankedPointInfo{
-				&spatialindexer.RankedPointInfo{
+				{
 					PointInfo: spatialindexer.PointInfo{
 						ID: 1,
 						Location: spatialindexer.Location{
@@ -51,8 +51,9 @@ func TestRankerInterfaceViaSimpleRanker(t *testing.T) {
 						},
 					},
 					Distance: 1213.445757354474,
+					Duration: 54.65971879975108,
 				},
-				&spatialindexer.RankedPointInfo{
+				{
 					PointInfo: spatialindexer.PointInfo{
 						ID: 2,
 						Location: spatialindexer.Location{
@@ -61,8 +62,9 @@ func TestRankerInterfaceViaSimpleRanker(t *testing.T) {
 						},
 					},
 					Distance: 3965.986474110687,
+					Duration: 178.64803937435528,
 				},
-				&spatialindexer.RankedPointInfo{
+				{
 					PointInfo: spatialindexer.PointInfo{
 						ID: 3,
 						Location: spatialindexer.Location{
@@ -71,6 +73,7 @@ func TestRankerInterfaceViaSimpleRanker(t *testing.T) {
 						},
 					},
 					Distance: 12281.070927352637,
+					Duration: 553.2013931239927,
 				},
 			},
 		},

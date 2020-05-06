@@ -24,6 +24,7 @@ type PointInfo struct {
 type RankedPointInfo struct {
 	PointInfo
 	Distance float64
+	Duration float64
 }
 
 // PointID defines ID for given point(location, point of interest)

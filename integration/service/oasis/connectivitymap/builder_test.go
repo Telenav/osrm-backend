@@ -31,52 +31,82 @@ func TestBuilderWithMockIteratorAndFinder(t *testing.T) {
 	// construct expect map
 	expect := make(ID2NearByIDsMap)
 
-	var idAndDistanceArray = []IDAndDistance{
-		IDAndDistance{
-			ID:       3,
-			Distance: 345.220003472554,
+	var idAndWeightArray = []IDAndWeight{
+		{
+			3,
+			Weight{
+				345.220003472554,
+				15.550450606871804,
+			},
 		},
-		IDAndDistance{
-			ID:       2,
-			Distance: 402.8536530341791,
+		{
+			2,
+			Weight{
+				402.8536530341791,
+				18.146560947485547,
+			},
 		},
-		IDAndDistance{
-			ID:       4,
-			Distance: 1627.1858848458571,
+		{
+			4,
+			Weight{
+				1627.1858848458571,
+				73.29666147954312,
+			},
 		},
-		IDAndDistance{
-			ID:       5,
-			Distance: 4615.586636153461,
+		{
+			5,
+			Weight{
+				4615.586636153461,
+				207.9093079348406,
+			},
 		},
-		IDAndDistance{
-			ID:       1,
-			Distance: 5257.70008125706,
+		{
+			1,
+			Weight{
+				5257.70008125706,
+				236.8333369935613,
+			},
 		},
-		IDAndDistance{
-			ID:       6,
-			Distance: 6888.7486674247,
+		{
+			6,
+			Weight{
+				6888.7486674247,
+				310.30399402813964,
+			},
 		},
-		IDAndDistance{
-			ID:       7,
-			Distance: 7041.893747628621,
+		{
+			7,
+			Weight{
+				7041.893747628621,
+				317.2024210643523,
+			},
 		},
-		IDAndDistance{
-			ID:       10,
-			Distance: 8622.213424347745,
+		{
+			10,
+			Weight{
+				8622.213424347745,
+				388.3879920877363,
+			},
 		},
-		IDAndDistance{
-			ID:       9,
-			Distance: 9438.804320070916,
+		{
+			9,
+			Weight{
+				9438.804320070916,
+				425.1713657689602,
+			},
 		},
-		IDAndDistance{
-			ID:       8,
-			Distance: 9897.44482638937,
+		{
+			8,
+			Weight{
+				9897.44482638937,
+				445.8308480355572,
+			},
 		},
 	}
 
 	for i := 0; i < 100; i++ {
 		index := i + 1000
-		expect[(spatialindexer.PointID(index))] = idAndDistanceArray
+		expect[(spatialindexer.PointID(index))] = idAndWeightArray
 	}
 
 	if !reflect.DeepEqual(actual, expect) {
