@@ -1,7 +1,7 @@
 package table
 
 import (
-	"github.com/Telenav/osrm-backend/integration/api/osrm/osrmtype"
+	"github.com/Telenav/osrm-backend/integration/api/osrm"
 )
 
 // 1 * 4
@@ -13,22 +13,22 @@ var Mock1ToNTableResponse1 Response = Response{
 	Distances: [][]float64{
 		[]float64{mockFloatArray1[0], mockFloatArray1[1], mockFloatArray1[2], mockFloatArray1[3]},
 	},
-	Sources: []*osrmtype.Waypoint{
-		&osrmtype.Waypoint{
+	Sources: []*osrm.Waypoint{
+		&osrm.Waypoint{
 			Name: "orig_location",
 		},
 	},
-	Destinations: []*osrmtype.Waypoint{
-		&osrmtype.Waypoint{
+	Destinations: []*osrm.Waypoint{
+		&osrm.Waypoint{
 			Name: "station1",
 		},
-		&osrmtype.Waypoint{
+		&osrm.Waypoint{
 			Name: "station2",
 		},
-		&osrmtype.Waypoint{
+		&osrm.Waypoint{
 			Name: "station3",
 		},
-		&osrmtype.Waypoint{
+		&osrm.Waypoint{
 			Name: "station4",
 		},
 	},
@@ -49,22 +49,22 @@ var MockNTo1TableResponse1 Response = Response{
 		[]float64{mockFloatArray2[2]},
 		[]float64{mockFloatArray2[3]},
 	},
-	Sources: []*osrmtype.Waypoint{
-		&osrmtype.Waypoint{
+	Sources: []*osrm.Waypoint{
+		&osrm.Waypoint{
 			Name: "station1",
 		},
-		&osrmtype.Waypoint{
+		&osrm.Waypoint{
 			Name: "station2",
 		},
-		&osrmtype.Waypoint{
+		&osrm.Waypoint{
 			Name: "station3",
 		},
-		&osrmtype.Waypoint{
+		&osrm.Waypoint{
 			Name: "station4",
 		},
 	},
-	Destinations: []*osrmtype.Waypoint{
-		&osrmtype.Waypoint{
+	Destinations: []*osrm.Waypoint{
+		&osrm.Waypoint{
 			Name: "dest_location",
 		},
 	},
@@ -91,25 +91,25 @@ var Mock4To2TableResponse1 Response = Response{
 		[]float64{mockFloatArray3[2][0], mockFloatArray3[2][1]},
 		[]float64{mockFloatArray3[3][0], mockFloatArray3[3][1]},
 	},
-	Sources: []*osrmtype.Waypoint{
-		&osrmtype.Waypoint{
+	Sources: []*osrm.Waypoint{
+		&osrm.Waypoint{
 			Name: "station1",
 		},
-		&osrmtype.Waypoint{
+		&osrm.Waypoint{
 			Name: "station2",
 		},
-		&osrmtype.Waypoint{
+		&osrm.Waypoint{
 			Name: "station3",
 		},
-		&osrmtype.Waypoint{
+		&osrm.Waypoint{
 			Name: "station4",
 		},
 	},
-	Destinations: []*osrmtype.Waypoint{
-		&osrmtype.Waypoint{
+	Destinations: []*osrm.Waypoint{
+		&osrm.Waypoint{
 			Name: "station6",
 		},
-		&osrmtype.Waypoint{
+		&osrm.Waypoint{
 			Name: "station7",
 		},
 	},
@@ -126,16 +126,16 @@ var Mock2To1TableResponse1 Response = Response{
 		[]float64{mockFloatArray4[0]},
 		[]float64{mockFloatArray4[1]},
 	},
-	Sources: []*osrmtype.Waypoint{
-		&osrmtype.Waypoint{
+	Sources: []*osrm.Waypoint{
+		&osrm.Waypoint{
 			Name: "station6",
 		},
-		&osrmtype.Waypoint{
+		&osrm.Waypoint{
 			Name: "station7",
 		},
 	},
-	Destinations: []*osrmtype.Waypoint{
-		&osrmtype.Waypoint{
+	Destinations: []*osrm.Waypoint{
+		&osrm.Waypoint{
 			Name: "dest_location",
 		},
 	},

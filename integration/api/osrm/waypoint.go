@@ -1,4 +1,4 @@
-package osrmtype
+package osrm
 
 // Waypoint object used to describe waypoint used in route or table.
 type Waypoint struct {
