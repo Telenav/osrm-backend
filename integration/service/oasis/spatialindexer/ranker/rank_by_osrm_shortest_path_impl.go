@@ -7,7 +7,6 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/api"
 	"github.com/Telenav/osrm-backend/integration/api/osrm"
-	"github.com/Telenav/osrm-backend/integration/api/osrm/code"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/route/options"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/table"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
@@ -80,7 +79,7 @@ func calcCenter2TargetsDistanceViaShortestPath(center spatialindexer.Location, t
 		return nil, resp.Err
 	}
 
-	if resp.Resp.Code != code.OK {
+	if resp.Resp.Code != osrm.CodeOK {
 		err := fmt.Errorf("failed to get correct table response for Request = %+v \n Resp = %+v", req.RequestURI(), resp.Resp)
 		return nil, err
 	}

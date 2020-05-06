@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Telenav/osrm-backend/integration/api/osrm/code"
+	"github.com/Telenav/osrm-backend/integration/api/osrm"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/table"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
@@ -172,7 +172,7 @@ func TestRankerInterfaceViaOSRMRanker(t *testing.T) {
 var mockFloatArray1To6 []float64 = []float64{1.1, 2.2, 3.3, 4.4, 5.5, 6.6}
 
 var mock1To6TableResponse table.Response = table.Response{
-	Code: code.OK,
+	Code: osrm.CodeOK,
 	Durations: [][]float64{
 		[]float64{
 			mockFloatArray1To6[0],
@@ -196,7 +196,7 @@ var mock1To6TableResponse table.Response = table.Response{
 }
 
 var mock1To3TableResponsePart1 table.Response = table.Response{
-	Code: code.OK,
+	Code: osrm.CodeOK,
 	Durations: [][]float64{
 		[]float64{
 			mockFloatArray1To6[0],
@@ -214,7 +214,7 @@ var mock1To3TableResponsePart1 table.Response = table.Response{
 }
 
 var mock1To3TableResponsePart2 table.Response = table.Response{
-	Code: code.OK,
+	Code: osrm.CodeOK,
 	Durations: [][]float64{
 		[]float64{
 			mockFloatArray1To6[3],
@@ -232,7 +232,7 @@ var mock1To3TableResponsePart2 table.Response = table.Response{
 }
 
 var mock1To4TableResponsePart1 table.Response = table.Response{
-	Code: code.OK,
+	Code: osrm.CodeOK,
 	Durations: [][]float64{
 		[]float64{
 			mockFloatArray1To6[0],
@@ -252,7 +252,7 @@ var mock1To4TableResponsePart1 table.Response = table.Response{
 }
 
 var mock1To4TableResponsePart2 table.Response = table.Response{
-	Code: code.OK,
+	Code: osrm.CodeOK,
 	Durations: [][]float64{
 		[]float64{
 			mockFloatArray1To6[4],

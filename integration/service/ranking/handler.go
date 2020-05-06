@@ -11,7 +11,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/util/waysnodes"
 
 	"github.com/Telenav/osrm-backend/integration/api"
-	"github.com/Telenav/osrm-backend/integration/api/osrm/code"
+	"github.com/Telenav/osrm-backend/integration/api/osrm"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/route"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/route/options"
 	"github.com/Telenav/osrm-backend/integration/service/ranking/strategy/rankbyduration"
@@ -72,7 +72,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if osrmResponse.Code == code.OK {
+	if osrmResponse.Code == osrm.CodeOK {
 		if err := h.retrieveWayIDs(osrmResponse.Routes); err != nil {
 			glog.Warning(err)
 			fmt.Fprintf(w, "Retrieve ways from nodes failed, err: %v", err)
