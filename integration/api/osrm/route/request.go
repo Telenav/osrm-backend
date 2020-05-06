@@ -14,7 +14,6 @@ import (
 	"github.com/golang/glog"
 
 	"github.com/Telenav/osrm-backend/integration/api"
-	"github.com/Telenav/osrm-backend/integration/api/osrm/coordinate"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/route/options"
 )
 
@@ -42,7 +41,7 @@ type Request struct {
 	Geometries       string
 	Overview         string
 	ContinueStraight string
-	Waypoints        coordinate.Indexes
+	Waypoints        osrm.CoordinateIndexes
 }
 
 // NewRequest create an empty route Request.
@@ -69,7 +68,7 @@ func NewRequest() *Request {
 		Geometries:       options.GeometriesDefaultValue,
 		Overview:         options.OverviewDefaultValue,
 		ContinueStraight: options.ContinueStraightDefaultValue,
-		Waypoints:        coordinate.Indexes{},
+		Waypoints:        osrm.CoordinateIndexes{},
 	}
 }
 
@@ -279,7 +278,7 @@ func (r *Request) parseQuery(values url.Values) {
 		}
 	}
 	if v := values.Get(options.KeyWaypoints); len(v) > 0 {
-		if indexes, err := coordinate.PraseIndexes(v); err == nil {
+		if indexes, err := osrm.PraseCoordinateIndexes(v); err == nil {
 			r.Waypoints = indexes
 		}
 	}
