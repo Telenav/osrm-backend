@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/Telenav/osrm-backend/integration/api/osrm"
-	"github.com/Telenav/osrm-backend/integration/api/osrm/genericoptions"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/table"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
@@ -98,10 +97,10 @@ func TestGenerateTableRequest(t *testing.T) {
 						Lon: 5.5,
 					},
 				},
-				Sources: genericoptions.Elements{
+				Sources: osrm.OptionElements{
 					"0",
 				},
-				Destinations: genericoptions.Elements{
+				Destinations: osrm.OptionElements{
 					"1",
 					"2",
 					"3",
@@ -178,10 +177,10 @@ func TestGenerateTableRequest(t *testing.T) {
 						Lon: 4.4,
 					},
 				},
-				Sources: genericoptions.Elements{
+				Sources: osrm.OptionElements{
 					"0",
 				},
-				Destinations: genericoptions.Elements{
+				Destinations: osrm.OptionElements{
 					"1",
 					"2",
 					"3",

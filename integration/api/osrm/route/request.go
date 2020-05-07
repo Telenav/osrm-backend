@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/Telenav/osrm-backend/integration/api/osrm"
-	"github.com/Telenav/osrm-backend/integration/api/osrm/genericoptions"
 
 	"github.com/golang/glog"
 
@@ -26,12 +25,12 @@ type Request struct {
 	osrm.Coordinates
 
 	// generic parameters
-	Bearings      genericoptions.Elements
-	Radiuses      genericoptions.Elements
+	Bearings      osrm.OptionElements
+	Radiuses      osrm.OptionElements
 	GenerateHints bool
-	Hints         genericoptions.Elements
-	Approaches    genericoptions.Elements
-	Exclude       genericoptions.Classes
+	Hints         osrm.OptionElements
+	Approaches    osrm.OptionElements
+	Exclude       osrm.OptionClasses
 
 	// Route service query parameters
 	Alternatives     string
@@ -53,12 +52,12 @@ func NewRequest() *Request {
 		Coordinates: osrm.Coordinates{},
 
 		// generic options
-		Bearings:      genericoptions.Elements{},
-		Radiuses:      genericoptions.Elements{},
-		GenerateHints: genericoptions.GenerateHintsDefaultValue,
-		Hints:         genericoptions.Elements{},
-		Approaches:    genericoptions.Elements{},
-		Exclude:       genericoptions.Classes{},
+		Bearings:      osrm.OptionElements{},
+		Radiuses:      osrm.OptionElements{},
+		GenerateHints: osrm.OptionGenerateHintsDefaultValue,
+		Hints:         osrm.OptionElements{},
+		Approaches:    osrm.OptionElements{},
+		Exclude:       osrm.OptionClasses{},
 
 		// route options
 		Alternatives:     OptionAlternativesDefaultValue,
@@ -108,22 +107,22 @@ func (r *Request) QueryValues() (v url.Values) {
 
 	// generic options
 	if len(r.Bearings) > 0 {
-		v.Add(genericoptions.KeyBearings, r.Bearings.String())
+		v.Add(osrm.OptionKeyBearings, r.Bearings.String())
 	}
 	if len(r.Radiuses) > 0 {
-		v.Add(genericoptions.KeyRadiuses, r.Radiuses.String())
+		v.Add(osrm.OptionKeyRadiuses, r.Radiuses.String())
 	}
-	if r.GenerateHints != genericoptions.GenerateHintsDefaultValue {
-		v.Add(genericoptions.KeyGenerateHints, strconv.FormatBool(r.GenerateHints))
+	if r.GenerateHints != osrm.OptionGenerateHintsDefaultValue {
+		v.Add(osrm.OptionKeyGenerateHints, strconv.FormatBool(r.GenerateHints))
 	}
 	if len(r.Hints) > 0 {
-		v.Add(genericoptions.KeyHints, r.Hints.String())
+		v.Add(osrm.OptionKeyHints, r.Hints.String())
 	}
 	if len(r.Approaches) > 0 {
-		v.Add(genericoptions.KeyApproaches, r.Approaches.String())
+		v.Add(osrm.OptionKeyApproaches, r.Approaches.String())
 	}
 	if len(r.Exclude) > 0 {
-		v.Add(genericoptions.KeyExclude, r.Exclude.String())
+		v.Add(osrm.OptionKeyExclude, r.Exclude.String())
 	}
 
 	// route options
@@ -215,33 +214,33 @@ func (r *Request) parsePath(path string) error {
 
 func (r *Request) parseQuery(values url.Values) {
 
-	if v := values.Get(genericoptions.KeyBearings); len(v) > 0 {
-		if bearings, err := genericoptions.ParseElemenets(v); err == nil {
+	if v := values.Get(osrm.OptionKeyBearings); len(v) > 0 {
+		if bearings, err := osrm.ParseOptionElemenets(v); err == nil {
 			r.Bearings = bearings
 		}
 	}
-	if v := values.Get(genericoptions.KeyRadiuses); len(v) > 0 {
-		if radiuses, err := genericoptions.ParseElemenets(v); err == nil {
+	if v := values.Get(osrm.OptionKeyRadiuses); len(v) > 0 {
+		if radiuses, err := osrm.ParseOptionElemenets(v); err == nil {
 			r.Radiuses = radiuses
 		}
 	}
-	if v := values.Get(genericoptions.KeyGenerateHints); len(v) > 0 {
-		if generateHints, err := genericoptions.ParseGenerateHints(v); err == nil {
+	if v := values.Get(osrm.OptionKeyGenerateHints); len(v) > 0 {
+		if generateHints, err := osrm.ParseOptionGenerateHints(v); err == nil {
 			r.GenerateHints = generateHints
 		}
 	}
-	if v := values.Get(genericoptions.KeyHints); len(v) > 0 {
-		if hints, err := genericoptions.ParseElemenets(v); err == nil {
+	if v := values.Get(osrm.OptionKeyHints); len(v) > 0 {
+		if hints, err := osrm.ParseOptionElemenets(v); err == nil {
 			r.Hints = hints
 		}
 	}
-	if v := values.Get(genericoptions.KeyApproaches); len(v) > 0 {
-		if approaches, err := genericoptions.ParseElemenets(v); err == nil {
+	if v := values.Get(osrm.OptionKeyApproaches); len(v) > 0 {
+		if approaches, err := osrm.ParseOptionElemenets(v); err == nil {
 			r.Approaches = approaches
 		}
 	}
-	if v := values.Get(genericoptions.KeyExclude); len(v) > 0 {
-		if classes, err := genericoptions.ParseClasses(v); err == nil {
+	if v := values.Get(osrm.OptionKeyExclude); len(v) > 0 {
+		if classes, err := osrm.ParseOptionClasses(v); err == nil {
 			r.Exclude = classes
 		}
 	}

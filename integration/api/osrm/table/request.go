@@ -7,7 +7,6 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/api"
 	"github.com/Telenav/osrm-backend/integration/api/osrm"
-	"github.com/Telenav/osrm-backend/integration/api/osrm/genericoptions"
 	"github.com/golang/glog"
 )
 
@@ -21,8 +20,8 @@ type Request struct {
 	osrm.Coordinates
 
 	// Options
-	Sources      genericoptions.Elements
-	Destinations genericoptions.Elements
+	Sources      osrm.OptionElements
+	Destinations osrm.OptionElements
 	Annotations  string
 }
 
@@ -37,8 +36,8 @@ func NewRequest() *Request {
 		Coordinates: osrm.Coordinates{},
 
 		// Options
-		Sources:      genericoptions.Elements{},
-		Destinations: genericoptions.Elements{},
+		Sources:      osrm.OptionElements{},
+		Destinations: osrm.OptionElements{},
 		Annotations:  OptionAnnotationsDefaultValue,
 	}
 
@@ -85,13 +84,13 @@ func (r *Request) parsePath(path string) error {
 func (r *Request) parseQuery(values url.Values) {
 
 	if v := values.Get(OptionKeySources); len(v) > 0 {
-		if sources, err := genericoptions.ParseElemenets(v); err == nil {
+		if sources, err := osrm.ParseOptionElemenets(v); err == nil {
 			r.Sources = sources
 		}
 	}
 
 	if v := values.Get(OptionKeyDestinations); len(v) > 0 {
-		if destinations, err := genericoptions.ParseElemenets(v); err == nil {
+		if destinations, err := osrm.ParseOptionElemenets(v); err == nil {
 			r.Destinations = destinations
 		}
 	}

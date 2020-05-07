@@ -1,4 +1,4 @@
-package genericoptions
+package osrm
 
 import (
 	"strings"
@@ -6,16 +6,16 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api"
 )
 
-// Classes represents OSRM exclude classes.
-// https://github.com/Telenav/osrm-backend/blob/master-telenav/docs/http.md#general-options
-type Classes []string
+// OptionClasses represents OSRM exclude classes.
+// https://github.com/Telenav/osrm-backend/blob/master/docs/http.md#general-options
+type OptionClasses []string
 
-// ParseClasses parses OSRM option elements.
-func ParseClasses(s string) (Classes, error) {
+// ParseOptionClasses parses OSRM option elements.
+func ParseOptionClasses(s string) (OptionClasses, error) {
 
 	s = strings.TrimSuffix(s, api.Comma) // remove the last `,` if exist
 
-	classes := Classes{}
+	classes := OptionClasses{}
 	splits := strings.Split(s, api.Comma)
 	for _, split := range splits {
 		if len(split) == 0 {
@@ -26,9 +26,9 @@ func ParseClasses(s string) (Classes, error) {
 	return classes, nil
 }
 
-func (c *Classes) String() string {
+func (o *OptionClasses) String() string {
 	var s string
-	for _, class := range *c {
+	for _, class := range *o {
 		if len(class) == 0 {
 			continue
 		}

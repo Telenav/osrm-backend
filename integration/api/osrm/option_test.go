@@ -1,8 +1,8 @@
-package genericoptions
+package osrm
 
 import "testing"
 
-func TestParseGenerateHints(t *testing.T) {
+func TestParseOptionGenerateHints(t *testing.T) {
 	cases := []struct {
 		s          string
 		expect     bool
@@ -16,7 +16,7 @@ func TestParseGenerateHints(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		b, err := ParseGenerateHints(c.s)
+		b, err := ParseOptionGenerateHints(c.s)
 		if err != nil && c.expectFail {
 			continue //right
 		} else if (err != nil && !c.expectFail) || (err == nil && c.expectFail) {
