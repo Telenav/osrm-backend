@@ -76,6 +76,8 @@ func TestApplyFixedTraffic(t *testing.T) {
 
 	cases := []struct {
 		r                      *route.Route
+		liveTrafficQuerier     traffic.LiveTrafficQuerier
+		historicalSpeedQuerier traffic.HistoricalSpeedQuerier
 		liveTraffic            bool
 		historicalSpeed        bool
 		expectLiveTrafficSpeed []float64
@@ -83,29 +85,44 @@ func TestApplyFixedTraffic(t *testing.T) {
 		expectBlockIncident    []bool
 		expectHistoricalSpeed  []float64
 	}{
-		{mock.NewOSRMRouteNormal(), true, true, appliedLiveTrafficSpeed, appliedLiveTrafficLevel, appliedBlockIncident, appliedHistoricalSpeed},
-		{mock.NewOSRMRouteNormal(), false, true, nil, nil, nil, appliedHistoricalSpeed},
-		{mock.NewOSRMRouteNormal(), true, false, appliedLiveTrafficSpeed, appliedLiveTrafficLevel, appliedBlockIncident, nil},
-		{mock.NewOSRMRouteNormal(), false, false, nil, nil, nil, nil},
+		{mock.NewOSRMRouteNormal(), mockTraffic, mockTraffic, true, true, appliedLiveTrafficSpeed, appliedLiveTrafficLevel, appliedBlockIncident, appliedHistoricalSpeed},
+
+		// historical speed only
+		{mock.NewOSRMRouteNormal(), nil, mockTraffic, true, true, nil, nil, nil, appliedHistoricalSpeed},
+		{mock.NewOSRMRouteNormal(), mockTraffic, mockTraffic, false, true, nil, nil, nil, appliedHistoricalSpeed},
+
+		// live traffic only
+		{mock.NewOSRMRouteNormal(), mockTraffic, nil, true, true, appliedLiveTrafficSpeed, appliedLiveTrafficLevel, appliedBlockIncident, nil},
+		{mock.NewOSRMRouteNormal(), mockTraffic, mockTraffic, true, false, appliedLiveTrafficSpeed, appliedLiveTrafficLevel, appliedBlockIncident, nil},
+
+		// both live traffic and historical speed will not be applied
+		{mock.NewOSRMRouteNormal(), mockTraffic, mockTraffic, false, false, nil, nil, nil, nil},
+		{mock.NewOSRMRouteNormal(), mockTraffic, nil, false, true, nil, nil, nil, nil},
+		{mock.NewOSRMRouteNormal(), mockTraffic, nil, false, false, nil, nil, nil, nil},
+		{mock.NewOSRMRouteNormal(), nil, mockTraffic, false, false, nil, nil, nil, nil},
+		{mock.NewOSRMRouteNormal(), nil, mockTraffic, true, false, nil, nil, nil, nil},
 	}
 
 	for _, c := range cases {
+		m.LiveTrafficQuerier = c.liveTrafficQuerier
+		m.HistoricalSpeedQuerier = c.historicalSpeedQuerier
+
 		if err := m.ApplyTraffic(c.r, c.liveTraffic, c.historicalSpeed); err != nil {
 			t.Error(err)
 		}
 
 		for _, l := range c.r.Legs {
 			if !reflect.DeepEqual(l.Annotation.LiveTrafficSpeed, c.expectLiveTrafficSpeed) {
-				t.Errorf("Applied fixed traffic on route %v, expect live traffic speed %v but got %v", c.r, c.expectLiveTrafficSpeed, l.Annotation.LiveTrafficSpeed)
+				t.Errorf("Applied fixed traffic(%v %v) on route %v, expect live traffic speed %v but got %v", c.liveTrafficQuerier, c.historicalSpeedQuerier, c.r, c.expectLiveTrafficSpeed, l.Annotation.LiveTrafficSpeed)
 			}
 			if !reflect.DeepEqual(l.Annotation.LiveTrafficLevel, c.expectLiveTrafficLevel) {
-				t.Errorf("Applied fixed traffic on route %v, expect live traffic level %v but got %v", c.r, c.expectLiveTrafficLevel, l.Annotation.LiveTrafficLevel)
+				t.Errorf("Applied fixed traffic(%v %v) on route %v, expect live traffic level %v but got %v", c.liveTrafficQuerier, c.historicalSpeedQuerier, c.r, c.expectLiveTrafficLevel, l.Annotation.LiveTrafficLevel)
 			}
 			if !reflect.DeepEqual(l.Annotation.BlockIncident, c.expectBlockIncident) {
-				t.Errorf("Applied fixed traffic on route %v, expect live traffic block incident %v but got %v", c.r, c.expectBlockIncident, l.Annotation.BlockIncident)
+				t.Errorf("Applied fixed traffic(%v %v) on route %v, expect live traffic block incident %v but got %v", c.liveTrafficQuerier, c.historicalSpeedQuerier, c.r, c.expectBlockIncident, l.Annotation.BlockIncident)
 			}
 			if !reflect.DeepEqual(l.Annotation.HistoricalSpeed, c.expectHistoricalSpeed) {
-				t.Errorf("Applied fixed traffic on route %v, expect historical speed %v but got %v", c.r, c.expectHistoricalSpeed, l.Annotation.HistoricalSpeed)
+				t.Errorf("Applied fixed traffic(%v %v) on route %v, expect historical speed %v but got %v", c.liveTrafficQuerier, c.historicalSpeedQuerier, c.r, c.expectHistoricalSpeed, l.Annotation.HistoricalSpeed)
 			}
 		}
 
