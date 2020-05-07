@@ -49,9 +49,9 @@ func newConnectivityMapBuilder(iterator spatialindexer.PointsIterator, finder sp
   Input Iterator(channel)    --->  worker (fetch task  ->  find  ->  rank)      ---> aggregatorChannel -> feed to map
                             \                                                 /
                              \                                               /
-							   ->  worker (fetch task  ->  find  ->  rank)
+                                ->  worker (fetch task  ->  find  ->  rank)
 
-							        . . .(more workers)
+                                    . . .(more workers)
 */
 
 func (builder *connectivityMapBuilder) build() ID2NearByIDsMap {
