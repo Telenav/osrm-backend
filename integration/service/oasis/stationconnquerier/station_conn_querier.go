@@ -72,8 +72,7 @@ func (querier *StationConnectivityQuerier) connectEndIntoStationGraph(stationFin
 			StationID:       stationfindertype.DestLocationID,
 			StationLocation: end,
 			Distance:        rankedPointInfo.Distance,
-			//TODO codebear801 https://github.com/Telenav/osrm-backend/issues/321
-			Duration: rankedPointInfo.Distance,
+			Duration:        rankedPointInfo.Duration,
 		}
 	}
 
@@ -112,9 +111,8 @@ func (querier *StationConnectivityQuerier) NearByStationQuery(stationID string) 
 			tmp := &connectivitymap.QueryResult{
 				StationID:       idAndWeight.ID.String(),
 				StationLocation: querier.GetLocation(idAndWeight.ID.String()),
-				Distance:        idAndWeight.Distance,
-				//TODO codebear801 https://github.com/Telenav/osrm-backend/issues/321
-				Duration: idAndWeight.Distance,
+				Distance:        idAndWeight.Weight.Distance,
+				Duration:        idAndWeight.Weight.Duration,
 			}
 			results = append(results, tmp)
 		}

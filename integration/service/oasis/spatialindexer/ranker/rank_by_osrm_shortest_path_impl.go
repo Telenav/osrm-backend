@@ -86,7 +86,11 @@ func calcCenter2TargetsDistanceViaShortestPath(center spatialindexer.Location, t
 	}
 
 	if len(resp.Resp.Distances[0]) != endIndex-startIndex+1 {
-		err := fmt.Errorf("incorrect table response for request %+v, expect %d items but returns %d", req.RequestURI(), endIndex-startIndex+1, len(resp.Resp.Distances[0]))
+		err := fmt.Errorf("incorrect table response for request %+v, expect %d items of distance but returns %d", req.RequestURI(), endIndex-startIndex+1, len(resp.Resp.Distances[0]))
+		return nil, err
+	}
+	if len(resp.Resp.Durations[0]) != endIndex-startIndex+1 {
+		err := fmt.Errorf("incorrect table response for request %+v, expect %d items of distance but returns %d", req.RequestURI(), endIndex-startIndex+1, len(resp.Resp.Durations[0]))
 		return nil, err
 	}
 
@@ -101,6 +105,7 @@ func calcCenter2TargetsDistanceViaShortestPath(center spatialindexer.Location, t
 				Location: targets[startIndex+i].Location,
 			},
 			Distance: resp.Resp.Distances[0][i],
+			Duration: resp.Resp.Durations[0][i],
 		})
 	}
 	return result, nil

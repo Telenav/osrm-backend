@@ -49,7 +49,9 @@ func newConnectivityMapBuilder(iterator spatialindexer.PointsIterator, finder sp
   Input Iterator(channel)    --->  worker (fetch task  ->  find  ->  rank)      ---> aggregatorChannel -> feed to map
                             \                                                 /
                              \                                               /
-                               ->  worker (fetch task  ->  find  ->  rank)
+							   ->  worker (fetch task  ->  find  ->  rank)
+
+							        . . .(more workers)
 */
 
 func (builder *connectivityMapBuilder) build() ID2NearByIDsMap {
@@ -80,11 +82,14 @@ func (builder *connectivityMapBuilder) work(workerID int, source <-chan spatiali
 		nearbyIDs := builder.finder.FindNearByPointIDs(p.Location, builder.distanceLimit, spatialindexer.UnlimitedCount)
 		rankedResults := builder.ranker.RankPointIDsByShortestDistance(p.Location, nearbyIDs)
 
-		ids := make([]IDAndDistance, 0, len(rankedResults))
+		ids := make([]IDAndWeight, 0, len(rankedResults))
 		for _, r := range rankedResults {
-			ids = append(ids, IDAndDistance{
-				ID:       r.ID,
-				Distance: r.Distance,
+			ids = append(ids, IDAndWeight{
+				ID: r.ID,
+				Weight: Weight{
+					Distance: r.Distance,
+					Duration: r.Duration,
+				},
 			})
 		}
 
@@ -120,7 +125,7 @@ func (builder *connectivityMapBuilder) wait() {
 
 type placeIDWithNearByPlaceIDs struct {
 	id  spatialindexer.PointID
-	ids []IDAndDistance
+	ids []IDAndWeight
 }
 
 func (builder *connectivityMapBuilder) buildInSerial() ID2NearByIDsMap {
@@ -133,11 +138,14 @@ func (builder *connectivityMapBuilder) buildInSerial() ID2NearByIDsMap {
 			nearbyIDs := builder.finder.FindNearByPointIDs(p.Location, builder.distanceLimit, spatialindexer.UnlimitedCount)
 			rankedResults := builder.ranker.RankPointIDsByGreatCircleDistance(p.Location, nearbyIDs)
 
-			ids := make([]IDAndDistance, 0, len(rankedResults))
+			ids := make([]IDAndWeight, 0, len(rankedResults))
 			for _, r := range rankedResults {
-				ids = append(ids, IDAndDistance{
-					ID:       r.ID,
-					Distance: r.Distance,
+				ids = append(ids, IDAndWeight{
+					ID: r.ID,
+					Weight: Weight{
+						Distance: r.Distance,
+						Duration: r.Duration,
+					},
 				})
 			}
 			internalResult <- placeIDWithNearByPlaceIDs{

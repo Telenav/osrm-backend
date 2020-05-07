@@ -5,14 +5,20 @@ import (
 	"github.com/golang/glog"
 )
 
-// IDAndDistance wraps ID and distance information
-type IDAndDistance struct {
-	ID       spatialindexer.PointID
+// Weight represent weight information
+type Weight struct {
 	Distance float64
+	Duration float64
+}
+
+// IDAndWeight wraps ID and weight information
+type IDAndWeight struct {
+	ID     spatialindexer.PointID
+	Weight Weight
 }
 
 // ID2NearByIDsMap is a mapping between ID and its nearby IDs
-type ID2NearByIDsMap map[spatialindexer.PointID][]IDAndDistance
+type ID2NearByIDsMap map[spatialindexer.PointID][]IDAndWeight
 
 // Connectivity Map used to query connectivity for given placeID
 type ConnectivityMap struct {
@@ -69,8 +75,8 @@ func (cm *ConnectivityMap) Load(folderPath string) *ConnectivityMap {
 }
 
 // QueryConnectivity answers connectivity query for given placeID
-// Return true and IDAndDistance array for given placeID, otherwise false and nil
-func (cm *ConnectivityMap) QueryConnectivity(placeID spatialindexer.PointID) ([]IDAndDistance, bool) {
+// Return true and IDAndWeight array for given placeID, otherwise false and nil
+func (cm *ConnectivityMap) QueryConnectivity(placeID spatialindexer.PointID) ([]IDAndWeight, bool) {
 	if result, ok := cm.id2nearByIDs[placeID]; ok {
 		return result, true
 	}

@@ -1,81 +1,123 @@
 package connectivitymap
 
 var fakeID2NearByIDsMap1 = ID2NearByIDsMap{
-	1: []IDAndDistance{
-		IDAndDistance{
-			ID:       2,
-			Distance: 3,
+	1: []IDAndWeight{
+		{
+			ID: 2,
+			Weight: Weight{
+				Distance: 3,
+				Duration: 3,
+			},
 		},
-		IDAndDistance{
-			ID:       5,
-			Distance: 4,
+		{
+			ID: 5,
+			Weight: Weight{
+				Distance: 4,
+				Duration: 4,
+			},
 		},
-		IDAndDistance{
-			ID:       7,
-			Distance: 6,
+		{
+			ID: 7,
+			Weight: Weight{
+				Distance: 6,
+				Duration: 61,
+			},
 		},
-		IDAndDistance{
-			ID:       8,
-			Distance: 12,
-		},
-	},
-
-	2: []IDAndDistance{
-		IDAndDistance{
-			ID:       1,
-			Distance: 3,
-		},
-		IDAndDistance{
-			ID:       7,
-			Distance: 23,
-		},
-	},
-
-	5: []IDAndDistance{
-		IDAndDistance{
-			ID:       1,
-			Distance: 4,
-		},
-		IDAndDistance{
-			ID:       8,
-			Distance: 5,
+		{
+			ID: 8,
+			Weight: Weight{
+				Distance: 12,
+				Duration: 12,
+			},
 		},
 	},
 
-	7: []IDAndDistance{
-		IDAndDistance{
-			ID:       1,
-			Distance: 6,
+	2: []IDAndWeight{
+		{
+			ID: 1,
+			Weight: Weight{
+				Distance: 3,
+				Duration: 3,
+			},
 		},
-		IDAndDistance{
-			ID:       2,
-			Distance: 23,
+		{
+			ID: 7,
+			Weight: Weight{
+				Distance: 23,
+				Duration: 23,
+			},
 		},
 	},
 
-	8: []IDAndDistance{
-		IDAndDistance{
-			ID:       5,
-			Distance: 5,
+	5: []IDAndWeight{
+		{
+			ID: 1,
+			Weight: Weight{
+				Distance: 4,
+				Duration: 4,
+			},
 		},
-		IDAndDistance{
-			ID:       1,
-			Distance: 12,
+		{
+			ID: 8,
+			Weight: Weight{
+				Distance: 5,
+				Duration: 5,
+			},
+		},
+	},
+
+	7: []IDAndWeight{
+		{
+			ID: 1,
+			Weight: Weight{
+				Distance: 6,
+				Duration: 6,
+			},
+		},
+		{
+			ID: 2,
+			Weight: Weight{
+				Distance: 23,
+				Duration: 23,
+			},
+		},
+	},
+
+	8: []IDAndWeight{
+		{
+			ID: 5,
+			Weight: Weight{
+				Distance: 5,
+				Duration: 5,
+			},
+		},
+		{
+			ID: 1,
+			Weight: Weight{
+				Distance: 12,
+				Duration: 12,
+			},
 		},
 	},
 }
 
 var fakeID2NearByIDsMap2 = ID2NearByIDsMap{
-	1: []IDAndDistance{
+	1: []IDAndWeight{
 		{
-			ID:       2,
-			Distance: 1,
+			ID: 2,
+			Weight: Weight{
+				Distance: 1,
+				Duration: 1,
+			},
 		},
 	},
-	2: []IDAndDistance{
+	2: []IDAndWeight{
 		{
-			ID:       3,
-			Distance: 2,
+			ID: 3,
+			Weight: Weight{
+				Distance: 2,
+				Duration: 2,
+			},
 		},
 	},
 }

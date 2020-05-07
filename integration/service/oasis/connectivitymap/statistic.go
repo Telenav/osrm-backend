@@ -21,6 +21,9 @@ type statistic struct {
 	AverageMaxDistance    float64 `json:"average_value_max_distance"`
 	MaxOfMaxDistance      float64 `json:"max_value_max_distance"`
 	MinOfMaxDistance      float64 `json:"min_value_max_distance"`
+	AverageMaxDuration    float64 `json:"average_value_max_duration"`
+	MaxOfMaxDuration      float64 `json:"max_value_max_duration"`
+	MinOfMaxDuration      float64 `json:"min_value_max_duration"`
 	MaxRange              float64 `json:"maxrange_set_by_preprocessing"`
 }
 
@@ -34,6 +37,9 @@ func newStatistic() *statistic {
 		AverageMaxDistance:    0.0,
 		MaxOfMaxDistance:      0.0,
 		MinOfMaxDistance:      math.MaxFloat64,
+		AverageMaxDuration:    0.0,
+		MaxOfMaxDuration:      0.0,
+		MinOfMaxDuration:      math.MaxFloat64,
 		MaxRange:              0.0,
 	}
 }
@@ -47,6 +53,9 @@ func (s *statistic) init() {
 	s.AverageMaxDistance = 0.0
 	s.MaxOfMaxDistance = 0.0
 	s.MinOfMaxDistance = math.MaxFloat64
+	s.AverageMaxDuration = 0.0
+	s.MaxOfMaxDuration = 0.0
+	s.MinOfMaxDuration = math.MaxFloat64
 	s.MaxRange = 0.0
 }
 
@@ -56,27 +65,33 @@ func (s *statistic) build(m ID2NearByIDsMap, MaxRange float64) *statistic {
 
 	totalNearByIDsCount := 0
 	totalMaxDistance := 0.0
-	for _, idAndDistanceArray := range m {
+	totalMaxDuration := 0.0
+	for _, idAndWeightArray := range m {
 		s.Count += 1
-		if len(idAndDistanceArray) == 0 {
+		if len(idAndWeightArray) == 0 {
 			continue
 		}
 		s.ValidCount += 1
 
 		prevTotalNearByIDsCount := totalNearByIDsCount
-		totalNearByIDsCount += len(idAndDistanceArray)
+		totalNearByIDsCount += len(idAndWeightArray)
 		if prevTotalNearByIDsCount > totalNearByIDsCount {
 			glog.Fatalf("Overflow during accumulate totalNearByIDsCount, before accumulate value = %v, after add %v new value is %v\n",
-				prevTotalNearByIDsCount, len(idAndDistanceArray), totalNearByIDsCount)
+				prevTotalNearByIDsCount, len(idAndWeightArray), totalNearByIDsCount)
 		}
-		s.MaxNearByIDsCount = max(s.MaxNearByIDsCount, len(idAndDistanceArray))
-		s.MinNearByIDsCount = min(s.MinNearByIDsCount, len(idAndDistanceArray))
+		s.MaxNearByIDsCount = max(s.MaxNearByIDsCount, len(idAndWeightArray))
+		s.MinNearByIDsCount = min(s.MinNearByIDsCount, len(idAndWeightArray))
 
 		prevTotalMaxDistance := totalMaxDistance
+		prevTotalMaxDuration := totalMaxDuration
 
 		maxDistance := 0.0
-		for _, item := range idAndDistanceArray {
-			maxDistance = math.Max(maxDistance, item.Distance)
+		for _, item := range idAndWeightArray {
+			maxDistance = math.Max(maxDistance, item.Weight.Distance)
+		}
+		maxDuration := 0.0
+		for _, item := range idAndWeightArray {
+			maxDuration = math.Max(maxDuration, item.Weight.Duration)
 		}
 
 		totalMaxDistance += maxDistance
@@ -84,8 +99,17 @@ func (s *statistic) build(m ID2NearByIDsMap, MaxRange float64) *statistic {
 			glog.Fatalf("Overflow during accumulate totalMaxDistance, before accumulate value = %#v, after add %v new value is %#v\n",
 				prevTotalMaxDistance, maxDistance, totalMaxDistance)
 		}
+		totalMaxDuration += maxDuration
+		if prevTotalMaxDuration > totalMaxDuration {
+			glog.Fatalf("Overflow during accumulate totalMaxDuration, before accumulate value = %#v, after add %v new value is %#v\n",
+				prevTotalMaxDuration, maxDuration, totalMaxDuration)
+		}
+
 		s.MaxOfMaxDistance = math.Max(s.MaxOfMaxDistance, maxDistance)
 		s.MinOfMaxDistance = math.Min(s.MinOfMaxDistance, maxDistance)
+
+		s.MaxOfMaxDuration = math.Max(s.MaxOfMaxDuration, maxDuration)
+		s.MinOfMaxDuration = math.Min(s.MinOfMaxDuration, maxDuration)
 	}
 
 	if s.ValidCount == 0 {
@@ -95,6 +119,7 @@ func (s *statistic) build(m ID2NearByIDsMap, MaxRange float64) *statistic {
 
 	s.AverageNearByIDsCount = totalNearByIDsCount / s.ValidCount
 	s.AverageMaxDistance = totalMaxDistance / (float64)(s.ValidCount)
+	s.AverageMaxDuration = totalMaxDuration / (float64)(s.ValidCount)
 
 	glog.Infof("Build statistic for ID2NearByIDsMap finished. %+v\n", s)
 	return s
