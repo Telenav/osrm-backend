@@ -9,7 +9,7 @@ import (
 // OptionElements represents values split by `;`, i.e. bearings, radiuses, hints, approaches
 type OptionElements []string
 
-// ParseElemenets parses OSRM option elements.
+// ParseOptionElemenets parses OSRM option elements.
 func ParseOptionElemenets(s string) (OptionElements, error) {
 
 	s = strings.TrimSuffix(s, api.Semicolon) // remove the last `;` if exist
