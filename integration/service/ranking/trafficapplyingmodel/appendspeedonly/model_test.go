@@ -50,7 +50,7 @@ func TestApplyTrafficErrors(t *testing.T) {
 	}
 }
 
-func TestApplyFixedSpeed(t *testing.T) {
+func TestApplyFixedTraffic(t *testing.T) {
 
 	mockFixedSpeed := 100.0
 	mockFixedLevel := trafficproxy.TrafficLevel_FREE_FLOW
@@ -106,6 +106,98 @@ func TestApplyFixedSpeed(t *testing.T) {
 			}
 			if !reflect.DeepEqual(l.Annotation.HistoricalSpeed, c.expectHistoricalSpeed) {
 				t.Errorf("Applied fixed traffic on route %v, expect historical speed %v but got %v", c.r, c.expectHistoricalSpeed, l.Annotation.HistoricalSpeed)
+			}
+		}
+
+	}
+}
+
+func TestApplyNormalTraffic(t *testing.T) {
+
+	mockTraffic := mock.NewNormalTraffic()
+
+	appliedLiveTrafficSpeed := []float64{
+		float64(float32(6.110000)), // flow uses float32 to store the speed that will lose some precision
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		float64(float32(106.11)),
+		float64(float32(106.11)),
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+	}
+	appliedLiveTrafficLevel := []int{
+		int(trafficproxy.TrafficLevel_SLOW_SPEED), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, int(trafficproxy.TrafficLevel_FREE_FLOW), int(trafficproxy.TrafficLevel_FREE_FLOW), 0, 0,
+	}
+	appliedBlockIncident := []bool{false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false}
+	appliedHistoricalSpeed := []float64{
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		20.5,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidTrafficSpeed,
+		70.0,
+		70.0,
+	}
+
+	m, err := appendspeedonly.New(mockTraffic, mockTraffic)
+	if err != nil {
+		t.Error(err)
+	}
+
+	cases := []struct {
+		r                      *route.Route
+		liveTraffic            bool
+		historicalSpeed        bool
+		expectLiveTrafficSpeed []float64
+		expectLiveTrafficLevel []int
+		expectBlockIncident    []bool
+		expectHistoricalSpeed  []float64
+	}{
+		{mock.NewOSRMRouteNormal(), true, true, appliedLiveTrafficSpeed, appliedLiveTrafficLevel, appliedBlockIncident, appliedHistoricalSpeed},
+		{mock.NewOSRMRouteNormal(), false, true, nil, nil, nil, appliedHistoricalSpeed},
+		{mock.NewOSRMRouteNormal(), true, false, appliedLiveTrafficSpeed, appliedLiveTrafficLevel, appliedBlockIncident, nil},
+		{mock.NewOSRMRouteNormal(), false, false, nil, nil, nil, nil},
+	}
+
+	for _, c := range cases {
+		if err := m.ApplyTraffic(c.r, c.liveTraffic, c.historicalSpeed); err != nil {
+			t.Error(err)
+		}
+
+		for _, l := range c.r.Legs {
+			if !reflect.DeepEqual(l.Annotation.LiveTrafficSpeed, c.expectLiveTrafficSpeed) {
+				t.Errorf("Applied traffic on route %v, expect live traffic speed %v but got %v", c.r, c.expectLiveTrafficSpeed, l.Annotation.LiveTrafficSpeed)
+			}
+			if !reflect.DeepEqual(l.Annotation.LiveTrafficLevel, c.expectLiveTrafficLevel) {
+				t.Errorf("Applied traffic on route %v, expect live traffic level %v but got %v", c.r, c.expectLiveTrafficLevel, l.Annotation.LiveTrafficLevel)
+			}
+			if !reflect.DeepEqual(l.Annotation.BlockIncident, c.expectBlockIncident) {
+				t.Errorf("Applied traffic on route %v, expect live traffic block incident %v but got %v", c.r, c.expectBlockIncident, l.Annotation.BlockIncident)
+			}
+			if !reflect.DeepEqual(l.Annotation.HistoricalSpeed, c.expectHistoricalSpeed) {
+				t.Errorf("Applied traffic on route %v, expect historical speed %v but got %v", c.r, c.expectHistoricalSpeed, l.Annotation.HistoricalSpeed)
 			}
 		}
 
