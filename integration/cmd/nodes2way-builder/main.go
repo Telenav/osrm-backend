@@ -5,11 +5,13 @@ import (
 	"os"
 	"time"
 
+	"github.com/Telenav/osrm-backend/integration/util/appversion"
 	"github.com/golang/glog"
 )
 
 func main() {
 	flag.Parse()
+	appversion.PrintExit()
 	defer glog.Flush()
 
 	startTime := time.Now()
