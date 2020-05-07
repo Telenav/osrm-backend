@@ -15,6 +15,7 @@ Changes from v10.2.0
   - CHANGED for internal refactoring, move `integration/pkg/api` to `integration/api`, and `integration/pkg/backend` to `integration/util/backend` [#315](https://github.com/Telenav/osrm-backend/pull/315)
   - CHANGED for internal refactoring, rename `cmd/osrm-ranking` to `cmd/osrm-rankd` [#317](https://github.com/Telenav/osrm-backend/pull/317)
   - ADDED versioning on golang binaries [#320](https://github.com/Telenav/osrm-backend/pull/320)
+  - ADDED package `util/appversion` to share versioning among many golang binaries [#328](https://github.com/Telenav/osrm-backend/pull/328)
   - ADDED package `stationconnquerier` which builds station connectivity graph based on pre-build data [#323](https://github.com/Telenav/osrm-backend/pull/323)
 - Bugfix:    
   - CHANGED `osrm-ranking` parsing of OSRM route response to compatible with `string` array `annotation/nodes` [#296](https://github.com/Telenav/osrm-backend/pull/296)     
