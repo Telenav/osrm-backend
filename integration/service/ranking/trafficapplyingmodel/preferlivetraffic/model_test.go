@@ -1,6 +1,7 @@
 package preferlivetraffic_test
 
 import (
+	"math"
 	"reflect"
 	"testing"
 
@@ -48,7 +49,7 @@ func TestApplyTrafficErrors(t *testing.T) {
 	}
 }
 
-func TestApplyNormalTraffic(t *testing.T) {
+func TestApplyNormalTrafficNoBlock(t *testing.T) {
 	mockTraffic := mock.NewNormalTrafficNoBlock()
 
 	r := mock.NewOSRMRouteNormal()
@@ -203,6 +204,25 @@ func TestApplyNormalTraffic(t *testing.T) {
 			t.Errorf("Applied traffic on route %v, expect weight, duration %f,%f but got %f,%f", c.r, c.expectWeight, c.expectDuration, c.r.Weight, c.r.Duration)
 		}
 
+	}
+}
+
+func TestApplyNormalTrafficWithBlock(t *testing.T) {
+	mockTraffic := mock.NewNormalTraffic()
+
+	r := mock.NewOSRMRouteNormal()
+
+	m, err := preferlivetraffic.New(mockTraffic, mockTraffic)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if err := m.ApplyTraffic(r, true, true); err != nil {
+		t.Error(err)
+	}
+
+	if !math.IsInf(r.Weight, 0) || !math.IsInf(r.Duration, 0) {
+		t.Errorf("Applied traffic on route %v, expect weight, duration Inf but got %f,%f", r, r.Weight, r.Duration)
 	}
 }
 
