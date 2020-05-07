@@ -8,8 +8,8 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/api/osrm"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/route"
-	"github.com/Telenav/osrm-backend/integration/api/osrm/route/options"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/table"
+	"github.com/Telenav/osrm-backend/integration/api/osrm/table/options"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
 )
 
