@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 
+	"github.com/Telenav/osrm-backend/integration/util/appversion"
+
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficdumper"
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxy"
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxyclient"
@@ -11,12 +13,8 @@ import (
 
 func main() {
 	flag.Parse()
+	appversion.PrintExit()
 	defer glog.Flush()
-
-	if flags.version {
-		printVersion()
-		return
-	}
 
 	if flags.rpcMode == rpcModeGetWays {
 		if len(flags.wayIDs) == 0 {

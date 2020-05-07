@@ -4,6 +4,8 @@ import (
 	"flag"
 	"strings"
 
+	"github.com/Telenav/osrm-backend/integration/util/appversion"
+
 	"github.com/Telenav/osrm-backend/integration/osrmfiles"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/dotcnbg"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/dotnames"
@@ -50,12 +52,8 @@ func createEmptyOSRMFilesContents(osrmBasefilePath string) map[string]osrmfiles.
 
 func main() {
 	flag.Parse()
+	appversion.PrintExit()
 	defer glog.Flush()
-
-	if flags.version {
-		printVersion()
-		return
-	}
 
 	suffixIndex := strings.LastIndex(flags.filePath, dotOSRMSuffix)
 	if suffixIndex < 0 {
