@@ -20,6 +20,7 @@ Changes from v10.2.0
   - CHANGED for internal refactoring, use `osrm.xxx` to invoke OSRM APIs, e.g. `osrm.Coordinate` instead of `coordinate.Coordinate` [#327](https://github.com/Telenav/osrm-backend/pull/327)
   - CHANGED for epsilon of util/floatequals, use different epsilon for float32 compare and float64 compare [#332](https://github.com/Telenav/osrm-backend/issues/332)
 
+  - ADDED interface test for `trafficapplyingmodel` implementation(both `appendspeedonly` and `preferlivetraffic`) [#330](https://github.com/Telenav/osrm-backend/pull/330) 
 - Bugfix:    
   - CHANGED `osrm-ranking` parsing of OSRM route response to compatible with `string` array `annotation/nodes` [#296](https://github.com/Telenav/osrm-backend/pull/296)     
   - FIXED wrong variable `docker-entrypoint.sh` [#311](https://github.com/Telenav/osrm-backend/pull/311)
