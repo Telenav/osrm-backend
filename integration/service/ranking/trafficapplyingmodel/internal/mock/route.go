@@ -49,6 +49,16 @@ func NewOSRMRouteNoAnnotation() *route.Route {
 	}
 }
 
+// NewOSRMRouteNoDataSourceName creates a new OSRM Route mock object that contains one leg but no metadata/datasourcenames on the annotation.
+func NewOSRMRouteNoDataSourceName() *route.Route {
+
+	r := NewOSRMRouteNormal()
+	for _, l := range r.Legs {
+		l.Annotation.Metadata = nil
+	}
+	return r
+}
+
 // NewOSRMRouteNormal creates a new OSRM Route mock object: only contains one leg with valid annotation, no step.
 func NewOSRMRouteNormal() *route.Route {
 
