@@ -13,7 +13,6 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api"
 	"github.com/Telenav/osrm-backend/integration/api/osrm"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/route"
-	"github.com/Telenav/osrm-backend/integration/api/osrm/route/options"
 	"github.com/Telenav/osrm-backend/integration/service/ranking/strategy/rankbyduration"
 
 	"github.com/golang/glog"
@@ -61,7 +60,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	originalAlternativesNum := osrmRequest.AlternativesNumber()
 	originalAnnotations := osrmRequest.Annotations
 	osrmRequest.Alternatives = strconv.FormatUint(uint64(flags.alternatives), 10)
-	osrmRequest.Annotations = options.AnnotationsValueTrue
+	osrmRequest.Annotations = route.OptionAnnotationsValueTrue
 
 	// route against backend OSRM
 	osrmResponse, osrmHTTPStatus, err := h.routeByOSRM(osrmRequest)

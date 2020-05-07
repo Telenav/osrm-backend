@@ -14,7 +14,6 @@ import (
 	"github.com/golang/glog"
 
 	"github.com/Telenav/osrm-backend/integration/api"
-	"github.com/Telenav/osrm-backend/integration/api/osrm/route/options"
 )
 
 // Request represent OSRM api v1 route request parameters.
@@ -62,12 +61,12 @@ func NewRequest() *Request {
 		Exclude:       genericoptions.Classes{},
 
 		// route options
-		Alternatives:     options.AlternativesDefaultValue,
-		Steps:            options.StepsDefaultValue,
-		Annotations:      options.AnnotationsDefaultValue,
-		Geometries:       options.GeometriesDefaultValue,
-		Overview:         options.OverviewDefaultValue,
-		ContinueStraight: options.ContinueStraightDefaultValue,
+		Alternatives:     OptionAlternativesDefaultValue,
+		Steps:            OptionStepsDefaultValue,
+		Annotations:      OptionAnnotationsDefaultValue,
+		Geometries:       OptionGeometriesDefaultValue,
+		Overview:         OptionOverviewDefaultValue,
+		ContinueStraight: OptionContinueStraightDefaultValue,
 		Waypoints:        osrm.CoordinateIndexes{},
 	}
 }
@@ -128,26 +127,26 @@ func (r *Request) QueryValues() (v url.Values) {
 	}
 
 	// route options
-	if r.Alternatives != options.AlternativesDefaultValue {
-		v.Add(options.KeyAlternatives, r.Alternatives)
+	if r.Alternatives != OptionAlternativesDefaultValue {
+		v.Add(OptionKeyAlternatives, r.Alternatives)
 	}
-	if r.Steps != options.StepsDefaultValue {
-		v.Add(options.KeySteps, strconv.FormatBool(r.Steps))
+	if r.Steps != OptionStepsDefaultValue {
+		v.Add(OptionKeySteps, strconv.FormatBool(r.Steps))
 	}
-	if r.Annotations != options.AnnotationsDefaultValue {
-		v.Add(options.KeyAnnotations, r.Annotations)
+	if r.Annotations != OptionAnnotationsDefaultValue {
+		v.Add(OptionKeyAnnotations, r.Annotations)
 	}
-	if r.Geometries != options.GeometriesDefaultValue {
-		v.Add(options.KeyGeometries, r.Geometries)
+	if r.Geometries != OptionGeometriesDefaultValue {
+		v.Add(OptionKeyGeometries, r.Geometries)
 	}
-	if r.Overview != options.OverviewDefaultValue {
-		v.Add(options.KeyOverview, r.Overview)
+	if r.Overview != OptionOverviewDefaultValue {
+		v.Add(OptionKeyOverview, r.Overview)
 	}
-	if r.ContinueStraight != options.ContinueStraightDefaultValue {
-		v.Add(options.KeyContinueStraight, r.ContinueStraight)
+	if r.ContinueStraight != OptionContinueStraightDefaultValue {
+		v.Add(OptionKeyContinueStraight, r.ContinueStraight)
 	}
 	if len(r.Waypoints) > 0 {
-		v.Add(options.KeyWaypoints, r.Waypoints.String())
+		v.Add(OptionKeyWaypoints, r.Waypoints.String())
 	}
 
 	return
@@ -184,7 +183,7 @@ func (r *Request) RequestURI() string {
 
 // AlternativesNumber returns alternatives as number value.
 func (r *Request) AlternativesNumber() int {
-	_, n, _ := options.ParseAlternatives(r.Alternatives)
+	_, n, _ := parseOptionAlternatives(r.Alternatives)
 	return n
 }
 
@@ -247,37 +246,37 @@ func (r *Request) parseQuery(values url.Values) {
 		}
 	}
 
-	if v := values.Get(options.KeyAlternatives); len(v) > 0 {
-		if alternatives, _, err := options.ParseAlternatives(v); err == nil {
+	if v := values.Get(OptionKeyAlternatives); len(v) > 0 {
+		if alternatives, _, err := parseOptionAlternatives(v); err == nil {
 			r.Alternatives = alternatives
 		}
 	}
-	if v := values.Get(options.KeySteps); len(v) > 0 {
-		if b, err := options.ParseSteps(v); err == nil {
+	if v := values.Get(OptionKeySteps); len(v) > 0 {
+		if b, err := parseOptionSteps(v); err == nil {
 			r.Steps = b
 		}
 	}
-	if v := values.Get(options.KeyAnnotations); len(v) > 0 {
-		if annotations, err := options.ParseAnnotations(v); err == nil {
+	if v := values.Get(OptionKeyAnnotations); len(v) > 0 {
+		if annotations, err := parseOptionAnnotations(v); err == nil {
 			r.Annotations = annotations
 		}
 	}
-	if v := values.Get(options.KeyGeometries); len(v) > 0 {
-		if geometries, err := options.ParseGeometries(v); err == nil {
+	if v := values.Get(OptionKeyGeometries); len(v) > 0 {
+		if geometries, err := parseOptionGeometries(v); err == nil {
 			r.Geometries = geometries
 		}
 	}
-	if v := values.Get(options.KeyOverview); len(v) > 0 {
-		if overview, err := options.ParseOverview(v); err == nil {
+	if v := values.Get(OptionKeyOverview); len(v) > 0 {
+		if overview, err := parseOptionOverview(v); err == nil {
 			r.Overview = overview
 		}
 	}
-	if v := values.Get(options.KeyContinueStraight); len(v) > 0 {
-		if continueStraight, err := options.ParseContinueStraight(v); err == nil {
+	if v := values.Get(OptionKeyContinueStraight); len(v) > 0 {
+		if continueStraight, err := parseOptionContinueStraight(v); err == nil {
 			r.ContinueStraight = continueStraight
 		}
 	}
-	if v := values.Get(options.KeyWaypoints); len(v) > 0 {
+	if v := values.Get(OptionKeyWaypoints); len(v) > 0 {
 		if indexes, err := osrm.PraseCoordinateIndexes(v); err == nil {
 			r.Waypoints = indexes
 		}
