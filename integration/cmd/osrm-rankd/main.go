@@ -15,6 +15,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/traffic/historicalspeed"
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficcache"
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxyclient"
+	"github.com/Telenav/osrm-backend/integration/util/appversion"
 	"github.com/Telenav/osrm-backend/integration/util/waysnodes/nodes2wayblotdb"
 
 	"github.com/golang/glog"
@@ -22,19 +23,13 @@ import (
 
 func main() {
 	flag.Parse()
+	appversion.PrintExit()
 	defer glog.Flush()
-
-	if flags.version {
-		printVersion()
-		return
-	}
 
 	// monitor
 	upClock := time.Now()
 	monitorContents := newMonitorContents()
-	monitorContents.Versions.AppVersion = appVersion
-	monitorContents.Versions.GitCommit = gitCommit
-	monitorContents.Versions.BuildTime = buildTime
+	monitorContents.VersionInfo = appversion.Version()
 	monitorContents.CmdlineArgs = os.Args
 
 	// prepare nodes2way

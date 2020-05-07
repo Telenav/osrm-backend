@@ -8,8 +8,6 @@ import (
 )
 
 var flags struct {
-	version bool // print version
-
 	listenPort int
 
 	nodes2WayDB string
@@ -25,7 +23,6 @@ var flags struct {
 }
 
 func init() {
-	flag.BoolVar(&flags.version, "version", false, "Print version and exit.")
 
 	flag.IntVar(&flags.listenPort, "p", 8080, "Listen port.")
 
