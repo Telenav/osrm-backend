@@ -22,9 +22,11 @@ RUN mkdir -p osrm-backend/build && \
   cp /workspace/osrm-backend/build/osrm* /osrm-build/ && \
   cp -r /workspace/osrm-backend/profiles /osrm-build/
 
+# use IMAGE_TAG as appVersion when inside docker
+ARG IMAGE_TAG 
 RUN cd /workspace/osrm-backend/integration && \
   go test -short -v ./... && \
-  go install ./... && \
+  go install -ldflags "-X=main.appVersion=${IMAGE_TAG} -X=main.gitCommit=${GIT_COMMIT} -X=main.buildTime=$(date --iso-8601=seconds)" ./... && \
   ls -lh /workspace/go/bin
 
 

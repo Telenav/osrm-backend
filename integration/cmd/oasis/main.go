@@ -12,6 +12,12 @@ import (
 func main() {
 	flag.Parse()
 	defer glog.Flush()
+
+	if flags.version {
+		printVersion()
+		return
+	}
+
 	mux := http.NewServeMux()
 
 	oasisService, err := oasis.New(flags.osrmBackendEndpoint, flags.finderType, flags.tnSearchEndpoint,
