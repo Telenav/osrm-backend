@@ -26,7 +26,7 @@ RUN mkdir -p osrm-backend/build && \
 ARG IMAGE_TAG 
 RUN cd /workspace/osrm-backend/integration && \
   go test -short -v ./... && \
-  go install -ldflags "-X=main.appVersion=${IMAGE_TAG} -X=main.gitCommit=${GIT_COMMIT} -X=main.buildTime=$(date --iso-8601=seconds)" ./... && \
+  go install -ldflags "-X=github.com/Telenav/osrm-backend/integration/util/appversion.appVersion=${IMAGE_TAG} -X=github.com/Telenav/osrm-backend/integration/util/appversion.gitCommit=${GIT_COMMIT} -X=github.com/Telenav/osrm-backend/integration/util/appversion.buildTime=$(date --iso-8601=seconds)" ./... && \
   ls -lh /workspace/go/bin
 
 
