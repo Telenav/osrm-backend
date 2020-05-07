@@ -34,4 +34,4 @@ jobs:
         goarch: ${{ matrix.goarch }}
         project_path: "${{ env.CMD_PATH }}"
         binary_name: "${{ env.BINARY_NAME }}"
-        ldflags: -X "main.appVersion=${{ env.APP_VERSION }}" -X "main.buildTime=${{ env.BUILD_TIME }}" -X main.gitCommit=${{ github.sha }}
+        ldflags: -X "github.com/Telenav/osrm-backend/integration/util/appversion.appVersion=${{ env.APP_VERSION }}" -X "github.com/Telenav/osrm-backend/integration/util/appversion.buildTime=${{ env.BUILD_TIME }}" -X github.com/Telenav/osrm-backend/integration/util/appversion.gitCommit=${{ github.sha }}
