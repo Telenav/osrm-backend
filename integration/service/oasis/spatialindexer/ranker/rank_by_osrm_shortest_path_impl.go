@@ -8,7 +8,6 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api"
 	"github.com/Telenav/osrm-backend/integration/api/osrm"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/table"
-	"github.com/Telenav/osrm-backend/integration/api/osrm/table/options"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
 	"github.com/golang/glog"
@@ -123,7 +122,7 @@ func generateTableRequest(center spatialindexer.Location, targets []*spatialinde
 		req.Destinations = append(req.Destinations, str)
 	}
 
-	req.Annotations = options.AnnotationsValueDistance + api.Comma + options.AnnotationsValueDuration
+	req.Annotations = table.OptionAnnotationsValueDistance + api.Comma + table.OptionAnnotationsValueDuration
 
 	return req
 }

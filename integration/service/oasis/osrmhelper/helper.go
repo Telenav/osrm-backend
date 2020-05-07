@@ -9,7 +9,6 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api/osrm"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/route"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/table"
-	"github.com/Telenav/osrm-backend/integration/api/osrm/table/options"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
 )
 
@@ -34,7 +33,7 @@ func GenerateTableReq4Points(startPoints osrm.Coordinates, endPoints osrm.Coordi
 		req.Destinations = append(req.Destinations, str)
 	}
 
-	req.Annotations = options.AnnotationsValueDistance + api.Comma + options.AnnotationsValueDuration
+	req.Annotations = table.OptionAnnotationsValueDistance + api.Comma + table.OptionAnnotationsValueDuration
 	return req, nil
 }
 
