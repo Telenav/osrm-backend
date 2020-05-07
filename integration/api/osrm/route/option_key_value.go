@@ -1,7 +1,7 @@
 package route
 
 // Route service Query Parameter/Option Keys
-// https://github.com/Telenav/osrm-backend/blob/feature/fail-on-error/docs/http.md#route-service
+// https://github.com/Telenav/osrm-backend/blob/master/docs/http.md#route-service
 const (
 	OptionKeyAlternatives     = "alternatives"      // true, false(default) or number
 	OptionKeySteps            = "steps"             // true, false(default)
