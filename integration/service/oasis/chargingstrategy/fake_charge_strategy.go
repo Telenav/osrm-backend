@@ -46,7 +46,7 @@ func (f *fakeChargeStrategy) EvaluateCost(arrivalEnergy float64, targetState Sta
 	}
 
 	if arrivalEnergy > targetState.Energy ||
-		util.FloatEquals(targetState.Energy, 0.0) {
+		util.Float64Equal(targetState.Energy, 0.0) {
 		return noNeedCharge
 	}
 
@@ -58,7 +58,7 @@ func (f *fakeChargeStrategy) EvaluateCost(arrivalEnergy float64, targetState Sta
 		currentEnergy = sixtyPercentOfMaxEnergy
 	}
 
-	if util.FloatEquals(targetState.Energy, sixtyPercentOfMaxEnergy) {
+	if util.Float64Equal(targetState.Energy, sixtyPercentOfMaxEnergy) {
 		return ChargingCost{
 			Duration: totalTime,
 		}
@@ -69,7 +69,7 @@ func (f *fakeChargeStrategy) EvaluateCost(arrivalEnergy float64, targetState Sta
 		totalTime += energyNeeded4Stage2 / (eightyPercentOfMaxEnergy - sixtyPercentOfMaxEnergy) * 3600.0
 		currentEnergy = eightyPercentOfMaxEnergy
 	}
-	if util.FloatEquals(targetState.Energy, eightyPercentOfMaxEnergy) {
+	if util.Float64Equal(targetState.Energy, eightyPercentOfMaxEnergy) {
 		return ChargingCost{
 			Duration: totalTime,
 		}
@@ -80,7 +80,7 @@ func (f *fakeChargeStrategy) EvaluateCost(arrivalEnergy float64, targetState Sta
 		totalTime += energyNeeded4Stage3 / (f.maxEnergyLevel - eightyPercentOfMaxEnergy) * 7200.0
 	}
 
-	if util.FloatEquals(targetState.Energy, f.maxEnergyLevel) {
+	if util.Float64Equal(targetState.Energy, f.maxEnergyLevel) {
 		return ChargingCost{
 			Duration: totalTime,
 		}

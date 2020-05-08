@@ -126,12 +126,12 @@ func (r *Request) parseQuery(params url.Values) error {
 
 func (r *Request) validate() error {
 	// MaxRange must be set
-	if util.FloatEquals(r.MaxRange, options.InvalidMaxRangeValue) || r.MaxRange < 0 {
+	if util.Float64Equal(r.MaxRange, options.InvalidMaxRangeValue) || r.MaxRange < 0 {
 		return errors.New("Invalid value for " + options.KeyMaxRange + ".")
 	}
 
 	// CurrRange must be set
-	if util.FloatEquals(r.CurrRange, options.InvalidCurrentRangeValue) || r.CurrRange < 0 {
+	if util.Float64Equal(r.CurrRange, options.InvalidCurrentRangeValue) || r.CurrRange < 0 {
 		return errors.New("Invalid value for " + options.KeyCurrRange + ".")
 	}
 

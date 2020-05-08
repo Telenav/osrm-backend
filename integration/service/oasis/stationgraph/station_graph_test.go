@@ -204,17 +204,17 @@ func TestStationGraphGenerateSolutions1(t *testing.T) {
 	}
 	sol := solutions[0]
 	// 58.8 = 11.1 + 14.4 + 33.3
-	if !util.FloatEquals(sol.Distance, 58.8) {
+	if !util.Float64Equal(sol.Distance, 58.8) {
 		t.Errorf("Incorrect distance calculated for fakeGraph1 expect 58.89 but got %#v.\n", sol.Distance)
 	}
 
 	// 7918.8 = 11.1 + 2532(60% charge) + 14.4 + 5328(80% charge) + 33.3
-	if !util.FloatEquals(sol.Duration, 7918.8) {
+	if !util.Float64Equal(sol.Duration, 7918.8) {
 		t.Errorf("Incorrect duration calculated for fakeGraph1 expect 10858.8 but got %#v.\n", sol.Duration)
 	}
 
 	// 6.7 = 40 - 33.3
-	if !util.FloatEquals(sol.RemainingRage, 6.7) {
+	if !util.Float64Equal(sol.RemainingRage, 6.7) {
 		t.Errorf("Incorrect duration calculated for fakeGraph1 expect 10858.8 but got %#v.\n", sol.RemainingRage)
 	}
 

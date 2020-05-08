@@ -12,5 +12,5 @@ const (
 
 // IsInvalidSpeed decide whether the speed is valid(>=0) or not.
 func IsInvalidSpeed(speed float64) bool {
-	return util.FloatEquals(speed, InvalidTrafficSpeedFloat64) || speed < 0
+	return util.Float64Equal(speed, InvalidTrafficSpeedFloat64) || speed < 0
 }
