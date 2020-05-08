@@ -60,45 +60,45 @@ func TestApplyNormalTrafficNoBlock(t *testing.T) {
 
 	appliedLiveTrafficSpeed := []float64{
 		float64(float32(6.110000)), // flow uses float32 to store the speed that will lose some precision
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
+		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
+		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
+		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
+		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
+		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
+		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
+		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
+		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
+		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
+		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
+		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
+		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
+		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
 		float64(float32(106.11)),
 		float64(float32(106.11)),
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
+		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
+		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
 	}
 	appliedLiveTrafficLevel := []int{
 		int(trafficproxy.TrafficLevel_SLOW_SPEED), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, int(trafficproxy.TrafficLevel_FREE_FLOW), int(trafficproxy.TrafficLevel_FREE_FLOW), 0, 0,
 	}
 	appliedBlockIncident := []bool{false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}
 	appliedHistoricalSpeed := []float64{
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidHistoricalSpeed,
+		trafficapplyingmodel.InvalidHistoricalSpeed,
 		20.5,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
-		trafficapplyingmodel.InvalidTrafficSpeed,
+		trafficapplyingmodel.InvalidHistoricalSpeed,
+		trafficapplyingmodel.InvalidHistoricalSpeed,
+		trafficapplyingmodel.InvalidHistoricalSpeed,
+		trafficapplyingmodel.InvalidHistoricalSpeed,
+		trafficapplyingmodel.InvalidHistoricalSpeed,
+		trafficapplyingmodel.InvalidHistoricalSpeed,
+		trafficapplyingmodel.InvalidHistoricalSpeed,
+		trafficapplyingmodel.InvalidHistoricalSpeed,
+		trafficapplyingmodel.InvalidHistoricalSpeed,
+		trafficapplyingmodel.InvalidHistoricalSpeed,
+		trafficapplyingmodel.InvalidHistoricalSpeed,
+		trafficapplyingmodel.InvalidHistoricalSpeed,
+		trafficapplyingmodel.InvalidHistoricalSpeed,
 		70.0,
 		70.0,
 	}
@@ -226,6 +226,7 @@ func TestApplyNormalTrafficWithBlock(t *testing.T) {
 	}
 }
 
+// It's used to compare between before/after weight/duration because we didn't get high precision calculated weight/duration in test codes.
 func roughFloatEqual(a, b float64) bool {
 	percision := 0.1 // only 0.1 percision
 	if (a-b) < percision && (b-a) < percision {
