@@ -1,5 +1,4 @@
-// Package coordinate defines OSRM request coordinates.
-package coordinate
+package osrm
 
 import (
 	"fmt"
@@ -7,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/Telenav/osrm-backend/integration/api"
+	"github.com/golang/glog"
 )
 
 // Coordinate represents lat/lon of a GPS point.
@@ -69,4 +69,41 @@ func ParseCoordinates(str string) (Coordinates, error) {
 		coordinates = append(coordinates, c)
 	}
 	return coordinates, nil
+}
+
+// CoordinateIndex indicates which NO. of Coordinates.
+type CoordinateIndex uint
+
+// CoordinateIndexes represents a list of Index.
+type CoordinateIndexes []CoordinateIndex
+
+func (c *CoordinateIndexes) String() string {
+	var s string
+	for _, v := range *c {
+		if len(s) > 0 {
+			s += api.Semicolon
+		}
+		s += strconv.FormatUint(uint64(v), 10)
+	}
+	return s
+}
+
+// PraseCoordinateIndexes parses string to indexes of coordinates.
+func PraseCoordinateIndexes(s string) (CoordinateIndexes, error) {
+	indexes := []CoordinateIndex{}
+
+	splits := strings.Split(s, api.Semicolon)
+	for _, split := range splits {
+		if len(split) == 0 {
+			continue
+		}
+		n, err := strconv.ParseUint(split, 10, 32)
+		if err != nil {
+			fullErr := fmt.Errorf("invalid indexes value: %s, err %v", s, err)
+			glog.Warning(fullErr)
+			return nil, fullErr
+		}
+		indexes = append(indexes, CoordinateIndex(n))
+	}
+	return indexes, nil
 }

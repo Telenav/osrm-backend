@@ -3,7 +3,7 @@ package oasis
 import (
 	"testing"
 
-	"github.com/Telenav/osrm-backend/integration/api/osrm/coordinate"
+	"github.com/Telenav/osrm-backend/integration/api/osrm"
 )
 
 func TestOasisRequestURI(t *testing.T) {
@@ -16,7 +16,7 @@ func TestOasisRequestURI(t *testing.T) {
 				Service:     "oasis",
 				Version:     "v1",
 				Profile:     "earliest",
-				Coordinates: coordinate.Coordinates{coordinate.Coordinate{Lat: 37.364336, Lon: -122.006349}, coordinate.Coordinate{Lat: 37.313767, Lon: -121.875654}},
+				Coordinates: osrm.Coordinates{osrm.Coordinate{Lat: 37.364336, Lon: -122.006349}, osrm.Coordinate{Lat: 37.313767, Lon: -121.875654}},
 			},
 			"/oasis/v1/earliest/-122.006349,37.364336;-121.875654,37.313767",
 		},
@@ -25,7 +25,7 @@ func TestOasisRequestURI(t *testing.T) {
 				Service:     "oasis",
 				Version:     "v1",
 				Profile:     "earliest",
-				Coordinates: coordinate.Coordinates{coordinate.Coordinate{Lat: 37.364336, Lon: -122.006349}, coordinate.Coordinate{Lat: 37.313767, Lon: -121.875654}},
+				Coordinates: osrm.Coordinates{osrm.Coordinate{Lat: 37.364336, Lon: -122.006349}, osrm.Coordinate{Lat: 37.313767, Lon: -121.875654}},
 				MaxRange:    300.1,
 				CurrRange:   100,
 				PreferLevel: 80.0,

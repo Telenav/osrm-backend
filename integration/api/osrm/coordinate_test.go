@@ -1,4 +1,4 @@
-package coordinate
+package osrm
 
 import (
 	"reflect"
@@ -74,4 +74,54 @@ func TestParseCoordinates(t *testing.T) {
 		}
 	}
 
+}
+
+func TestPraseCoordinateIndexes(t *testing.T) {
+
+	cases := []struct {
+		s string
+		CoordinateIndexes
+		expectFail bool
+	}{
+		{"0;5;7", CoordinateIndexes{0, 5, 7}, false},
+		{"0;5;7;", CoordinateIndexes{0, 5, 7}, false},
+		{"0", CoordinateIndexes{0}, false},
+		{"5;1;4;2;3;6", CoordinateIndexes{5, 1, 4, 2, 3, 6}, false},
+		{"", CoordinateIndexes{}, false},
+		{"-1", nil, true},
+		{"a", nil, true},
+	}
+
+	for _, c := range cases {
+		indexes, err := PraseCoordinateIndexes(c.s)
+		if err != nil && c.expectFail {
+			continue //right
+		} else if (err != nil && !c.expectFail) || (err == nil && c.expectFail) {
+			t.Errorf("parse %s expect fail %t, but got err %v", c.s, c.expectFail, err)
+			continue
+		}
+
+		if !reflect.DeepEqual(indexes, c.CoordinateIndexes) {
+			t.Errorf("parse %s, expect %v, but got %v", c.s, c.CoordinateIndexes, indexes)
+		}
+	}
+}
+
+func TestCoordinateIndexesString(t *testing.T) {
+	cases := []struct {
+		expect string
+		CoordinateIndexes
+	}{
+		{"0;5;7", CoordinateIndexes{0, 5, 7}},
+		{"0", CoordinateIndexes{0}},
+		{"5;1;4;2;3;6", CoordinateIndexes{5, 1, 4, 2, 3, 6}},
+		{"", CoordinateIndexes{}},
+	}
+
+	for _, c := range cases {
+		s := c.CoordinateIndexes.String()
+		if s != c.expect {
+			t.Errorf("%v String(), expect %s, but got %s", c.CoordinateIndexes, c.expect, s)
+		}
+	}
 }

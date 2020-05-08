@@ -6,9 +6,7 @@ import (
 	"strings"
 
 	"github.com/Telenav/osrm-backend/integration/api"
-	"github.com/Telenav/osrm-backend/integration/api/osrm/coordinate"
-	"github.com/Telenav/osrm-backend/integration/api/osrm/genericoptions"
-	"github.com/Telenav/osrm-backend/integration/api/osrm/table/options"
+	"github.com/Telenav/osrm-backend/integration/api/osrm"
 	"github.com/golang/glog"
 )
 
@@ -16,14 +14,14 @@ import (
 // http://project-osrm.org/docs/v5.5.1/api/#table-service
 type Request struct {
 	// Path
-	Service     string
-	Version     string
-	Profile     string
-	Coordinates coordinate.Coordinates
+	Service string
+	Version string
+	Profile string
+	osrm.Coordinates
 
 	// Options
-	Sources      genericoptions.Elements
-	Destinations genericoptions.Elements
+	Sources      osrm.OptionElements
+	Destinations osrm.OptionElements
 	Annotations  string
 }
 
@@ -35,12 +33,12 @@ func NewRequest() *Request {
 		Service:     "table",
 		Version:     "v1",
 		Profile:     "driving",
-		Coordinates: coordinate.Coordinates{},
+		Coordinates: osrm.Coordinates{},
 
 		// Options
-		Sources:      genericoptions.Elements{},
-		Destinations: genericoptions.Elements{},
-		Annotations:  options.AnnotationsDefaultValue,
+		Sources:      osrm.OptionElements{},
+		Destinations: osrm.OptionElements{},
+		Annotations:  OptionAnnotationsDefaultValue,
 	}
 
 }
@@ -76,7 +74,7 @@ func (r *Request) parsePath(path string) error {
 	r.Profile = s[2]
 
 	var err error
-	if r.Coordinates, err = coordinate.ParseCoordinates(s[3]); err != nil {
+	if r.Coordinates, err = osrm.ParseCoordinates(s[3]); err != nil {
 		return err
 	}
 
@@ -85,20 +83,20 @@ func (r *Request) parsePath(path string) error {
 
 func (r *Request) parseQuery(values url.Values) {
 
-	if v := values.Get(options.KeySources); len(v) > 0 {
-		if sources, err := genericoptions.ParseElemenets(v); err == nil {
+	if v := values.Get(OptionKeySources); len(v) > 0 {
+		if sources, err := osrm.ParseOptionElemenets(v); err == nil {
 			r.Sources = sources
 		}
 	}
 
-	if v := values.Get(options.KeyDestinations); len(v) > 0 {
-		if destinations, err := genericoptions.ParseElemenets(v); err == nil {
+	if v := values.Get(OptionKeyDestinations); len(v) > 0 {
+		if destinations, err := osrm.ParseOptionElemenets(v); err == nil {
 			r.Destinations = destinations
 		}
 	}
 
-	if v := values.Get(options.KeyAnnotations); len(v) > 0 {
-		if annotations, err := options.ParseAnnotations(v); err == nil {
+	if v := values.Get(OptionKeyAnnotations); len(v) > 0 {
+		if annotations, err := parseOptionAnnotations(v); err == nil {
 			r.Annotations = annotations
 		}
 	}
@@ -143,15 +141,15 @@ func (r *Request) QueryValues() (v url.Values) {
 	v = make(url.Values)
 
 	if len(r.Sources) > 0 {
-		v.Add(options.KeySources, r.Sources.String())
+		v.Add(OptionKeySources, r.Sources.String())
 	}
 
 	if len(r.Destinations) > 0 {
-		v.Add(options.KeyDestinations, r.Destinations.String())
+		v.Add(OptionKeyDestinations, r.Destinations.String())
 	}
 
 	if len(r.Annotations) > 0 {
-		v.Add(options.KeyAnnotations, r.Annotations)
+		v.Add(OptionKeyAnnotations, r.Annotations)
 	}
 
 	return

@@ -78,7 +78,7 @@ func (m Model) applyTrafficOnAnnotation(a *route.Annotation, enableLiveTraffic b
 				liveTrafficSpeeds[i] = float64(f.GetSpeed())
 				liveTrafficlevels[i] = int(f.GetTrafficLevel())
 			} else {
-				liveTrafficSpeeds[i] = trafficapplyingmodel.InvalidTrafficSpeedFloat64
+				liveTrafficSpeeds[i] = float64(trafficapplyingmodel.InvalidLiveTrafficSpeed)
 				liveTrafficlevels[i] = int(trafficproxy.TrafficLevel_NO_LEVELS)
 			}
 			if m.LiveTrafficQuerier.BlockedByIncident(wayID) {
@@ -90,7 +90,7 @@ func (m Model) applyTrafficOnAnnotation(a *route.Annotation, enableLiveTraffic b
 			if speed, ok := m.HistoricalSpeedQuerier.QueryHistoricalSpeed(wayID, utcTimestamp); ok {
 				historicalSpeeds[i] = speed
 			} else {
-				historicalSpeeds[i] = trafficapplyingmodel.InvalidTrafficSpeedFloat64
+				historicalSpeeds[i] = trafficapplyingmodel.InvalidHistoricalSpeed
 			}
 		}
 	}

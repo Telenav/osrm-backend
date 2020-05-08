@@ -241,10 +241,10 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 
 		if r.URL.EscapedPath() == "/entity/v4/search/json" {
 			req, _ := nearbychargestation.ParseRequestURL(r.URL)
-			if util.FloatEquals(req.Location.Lat, 2.2) && util.FloatEquals(req.Location.Lon, 2.2) {
+			if util.Float64Equal(req.Location.Lat, 2.2) && util.Float64Equal(req.Location.Lon, 2.2) {
 				var searchResponseBytes4Location1, _ = json.Marshal(nearbychargestation.MockSearchResponse1)
 				w.Write(searchResponseBytes4Location1)
-			} else if util.FloatEquals(req.Location.Lat, 3.3) && util.FloatEquals(req.Location.Lon, 3.3) {
+			} else if util.Float64Equal(req.Location.Lat, 3.3) && util.Float64Equal(req.Location.Lon, 3.3) {
 				var searchResponseBytes4Location2, _ = json.Marshal(nearbychargestation.MockSearchResponse3)
 				w.Write(searchResponseBytes4Location2)
 			}

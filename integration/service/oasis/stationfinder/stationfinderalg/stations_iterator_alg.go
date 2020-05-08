@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	"github.com/Telenav/osrm-backend/integration/api/nav"
-	"github.com/Telenav/osrm-backend/integration/api/osrm/coordinate"
+	"github.com/Telenav/osrm-backend/integration/api/osrm"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmhelper"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder"
@@ -33,10 +33,10 @@ func FindOverlapBetweenStations(iterF stationfindertype.NearbyStationsIterator, 
 // CalcWeightBetweenChargeStationsPair accepts two iterators and calculates weights between each pair of iterators
 func CalcWeightBetweenChargeStationsPair(from stationfindertype.NearbyStationsIterator, to stationfindertype.NearbyStationsIterator, table osrmconnector.TableRequster) ([]stationfindertype.NeighborInfo, error) {
 	// collect (Lat,Lon)&ID for current location's nearby charge stations
-	var startPoints coordinate.Coordinates
+	var startPoints osrm.Coordinates
 	var startIDs []string
 	for v := range from.IterateNearbyStations() {
-		startPoints = append(startPoints, coordinate.Coordinate{
+		startPoints = append(startPoints, osrm.Coordinate{
 			Lat: v.Location.Lat,
 			Lon: v.Location.Lon,
 		})
@@ -49,10 +49,10 @@ func CalcWeightBetweenChargeStationsPair(from stationfindertype.NearbyStationsIt
 	}
 
 	// collect (Lat,Lon)&ID for target location's nearby charge stations
-	var targetPoints coordinate.Coordinates
+	var targetPoints osrm.Coordinates
 	var targetIDs []string
 	for v := range to.IterateNearbyStations() {
-		targetPoints = append(targetPoints, coordinate.Coordinate{
+		targetPoints = append(targetPoints, osrm.Coordinate{
 			Lat: v.Location.Lat,
 			Lon: v.Location.Lon,
 		})

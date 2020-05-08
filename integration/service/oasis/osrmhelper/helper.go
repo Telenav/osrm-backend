@@ -6,15 +6,14 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/api"
 	"github.com/Telenav/osrm-backend/integration/api/oasis"
-	"github.com/Telenav/osrm-backend/integration/api/osrm/coordinate"
+	"github.com/Telenav/osrm-backend/integration/api/osrm"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/route"
-	"github.com/Telenav/osrm-backend/integration/api/osrm/route/options"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/table"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
 )
 
 // GenerateTableReq4Points accept two group of points and generate osrm table request
-func GenerateTableReq4Points(startPoints coordinate.Coordinates, endPoints coordinate.Coordinates) (*table.Request, error) {
+func GenerateTableReq4Points(startPoints osrm.Coordinates, endPoints osrm.Coordinates) (*table.Request, error) {
 	if len(startPoints) == 0 || len(endPoints) == 0 {
 		return nil, fmt.Errorf("calling function with empty points")
 	}
@@ -34,7 +33,7 @@ func GenerateTableReq4Points(startPoints coordinate.Coordinates, endPoints coord
 		req.Destinations = append(req.Destinations, str)
 	}
 
-	req.Annotations = options.AnnotationsValueDistance + api.Comma + options.AnnotationsValueDuration
+	req.Annotations = table.OptionAnnotationsValueDistance + api.Comma + table.OptionAnnotationsValueDuration
 	return req, nil
 }
 

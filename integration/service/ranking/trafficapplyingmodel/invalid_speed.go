@@ -6,11 +6,12 @@ import (
 
 // Invalid live/historical traffic speeds for applying.
 const (
-	InvalidTrafficSpeed        = -1
-	InvalidTrafficSpeedFloat64 = float64(InvalidTrafficSpeed)
+	InvalidSpeed            = -1
+	InvalidLiveTrafficSpeed = float32(InvalidSpeed) // Speed is float32 in trafficproxy.Flow
+	InvalidHistoricalSpeed  = float64(InvalidSpeed)
 )
 
 // IsInvalidSpeed decide whether the speed is valid(>=0) or not.
 func IsInvalidSpeed(speed float64) bool {
-	return util.FloatEquals(speed, InvalidTrafficSpeedFloat64) || speed < 0
+	return util.Float32Equal(float32(speed), float32(InvalidSpeed)) || speed < 0
 }

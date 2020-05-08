@@ -6,6 +6,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Telenav/osrm-backend/integration/util/appversion"
+
 	"github.com/Telenav/osrm-backend/integration/util/mapsource"
 	"github.com/qedus/osmpbf"
 
@@ -14,6 +16,8 @@ import (
 
 func main() {
 	flag.Parse()
+	appversion.PrintExit()
+	defer glog.Flush()
 
 	if flags.mapSource != mapsource.UniDB {
 		glog.Errorf("Only support %s at the moment.", mapsource.UniDB)

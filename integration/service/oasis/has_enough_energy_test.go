@@ -21,7 +21,7 @@ func TestHasEnoughEnergyPositive1(t *testing.T) {
 	}
 
 	expect := 10000.0
-	if !util.FloatEquals(remainRange, expect) {
+	if !util.Float64Equal(remainRange, expect) {
 		t.Errorf("Incorrect remaining range calculated, expect %s while actual value is %s", strconv.FormatFloat(expect, 'f', -1, 64), strconv.FormatFloat(remainRange, 'f', -1, 64))
 	}
 
@@ -40,7 +40,7 @@ func TestHasEnoughEnergyPositive2(t *testing.T) {
 	}
 
 	expect := 0.0
-	if !util.FloatEquals(remainRange, expect) {
+	if !util.Float64Equal(remainRange, expect) {
 		t.Errorf("Incorrect remaining range calculated, expect %s while actual value is %s", strconv.FormatFloat(expect, 'f', -1, 64), strconv.FormatFloat(remainRange, 'f', -1, 64))
 	}
 }

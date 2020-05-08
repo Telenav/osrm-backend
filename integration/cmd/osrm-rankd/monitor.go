@@ -3,11 +3,13 @@ package main
 import (
 	"fmt"
 	"time"
+
+	"github.com/Telenav/osrm-backend/integration/util/appversion"
 )
 
 type monitorContents struct {
-	UpTime                         jsonDuration                    `json:"uptime"`
-	Versions                       versionMonitorContents          `json:"version"`
+	UpTime                         jsonDuration `json:"uptime"`
+	appversion.VersionInfo         `json:"version"`
 	HistoricalSpeedMonitorContents *historicalSpeedMonitorContents `json:"historical speed"`
 	TrafficCacheMonitorContents    *trafficCacheMonitorContents    `json:"live traffic"`
 	Nodes2WayDB                    string                          `json:"nodes2way"`
@@ -25,15 +27,9 @@ type historicalSpeedMonitorContents struct {
 	Way2PatternsMapping int `json:"way2patterns"`
 }
 
-type versionMonitorContents struct {
-	AppVersion string `json:"app version"`
-	BuildTime  string `json:"build time"`
-	GitCommit  string `json:"git commit"`
-}
-
 func newMonitorContents() *monitorContents {
 	return &monitorContents{
-		0, versionMonitorContents{}, &historicalSpeedMonitorContents{}, &trafficCacheMonitorContents{}, "", nil,
+		0, appversion.VersionInfo{}, &historicalSpeedMonitorContents{}, &trafficCacheMonitorContents{}, "", nil,
 	}
 }
 

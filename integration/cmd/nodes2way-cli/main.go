@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/Telenav/osrm-backend/integration/util/appversion"
 	"github.com/Telenav/osrm-backend/integration/util/waysnodes/nodes2wayblotdb"
 	"github.com/golang/glog"
 )
@@ -16,6 +17,8 @@ var cliLog = log.New(os.Stderr, "", 0)
 
 func main() {
 	flag.Parse()
+	appversion.PrintExit()
+	defer glog.Flush()
 
 	if flags.dbStat {
 		s, err := dbStat(flags.db)

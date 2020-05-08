@@ -1,11 +1,11 @@
-package options
+package route
 
 import (
 	"reflect"
 	"testing"
 )
 
-func TestParseAlternatives(t *testing.T) {
+func TestParseOptionAlternatives(t *testing.T) {
 
 	cases := []struct {
 		s          string
@@ -24,7 +24,7 @@ func TestParseAlternatives(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		alternatives, num, err := ParseAlternatives(c.s)
+		alternatives, num, err := parseOptionAlternatives(c.s)
 		if err != nil && c.expectFail {
 			continue //right
 		} else if (err != nil && !c.expectFail) || (err == nil && c.expectFail) {
@@ -38,7 +38,7 @@ func TestParseAlternatives(t *testing.T) {
 	}
 }
 
-func TestParseSteps(t *testing.T) {
+func TestParseOptionSteps(t *testing.T) {
 	cases := []struct {
 		s          string
 		expect     bool
@@ -52,7 +52,7 @@ func TestParseSteps(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		b, err := ParseSteps(c.s)
+		b, err := parseOptionSteps(c.s)
 		if err != nil && c.expectFail {
 			continue //right
 		} else if (err != nil && !c.expectFail) || (err == nil && c.expectFail) {
@@ -66,15 +66,15 @@ func TestParseSteps(t *testing.T) {
 	}
 }
 
-func TestParseAnnotations(t *testing.T) {
+func TestParseOptionAnnotations(t *testing.T) {
 
 	cases := []struct {
 		s          string
 		expect     string
 		expectFail bool
 	}{
-		{"true", ValueTrue, false},
-		{"false", ValueFalse, false},
+		{"true", OptionValueTrue, false},
+		{"false", OptionValueFalse, false},
 		{"nodes", "nodes", false},
 		{"nodes,distance", "nodes,distance", false},
 		{"nodes,distance,duration,datasources,weight,speed", "nodes,distance,duration,datasources,weight,speed", false},
@@ -84,7 +84,7 @@ func TestParseAnnotations(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		annotations, err := ParseAnnotations(c.s)
+		annotations, err := parseOptionAnnotations(c.s)
 		if err != nil && c.expectFail {
 			continue //right
 		} else if (err != nil && !c.expectFail) || (err == nil && c.expectFail) {
@@ -99,22 +99,22 @@ func TestParseAnnotations(t *testing.T) {
 
 }
 
-func TestParseGeometries(t *testing.T) {
+func TestParseOptionGeometries(t *testing.T) {
 
 	cases := []struct {
 		s          string
 		expect     string
 		expectFail bool
 	}{
-		{"polyline", GeometriesValuePolyline, false},
-		{"polyline6", GeometriesValuePolyline6, false},
-		{"geojson", GeometriesValueGeojson, false},
+		{"polyline", OptionGeometriesValuePolyline, false},
+		{"polyline6", OptionGeometriesValuePolyline6, false},
+		{"geojson", OptionGeometriesValueGeojson, false},
 		{"polyli", "", true},
 		{"", "", true},
 	}
 
 	for _, c := range cases {
-		geometries, err := ParseGeometries(c.s)
+		geometries, err := parseOptionGeometries(c.s)
 		if err != nil && c.expectFail {
 			continue //right
 		} else if (err != nil && !c.expectFail) || (err == nil && c.expectFail) {
@@ -128,22 +128,22 @@ func TestParseGeometries(t *testing.T) {
 	}
 }
 
-func TestParseOverview(t *testing.T) {
+func TestParseOptionOverview(t *testing.T) {
 
 	cases := []struct {
 		s          string
 		expect     string
 		expectFail bool
 	}{
-		{"simplified", OverviewValueSimplified, false},
-		{"full", OverviewValueFull, false},
-		{"false", OverviewValueFalse, false},
+		{"simplified", OptionOverviewValueSimplified, false},
+		{"full", OptionOverviewValueFull, false},
+		{"false", OptionOverviewValueFalse, false},
 		{"simp", "", true},
 		{"", "", true},
 	}
 
 	for _, c := range cases {
-		overview, err := ParseOverview(c.s)
+		overview, err := parseOptionOverview(c.s)
 		if err != nil && c.expectFail {
 			continue //right
 		} else if (err != nil && !c.expectFail) || (err == nil && c.expectFail) {
@@ -157,22 +157,22 @@ func TestParseOverview(t *testing.T) {
 	}
 }
 
-func TestParseContinueStraight(t *testing.T) {
+func TestParseOptionContinueStraight(t *testing.T) {
 
 	cases := []struct {
 		s          string
 		expect     string
 		expectFail bool
 	}{
-		{"default", ContinueStraightValueDefault, false},
-		{"false", ContinueStraightValueFalse, false},
-		{"true", ContinueStraightValueTrue, false},
+		{"default", OptionContinueStraightValueDefault, false},
+		{"false", OptionContinueStraightValueFalse, false},
+		{"true", OptionContinueStraightValueTrue, false},
 		{"1", "", true},
 		{"", "", true},
 	}
 
 	for _, c := range cases {
-		continueStraight, err := ParseContinueStraight(c.s)
+		continueStraight, err := parseOptionContinueStraight(c.s)
 		if err != nil && c.expectFail {
 			continue //right
 		} else if (err != nil && !c.expectFail) || (err == nil && c.expectFail) {

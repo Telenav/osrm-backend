@@ -5,18 +5,16 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Telenav/osrm-backend/integration/util/appversion"
+
 	"github.com/Telenav/osrm-backend/integration/service/oasis"
 	"github.com/golang/glog"
 )
 
 func main() {
 	flag.Parse()
+	appversion.PrintExit()
 	defer glog.Flush()
-
-	if flags.version {
-		printVersion()
-		return
-	}
 
 	mux := http.NewServeMux()
 
