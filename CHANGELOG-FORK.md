@@ -21,6 +21,7 @@ Changes from v10.2.0
   - CHANGED for internal refactoring, use `osrm.xxx` to invoke OSRM APIs, e.g. `osrm.Coordinate` instead of `coordinate.Coordinate` [#327](https://github.com/Telenav/osrm-backend/pull/327)
   - CHANGED for epsilon of util/floatequals, use different epsilon for float32 compare and float64 compare [#332](https://github.com/Telenav/osrm-backend/issues/332)
   - ADDED interface test for `trafficapplyingmodel` implementation(both `appendspeedonly` and `preferlivetraffic`) [#330](https://github.com/Telenav/osrm-backend/pull/330) 
+  - CHANGED for mock objects, hide them in internal/mock package for OASIS service [#334](https://github.com/Telenav/osrm-backend/issues/334)
   
 - Bugfix:    
   - CHANGED `osrm-ranking` parsing of OSRM route response to compatible with `string` array `annotation/nodes` [#296](https://github.com/Telenav/osrm-backend/pull/296)     

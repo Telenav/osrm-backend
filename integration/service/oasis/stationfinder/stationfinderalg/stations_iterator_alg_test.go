@@ -11,6 +11,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/table"
 	"github.com/Telenav/osrm-backend/integration/api/search/nearbychargestation"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/mock"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/cloudfinder"
@@ -68,7 +69,7 @@ func (ft *fakeTableResponse) Request4Table(r *table.Request) <-chan osrmconnecto
 	go func() {
 		defer close(c)
 		c <- osrmconnector.TableResponse{
-			Resp: &table.Mock4To2TableResponse1,
+			Resp: &mock.Mock4To2TableResponse1,
 			Err:  nil,
 		}
 	}()
@@ -256,13 +257,13 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 			s := len(req.Sources)
 			d := len(req.Destinations)
 			if s == 1 && d == 4 {
-				var tableResponseBytesOrig2Location1, _ = json.Marshal(table.Mock1ToNTableResponse1)
+				var tableResponseBytesOrig2Location1, _ = json.Marshal(mock.Mock1To4TableResponse1)
 				w.Write(tableResponseBytesOrig2Location1)
 			} else if s == 4 && d == 2 {
-				var tableResponseBytesLocation12Location2, _ = json.Marshal(table.Mock4To2TableResponse1)
+				var tableResponseBytesLocation12Location2, _ = json.Marshal(mock.Mock4To2TableResponse1)
 				w.Write(tableResponseBytesLocation12Location2)
 			} else if s == 2 && d == 1 {
-				var tableResponseBytesLocation2ToDest, _ = json.Marshal(table.Mock2To1TableResponse1)
+				var tableResponseBytesLocation2ToDest, _ = json.Marshal(mock.Mock2To1TableResponse1)
 				w.Write(tableResponseBytesLocation2ToDest)
 			}
 			return
@@ -286,11 +287,11 @@ func TestCalculateWeightBetweenNeighbors(t *testing.T) {
 	}
 	c := CalculateWeightBetweenNeighbors(locations, oc, finder)
 
-	expect_arr0 := stationfindertype.NeighborInfoArray0
+	expect_arr0 := mock.NeighborInfoArray0
 
-	expect_arr1 := stationfindertype.NeighborInfoArray1
+	expect_arr1 := mock.NeighborInfoArray1
 
-	expect_arr2 := stationfindertype.NeighborInfoArray2
+	expect_arr2 := mock.NeighborInfoArray2
 
 	for arr := range c {
 		switch len(arr.NeighborsInfo) {

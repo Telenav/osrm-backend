@@ -5,6 +5,7 @@ import (
 	"runtime"
 	"testing"
 
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/mock"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer/ranker"
 )
@@ -20,8 +21,8 @@ import (
 // ...
 // map[1099] = {results of 10 points}
 func TestBuilderWithMockIteratorAndFinder(t *testing.T) {
-	builder := newConnectivityMapBuilder(&spatialindexer.MockOneHundredPointsIterator{},
-		&spatialindexer.MockFinder{},
+	builder := newConnectivityMapBuilder(&mock.MockOneHundredPointsIterator{},
+		&mock.MockFinder{},
 		ranker.CreateRanker(ranker.SimpleRanker, nil),
 		100,
 		runtime.NumCPU())
@@ -115,8 +116,8 @@ func TestBuilderWithMockIteratorAndFinder(t *testing.T) {
 }
 
 func TestBuilderWithSingleWorker(t *testing.T) {
-	builder := newConnectivityMapBuilder(&spatialindexer.MockOneHundredPointsIterator{},
-		&spatialindexer.MockFinder{},
+	builder := newConnectivityMapBuilder(&mock.MockOneHundredPointsIterator{},
+		&mock.MockFinder{},
 		ranker.CreateRanker(ranker.SimpleRanker, nil),
 		100,
 		runtime.NumCPU())

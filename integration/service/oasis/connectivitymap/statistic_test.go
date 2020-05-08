@@ -28,7 +28,7 @@ func TestStatisticBuild(t *testing.T) {
 		expect          *statistic
 	}{
 		{
-			id2NearByIDsMap: fakeID2NearByIDsMap1,
+			id2NearByIDsMap: fakeID2NearByIDsMap2,
 			distanceLimit:   fakeDistanceLimit,
 			expect:          &fakeStatisticResult1,
 		},
@@ -45,4 +45,127 @@ func TestStatisticBuild(t *testing.T) {
 			t.Errorf("Incorrect statistic build() result, expect \n%+v \nbut got \n%+v\n", c.expect, actual)
 		}
 	}
+}
+
+/*
+fakeID2NearByIDsMap2 represents following station graph:
+
+7             5
+|    \   /    |
+|      1      |
+|    /   \    |
+2             8
+
+1 -> 2(Distance: 3, Duration: 3),
+	 5(Distance: 4, Duration: 4),
+	 7(Distance: 6, Duration: 61),
+	 8(Distance:12, Duration: 12),
+2 -> 1(Distance: 3, Duration: 3),
+	 7(Distance: 23, Duration: 23),
+5 -> 1(Distance: 4, Duration: 4),
+	 8(Distance: 5, Duration: 5),
+7 -> 1(Distance: 6, Duration: 6),
+	 2(Distance: 23, Duration: 23),
+8 -> 5(Distance: 5, Duration: 5),
+     1(Distance: 12, Duration: 12),
+*/
+var fakeID2NearByIDsMap2 = ID2NearByIDsMap{
+	1: []IDAndWeight{
+		{
+			ID: 2,
+			Weight: Weight{
+				Distance: 3,
+				Duration: 3,
+			},
+		},
+		{
+			ID: 5,
+			Weight: Weight{
+				Distance: 4,
+				Duration: 4,
+			},
+		},
+		{
+			ID: 7,
+			Weight: Weight{
+				Distance: 6,
+				Duration: 61,
+			},
+		},
+		{
+			ID: 8,
+			Weight: Weight{
+				Distance: 12,
+				Duration: 12,
+			},
+		},
+	},
+
+	2: []IDAndWeight{
+		{
+			ID: 1,
+			Weight: Weight{
+				Distance: 3,
+				Duration: 3,
+			},
+		},
+		{
+			ID: 7,
+			Weight: Weight{
+				Distance: 23,
+				Duration: 23,
+			},
+		},
+	},
+
+	5: []IDAndWeight{
+		{
+			ID: 1,
+			Weight: Weight{
+				Distance: 4,
+				Duration: 4,
+			},
+		},
+		{
+			ID: 8,
+			Weight: Weight{
+				Distance: 5,
+				Duration: 5,
+			},
+		},
+	},
+
+	7: []IDAndWeight{
+		{
+			ID: 1,
+			Weight: Weight{
+				Distance: 6,
+				Duration: 6,
+			},
+		},
+		{
+			ID: 2,
+			Weight: Weight{
+				Distance: 23,
+				Duration: 23,
+			},
+		},
+	},
+
+	8: []IDAndWeight{
+		{
+			ID: 5,
+			Weight: Weight{
+				Distance: 5,
+				Duration: 5,
+			},
+		},
+		{
+			ID: 1,
+			Weight: Weight{
+				Distance: 12,
+				Duration: 12,
+			},
+		},
+	},
 }

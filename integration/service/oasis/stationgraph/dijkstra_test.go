@@ -25,7 +25,7 @@ func TestDijkstraAlgorithm(t *testing.T) {
 		//
 		// expect:  0 -> 1 -> 3
 		{
-			NewMockGraph1(),
+			newMockGraph1(),
 			0,
 			3,
 			[]nodeID{1},
@@ -38,7 +38,7 @@ func TestDijkstraAlgorithm(t *testing.T) {
 		//
 		// expect:  0 -> 1 -> 3 -> 4
 		{
-			NewMockGraph1(),
+			newMockGraph1(),
 			0,
 			4,
 			[]nodeID{1, 3},
@@ -65,7 +65,7 @@ func TestDijkstraAlgorithm(t *testing.T) {
 		//
 		// expect:  0 -> 2 -> 4 -> 5 -> 8
 		{
-			NewMockGraph2(),
+			newMockGraph2(),
 			0,
 			8,
 			[]nodeID{2, 4, 5},
@@ -92,7 +92,7 @@ func TestDijkstraAlgorithm(t *testing.T) {
 		//
 		// expect:  0 -> 1 -> 4 -> 5 -> 8
 		{
-			NewMockGraph3(),
+			newMockGraph3(),
 			0,
 			8,
 			[]nodeID{1, 4, 5},
@@ -120,7 +120,7 @@ func TestDijkstraAlgorithm(t *testing.T) {
 		// expect: 0 -> 1 -> 4 -> 5 -> 8, without consider charging shortest path is 0 -> 2 -> 4 -> 5 -> 8
 		// But 16 could not make from node_0 to node_2
 		{
-			NewMockGraph4(),
+			newMockGraph4(),
 			0,
 			8,
 			[]nodeID{1, 4, 5},

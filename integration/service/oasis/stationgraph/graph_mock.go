@@ -12,7 +12,7 @@ import (
 // node_2 -> node_3, duration = 50, distance = 50
 // node_3 -> node_4, duration = 10, distance = 10
 // Set charge information to fixed status to ignore situation of lack of energy
-func NewMockGraph1() Graph {
+func newMockGraph1() Graph {
 	return &mockGraph{
 		[]*node{
 			{
@@ -125,7 +125,7 @@ func NewMockGraph1() Graph {
 // node_6 -> node_8, duration = 20, distance = 20
 // node_7 -> node_8, duration = 30, distance = 30
 // Set charge information to fixed status to ignore situation of lack of energy
-func NewMockGraph2() Graph {
+func newMockGraph2() Graph {
 	return &mockGraph{
 		[]*node{
 			{
@@ -451,7 +451,7 @@ func NewMockGraph2() Graph {
 // node_6 -> node_8, duration = 20, distance = 20
 // node_7 -> node_8, duration = 30, distance = 30
 // Set charge information to fixed status to ignore situation of lack of energy
-func NewMockGraph3() Graph {
+func newMockGraph3() Graph {
 	return &mockGraph{
 		[]*node{
 			{
@@ -778,7 +778,7 @@ func NewMockGraph3() Graph {
 // node_7 -> node_8, duration = 30, distance = 30
 // Charge information
 // each station only charges 16 unit of energy
-func NewMockGraph4() Graph {
+func newMockGraph4() Graph {
 	return &mockGraph{
 		[]*node{
 			{

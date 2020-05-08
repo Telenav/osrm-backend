@@ -6,6 +6,7 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/connectivitymap"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/mock"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 )
 
@@ -244,15 +245,15 @@ func generateNeighborsChan() chan stationfindertype.WeightBetweenNeighbors {
 
 	go func() {
 		c <- stationfindertype.WeightBetweenNeighbors{
-			NeighborsInfo: stationfindertype.NeighborInfoArray0,
+			NeighborsInfo: mock.NeighborInfoArray0,
 			Err:           nil,
 		}
 		c <- stationfindertype.WeightBetweenNeighbors{
-			NeighborsInfo: stationfindertype.NeighborInfoArray1,
+			NeighborsInfo: mock.NeighborInfoArray1,
 			Err:           nil,
 		}
 		c <- stationfindertype.WeightBetweenNeighbors{
-			NeighborsInfo: stationfindertype.NeighborInfoArray2,
+			NeighborsInfo: mock.NeighborInfoArray2,
 			Err:           nil,
 		}
 

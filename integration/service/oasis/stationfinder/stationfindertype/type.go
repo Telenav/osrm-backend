@@ -12,7 +12,7 @@ type NearbyStationsIterator interface {
 type ChargeStationInfo struct {
 	ID       string
 	Location nav.Location
-	err      error
+	Err      error
 }
 
 // Weight represent weight information
