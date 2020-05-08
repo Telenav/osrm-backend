@@ -21,7 +21,7 @@ func Float32Equal(a, b float32) bool {
 }
 
 func floatEqual(a, b, epsilon float64) bool {
-	if (a-b) < epsilon4Float64 && (b-a) < epsilon4Float64 {
+	if (a-b) < epsilon && (b-a) < epsilon {
 		return true
 	}
 	return false
