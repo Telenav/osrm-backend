@@ -144,6 +144,11 @@ func (g *nodeGraph) buildAdjacentList(id nodeID) []nodeID {
 	}
 
 	for _, physicalNode := range physicalNodes {
+		// filter nodes which is un-reachable by current energy, nodes are sorted based on distance
+		if !g.Node(id).reachableByDistance(physicalNode.Distance) {
+			break
+		}
+
 		nodes := g.createLogicalNodes(id, physicalNode.StationID, physicalNode.StationLocation,
 			physicalNode.Distance, physicalNode.Duration)
 

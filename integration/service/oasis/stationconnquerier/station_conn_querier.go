@@ -51,8 +51,7 @@ func (querier *StationConnectivityQuerier) connectStartIntoStationGraph(stationF
 			StationID:       rankedPointInfo.ID.String(),
 			StationLocation: &nav.Location{Lat: rankedPointInfo.Location.Lat, Lon: rankedPointInfo.Location.Lon},
 			Distance:        rankedPointInfo.Distance,
-			// TODO codebear801 Replace with pre-calculate duration https://github.com/Telenav/osrm-backend/issues/321
-			Duration: rankedPointInfo.Distance,
+			Duration:        rankedPointInfo.Duration,
 		}
 		reachableStationsByStart = append(reachableStationsByStart, tmp)
 	}
