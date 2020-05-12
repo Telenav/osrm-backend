@@ -37,7 +37,7 @@ func main() {
 	}
 	indexer.Dump(flags.outputFolder)
 
-	connectivitymap.NewConnectivityMap(flags.maxRange).
+	connectivitymap.New(flags.maxRange).
 		Build(indexer, indexer, rankerStrategy, flags.numberOfWorkers).
 		Dump(flags.outputFolder)
 

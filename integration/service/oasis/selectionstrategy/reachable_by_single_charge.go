@@ -1,4 +1,4 @@
-package oasis
+package selectionstrategy
 
 import (
 	"encoding/json"
@@ -12,7 +12,6 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api/search/nearbychargestation"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmhelper"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfinderalg"
 	"github.com/golang/glog"
 )
@@ -25,14 +24,14 @@ const maxOverlapPointsNum = 500
 // The energy level is safeRange + nearest charge station's distance to destination
 // If there is one or several charge stations could be found in both origStationsResp and destStationsResp
 // We think the result is reachable by single charge station
-func getOverlapChargeStations4OrigDest(req *oasis.Request, routedistance float64, osrmConnector *osrmconnector.OSRMConnector, finder stationfinder.StationFinder) osrm.Coordinates {
+func GetOverlapChargeStations4OrigDest(req *oasis.Request, routedistance float64, resourceMgr *ResourceMgr) osrm.Coordinates {
 	// only possible when currRange + maxRange > distance + safeRange
 	if req.CurrRange+req.MaxRange < routedistance+req.SafeLevel {
 		return nil
 	}
 
-	origStations := finder.NewOrigStationFinder(req)
-	destStations := finder.NewDestStationFinder(req)
+	origStations := resourceMgr.stationFinder.NewOrigStationFinder(req)
+	destStations := resourceMgr.stationFinder.NewDestStationFinder(req)
 	overlap := stationfinderalg.FindOverlapBetweenStations(origStations, destStations)
 
 	if len(overlap) == 0 {
@@ -61,9 +60,9 @@ type singleChargeStationCandidate struct {
 	durationToDest   float64
 }
 
-// @todo these logic might refactored later: charge station status calculation should be moved away
-func generateResponse4SingleChargeStation(w http.ResponseWriter, req *oasis.Request, overlapPoints osrm.Coordinates, osrmConnector *osrmconnector.OSRMConnector) bool {
-	candidate, err := pickChargeStationWithEarlistArrival(req, overlapPoints, osrmConnector)
+// GenerateResponse4SingleChargeStation generates response for only single charge station needed from orig to dest based on current energy status
+func GenerateResponse4SingleChargeStation(w http.ResponseWriter, req *oasis.Request, overlapPoints osrm.Coordinates, resourceMgr *ResourceMgr) bool {
+	candidate, err := pickChargeStationWithEarlistArrival(req, overlapPoints, resourceMgr.osrmConnector)
 
 	if err != nil {
 		w.WriteHeader(http.StatusOK)

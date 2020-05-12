@@ -1,4 +1,4 @@
-package oasis
+package selectionstrategy
 
 import (
 	"encoding/json"
@@ -10,6 +10,8 @@ import (
 	"github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/haversine"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer/ranker"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/stationconnquerier"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfinderalg"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationgraph"
@@ -18,21 +20,43 @@ import (
 	"github.com/twpayne/go-polyline"
 )
 
+// GenerateSolutions4MultipleCharge generates solutions for multiple charge stations needed from orig to dest based on current energy status
 // @todo: handle negative situation
-func generateSolutions4MultipleCharge(w http.ResponseWriter, oasisReq *oasis.Request, routeResp *route.Response, oc *osrmconnector.OSRMConnector, finder stationfinder.StationFinder) {
-	solutions := generateSolutionsWithEarlistArrival(oasisReq, routeResp, oc, finder)
+func GenerateSolutions4MultipleCharge(w http.ResponseWriter, oasisReq *oasis.Request, routeResp *route.Response, resourceMgr *ResourceMgr) {
+	//solutions := generateSolutions4SearchAlongRoute(oasisReq, routeResp, resourceMgr.osrmConnector, resourceMgr.stationFinder)
+	solutions := generateSolutions4ChargeStationBasedRoute(oasisReq, resourceMgr)
 
 	w.WriteHeader(http.StatusOK)
 	r := new(oasis.Response)
 	r.Code = "200"
 	r.Message = "Success."
-	for _, sol := range solutions {
-		r.Solutions = append(r.Solutions, sol)
-	}
+	r.Solutions = append(r.Solutions, solutions...)
 	json.NewEncoder(w).Encode(r)
 }
 
-func generateSolutionsWithEarlistArrival(oasisReq *oasis.Request, routeResp *route.Response, oc *osrmconnector.OSRMConnector, finder stationfinder.StationFinder) []*oasis.Solution {
+func generateSolutions4ChargeStationBasedRoute(oasisReq *oasis.Request, resourceMgr *ResourceMgr) []*oasis.Solution {
+	targetSolutions := make([]*oasis.Solution, 0, 10)
+	querier := stationconnquerier.New(resourceMgr.spatialIndexerFinder,
+		ranker.CreateRanker(ranker.SimpleRanker, resourceMgr.osrmConnector),
+		resourceMgr.stationLocationQuerier,
+		resourceMgr.connectivityMap,
+		&nav.Location{Lat: oasisReq.Coordinates[0].Lat, Lon: oasisReq.Coordinates[0].Lon},
+		&nav.Location{Lat: oasisReq.Coordinates[1].Lat, Lon: oasisReq.Coordinates[1].Lon},
+		oasisReq.CurrRange,
+		oasisReq.MaxRange)
+	internalSolutions := stationgraph.NewStationGraph(oasisReq.CurrRange, oasisReq.MaxRange,
+		chargingstrategy.NewFakeChargingStrategy(oasisReq.MaxRange),
+		querier).GenerateChargeSolutions()
+
+	for _, sol := range internalSolutions {
+		targetSolution := sol.Convert2ExternalSolution()
+		targetSolutions = append(targetSolutions, targetSolution)
+	}
+
+	return targetSolutions
+}
+
+func generateSolutions4SearchAlongRoute(oasisReq *oasis.Request, routeResp *route.Response, oc *osrmconnector.OSRMConnector, finder stationfinder.StationFinder) []*oasis.Solution {
 	targetSolutions := make([]*oasis.Solution, 0)
 
 	chargeLocations := chargeLocationSelection(oasisReq, routeResp)

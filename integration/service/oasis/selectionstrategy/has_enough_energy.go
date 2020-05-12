@@ -1,4 +1,4 @@
-package oasis
+package selectionstrategy
 
 import (
 	"encoding/json"
@@ -13,7 +13,7 @@ import (
 // currRange: current energy level, represent by distance(unit: meters)
 // destRange: energy level required to destination
 // currRange - routeDistance > destRange means no charge station is needed
-func hasEnoughEnergy(currRange, destRange float64, routeResp *route.Response) (bool, float64, error) {
+func HasEnoughEnergy(currRange, destRange float64, routeResp *route.Response) (bool, float64, error) {
 	if len(routeResp.Routes) == 0 {
 		err := fmt.Errorf("route response contains no route result")
 		return false, 0, err
@@ -42,7 +42,8 @@ func hasEnoughEnergy(currRange, destRange float64, routeResp *route.Response) (b
 	return false, remainRange, nil
 }
 
-func generateOASISResponse4NoChargeNeeded(w http.ResponseWriter, routeResp *route.Response, remainRange float64) {
+// GenerateOASISResponse4NoChargeNeeded generates response for no charge needed
+func GenerateOASISResponse4NoChargeNeeded(w http.ResponseWriter, routeResp *route.Response, remainRange float64) {
 	w.WriteHeader(http.StatusOK)
 
 	solution := new(oasis.Solution)

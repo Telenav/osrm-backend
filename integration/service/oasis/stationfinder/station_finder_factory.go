@@ -4,8 +4,9 @@ import (
 	"fmt"
 
 	"github.com/Telenav/osrm-backend/integration/service/oasis/searchconnector"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer/s2indexer"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/cloudfinder"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/localfinder"
 	"github.com/golang/glog"
 )
 
@@ -18,8 +19,8 @@ const (
 )
 
 // CreateStationsFinder creates finder which implements StationFinder interface
-func CreateStationsFinder(finderType, searchEndpoint, apiKey, apiSignature, dataFolderPath string) (StationFinder, error) {
-	if err := checkInput(finderType, searchEndpoint, apiKey, apiSignature, dataFolderPath); err != nil {
+func CreateStationsFinder(finderType, searchEndpoint, apiKey, apiSignature string, finder spatialindexer.Finder) (StationFinder, error) {
+	if err := checkInput(finderType, searchEndpoint, apiKey, apiSignature, finder); err != nil {
 		return nil, err
 	}
 
@@ -30,11 +31,7 @@ func CreateStationsFinder(finderType, searchEndpoint, apiKey, apiSignature, data
 		return cloudfinder.New(searchFinder), nil
 
 	case LocalFinder:
-		localIndex := s2indexer.NewS2Indexer().Load(dataFolderPath)
-		if localIndex == nil {
-			err := fmt.Errorf("failed to load s2Indexer")
-			return nil, err
-		}
+		return localfinder.New(finder), nil
 	}
 
 	return nil, nil
@@ -45,7 +42,7 @@ func isValidStationFinderType(finderType string) bool {
 	return finderType == CloudFinder || finderType == LocalFinder
 }
 
-func checkInput(finderType, searchEndpoint, apiKey, apiSignature, dataFolderPath string) error {
+func checkInput(finderType, searchEndpoint, apiKey, apiSignature string, finder spatialindexer.Finder) error {
 	if !isValidStationFinderType(finderType) {
 		glog.Error("Try to create finder not implemented yet, can only choose CloudFinder or LocalFinder for now.\n")
 		err := fmt.Errorf("invalid station finder type")
@@ -61,7 +58,7 @@ func checkInput(finderType, searchEndpoint, apiKey, apiSignature, dataFolderPath
 	}
 
 	if finderType == LocalFinder &&
-		len(dataFolderPath) == 0 {
+		finder == nil {
 		err := fmt.Errorf("empty input for local index")
 		return err
 	}

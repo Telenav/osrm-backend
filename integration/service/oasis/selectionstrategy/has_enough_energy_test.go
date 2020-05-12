@@ -1,4 +1,4 @@
-package oasis
+package selectionstrategy
 
 import (
 	"strconv"
@@ -10,12 +10,12 @@ import (
 
 func TestHasEnoughEnergyPositive1(t *testing.T) {
 	response := &route.Response{
-		Routes: []*route.Route{&route.Route{Distance: 10000.0}},
+		Routes: []*route.Route{{Distance: 10000.0}},
 	}
 
 	currRange := 20000.0
 	destRange := 5000.0
-	b, remainRange, err := hasEnoughEnergy(currRange, destRange, response)
+	b, remainRange, err := HasEnoughEnergy(currRange, destRange, response)
 	if !b || err != nil {
 		t.Errorf("Incorrect result generated for TesthasEnoughEnergyPositive1, return value is (%t, %v)", b, err)
 	}
@@ -29,12 +29,12 @@ func TestHasEnoughEnergyPositive1(t *testing.T) {
 
 func TestHasEnoughEnergyPositive2(t *testing.T) {
 	response := &route.Response{
-		Routes: []*route.Route{&route.Route{Distance: 10000.0}},
+		Routes: []*route.Route{{Distance: 10000.0}},
 	}
 
 	currRange := 10000.0
 	destRange := 5000.0
-	b, remainRange, err := hasEnoughEnergy(currRange, destRange, response)
+	b, remainRange, err := HasEnoughEnergy(currRange, destRange, response)
 	if b || err != nil {
 		t.Errorf("Incorrect result generated for TesthasEnoughEnergyPositive1, return value is (%t, %v)", b, err)
 	}

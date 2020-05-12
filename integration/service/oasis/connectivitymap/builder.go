@@ -84,6 +84,11 @@ func (builder *connectivityMapBuilder) work(workerID int, source <-chan spatiali
 
 		ids := make([]IDAndWeight, 0, len(rankedResults))
 		for _, r := range rankedResults {
+			// skip connectivity to itself
+			if r.ID == p.ID {
+				continue
+			}
+
 			ids = append(ids, IDAndWeight{
 				ID: r.ID,
 				Weight: Weight{

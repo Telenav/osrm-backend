@@ -27,8 +27,8 @@ type ConnectivityMap struct {
 	statistic    *statistic
 }
 
-// NewConnectivityMap creates ConnectivityMap
-func NewConnectivityMap(maxRange float64) *ConnectivityMap {
+// New creates ConnectivityMap
+func New(maxRange float64) *ConnectivityMap {
 	return &ConnectivityMap{
 		maxRange:  maxRange,
 		statistic: newStatistic(),

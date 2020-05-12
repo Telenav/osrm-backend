@@ -6,36 +6,26 @@ import (
 	"net/http"
 
 	"github.com/Telenav/osrm-backend/integration/api/oasis"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmhelper"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/selectionstrategy"
 	"github.com/golang/glog"
 )
 
 // Handler handles oasis request and provide response
 type Handler struct {
-	osrmConnector *osrmconnector.OSRMConnector
-	finder        stationfinder.StationFinder
+	resourceMgr *selectionstrategy.ResourceMgr
 }
 
 // New creates new Handler object
 func New(osrmBackend, finderType, searchEndpoint, apiKey, apiSignature, dataFolderPath string) (*Handler, error) {
-	// @todo: need make sure connectivity is on and continues available
-	//        simple request to guarantee server is alive after init
-	if len(osrmBackend) == 0 {
-		err := fmt.Errorf("empty osrmBackend end point")
-		return nil, err
-	}
-
-	finder, err := stationfinder.CreateStationsFinder(finderType, searchEndpoint, apiKey, apiSignature, dataFolderPath)
+	resourceMgr, err := selectionstrategy.NewResourceMgr(osrmBackend, finderType, searchEndpoint, apiKey, apiSignature, dataFolderPath)
 	if err != nil {
-		glog.Errorf("Failed in Handler's New() when try to call CreateStationsFinder(), met error = %+v\n", err)
+		glog.Errorf("Failed to create Handler due to error %+v.\n", err)
 		return nil, err
 	}
 
 	return &Handler{
-		osrmConnector: osrmconnector.NewOSRMConnector(osrmBackend),
-		finder:        finder,
+		resourceMgr: resourceMgr,
 	}, nil
 }
 
@@ -52,7 +42,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// generate route response based on given oasis's orig/destination
-	routeResp, err := osrmhelper.RequestRoute4InputOrigDest(oasisReq, h.osrmConnector)
+	routeResp, err := osrmhelper.RequestRoute4InputOrigDest(oasisReq, h.resourceMgr.OSRMConnector())
 	if err != nil {
 		glog.Error(err)
 		w.WriteHeader(http.StatusOK)
@@ -70,7 +60,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// check whether has enough energy
-	b, remainRange, err := hasEnoughEnergy(oasisReq.CurrRange, oasisReq.SafeLevel, routeResp)
+	b, remainRange, err := selectionstrategy.HasEnoughEnergy(oasisReq.CurrRange, oasisReq.SafeLevel, routeResp)
 	if err != nil {
 		glog.Error(err)
 		w.WriteHeader(http.StatusOK)
@@ -78,19 +68,19 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	if b {
-		generateOASISResponse4NoChargeNeeded(w, routeResp, remainRange)
+		selectionstrategy.GenerateOASISResponse4NoChargeNeeded(w, routeResp, remainRange)
 		return
 	}
 
 	// check whether could achieve by single charge
-	overlap := getOverlapChargeStations4OrigDest(oasisReq, routeResp.Routes[0].Distance, h.osrmConnector, h.finder)
+	overlap := selectionstrategy.GetOverlapChargeStations4OrigDest(oasisReq, routeResp.Routes[0].Distance, h.resourceMgr)
 	if len(overlap) > 0 {
-		generateResponse4SingleChargeStation(w, oasisReq, overlap, h.osrmConnector)
+		selectionstrategy.GenerateResponse4SingleChargeStation(w, oasisReq, overlap, h.resourceMgr)
 		return
 	}
 
 	// generate result for multiple charge
-	generateSolutions4MultipleCharge(w, oasisReq, routeResp, h.osrmConnector, h.finder)
+	selectionstrategy.GenerateSolutions4MultipleCharge(w, oasisReq, routeResp, h.resourceMgr)
 	return
 }
 

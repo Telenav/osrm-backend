@@ -36,7 +36,7 @@ func TestDumpGivenObjectThenLoadAndThenCompareWithOriginalObject(t *testing.T) {
 			t.Errorf("During running serializeConnectivityMap for case %v, met error %v", c, err)
 		}
 
-		actual := NewConnectivityMap(0.0)
+		actual := New(0.0)
 		if err := deSerializeConnectivityMap(actual, path); err != nil {
 			t.Errorf("During running deSerializeConnectivityMap for case %v, met error %v", c, err)
 		}
