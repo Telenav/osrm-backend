@@ -83,16 +83,16 @@ func newMockQuerier4StationGraph() connectivitymap.Querier {
 		mockStationID2QueryResult: map[string][]*connectivitymap.QueryResult{
 			stationfindertype.OrigLocationID: {
 				{
-					StationID:       testSGStationID1,
-					StationLocation: &nav.Location{Lat: 1.1, Lon: 1.1},
-					Distance:        22.2,
-					Duration:        22.2,
-				},
-				{
 					StationID:       testSGStationID2,
 					StationLocation: &nav.Location{Lat: 2.2, Lon: 2.2},
 					Distance:        11.1,
 					Duration:        11.1,
+				},
+				{
+					StationID:       testSGStationID1,
+					StationLocation: &nav.Location{Lat: 1.1, Lon: 1.1},
+					Distance:        22.2,
+					Duration:        22.2,
 				},
 				{
 					StationID:       testSGStationID3,
@@ -103,16 +103,16 @@ func newMockQuerier4StationGraph() connectivitymap.Querier {
 			},
 			testSGStationID1: {
 				{
-					StationID:       testSGStationID4,
-					StationLocation: &nav.Location{Lat: 4.4, Lon: 4.4},
-					Distance:        44.4,
-					Duration:        44.4,
-				},
-				{
 					StationID:       testSGStationID5,
 					StationLocation: &nav.Location{Lat: 5.5, Lon: 5.5},
 					Distance:        34.4,
 					Duration:        34.4,
+				},
+				{
+					StationID:       testSGStationID4,
+					StationLocation: &nav.Location{Lat: 4.4, Lon: 4.4},
+					Distance:        44.4,
+					Duration:        44.4,
 				},
 			},
 			testSGStationID2: {
@@ -131,16 +131,16 @@ func newMockQuerier4StationGraph() connectivitymap.Querier {
 			},
 			testSGStationID3: {
 				{
-					StationID:       testSGStationID4,
-					StationLocation: &nav.Location{Lat: 4.4, Lon: 4.4},
-					Distance:        22.2,
-					Duration:        22.2,
-				},
-				{
 					StationID:       testSGStationID5,
 					StationLocation: &nav.Location{Lat: 5.5, Lon: 5.5},
 					Distance:        15.5,
 					Duration:        15.5,
+				},
+				{
+					StationID:       testSGStationID4,
+					StationLocation: &nav.Location{Lat: 4.4, Lon: 4.4},
+					Distance:        22.2,
+					Duration:        22.2,
 				},
 			},
 			testSGStationID4: {

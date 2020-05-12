@@ -91,19 +91,19 @@ func TestStationConnQuerier(t *testing.T) {
 					StationID:       "3",
 					StationLocation: mockStation3Location,
 					Distance:        4622.08948420977,
-					Duration:        4622.08948420977,
+					Duration:        208.2022290184581,
 				},
 				{
 					StationID:       "2",
 					StationLocation: mockStation2Location,
 					Distance:        4999.134247893073,
-					Duration:        4999.134247893073,
+					Duration:        225.18622738257085,
 				},
 				{
 					StationID:       "1",
 					StationLocation: mockStation1Location,
 					Distance:        6310.598332634715,
-					Duration:        6310.598332634715,
+					Duration:        284.2611861547169,
 				},
 			},
 		},
@@ -129,6 +129,17 @@ func TestStationConnQuerier(t *testing.T) {
 			},
 		},
 		{
+			"3",
+			[]*connectivitymap.QueryResult{
+				{
+					StationID:       stationfindertype.DestLocationID,
+					StationLocation: mockDestLocation,
+					Distance:        7083.8672907090095,
+					Duration:        319.0931212031085,
+				},
+			},
+		},
+		{
 			"2",
 			[]*connectivitymap.QueryResult{
 				{
@@ -142,17 +153,6 @@ func TestStationConnQuerier(t *testing.T) {
 					StationLocation: mockDestLocation,
 					Distance:        7277.313067724465,
 					Duration:        327.80689494254347,
-				},
-			},
-		},
-		{
-			"3",
-			[]*connectivitymap.QueryResult{
-				{
-					StationID:       stationfindertype.DestLocationID,
-					StationLocation: mockDestLocation,
-					Distance:        7083.8672907090095,
-					Duration:        319.0931212031085,
 				},
 			},
 		},
