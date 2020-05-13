@@ -1,6 +1,7 @@
 package stationconnquerier
 
 import (
+	"sort"
 	"strconv"
 
 	"github.com/Telenav/osrm-backend/integration/api/nav"
@@ -36,6 +37,7 @@ func New(stationFinder spatialindexer.Finder, stationRanker spatialindexer.Ranke
 	querier.connectStartIntoStationGraph(stationFinder, stationRanker, start, currEnergyLevel)
 	querier.connectEndIntoStationGraph(stationFinder, stationRanker, end, maxEnergyLevel)
 
+	glog.Info("Generate StationConnectivityQuerier.\n")
 	return querier
 }
 
@@ -57,6 +59,7 @@ func (querier *StationConnectivityQuerier) connectStartIntoStationGraph(stationF
 	}
 
 	querier.reachableStationsByStart = reachableStationsByStart
+	glog.Infof("Add %d stations connects Start.\n", len(querier.reachableStationsByStart))
 }
 
 func (querier *StationConnectivityQuerier) connectEndIntoStationGraph(stationFinder spatialindexer.Finder, stationRanker spatialindexer.Ranker,
@@ -76,6 +79,7 @@ func (querier *StationConnectivityQuerier) connectEndIntoStationGraph(stationFin
 	}
 
 	querier.reachableStationToEnd = reachableStationToEnd
+	glog.Infof("Add %d stations connects End node.\n", len(querier.reachableStationToEnd))
 }
 
 // NearByStationQuery finds near by stations by given stationID and return them in recorded sequence
@@ -147,8 +151,17 @@ func (querier *StationConnectivityQuerier) isStationConnectsToEnd(stationID stri
 
 func (querier *StationConnectivityQuerier) connectEndIntoGraph(stationID string, results []*connectivitymap.QueryResult) []*connectivitymap.QueryResult {
 	if queryResult4End, ok := querier.reachableStationToEnd[stationID]; ok {
-		results = append(results, queryResult4End)
+		return appendIntoSortedSlice(queryResult4End, results)
 	}
+	return results
+}
 
+func appendIntoSortedSlice(item *connectivitymap.QueryResult, results []*connectivitymap.QueryResult) []*connectivitymap.QueryResult {
+	insertIndex := sort.Search(len(results), func(i int) bool {
+		return results[i].Distance > item.Distance
+	})
+	results = append(results, nil)
+	copy(results[insertIndex+1:], results[insertIndex:])
+	results[insertIndex] = item
 	return results
 }

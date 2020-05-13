@@ -11,6 +11,152 @@ import (
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 )
 
+func TestAppendIntoSortedSlice(t *testing.T) {
+	cases := []struct {
+		sortedArray      []*connectivitymap.QueryResult
+		itemToBeInserted *connectivitymap.QueryResult
+		expectedArray    []*connectivitymap.QueryResult
+	}{
+		// case: insert into empty array
+		{
+			nil,
+			&connectivitymap.QueryResult{
+				StationID:       "3",
+				StationLocation: mockStation3Location,
+				Distance:        4622.08948420977,
+				Duration:        208.2022290184581,
+			},
+			[]*connectivitymap.QueryResult{
+				{
+					StationID:       "3",
+					StationLocation: mockStation3Location,
+					Distance:        4622.08948420977,
+					Duration:        208.2022290184581,
+				},
+			},
+		},
+
+		// case: insert to the head of sorted array
+		{
+			[]*connectivitymap.QueryResult{
+				{
+					StationID:       "3",
+					StationLocation: mockStation3Location,
+					Distance:        4622.08948420977,
+					Duration:        208.2022290184581,
+				},
+				{
+					StationID:       "2",
+					StationLocation: mockStation2Location,
+					Distance:        4999.134247893073,
+					Duration:        225.18622738257085,
+				},
+				{
+					StationID:       "1",
+					StationLocation: mockStation1Location,
+					Distance:        6310.598332634715,
+					Duration:        284.2611861547169,
+				},
+			},
+			&connectivitymap.QueryResult{
+				StationID:       "4",
+				StationLocation: mockStation4Location,
+				Distance:        222.0,
+				Duration:        1.0,
+			},
+			[]*connectivitymap.QueryResult{
+				{
+					StationID:       "4",
+					StationLocation: mockStation4Location,
+					Distance:        222.0,
+					Duration:        1.0,
+				},
+				{
+					StationID:       "3",
+					StationLocation: mockStation3Location,
+					Distance:        4622.08948420977,
+					Duration:        208.2022290184581,
+				},
+				{
+					StationID:       "2",
+					StationLocation: mockStation2Location,
+					Distance:        4999.134247893073,
+					Duration:        225.18622738257085,
+				},
+				{
+					StationID:       "1",
+					StationLocation: mockStation1Location,
+					Distance:        6310.598332634715,
+					Duration:        284.2611861547169,
+				},
+			},
+		},
+		// case: insert into sorted array
+		{
+			[]*connectivitymap.QueryResult{
+				{
+					StationID:       "3",
+					StationLocation: mockStation3Location,
+					Distance:        4622.08948420977,
+					Duration:        208.2022290184581,
+				},
+				{
+					StationID:       "2",
+					StationLocation: mockStation2Location,
+					Distance:        4999.134247893073,
+					Duration:        225.18622738257085,
+				},
+				{
+					StationID:       "1",
+					StationLocation: mockStation1Location,
+					Distance:        6310.598332634715,
+					Duration:        284.2611861547169,
+				},
+			},
+			&connectivitymap.QueryResult{
+				StationID:       "4",
+				StationLocation: mockStation4Location,
+				Distance:        4623.0,
+				Duration:        1.0,
+			},
+			[]*connectivitymap.QueryResult{
+				{
+					StationID:       "3",
+					StationLocation: mockStation3Location,
+					Distance:        4622.08948420977,
+					Duration:        208.2022290184581,
+				},
+				{
+					StationID:       "4",
+					StationLocation: mockStation4Location,
+					Distance:        4623.0,
+					Duration:        1.0,
+				},
+				{
+					StationID:       "2",
+					StationLocation: mockStation2Location,
+					Distance:        4999.134247893073,
+					Duration:        225.18622738257085,
+				},
+				{
+					StationID:       "1",
+					StationLocation: mockStation1Location,
+					Distance:        6310.598332634715,
+					Duration:        284.2611861547169,
+				},
+			},
+		},
+	}
+
+	for _, c := range cases {
+		actualResult := appendIntoSortedSlice(c.itemToBeInserted, c.sortedArray)
+		if !reflect.DeepEqual(actualResult, c.expectedArray) {
+			t.Errorf("Incorrect result expect %+v but got %+v\n", c.expectedArray, actualResult)
+		}
+	}
+
+}
+
 /*
 Construct graph as follows
 
@@ -224,6 +370,11 @@ var mockStation2Location = &nav.Location{
 var mockStation3Location = &nav.Location{
 	Lat: 37.401948,
 	Lon: -121.977384,
+}
+
+var mockStation4Location = &nav.Location{
+	Lat: 11.11,
+	Lon: -22.22,
 }
 
 func (querier *mockPlaceLocationQuerier) GetLocation(placeID string) *nav.Location {
