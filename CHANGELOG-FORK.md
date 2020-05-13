@@ -25,12 +25,14 @@ Changes from v10.2.0
   - CHANGED for internal refactoring, rename `cmd/osrm-ranking` to `cmd/osrm-rankd` [#317](https://github.com/Telenav/osrm-backend/pull/317)
   - ADDED versioning on golang binaries [#320](https://github.com/Telenav/osrm-backend/pull/320)
   - ADDED package `util/appversion` to share versioning among many golang binaries [#328](https://github.com/Telenav/osrm-backend/pull/328)
-  - ADDED package `stationconnquerier` which builds station connectivity graph based on pre-build data [#323](https://github.com/Telenav/osrm-backend/pull/323)
+  - ADDED package `oasis/stationconnquerier` which builds station connectivity graph based on pre-build data [#323](https://github.com/Telenav/osrm-backend/pull/323)
   - ADDED `Duration` for pre-generated charge station connectivity data [#326](https://github.com/Telenav/osrm-backend/issues/326)
   - CHANGED for internal refactoring, use `osrm.xxx` to invoke OSRM APIs, e.g. `osrm.Coordinate` instead of `coordinate.Coordinate` [#327](https://github.com/Telenav/osrm-backend/pull/327)
   - CHANGED for epsilon of util/floatequals, use different epsilon for float32 compare and float64 compare [#332](https://github.com/Telenav/osrm-backend/issues/332)
   - ADDED interface test for `trafficapplyingmodel` implementation(both `appendspeedonly` and `preferlivetraffic`) [#330](https://github.com/Telenav/osrm-backend/pull/330) 
   - CHANGED for mock objects, hide them in internal/mock package for OASIS service [#334](https://github.com/Telenav/osrm-backend/issues/334)
+  - ADDED package `oasis/selectionstrategy`, move logic related with how to select optimum charge stations into this package [#339](https://github.com/Telenav/osrm-backend/pull/339)
+  - CHANGED for integration of pre-generated connectivity data with OASIS service [#339](https://github.com/Telenav/osrm-backend/pull/339)
   
 - Bugfix:    
   - CHANGED `osrm-ranking` parsing of OSRM route response to compatible with `string` array `annotation/nodes` [#296](https://github.com/Telenav/osrm-backend/pull/296)     
