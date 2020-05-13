@@ -8,6 +8,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/api/osrm"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/table"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
@@ -16,50 +17,50 @@ import (
 
 func TestGenerateTableRequest(t *testing.T) {
 	cases := []struct {
-		center     spatialindexer.Location
-		targets    []*spatialindexer.PointInfo
+		center     nav.Location
+		targets    []*spatialindexer.PlaceInfo
 		startIndex int
 		endIndex   int
 		expect     *table.Request
 	}{
 		// case 1: test center -> {1, 2, 3, 4, 5}
 		{
-			center: spatialindexer.Location{
+			center: nav.Location{
 				Lat: 0,
 				Lon: 0,
 			},
-			targets: []*spatialindexer.PointInfo{
-				&spatialindexer.PointInfo{
+			targets: []*spatialindexer.PlaceInfo{
+				{
 					ID: 1,
-					Location: spatialindexer.Location{
+					Location: nav.Location{
 						Lat: 1.1,
 						Lon: 1.1,
 					},
 				},
-				&spatialindexer.PointInfo{
+				{
 					ID: 2,
-					Location: spatialindexer.Location{
+					Location: nav.Location{
 						Lat: 2.2,
 						Lon: 2.2,
 					},
 				},
-				&spatialindexer.PointInfo{
+				{
 					ID: 3,
-					Location: spatialindexer.Location{
+					Location: nav.Location{
 						Lat: 3.3,
 						Lon: 3.3,
 					},
 				},
-				&spatialindexer.PointInfo{
+				{
 					ID: 4,
-					Location: spatialindexer.Location{
+					Location: nav.Location{
 						Lat: 4.4,
 						Lon: 4.4,
 					},
 				},
-				&spatialindexer.PointInfo{
+				{
 					ID: 5,
-					Location: spatialindexer.Location{
+					Location: nav.Location{
 						Lat: 5.5,
 						Lon: 5.5,
 					},
@@ -112,42 +113,42 @@ func TestGenerateTableRequest(t *testing.T) {
 		},
 		// case 2: test center -> {1, 2, 3}
 		{
-			center: spatialindexer.Location{
+			center: nav.Location{
 				Lat: 0,
 				Lon: 0,
 			},
-			targets: []*spatialindexer.PointInfo{
+			targets: []*spatialindexer.PlaceInfo{
 				{
 					ID: 1,
-					Location: spatialindexer.Location{
+					Location: nav.Location{
 						Lat: 1.1,
 						Lon: 1.1,
 					},
 				},
 				{
 					ID: 2,
-					Location: spatialindexer.Location{
+					Location: nav.Location{
 						Lat: 2.2,
 						Lon: 2.2,
 					},
 				},
 				{
 					ID: 3,
-					Location: spatialindexer.Location{
+					Location: nav.Location{
 						Lat: 3.3,
 						Lon: 3.3,
 					},
 				},
 				{
 					ID: 4,
-					Location: spatialindexer.Location{
+					Location: nav.Location{
 						Lat: 4.4,
 						Lon: 4.4,
 					},
 				},
 				{
 					ID: 5,
-					Location: spatialindexer.Location{
+					Location: nav.Location{
 						Lat: 5.5,
 						Lon: 5.5,
 					},
@@ -208,64 +209,64 @@ func TestGenerateTableRequest(t *testing.T) {
 //                          but the result will be merged and sorted, so is the same with single request
 func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 	cases := []struct {
-		center  spatialindexer.Location
-		targets []*spatialindexer.PointInfo
-		expect  []*spatialindexer.RankedPointInfo
+		center  nav.Location
+		targets []*spatialindexer.PlaceInfo
+		expect  []*spatialindexer.RankedPlaceInfo
 	}{
 		{
-			center: spatialindexer.Location{
+			center: nav.Location{
 				Lat: 0,
 				Lon: 0,
 			},
-			targets: []*spatialindexer.PointInfo{
+			targets: []*spatialindexer.PlaceInfo{
 				{
 					ID: 1,
-					Location: spatialindexer.Location{
+					Location: nav.Location{
 						Lat: 1.1,
 						Lon: 1.1,
 					},
 				},
 				{
 					ID: 2,
-					Location: spatialindexer.Location{
+					Location: nav.Location{
 						Lat: 2.2,
 						Lon: 2.2,
 					},
 				},
 				{
 					ID: 3,
-					Location: spatialindexer.Location{
+					Location: nav.Location{
 						Lat: 3.3,
 						Lon: 3.3,
 					},
 				},
 				{
 					ID: 4,
-					Location: spatialindexer.Location{
+					Location: nav.Location{
 						Lat: 4.4,
 						Lon: 4.4,
 					},
 				},
 				{
 					ID: 5,
-					Location: spatialindexer.Location{
+					Location: nav.Location{
 						Lat: 5.5,
 						Lon: 5.5,
 					},
 				},
 				{
 					ID: 6,
-					Location: spatialindexer.Location{
+					Location: nav.Location{
 						Lat: 6.6,
 						Lon: 6.6,
 					},
 				},
 			},
-			expect: []*spatialindexer.RankedPointInfo{
+			expect: []*spatialindexer.RankedPlaceInfo{
 				{
-					PointInfo: spatialindexer.PointInfo{
+					PlaceInfo: spatialindexer.PlaceInfo{
 						ID: 1,
-						Location: spatialindexer.Location{
+						Location: nav.Location{
 							Lat: 1.1,
 							Lon: 1.1,
 						},
@@ -274,9 +275,9 @@ func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 					Duration: 1.1,
 				},
 				{
-					PointInfo: spatialindexer.PointInfo{
+					PlaceInfo: spatialindexer.PlaceInfo{
 						ID: 2,
-						Location: spatialindexer.Location{
+						Location: nav.Location{
 							Lat: 2.2,
 							Lon: 2.2,
 						},
@@ -285,9 +286,9 @@ func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 					Duration: 2.2,
 				},
 				{
-					PointInfo: spatialindexer.PointInfo{
+					PlaceInfo: spatialindexer.PlaceInfo{
 						ID: 3,
-						Location: spatialindexer.Location{
+						Location: nav.Location{
 							Lat: 3.3,
 							Lon: 3.3,
 						},
@@ -296,9 +297,9 @@ func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 					Duration: 3.3,
 				},
 				{
-					PointInfo: spatialindexer.PointInfo{
+					PlaceInfo: spatialindexer.PlaceInfo{
 						ID: 4,
-						Location: spatialindexer.Location{
+						Location: nav.Location{
 							Lat: 4.4,
 							Lon: 4.4,
 						},
@@ -307,9 +308,9 @@ func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 					Duration: 4.4,
 				},
 				{
-					PointInfo: spatialindexer.PointInfo{
+					PlaceInfo: spatialindexer.PlaceInfo{
 						ID: 5,
-						Location: spatialindexer.Location{
+						Location: nav.Location{
 							Lat: 5.5,
 							Lon: 5.5,
 						},
@@ -318,9 +319,9 @@ func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 					Duration: 5.5,
 				},
 				{
-					PointInfo: spatialindexer.PointInfo{
+					PlaceInfo: spatialindexer.PlaceInfo{
 						ID: 6,
-						Location: spatialindexer.Location{
+						Location: nav.Location{
 							Lat: 6.6,
 							Lon: 6.6,
 						},

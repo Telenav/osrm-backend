@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
 	"github.com/golang/geo/s2"
 	"github.com/golang/glog"
@@ -11,7 +12,7 @@ import (
 
 func TestSpatialIndexQuery1(t *testing.T) {
 	fakeIndexer1 := S2Indexer{
-		cellID2PointIDs: map[s2.CellID][]spatialindexer.PointID{
+		cellID2PointIDs: map[s2.CellID][]spatialindexer.PlaceID{
 			9263834064756932608: {1, 2}, // 4/0010133
 			9263851656942977024: {1, 2}, // 4/00101332
 			9263847258896465920: {1, 2}, // 4/001013321
@@ -56,12 +57,12 @@ func TestSpatialIndexQuery1(t *testing.T) {
 			9263844823130943708: {1},    // 4/00101332103210130020133120123
 			9263844823130943709: {1},    // 4/001013321032101300201331201232
 		},
-		pointID2Location: map[spatialindexer.PointID]spatialindexer.Location{
-			1: spatialindexer.Location{
+		pointID2Location: map[spatialindexer.PlaceID]nav.Location{
+			1: {
 				Lat: 37.402701,
 				Lon: -121.974096,
 			},
-			2: spatialindexer.Location{
+			2: {
 				Lat: 37.403530,
 				Lon: -121.969768,
 			},
@@ -69,29 +70,29 @@ func TestSpatialIndexQuery1(t *testing.T) {
 	}
 
 	// center in 4655 great america pkwy
-	center := spatialindexer.Location{
+	center := nav.Location{
 		Lat: 37.402799,
 		Lon: -121.969861,
 	}
 
-	expect := []*spatialindexer.PointInfo{
-		&spatialindexer.PointInfo{
+	expect := []*spatialindexer.PlaceInfo{
+		{
 			ID: 1,
-			Location: spatialindexer.Location{
+			Location: nav.Location{
 				Lat: 37.402701,
 				Lon: -121.974096,
 			},
 		},
-		&spatialindexer.PointInfo{
+		{
 			ID: 2,
-			Location: spatialindexer.Location{
+			Location: nav.Location{
 				Lat: 37.40353,
 				Lon: -121.969768,
 			},
 		},
 	}
 
-	actual := queryNearByPoints(&fakeIndexer1, center, 10000)
+	actual := queryNearByPlaces(&fakeIndexer1, center, 10000)
 
 	if !reflect.DeepEqual(actual, expect) {
 		t.Errorf("Expect result is \n%v but got \n%v\n", actual, expect)
@@ -101,7 +102,7 @@ func TestSpatialIndexQuery1(t *testing.T) {
 //More information could go to here: https://github.com/Telenav/osrm-backend/issues/236#issuecomment-603533484
 func TestQueryNearByS2Cells1(t *testing.T) {
 	// center in 4655 great america pkwy
-	center := spatialindexer.Location{
+	center := nav.Location{
 		Lat: 37.402799,
 		Lon: -121.969861,
 	}

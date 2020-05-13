@@ -14,7 +14,7 @@ const defaultChargeStaionChannelSize = 500
 
 type basicLocalFinder struct {
 	localFinder spatialindexer.Finder
-	placesInfo  []*spatialindexer.PointInfo
+	placesInfo  []*spatialindexer.PlaceInfo
 	requests    chan chan *stationfindertype.ChargeStationInfo
 	stop        chan bool
 }
@@ -29,8 +29,8 @@ func newBasicLocalFinder(localFinder spatialindexer.Finder) *basicLocalFinder {
 	return bf
 }
 
-func (bf *basicLocalFinder) getNearbyChargeStations(center spatialindexer.Location, radius float64) {
-	bf.placesInfo = bf.localFinder.FindNearByPointIDs(center, radius, spatialindexer.UnlimitedCount)
+func (bf *basicLocalFinder) getNearbyChargeStations(center nav.Location, radius float64) {
+	bf.placesInfo = bf.localFinder.FindNearByPlaceIDs(center, radius, spatialindexer.UnlimitedCount)
 }
 
 func (bf *basicLocalFinder) serveRequest() {

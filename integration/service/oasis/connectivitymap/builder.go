@@ -8,7 +8,7 @@ import (
 )
 
 type connectivityMapBuilder struct {
-	iterator      spatialindexer.PointsIterator
+	iterator      spatialindexer.PlacesIterator
 	finder        spatialindexer.Finder
 	ranker        spatialindexer.Ranker
 	distanceLimit float64
@@ -20,7 +20,7 @@ type connectivityMapBuilder struct {
 	aggregatorC         chan placeIDWithNearByPlaceIDs
 }
 
-func newConnectivityMapBuilder(iterator spatialindexer.PointsIterator, finder spatialindexer.Finder,
+func newConnectivityMapBuilder(iterator spatialindexer.PlacesIterator, finder spatialindexer.Finder,
 	ranker spatialindexer.Ranker, distanceLimit float64, numOfWorker int) *connectivityMapBuilder {
 	builder := &connectivityMapBuilder{
 		iterator:      iterator,
@@ -63,7 +63,7 @@ func (builder *connectivityMapBuilder) build() ID2NearByIDsMap {
 }
 
 func (builder *connectivityMapBuilder) process() {
-	inputC := builder.iterator.IteratePoints()
+	inputC := builder.iterator.IteratePlaces()
 
 	for i := 0; i < builder.numOfWorker; i++ {
 		builder.workerWaitGroup.Add(1)
@@ -73,14 +73,14 @@ func (builder *connectivityMapBuilder) process() {
 	glog.Infof("builder's process is finished, start number of %d workers.\n", builder.numOfWorker)
 }
 
-func (builder *connectivityMapBuilder) work(workerID int, source <-chan spatialindexer.PointInfo, sink chan<- placeIDWithNearByPlaceIDs) {
+func (builder *connectivityMapBuilder) work(workerID int, source <-chan spatialindexer.PlaceInfo, sink chan<- placeIDWithNearByPlaceIDs) {
 	defer builder.workerWaitGroup.Done()
 
 	counter := 0
 	for p := range source {
 		counter += 1
-		nearbyIDs := builder.finder.FindNearByPointIDs(p.Location, builder.distanceLimit, spatialindexer.UnlimitedCount)
-		rankedResults := builder.ranker.RankPointIDsByShortestDistance(p.Location, nearbyIDs)
+		nearbyIDs := builder.finder.FindNearByPlaceIDs(p.Location, builder.distanceLimit, spatialindexer.UnlimitedCount)
+		rankedResults := builder.ranker.RankPlaceIDsByShortestDistance(p.Location, nearbyIDs)
 
 		ids := make([]IDAndWeight, 0, len(rankedResults))
 		for _, r := range rankedResults {
@@ -129,7 +129,7 @@ func (builder *connectivityMapBuilder) wait() {
 }
 
 type placeIDWithNearByPlaceIDs struct {
-	id  spatialindexer.PointID
+	id  spatialindexer.PlaceID
 	ids []IDAndWeight
 }
 
@@ -139,9 +139,9 @@ func (builder *connectivityMapBuilder) buildInSerial() ID2NearByIDsMap {
 	m := make(ID2NearByIDsMap)
 
 	go func() {
-		for p := range builder.iterator.IteratePoints() {
-			nearbyIDs := builder.finder.FindNearByPointIDs(p.Location, builder.distanceLimit, spatialindexer.UnlimitedCount)
-			rankedResults := builder.ranker.RankPointIDsByGreatCircleDistance(p.Location, nearbyIDs)
+		for p := range builder.iterator.IteratePlaces() {
+			nearbyIDs := builder.finder.FindNearByPlaceIDs(p.Location, builder.distanceLimit, spatialindexer.UnlimitedCount)
+			rankedResults := builder.ranker.RankPlaceIDsByGreatCircleDistance(p.Location, nearbyIDs)
 
 			ids := make([]IDAndWeight, 0, len(rankedResults))
 			for _, r := range rankedResults {

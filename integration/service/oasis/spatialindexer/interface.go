@@ -7,32 +7,25 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 )
 
-// Location for poi point
-// todo codebear801 will be replaced by the one in nav
-type Location struct {
-	Lat float64
-	Lon float64
+// PlaceInfo records place related information such as ID and location
+type PlaceInfo struct {
+	ID       PlaceID
+	Location nav.Location
 }
 
-// PointInfo records point related information such as ID and location
-type PointInfo struct {
-	ID       PointID
-	Location Location
-}
-
-// RankedPointInfo used to record ranking result, distance to specific point could be used for ranking
-type RankedPointInfo struct {
-	PointInfo
+// RankedPlaceInfo used to record ranking result, e.g. distance to specific place could be used for ranking
+type RankedPlaceInfo struct {
+	PlaceInfo
 	Distance float64
 	Duration float64
 }
 
-// PointID defines ID for given point(location, point of interest)
-// Only the data used for pre-processing contains valid PointID
-type PointID int64
+// PlaceID defines ID for given place(location, point of interest)
+// Only the data used for pre-processing contains valid PlaceID
+type PlaceID int64
 
-// String converts PointID to string
-func (p PointID) String() string {
+// String converts PlaceID to string
+func (p PlaceID) String() string {
 	return strconv.FormatInt((int64)(p), 10)
 }
 
@@ -42,18 +35,18 @@ const UnlimitedCount = math.MaxInt32
 // Finder answers special query
 type Finder interface {
 
-	// FindNearByPointIDs returns a group of points near to given center location
-	FindNearByPointIDs(center Location, radius float64, limitCount int) []*PointInfo
+	// FindNearByPlaceIDs returns a group of places near to given center location
+	FindNearByPlaceIDs(center nav.Location, radius float64, limitCount int) []*PlaceInfo
 }
 
-// Ranker used to ranking a group of points
+// Ranker used to ranking a group of places
 type Ranker interface {
 
-	// RankPointIDsByGreatCircleDistance ranks a group of points based on great circle distance to given location
-	RankPointIDsByGreatCircleDistance(center Location, targets []*PointInfo) []*RankedPointInfo
+	// RankPlaceIDsByGreatCircleDistance ranks a group of places based on great circle distance to given location
+	RankPlaceIDsByGreatCircleDistance(center nav.Location, targets []*PlaceInfo) []*RankedPlaceInfo
 
-	// RankPointIDsByShortestDistance ranks a group of points based on shortest path distance to given location
-	RankPointIDsByShortestDistance(center Location, targets []*PointInfo) []*RankedPointInfo
+	// RankPlaceIDsByShortestDistance ranks a group of places based on shortest path distance to given location
+	RankPlaceIDsByShortestDistance(center nav.Location, targets []*PlaceInfo) []*RankedPlaceInfo
 }
 
 // PlaceLocationQuerier returns *nav.location for given location
@@ -64,9 +57,9 @@ type PlaceLocationQuerier interface {
 	GetLocation(placeID string) *nav.Location
 }
 
-// PointsIterator provides iterateability for PointInfo
-type PointsIterator interface {
+// PlacesIterator provides iterateability for PlaceInfo
+type PlacesIterator interface {
 
-	// IteratePoints returns channel for PointInfo
-	IteratePoints() <-chan PointInfo
+	// IteratePlaces returns channel for PlaceInfo
+	IteratePlaces() <-chan PlaceInfo
 }

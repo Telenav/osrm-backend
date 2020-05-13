@@ -6,50 +6,51 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
 )
 
 func TestRankAgent(t *testing.T) {
 	cases := []struct {
-		input  []*spatialindexer.RankedPointInfo
-		expect []*spatialindexer.RankedPointInfo
+		input  []*spatialindexer.RankedPlaceInfo
+		expect []*spatialindexer.RankedPlaceInfo
 	}{
 		{
-			input: []*spatialindexer.RankedPointInfo{
-				&spatialindexer.RankedPointInfo{
-					PointInfo: spatialindexer.PointInfo{
+			input: []*spatialindexer.RankedPlaceInfo{
+				{
+					PlaceInfo: spatialindexer.PlaceInfo{
 						ID: 3,
-						Location: spatialindexer.Location{
+						Location: nav.Location{
 							Lat: 3.3,
 							Lon: 3.3,
 						},
 					},
 					Distance: 3.3,
 				},
-				&spatialindexer.RankedPointInfo{
-					PointInfo: spatialindexer.PointInfo{
+				{
+					PlaceInfo: spatialindexer.PlaceInfo{
 						ID: 1,
-						Location: spatialindexer.Location{
+						Location: nav.Location{
 							Lat: 1.1,
 							Lon: 1.1,
 						},
 					},
 					Distance: 1.1,
 				},
-				&spatialindexer.RankedPointInfo{
-					PointInfo: spatialindexer.PointInfo{
+				{
+					PlaceInfo: spatialindexer.PlaceInfo{
 						ID: 22,
-						Location: spatialindexer.Location{
+						Location: nav.Location{
 							Lat: 22.22,
 							Lon: 22.22,
 						},
 					},
 					Distance: 22.22,
 				},
-				&spatialindexer.RankedPointInfo{
-					PointInfo: spatialindexer.PointInfo{
+				{
+					PlaceInfo: spatialindexer.PlaceInfo{
 						ID: 4,
-						Location: spatialindexer.Location{
+						Location: nav.Location{
 							Lat: 4.4,
 							Lon: 4.4,
 						},
@@ -57,41 +58,41 @@ func TestRankAgent(t *testing.T) {
 					Distance: 4.4,
 				},
 			},
-			expect: []*spatialindexer.RankedPointInfo{
-				&spatialindexer.RankedPointInfo{
-					PointInfo: spatialindexer.PointInfo{
+			expect: []*spatialindexer.RankedPlaceInfo{
+				{
+					PlaceInfo: spatialindexer.PlaceInfo{
 						ID: 1,
-						Location: spatialindexer.Location{
+						Location: nav.Location{
 							Lat: 1.1,
 							Lon: 1.1,
 						},
 					},
 					Distance: 1.1,
 				},
-				&spatialindexer.RankedPointInfo{
-					PointInfo: spatialindexer.PointInfo{
+				{
+					PlaceInfo: spatialindexer.PlaceInfo{
 						ID: 3,
-						Location: spatialindexer.Location{
+						Location: nav.Location{
 							Lat: 3.3,
 							Lon: 3.3,
 						},
 					},
 					Distance: 3.3,
 				},
-				&spatialindexer.RankedPointInfo{
-					PointInfo: spatialindexer.PointInfo{
+				{
+					PlaceInfo: spatialindexer.PlaceInfo{
 						ID: 4,
-						Location: spatialindexer.Location{
+						Location: nav.Location{
 							Lat: 4.4,
 							Lon: 4.4,
 						},
 					},
 					Distance: 4.4,
 				},
-				&spatialindexer.RankedPointInfo{
-					PointInfo: spatialindexer.PointInfo{
+				{
+					PlaceInfo: spatialindexer.PlaceInfo{
 						ID: 22,
-						Location: spatialindexer.Location{
+						Location: nav.Location{
 							Lat: 22.22,
 							Lon: 22.22,
 						},
@@ -104,7 +105,7 @@ func TestRankAgent(t *testing.T) {
 
 	for _, c := range cases {
 		var wg sync.WaitGroup
-		pointWithDistanceC := make(chan *spatialindexer.RankedPointInfo, len(c.input))
+		pointWithDistanceC := make(chan *spatialindexer.RankedPlaceInfo, len(c.input))
 		wg.Add(1)
 		go func(wg *sync.WaitGroup) {
 			defer wg.Done()
@@ -127,7 +128,7 @@ func TestRankAgent(t *testing.T) {
 	}
 }
 
-func printRankedPointInfoArray(arr []*spatialindexer.RankedPointInfo) string {
+func printRankedPointInfoArray(arr []*spatialindexer.RankedPlaceInfo) string {
 	var str string
 	for _, item := range arr {
 		str += fmt.Sprintf("%#v ", item)

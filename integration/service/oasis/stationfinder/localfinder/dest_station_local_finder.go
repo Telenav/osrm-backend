@@ -1,6 +1,7 @@
 package localfinder
 
 import (
+	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
 	"github.com/golang/glog"
@@ -23,7 +24,7 @@ func newDestStationFinder(localFinder spatialindexer.Finder, oasisReq *oasis.Req
 	obj := &destStationLocalFinder{
 		newBasicLocalFinder(localFinder),
 	}
-	obj.getNearbyChargeStations(spatialindexer.Location{
+	obj.getNearbyChargeStations(nav.Location{
 		Lat: oasisReq.Coordinates[1].Lat,
 		Lon: oasisReq.Coordinates[1].Lon},
 		oasisReq.MaxRange-oasisReq.SafeLevel)

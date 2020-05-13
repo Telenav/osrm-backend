@@ -1,4 +1,4 @@
-package poiloader
+package placeloader
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 	"github.com/golang/glog"
 )
 
-// LoadData accepts json file with points data and returns deserialized result
+// LoadData accepts json file with places data and returns deserialized result
 func LoadData(filePath string) ([]Element, error) {
 	var elements []Element
 

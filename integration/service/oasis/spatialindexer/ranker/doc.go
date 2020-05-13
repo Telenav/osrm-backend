@@ -1,6 +1,6 @@
 /*
 Package ranker implements interfaces defined in Ranker:
-   - RankPointIDsByGreatCircleDistance
-   - RankPointIDsByShortestDistance
+   - RankPlaceIDsByGreatCircleDistance
+   - RankPlaceIDsByShortestDistance
 */
 package ranker

@@ -312,24 +312,24 @@ func TestStationConnQuerier(t *testing.T) {
 	}
 }
 
-var mockPlaceInfo = []*spatialindexer.PointInfo{
+var mockPlaceInfo = []*spatialindexer.PlaceInfo{
 	{
 		ID: 1,
-		Location: spatialindexer.Location{
+		Location: nav.Location{
 			Lat: 37.355204,
 			Lon: -121.953901,
 		},
 	},
 	{
 		ID: 2,
-		Location: spatialindexer.Location{
+		Location: nav.Location{
 			Lat: 37.399331,
 			Lon: -121.981193,
 		},
 	},
 	{
 		ID: 3,
-		Location: spatialindexer.Location{
+		Location: nav.Location{
 			Lat: 37.401948,
 			Lon: -121.977384,
 		},
@@ -339,8 +339,8 @@ var mockPlaceInfo = []*spatialindexer.PointInfo{
 type mockFinder struct {
 }
 
-// FindNearByPointIDs returns mock result
-func (finder *mockFinder) FindNearByPointIDs(center spatialindexer.Location, radius float64, limitCount int) []*spatialindexer.PointInfo {
+// FindNearByPlaceIDs returns mock result
+func (finder *mockFinder) FindNearByPlaceIDs(center nav.Location, radius float64, limitCount int) []*spatialindexer.PlaceInfo {
 	return mockPlaceInfo
 }
 

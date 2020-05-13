@@ -13,12 +13,12 @@ type Weight struct {
 
 // IDAndWeight wraps ID and weight information
 type IDAndWeight struct {
-	ID     spatialindexer.PointID
+	ID     spatialindexer.PlaceID
 	Weight Weight
 }
 
 // ID2NearByIDsMap is a mapping between ID and its nearby IDs
-type ID2NearByIDsMap map[spatialindexer.PointID][]IDAndWeight
+type ID2NearByIDsMap map[spatialindexer.PlaceID][]IDAndWeight
 
 // Connectivity Map used to query connectivity for given placeID
 type ConnectivityMap struct {
@@ -36,7 +36,7 @@ func New(maxRange float64) *ConnectivityMap {
 }
 
 // Build creates ConnectivityMap
-func (cm *ConnectivityMap) Build(iterator spatialindexer.PointsIterator, finder spatialindexer.Finder,
+func (cm *ConnectivityMap) Build(iterator spatialindexer.PlacesIterator, finder spatialindexer.Finder,
 	ranker spatialindexer.Ranker, numOfWorkers int) *ConnectivityMap {
 	glog.Info("Start ConnectivityMap's Build().\n")
 
@@ -76,7 +76,7 @@ func (cm *ConnectivityMap) Load(folderPath string) *ConnectivityMap {
 
 // QueryConnectivity answers connectivity query for given placeID
 // Return true and IDAndWeight array for given placeID, otherwise false and nil
-func (cm *ConnectivityMap) QueryConnectivity(placeID spatialindexer.PointID) ([]IDAndWeight, bool) {
+func (cm *ConnectivityMap) QueryConnectivity(placeID spatialindexer.PlaceID) ([]IDAndWeight, bool) {
 	if result, ok := cm.id2nearByIDs[placeID]; ok {
 		return result, true
 	}

@@ -43,9 +43,9 @@ func New(stationFinder spatialindexer.Finder, stationRanker spatialindexer.Ranke
 
 func (querier *StationConnectivityQuerier) connectStartIntoStationGraph(stationFinder spatialindexer.Finder, stationRanker spatialindexer.Ranker,
 	start *nav.Location, currEnergyLevel float64) {
-	center := spatialindexer.Location{Lat: start.Lat, Lon: start.Lon}
-	nearByPoints := stationFinder.FindNearByPointIDs(center, currEnergyLevel, spatialindexer.UnlimitedCount)
-	rankedPoints := stationRanker.RankPointIDsByShortestDistance(center, nearByPoints)
+	center := nav.Location{Lat: start.Lat, Lon: start.Lon}
+	nearByPoints := stationFinder.FindNearByPlaceIDs(center, currEnergyLevel, spatialindexer.UnlimitedCount)
+	rankedPoints := stationRanker.RankPlaceIDsByShortestDistance(center, nearByPoints)
 
 	reachableStationsByStart := make([]*connectivitymap.QueryResult, 0, len(rankedPoints))
 	for _, rankedPointInfo := range rankedPoints {
@@ -64,9 +64,9 @@ func (querier *StationConnectivityQuerier) connectStartIntoStationGraph(stationF
 
 func (querier *StationConnectivityQuerier) connectEndIntoStationGraph(stationFinder spatialindexer.Finder, stationRanker spatialindexer.Ranker,
 	end *nav.Location, maxEnergyLevel float64) {
-	center := spatialindexer.Location{Lat: end.Lat, Lon: end.Lon}
-	nearByPoints := stationFinder.FindNearByPointIDs(center, maxEnergyLevel, spatialindexer.UnlimitedCount)
-	rankedPoints := stationRanker.RankPointIDsByShortestDistance(center, nearByPoints)
+	center := nav.Location{Lat: end.Lat, Lon: end.Lon}
+	nearByPoints := stationFinder.FindNearByPlaceIDs(center, maxEnergyLevel, spatialindexer.UnlimitedCount)
+	rankedPoints := stationRanker.RankPlaceIDsByShortestDistance(center, nearByPoints)
 
 	reachableStationToEnd := make(map[string]*connectivitymap.QueryResult)
 	for _, rankedPointInfo := range rankedPoints {
@@ -103,7 +103,7 @@ func (querier *StationConnectivityQuerier) NearByStationQuery(stationID string) 
 		return nil
 	}
 
-	if connectivityResults, ok := querier.stationConnectivity.QueryConnectivity((spatialindexer.PointID)(placeID)); ok {
+	if connectivityResults, ok := querier.stationConnectivity.QueryConnectivity((spatialindexer.PlaceID)(placeID)); ok {
 		size := len(connectivityResults)
 		if querier.isStationConnectsToEnd(stationID) {
 			size += 1

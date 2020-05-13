@@ -4,8 +4,8 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/mock"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 )
 
@@ -14,7 +14,7 @@ func TestSingleIterator4BasicLocalFinder(t *testing.T) {
 	defer localFinder.Stop()
 
 	mockFinder := mock.MockFinder{}
-	localFinder.placesInfo = mockFinder.FindNearByPointIDs(spatialindexer.Location{}, 0, 0)
+	localFinder.placesInfo = mockFinder.FindNearByPlaceIDs(nav.Location{}, 0, 0)
 
 	iterC := localFinder.IterateNearbyStations()
 	actual := make([]*stationfindertype.ChargeStationInfo, 0, len(mock.MockChargeStationInfo1))
@@ -33,7 +33,7 @@ func TestMultipleIterator4BasicLocalFinder(t *testing.T) {
 	defer localFinder.Stop()
 
 	mockFinder := mock.MockFinder{}
-	localFinder.placesInfo = mockFinder.FindNearByPointIDs(spatialindexer.Location{}, 0, 0)
+	localFinder.placesInfo = mockFinder.FindNearByPlaceIDs(nav.Location{}, 0, 0)
 
 	for i := 0; i < 3; i++ {
 		iterC := localFinder.IterateNearbyStations()

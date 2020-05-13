@@ -1,6 +1,7 @@
 package ranker
 
 import (
+	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
 )
@@ -15,10 +16,10 @@ func newOsrmRanker(oc *osrmconnector.OSRMConnector) *osrmRanker {
 	}
 }
 
-func (ranker *osrmRanker) RankPointIDsByGreatCircleDistance(center spatialindexer.Location, targets []*spatialindexer.PointInfo) []*spatialindexer.RankedPointInfo {
+func (ranker *osrmRanker) RankPlaceIDsByGreatCircleDistance(center nav.Location, targets []*spatialindexer.PlaceInfo) []*spatialindexer.RankedPlaceInfo {
 	return rankPointsByGreatCircleDistanceToCenter(center, targets)
 }
 
-func (ranker *osrmRanker) RankPointIDsByShortestDistance(center spatialindexer.Location, targets []*spatialindexer.PointInfo) []*spatialindexer.RankedPointInfo {
+func (ranker *osrmRanker) RankPlaceIDsByShortestDistance(center nav.Location, targets []*spatialindexer.PlaceInfo) []*spatialindexer.RankedPlaceInfo {
 	return rankPointsByOSRMShortestPath(center, targets, ranker.oc, pointsThresholdPerRequest)
 }

@@ -11,17 +11,17 @@ import (
 )
 
 // Mock env:
-// Iterator returns 100 of fixed location point(IDs are 1000, 1001, 1002, ...)
-// Finder returns fixed array result(10 points, IDs are 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 )
+// Iterator returns 100 of fixed location places(IDs are 1000, 1001, 1002, ...)
+// Finder returns fixed array result(10 places, IDs are 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 )
 // Ranker use great circle distance to calculate
 // Expect result:
 // build() generate same result as pre-calculated map
-// map[1000] = {results of 10 points}
-// map[1001] = {results of 10 points}
+// map[1000] = {results of 10 places}
+// map[1001] = {results of 10 places}
 // ...
-// map[1099] = {results of 10 points}
+// map[1099] = {results of 10 places}
 func TestBuilderWithMockIteratorAndFinder(t *testing.T) {
-	builder := newConnectivityMapBuilder(&mock.MockOneHundredPointsIterator{},
+	builder := newConnectivityMapBuilder(&mock.MockOneHundredPlacesIterator{},
 		&mock.MockFinder{},
 		ranker.CreateRanker(ranker.SimpleRanker, nil),
 		100,
@@ -107,7 +107,7 @@ func TestBuilderWithMockIteratorAndFinder(t *testing.T) {
 
 	for i := 0; i < 100; i++ {
 		index := i + 1000
-		expect[(spatialindexer.PointID(index))] = idAndWeightArray
+		expect[(spatialindexer.PlaceID(index))] = idAndWeightArray
 	}
 
 	if !reflect.DeepEqual(actual, expect) {
@@ -116,7 +116,7 @@ func TestBuilderWithMockIteratorAndFinder(t *testing.T) {
 }
 
 func TestBuilderWithSingleWorker(t *testing.T) {
-	builder := newConnectivityMapBuilder(&mock.MockOneHundredPointsIterator{},
+	builder := newConnectivityMapBuilder(&mock.MockOneHundredPlacesIterator{},
 		&mock.MockFinder{},
 		ranker.CreateRanker(ranker.SimpleRanker, nil),
 		100,

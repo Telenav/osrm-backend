@@ -1,6 +1,7 @@
 package s2indexer
 
 import (
+	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
 	"github.com/golang/geo/s1"
 	"github.com/golang/geo/s2"
@@ -11,7 +12,7 @@ const maxCellCount = 200
 
 const s2EarthRadiusInMeters = 6371010.0
 
-func queryNearByS2Cells(point spatialindexer.Location, radiusInMeters float64) []s2.CellID {
+func queryNearByS2Cells(point nav.Location, radiusInMeters float64) []s2.CellID {
 	regionCover := &s2.RegionCoverer{
 		MinLevel: minS2Level,
 		MaxLevel: maxS2Level,
@@ -24,8 +25,8 @@ func queryNearByS2Cells(point spatialindexer.Location, radiusInMeters float64) [
 	return ([]s2.CellID)(cellUnion)
 }
 
-func queryNearByPoints(indexer *S2Indexer, point spatialindexer.Location, radius float64) []*spatialindexer.PointInfo {
-	var result []*spatialindexer.PointInfo
+func queryNearByPlaces(indexer *S2Indexer, point nav.Location, radius float64) []*spatialindexer.PlaceInfo {
+	var result []*spatialindexer.PlaceInfo
 
 	cellIDs := queryNearByS2Cells(point, radius)
 
@@ -38,11 +39,11 @@ func queryNearByPoints(indexer *S2Indexer, point spatialindexer.Location, radius
 		for _, pointID := range pointIDs {
 			location, hasPointID := indexer.getPointLocationByPointID(pointID)
 			if !hasPointID {
-				glog.Errorf("In queryNearByPoints, use incorrect pointID %v to query S2Indexer\n", pointID)
+				glog.Errorf("In queryNearByPlaces, use incorrect pointID %v to query S2Indexer\n", pointID)
 				continue
 			}
 
-			result = append(result, &spatialindexer.PointInfo{
+			result = append(result, &spatialindexer.PlaceInfo{
 				ID:       pointID,
 				Location: location,
 			})
@@ -52,7 +53,7 @@ func queryNearByPoints(indexer *S2Indexer, point spatialindexer.Location, radius
 	return result
 }
 
-func generateDebugInfo4Query(point spatialindexer.Location, radius float64, cellIDs []s2.CellID) {
+func generateDebugInfo4Query(point nav.Location, radius float64, cellIDs []s2.CellID) {
 	glog.Infof("During spatial_query, point = %+v, radius = %v {", point, radius)
 	for _, cellID := range cellIDs {
 		glog.Infof("%s,", cellID.ToToken())

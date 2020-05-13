@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/Telenav/osrm-backend/integration/api"
+	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/api/osrm"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/table"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
@@ -19,15 +20,15 @@ import (
 // The scenario here is 1-to-N table request, use pointsLimit4SingleTableRequest to limit N
 const pointsThresholdPerRequest = 500
 
-func rankPointsByOSRMShortestPath(center spatialindexer.Location, targets []*spatialindexer.PointInfo,
-	oc *osrmconnector.OSRMConnector, pointsThreshold int) []*spatialindexer.RankedPointInfo {
+func rankPointsByOSRMShortestPath(center nav.Location, targets []*spatialindexer.PlaceInfo,
+	oc *osrmconnector.OSRMConnector, pointsThreshold int) []*spatialindexer.RankedPlaceInfo {
 	if len(targets) == 0 {
 		glog.Warning("When try to rankPointsByGreatCircleDistanceToCenter, input array is empty\n")
 		return nil
 	}
 
 	var wg sync.WaitGroup
-	pointWithDistanceC := make(chan *spatialindexer.RankedPointInfo, len(targets))
+	pointWithDistanceC := make(chan *spatialindexer.RankedPlaceInfo, len(targets))
 	startIndex := 0 // startIndex is a valid index of targets
 	endIndex := 0   // endIndex is valid index of targets
 	for {
@@ -68,7 +69,7 @@ func rankPointsByOSRMShortestPath(center spatialindexer.Location, targets []*spa
 
 }
 
-func calcCenter2TargetsDistanceViaShortestPath(center spatialindexer.Location, targets []*spatialindexer.PointInfo, oc *osrmconnector.OSRMConnector, startIndex, endIndex int) ([]*spatialindexer.RankedPointInfo, error) {
+func calcCenter2TargetsDistanceViaShortestPath(center nav.Location, targets []*spatialindexer.PlaceInfo, oc *osrmconnector.OSRMConnector, startIndex, endIndex int) ([]*spatialindexer.RankedPlaceInfo, error) {
 	req := generateTableRequest(center, targets, startIndex, endIndex)
 	respC := oc.Request4Table(req)
 	resp := <-respC
@@ -95,10 +96,10 @@ func calcCenter2TargetsDistanceViaShortestPath(center spatialindexer.Location, t
 	glog.V(3).Infof("Inside ranker, get table response for request %+v\n", resp.Resp)
 	glog.V(3).Infof("In the response,  len(resp.Resp.Distances[0]) = %+v\n", len(resp.Resp.Distances[0]))
 
-	result := make([]*spatialindexer.RankedPointInfo, 0, endIndex-startIndex+1)
+	result := make([]*spatialindexer.RankedPlaceInfo, 0, endIndex-startIndex+1)
 	for i := 0; i < endIndex-startIndex+1; i++ {
-		result = append(result, &spatialindexer.RankedPointInfo{
-			PointInfo: spatialindexer.PointInfo{
+		result = append(result, &spatialindexer.RankedPlaceInfo{
+			PlaceInfo: spatialindexer.PlaceInfo{
 				ID:       targets[startIndex+i].ID,
 				Location: targets[startIndex+i].Location,
 			},
@@ -110,7 +111,7 @@ func calcCenter2TargetsDistanceViaShortestPath(center spatialindexer.Location, t
 }
 
 // generateTableRequest generates table requests from center to [startIndex, endIndex] of targets
-func generateTableRequest(center spatialindexer.Location, targets []*spatialindexer.PointInfo, startIndex, endIndex int) *table.Request {
+func generateTableRequest(center nav.Location, targets []*spatialindexer.PlaceInfo, startIndex, endIndex int) *table.Request {
 	if startIndex < 0 || startIndex > endIndex || endIndex >= len(targets) {
 		glog.Fatalf("startIndex should be smaller equal to endIndex, and both of them should in the range of len(targets), while (startIndex, endIndex, len(targets)) = (%d, %d, %d)",
 			startIndex, endIndex, len(targets))
@@ -132,7 +133,7 @@ func generateTableRequest(center spatialindexer.Location, targets []*spatialinde
 	return req
 }
 
-func convertLocation2Coordinates(location spatialindexer.Location) osrm.Coordinates {
+func convertLocation2Coordinates(location nav.Location) osrm.Coordinates {
 	result := make(osrm.Coordinates, 0, 1)
 	result = append(result, osrm.Coordinate{
 		Lat: location.Lat,
@@ -141,7 +142,7 @@ func convertLocation2Coordinates(location spatialindexer.Location) osrm.Coordina
 	return result
 }
 
-func convertPointInfos2Coordinates(targets []*spatialindexer.PointInfo, startIndex, endIndex int) osrm.Coordinates {
+func convertPointInfos2Coordinates(targets []*spatialindexer.PlaceInfo, startIndex, endIndex int) osrm.Coordinates {
 	result := make(osrm.Coordinates, 0, endIndex-startIndex+1)
 	for i := startIndex; i <= endIndex; i++ {
 		result = append(result, osrm.Coordinate{

@@ -1,14 +1,17 @@
 package mock
 
-import "github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
+import (
+	"github.com/Telenav/osrm-backend/integration/api/nav"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
+)
 
-// MockPointsIterator implements PointsIterator's interface
-type MockPointsIterator struct {
+// MockPlacesIterator implements PlacesIterator's interface
+type MockPlacesIterator struct {
 }
 
-// IteratePoints() iterate places with mock data
-func (iterator *MockPointsIterator) IteratePoints() <-chan spatialindexer.PointInfo {
-	pointInfoC := make(chan spatialindexer.PointInfo, len(MockPlaceInfo1))
+// IteratePlaces() iterate places with mock data
+func (iterator *MockPlacesIterator) IteratePlaces() <-chan spatialindexer.PlaceInfo {
+	pointInfoC := make(chan spatialindexer.PlaceInfo, len(MockPlaceInfo1))
 
 	go func() {
 		for _, item := range MockPlaceInfo1 {
@@ -21,21 +24,21 @@ func (iterator *MockPointsIterator) IteratePoints() <-chan spatialindexer.PointI
 	return pointInfoC
 }
 
-// MockOneHundredPointsIterator implements PointsIterator's interface
-type MockOneHundredPointsIterator struct {
+// MockOneHundredPlacesIterator implements PlacesIterator's interface
+type MockOneHundredPlacesIterator struct {
 }
 
-// IteratePoints() iterate places with mock data.
+// IteratePlaces() iterate places with mock data.
 // It returns {ID:1000, fixed location}, {ID:1001, fixed location}, ... {ID:1099, fixed location}
-func (iterator *MockOneHundredPointsIterator) IteratePoints() <-chan spatialindexer.PointInfo {
-	pointInfoC := make(chan spatialindexer.PointInfo, 100)
+func (iterator *MockOneHundredPlacesIterator) IteratePlaces() <-chan spatialindexer.PlaceInfo {
+	pointInfoC := make(chan spatialindexer.PlaceInfo, 100)
 
 	go func() {
 		for i := 0; i < 100; i++ {
-			id := (spatialindexer.PointID)(i + 1000)
-			pointInfoC <- spatialindexer.PointInfo{
+			id := (spatialindexer.PlaceID)(i + 1000)
+			pointInfoC <- spatialindexer.PlaceInfo{
 				ID: id,
-				Location: spatialindexer.Location{
+				Location: nav.Location{
 					Lat: 37.398896,
 					Lon: -121.976665,
 				},

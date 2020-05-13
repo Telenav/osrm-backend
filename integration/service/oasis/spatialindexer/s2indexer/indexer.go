@@ -6,13 +6,13 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer/poiloader"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer/placeloader"
 	"github.com/golang/geo/s2"
 	"github.com/golang/glog"
 )
 
-type cellID2PointIDMap map[s2.CellID][]spatialindexer.PointID
-type pointID2LocationMap map[spatialindexer.PointID]spatialindexer.Location
+type cellID2PointIDMap map[s2.CellID][]spatialindexer.PlaceID
+type pointID2LocationMap map[spatialindexer.PlaceID]nav.Location
 
 // S2Indexer provide spatial index ability based on google s2
 type S2Indexer struct {
@@ -33,25 +33,25 @@ func (indexer *S2Indexer) Build(filePath string) *S2Indexer {
 	glog.Info("Start Build S2Indexer.\n")
 	startTime := time.Now()
 
-	records, err := poiloader.LoadData(filePath)
+	records, err := placeloader.LoadData(filePath)
 	if err != nil || len(records) == 0 {
 		glog.Error("Failed to Build S2Indexer.\n")
 		return nil
 	}
 
-	var pointInfos []spatialindexer.PointInfo
+	var pointInfos []spatialindexer.PlaceInfo
 
 	for _, record := range records {
-		pointInfo := spatialindexer.PointInfo{
+		pointInfo := spatialindexer.PlaceInfo{
 			ID: elementID2PointID(record.ID),
-			Location: spatialindexer.Location{
+			Location: nav.Location{
 				Lat: record.Lat,
 				Lon: record.Lon,
 			},
 		}
 		pointInfos = append(pointInfos, pointInfo)
 
-		indexer.pointID2Location[elementID2PointID(record.ID)] = spatialindexer.Location{
+		indexer.pointID2Location[elementID2PointID(record.ID)] = nav.Location{
 			Lat: record.Lat,
 			Lon: record.Lon,
 		}
@@ -88,31 +88,31 @@ func (indexer *S2Indexer) Dump(folderPath string) {
 	glog.Infof("Finished S2Indexer's Dump() to folder %s.\n", folderPath)
 }
 
-// IteratePoints returns PointInfo in channel
-// It implements interface of PointsIterator
-func (indexer *S2Indexer) IteratePoints() <-chan spatialindexer.PointInfo {
-	pointsC := make(chan spatialindexer.PointInfo, len(indexer.pointID2Location))
+// IteratePlaces returns PlaceInfo in channel
+// It implements interface of PlacesIterator
+func (indexer *S2Indexer) IteratePlaces() <-chan spatialindexer.PlaceInfo {
+	placesC := make(chan spatialindexer.PlaceInfo, len(indexer.pointID2Location))
 	go func() {
 		for pointID, location := range indexer.pointID2Location {
-			pointsC <- spatialindexer.PointInfo{
+			placesC <- spatialindexer.PlaceInfo{
 				ID:       pointID,
 				Location: location,
 			}
 		}
-		close(pointsC)
+		close(placesC)
 	}()
 
-	return pointsC
+	return placesC
 }
 
-// FindNearByPointIDs returns nearby points for given center and conditions
-func (indexer *S2Indexer) FindNearByPointIDs(center spatialindexer.Location, radius float64, limitCount int) []*spatialindexer.PointInfo {
+// FindNearByPlaceIDs returns nearby places for given center and conditions
+func (indexer *S2Indexer) FindNearByPlaceIDs(center nav.Location, radius float64, limitCount int) []*spatialindexer.PlaceInfo {
 	if !indexer.isInitialized() {
 		glog.Warning("S2Indexer is empty, try to Build() with correct input file first.\n")
 		return nil
 	}
 
-	results := queryNearByPoints(indexer, center, radius)
+	results := queryNearByPlaces(indexer, center, radius)
 	if limitCount != spatialindexer.UnlimitedCount && len(results) > limitCount {
 		results = results[:limitCount]
 	}
@@ -128,7 +128,7 @@ func (indexer *S2Indexer) GetLocation(placeID string) *nav.Location {
 		glog.Errorf("Incorrect station ID passed to NearByStationQuery %+v, got error %#v", placeID, err)
 		return nil
 	}
-	if location, ok := indexer.pointID2Location[(spatialindexer.PointID)(id)]; ok {
+	if location, ok := indexer.pointID2Location[(spatialindexer.PlaceID)(id)]; ok {
 		return &nav.Location{
 			Lat: location.Lat,
 			Lon: location.Lon,
@@ -139,12 +139,12 @@ func (indexer *S2Indexer) GetLocation(placeID string) *nav.Location {
 }
 
 //TODO codebear801 This function should be replaced by GetLocation
-func (indexer S2Indexer) getPointLocationByPointID(id spatialindexer.PointID) (spatialindexer.Location, bool) {
+func (indexer S2Indexer) getPointLocationByPointID(id spatialindexer.PlaceID) (nav.Location, bool) {
 	location, ok := indexer.pointID2Location[id]
 	return location, ok
 }
 
-func (indexer S2Indexer) getPointIDsByS2CellID(cellid s2.CellID) ([]spatialindexer.PointID, bool) {
+func (indexer S2Indexer) getPointIDsByS2CellID(cellid s2.CellID) ([]spatialindexer.PlaceID, bool) {
 	pointIDs, ok := indexer.cellID2PointIDs[cellid]
 	return pointIDs, ok
 }
@@ -153,6 +153,6 @@ func (indexer S2Indexer) isInitialized() bool {
 	return len(indexer.cellID2PointIDs) != 0 && len(indexer.pointID2Location) != 0
 }
 
-func elementID2PointID(id int64) spatialindexer.PointID {
-	return (spatialindexer.PointID)(id)
+func elementID2PointID(id int64) spatialindexer.PlaceID {
+	return (spatialindexer.PlaceID)(id)
 }

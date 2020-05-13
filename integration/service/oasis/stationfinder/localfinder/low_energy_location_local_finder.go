@@ -17,7 +17,7 @@ func newLowEnergyLocationLocalFinder(localFinder spatialindexer.Finder, location
 	obj := &lowEnergyLocationLocalFinder{
 		newBasicLocalFinder(localFinder),
 	}
-	obj.getNearbyChargeStations(spatialindexer.Location{
+	obj.getNearbyChargeStations(nav.Location{
 		Lat: location.Lat,
 		Lon: location.Lon},
 		lowEnergySearchRadius)

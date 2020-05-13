@@ -14,11 +14,11 @@ const minS2Level = 9
 // Level = 20 means average area size is 77.32km2
 const maxS2Level = 20
 
-func build(points []spatialindexer.PointInfo, minLevel, maxLevel int) map[s2.CellID][]spatialindexer.PointID {
-	pointID2CellIDs := make(map[spatialindexer.PointID][]s2.CellID)
-	cellID2PointIDs := make(map[s2.CellID][]spatialindexer.PointID)
+func build(places []spatialindexer.PlaceInfo, minLevel, maxLevel int) map[s2.CellID][]spatialindexer.PlaceID {
+	pointID2CellIDs := make(map[spatialindexer.PlaceID][]s2.CellID)
+	cellID2PointIDs := make(map[s2.CellID][]spatialindexer.PlaceID)
 
-	for _, p := range points {
+	for _, p := range places {
 		leafCellID := s2.CellFromLatLng(s2.LatLngFromDegrees(p.Location.Lat, p.Location.Lon)).ID()
 
 		var cellIDs []s2.CellID
@@ -39,7 +39,7 @@ func build(points []spatialindexer.PointInfo, minLevel, maxLevel int) map[s2.Cel
 	for pointID, cellIDs := range pointID2CellIDs {
 		for _, cellID := range cellIDs {
 			if _, ok := cellID2PointIDs[cellID]; !ok {
-				var pointIDs []spatialindexer.PointID
+				var pointIDs []spatialindexer.PlaceID
 				cellID2PointIDs[cellID] = pointIDs
 			}
 

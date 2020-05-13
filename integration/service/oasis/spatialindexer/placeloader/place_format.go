@@ -1,6 +1,6 @@
-package poiloader
+package placeloader
 
-// Element represent information loaded for point record
+// Element represent information loaded for place record
 type Element struct {
 	ID                int64      `json:"id"`
 	VendorCode        VendorCode `json:"vendor_code"`
@@ -63,7 +63,7 @@ const (
 	Nolp VendorCode = "NOLP"
 )
 
-// CategoryIDGather records aggregate data for certain type of point
+// CategoryIDGather records aggregate data for certain type of place
 type CategoryIDGather struct {
 	Integer *int64
 	String  *string
