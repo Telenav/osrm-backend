@@ -34,6 +34,7 @@ Changes from v10.2.0
   - ADDED package `oasis/selectionstrategy`, move logic related with how to select optimum charge stations into this package [#339](https://github.com/Telenav/osrm-backend/pull/339)
   - CHANGED for integration of pre-generated connectivity data with OASIS service [#339](https://github.com/Telenav/osrm-backend/pull/339)
   - CHANGED for internal refactoring, replace `Location` in `spatialindexer` to nav.Location, replace all name of `point` to `place` [#341](https://github.com/Telenav/osrm-backend/pull/341)
+  - CHANGED for internal refactoring, move package oasis/solution, oasis/osrmhelper and oasis/searchhelper into oasis/internal [#343](https://github.com/Telenav/osrm-backend/pull/343)
   
 - Bugfix:    
   - CHANGED `osrm-ranking` parsing of OSRM route response to compatible with `string` array `annotation/nodes` [#296](https://github.com/Telenav/osrm-backend/pull/296)     
