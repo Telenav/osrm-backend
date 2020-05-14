@@ -4,7 +4,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/connectivitymap"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/solution"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/solution"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 	"github.com/golang/glog"
 )

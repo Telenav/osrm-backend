@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/Telenav/osrm-backend/integration/api/oasis"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmhelper"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/osrmhelper"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/selectionstrategy"
 	"github.com/golang/glog"
 )

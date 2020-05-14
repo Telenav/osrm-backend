@@ -3,8 +3,8 @@ package cloudfinder
 import (
 	"github.com/Telenav/osrm-backend/integration/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/api/search/searchcoordinate"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/searchhelper"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/searchconnector"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/searchhelper"
 )
 
 //@todo: This number need to be adjusted based on charge station profile

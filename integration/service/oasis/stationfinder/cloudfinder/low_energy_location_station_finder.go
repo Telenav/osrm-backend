@@ -3,8 +3,8 @@ package cloudfinder
 import (
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/api/search/searchcoordinate"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/searchhelper"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/searchconnector"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/searchhelper"
 )
 
 // LowEnergyLocationCandidateNumber indicates how much charge station to be searched for low energy point

@@ -6,8 +6,8 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/api/osrm"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/osrmhelper"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmhelper"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 	"github.com/golang/glog"

@@ -8,13 +8,13 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/route"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/haversine"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer/ranker"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationconnquerier"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfinderalg"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationgraph"
+	"github.com/blevesearch/bleve/geo"
 	"github.com/golang/glog"
 
 	"github.com/twpayne/go-polyline"
@@ -119,7 +119,8 @@ func findChargeLocation4Route(route *route.Route, result []*nav.Location, currEn
 
 				tmp := 0.0
 				for i := 0; i < len(coords)-1; i++ {
-					tmp += haversine.GreatCircleDistance(coords[i][0], coords[i][1], coords[i+1][0], coords[i+1][1])
+					// geo.Haversin's unit is kilometer, convert to meter
+					tmp += geo.Haversin(coords[i][1], coords[i][0], coords[i+1][1], coords[i+1][0]) * 1000
 					if currEnergy-tmp < preferLevel {
 						currEnergy = maxRange
 						result = append(result, &nav.Location{
