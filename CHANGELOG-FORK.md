@@ -2,6 +2,10 @@
 # Unreleased
 Changes from v10.3.0      
 - Feature:    
+  - ADDED package `oasis/selectionstrategy`, move logic related with how to select optimum charge stations into this package [#339](https://github.com/Telenav/osrm-backend/pull/339)
+  - CHANGED for integration of pre-generated connectivity data with OASIS service [#339](https://github.com/Telenav/osrm-backend/pull/339)
+  - CHANGED for internal refactoring, replace `Location` in `spatialindexer` to nav.Location, replace all name of `point` to `place` [#341](https://github.com/Telenav/osrm-backend/pull/341)
+  - CHANGED for internal refactoring, move package oasis/solution, oasis/osrmhelper and oasis/searchhelper into oasis/internal [#343](https://github.com/Telenav/osrm-backend/pull/343)
 - Bugfix:    
 - Performance:    
 - Tools:    
@@ -31,10 +35,7 @@ Changes from v10.2.0
   - CHANGED for epsilon of util/floatequals, use different epsilon for float32 compare and float64 compare [#332](https://github.com/Telenav/osrm-backend/issues/332)
   - ADDED interface test for `trafficapplyingmodel` implementation(both `appendspeedonly` and `preferlivetraffic`) [#330](https://github.com/Telenav/osrm-backend/pull/330) 
   - CHANGED for mock objects, hide them in internal/mock package for OASIS service [#334](https://github.com/Telenav/osrm-backend/issues/334)
-  - ADDED package `oasis/selectionstrategy`, move logic related with how to select optimum charge stations into this package [#339](https://github.com/Telenav/osrm-backend/pull/339)
-  - CHANGED for integration of pre-generated connectivity data with OASIS service [#339](https://github.com/Telenav/osrm-backend/pull/339)
-  - CHANGED for internal refactoring, replace `Location` in `spatialindexer` to nav.Location, replace all name of `point` to `place` [#341](https://github.com/Telenav/osrm-backend/pull/341)
-  - CHANGED for internal refactoring, move package oasis/solution, oasis/osrmhelper and oasis/searchhelper into oasis/internal [#343](https://github.com/Telenav/osrm-backend/pull/343)
+
   
 - Bugfix:    
   - CHANGED `osrm-ranking` parsing of OSRM route response to compatible with `string` array `annotation/nodes` [#296](https://github.com/Telenav/osrm-backend/pull/296)     
