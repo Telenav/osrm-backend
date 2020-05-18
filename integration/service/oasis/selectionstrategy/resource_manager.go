@@ -2,6 +2,7 @@ package selectionstrategy
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/Telenav/osrm-backend/integration/service/oasis/connectivitymap"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
@@ -34,6 +35,8 @@ type ResourceMgr struct {
 func NewResourceMgr(osrmBackend, finderType, searchEndpoint, apiKey, apiSignature, dataFolderPath string) (*ResourceMgr, error) {
 	// @todo: need make sure connectivity is on and continues available
 	//        simple request to guarantee server is alive after init
+	startTime := time.Now()
+
 	if len(osrmBackend) == 0 {
 		err := fmt.Errorf("empty osrmBackend end point")
 		return nil, err
@@ -56,6 +59,8 @@ func NewResourceMgr(osrmBackend, finderType, searchEndpoint, apiKey, apiSignatur
 		err := fmt.Errorf("failed to load ConnectivityMap")
 		return nil, err
 	}
+
+	glog.Infof("Initialize OASIS resource manager takes %f seconds.", time.Since(startTime).Seconds())
 
 	return &ResourceMgr{
 		osrmConnector:          osrmconnector.NewOSRMConnector(osrmBackend),

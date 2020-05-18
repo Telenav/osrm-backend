@@ -12,6 +12,7 @@ var flags struct {
 	tnSearchAPIKey       string
 	tnSearchAPISignature string
 	localDataPath        string
+	cpuProfileFile       string
 }
 
 func init() {
@@ -23,4 +24,5 @@ func init() {
 	flag.StringVar(&flags.tnSearchAPIKey, "searchApiKey", "", "API key for TN-Search-backend")
 	flag.StringVar(&flags.tnSearchAPISignature, "searchApiSignature", "", "API Signature for TN-Search-backend")
 	flag.StringVar(&flags.localDataPath, "datapath", "", "Local data path for index data")
+	flag.StringVar(&flags.cpuProfileFile, "cpuprofile", "", "write cpu profile to `file`")
 }

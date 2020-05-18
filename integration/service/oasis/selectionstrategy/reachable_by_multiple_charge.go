@@ -3,6 +3,7 @@ package selectionstrategy
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/api/oasis"
@@ -35,6 +36,8 @@ func GenerateSolutions4MultipleCharge(w http.ResponseWriter, oasisReq *oasis.Req
 }
 
 func generateSolutions4ChargeStationBasedRoute(oasisReq *oasis.Request, resourceMgr *ResourceMgr) []*oasis.Solution {
+	startTime := time.Now()
+
 	targetSolutions := make([]*oasis.Solution, 0, 10)
 	querier := stationconnquerier.New(resourceMgr.spatialIndexerFinder,
 		ranker.CreateRanker(ranker.SimpleRanker, resourceMgr.osrmConnector),
@@ -53,6 +56,7 @@ func generateSolutions4ChargeStationBasedRoute(oasisReq *oasis.Request, resource
 		targetSolutions = append(targetSolutions, targetSolution)
 	}
 
+	glog.Infof("Generate solutions for charge station based routing takes %f seconds.", time.Since(startTime).Seconds())
 	return targetSolutions
 }
 

@@ -2,7 +2,10 @@ package main
 
 import (
 	"flag"
+	"log"
 	"net/http"
+	"os"
+	"runtime/pprof"
 	"strconv"
 
 	"github.com/Telenav/osrm-backend/integration/util/appversion"
@@ -15,6 +18,18 @@ func main() {
 	flag.Parse()
 	appversion.PrintExit()
 	defer glog.Flush()
+
+	if flags.cpuProfileFile != "" {
+		f, err := os.Create(flags.cpuProfileFile)
+		if err != nil {
+			log.Fatal("could not create CPU profile: ", err)
+		}
+		defer f.Close() // error handling omitted for example
+		if err := pprof.StartCPUProfile(f); err != nil {
+			log.Fatal("could not start CPU profile: ", err)
+		}
+		defer pprof.StopCPUProfile()
+	}
 
 	mux := http.NewServeMux()
 
