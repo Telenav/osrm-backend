@@ -264,10 +264,10 @@ var mockedGraph4StationGraph = mockGraph{
 					Energy: 20.0,
 				},
 			},
-			nav.Location{
-				Lat: 0.0,
-				Lon: 0.0,
-			},
+			// nav.Location{
+			// 	Lat: 0.0,
+			// 	Lon: 0.0,
+			// },
 		},
 		// stationfindertype.DestLocationID,
 		{
@@ -275,10 +275,10 @@ var mockedGraph4StationGraph = mockGraph{
 			chargeInfo{
 				targetState: chargingstrategy.State{},
 			},
-			nav.Location{
-				Lat: 6.6,
-				Lon: 6.6,
-			},
+			// nav.Location{
+			// 	Lat: 6.6,
+			// 	Lon: 6.6,
+			// },
 		},
 		// station 1
 		{
@@ -288,10 +288,10 @@ var mockedGraph4StationGraph = mockGraph{
 					Energy: 30.0,
 				},
 			},
-			nav.Location{
-				Lat: 1.1,
-				Lon: 1.1,
-			},
+			// nav.Location{
+			// 	Lat: 1.1,
+			// 	Lon: 1.1,
+			// },
 		},
 		// station 1
 		{
@@ -301,10 +301,10 @@ var mockedGraph4StationGraph = mockGraph{
 					Energy: 40.0,
 				},
 			},
-			nav.Location{
-				Lat: 1.1,
-				Lon: 1.1,
-			},
+			// nav.Location{
+			// 	Lat: 1.1,
+			// 	Lon: 1.1,
+			// },
 		},
 		// station 1
 		{
@@ -314,10 +314,10 @@ var mockedGraph4StationGraph = mockGraph{
 					Energy: 50.0,
 				},
 			},
-			nav.Location{
-				Lat: 1.1,
-				Lon: 1.1,
-			},
+			// nav.Location{
+			// 	Lat: 1.1,
+			// 	Lon: 1.1,
+			// },
 		},
 		// station 2
 		{
@@ -327,10 +327,10 @@ var mockedGraph4StationGraph = mockGraph{
 					Energy: 30.0,
 				},
 			},
-			nav.Location{
-				Lat: 2.2,
-				Lon: 2.2,
-			},
+			// nav.Location{
+			// 	Lat: 2.2,
+			// 	Lon: 2.2,
+			// },
 		},
 		// station 2
 		{
@@ -340,10 +340,10 @@ var mockedGraph4StationGraph = mockGraph{
 					Energy: 40.0,
 				},
 			},
-			nav.Location{
-				Lat: 2.2,
-				Lon: 2.2,
-			},
+			// nav.Location{
+			// 	Lat: 2.2,
+			// 	Lon: 2.2,
+			// },
 		},
 		// station 2
 		{
@@ -353,10 +353,10 @@ var mockedGraph4StationGraph = mockGraph{
 					Energy: 50.0,
 				},
 			},
-			nav.Location{
-				Lat: 2.2,
-				Lon: 2.2,
-			},
+			// nav.Location{
+			// 	Lat: 2.2,
+			// 	Lon: 2.2,
+			// },
 		},
 		// station 3
 		{
@@ -366,10 +366,10 @@ var mockedGraph4StationGraph = mockGraph{
 					Energy: 30.0,
 				},
 			},
-			nav.Location{
-				Lat: 3.3,
-				Lon: 3.3,
-			},
+			// nav.Location{
+			// 	Lat: 3.3,
+			// 	Lon: 3.3,
+			// },
 		},
 		// station 3
 		{
@@ -379,10 +379,10 @@ var mockedGraph4StationGraph = mockGraph{
 					Energy: 40.0,
 				},
 			},
-			nav.Location{
-				Lat: 3.3,
-				Lon: 3.3,
-			},
+			// nav.Location{
+			// 	Lat: 3.3,
+			// 	Lon: 3.3,
+			// },
 		},
 		// station 3
 		{
@@ -392,10 +392,10 @@ var mockedGraph4StationGraph = mockGraph{
 					Energy: 50.0,
 				},
 			},
-			nav.Location{
-				Lat: 3.3,
-				Lon: 3.3,
-			},
+			// nav.Location{
+			// 	Lat: 3.3,
+			// 	Lon: 3.3,
+			// },
 		},
 		// station 4
 		{
@@ -405,10 +405,10 @@ var mockedGraph4StationGraph = mockGraph{
 					Energy: 30.0,
 				},
 			},
-			nav.Location{
-				Lat: 4.4,
-				Lon: 4.4,
-			},
+			// nav.Location{
+			// 	Lat: 4.4,
+			// 	Lon: 4.4,
+			// },
 		},
 		// station 4
 		{
@@ -418,10 +418,10 @@ var mockedGraph4StationGraph = mockGraph{
 					Energy: 40.0,
 				},
 			},
-			nav.Location{
-				Lat: 4.4,
-				Lon: 4.4,
-			},
+			// nav.Location{
+			// 	Lat: 4.4,
+			// 	Lon: 4.4,
+			// },
 		},
 		// station 4
 		{
@@ -431,10 +431,10 @@ var mockedGraph4StationGraph = mockGraph{
 					Energy: 50.0,
 				},
 			},
-			nav.Location{
-				Lat: 4.4,
-				Lon: 4.4,
-			},
+			// nav.Location{
+			// 	Lat: 4.4,
+			// 	Lon: 4.4,
+			// },
 		},
 		// station 5
 		{
@@ -444,10 +444,10 @@ var mockedGraph4StationGraph = mockGraph{
 					Energy: 30.0,
 				},
 			},
-			nav.Location{
-				Lat: 5.5,
-				Lon: 5.5,
-			},
+			// nav.Location{
+			// 	Lat: 5.5,
+			// 	Lon: 5.5,
+			// },
 		},
 		// station 5
 		{
@@ -457,10 +457,10 @@ var mockedGraph4StationGraph = mockGraph{
 					Energy: 40.0,
 				},
 			},
-			nav.Location{
-				Lat: 5.5,
-				Lon: 5.5,
-			},
+			// nav.Location{
+			// 	Lat: 5.5,
+			// 	Lon: 5.5,
+			// },
 		},
 		// station 5
 		{
@@ -470,10 +470,10 @@ var mockedGraph4StationGraph = mockGraph{
 					Energy: 50.0,
 				},
 			},
-			nav.Location{
-				Lat: 5.5,
-				Lon: 5.5,
-			},
+			// nav.Location{
+			// 	Lat: 5.5,
+			// 	Lon: 5.5,
+			// },
 		},
 	},
 	[]string{

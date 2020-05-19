@@ -6,7 +6,7 @@ import (
 )
 
 type logicNodeIdentifier2NodePtr map[logicNodeIdentifier]*node
-type nodeID2NodePtr map[nodeID]*node
+type nodeID2NodePtr []*node
 type nodeID2StationID map[nodeID]string
 
 type nodeContainer struct {
@@ -18,9 +18,9 @@ type nodeContainer struct {
 
 func newNodeContainer() *nodeContainer {
 	return &nodeContainer{
-		logicNode2NodePtr: make(logicNodeIdentifier2NodePtr),
-		id2NodePtr:        make(nodeID2NodePtr),
-		id2StationID:      make(nodeID2StationID),
+		logicNode2NodePtr: make(logicNodeIdentifier2NodePtr, 15000),
+		id2NodePtr:        make(nodeID2NodePtr, 0, 15000),
+		id2StationID:      make(nodeID2StationID, 15000),
 		counter:           0,
 	}
 }
@@ -38,12 +38,10 @@ func (nc *nodeContainer) addNode(stationID string, targetState chargingstrategy.
 				chargeTime:    0.0,
 				targetState:   targetState,
 			},
-			nav.Location{
-				Lat: location.Lat,
-				Lon: location.Lon},
 		}
 		nc.logicNode2NodePtr[key] = n
-		nc.id2NodePtr[n.id] = n
+		//nc.id2NodePtr[n.id] = n
+		nc.id2NodePtr = append(nc.id2NodePtr, n)
 		nc.id2StationID[n.id] = stationID
 		nc.counter++
 
@@ -52,16 +50,18 @@ func (nc *nodeContainer) addNode(stationID string, targetState chargingstrategy.
 }
 
 func (nc *nodeContainer) getNode(id nodeID) *node {
-	if n, ok := nc.id2NodePtr[id]; ok {
-		return n
+	if nc.isNodeVisited(id) {
+		return nc.id2NodePtr[id]
 	}
 
 	return nil
 }
 
 func (nc *nodeContainer) isNodeVisited(id nodeID) bool {
-	_, ok := nc.id2NodePtr[id]
-	return ok
+	if (int)(id) < len(nc.id2NodePtr) && nc.id2NodePtr[id] != nil {
+		return true
+	}
+	return false
 }
 
 func (nc *nodeContainer) stationID(id nodeID) string {

@@ -61,6 +61,11 @@ func (sg *stationGraph) setStartAndEndForGraph(currEnergyLevel, maxEnergyLevel f
 // GenerateChargeSolutions creates charge solutions for staion graph
 func (sg *stationGraph) GenerateChargeSolutions() []*solution.Solution {
 	stationNodes := dijkstra(sg.g, sg.g.StartNodeID(), sg.g.EndNodeID())
+
+	// to be removed
+	//nodeGraph := sg.g.(*nodeGraph)
+	//glog.Infof("+++ len(nodeGraph.adjacentList) = %v, len(nodeGraph.edgeMetric) = %v\n", len(nodeGraph.adjacentList), len(nodeGraph.edgeMetric))
+
 	if nil == stationNodes {
 		glog.Warning("Failed to generate charge stations for stationGraph.\n")
 		return nil
@@ -95,8 +100,8 @@ func (sg *stationGraph) generateSolutionsBasedOnStationCandidates(stationNodes [
 		station.ChargeRange = getChargeInfo(sg.g, stationNodes[i]).targetState.Energy
 		station.ChargeTime = getChargeInfo(sg.g, stationNodes[i]).chargeTime
 		station.Location = nav.Location{
-			Lat: getLocationInfo(sg.g, stationNodes[i]).Lat,
-			Lon: getLocationInfo(sg.g, stationNodes[i]).Lon,
+			Lat: sg.getLocationInfo(sg.g, stationNodes[i]).Lat,
+			Lon: sg.getLocationInfo(sg.g, stationNodes[i]).Lon,
 		}
 		station.StationID = sg.g.StationID(stationNodes[i])
 
@@ -148,14 +153,12 @@ func getChargeInfo(g Graph, n nodeID) chargeInfo {
 	return g.Node(n).chargeInfo
 }
 
-func getLocationInfo(g Graph, n nodeID) nav.Location {
+func (sg *stationGraph) getLocationInfo(g Graph, n nodeID) *nav.Location {
 	if g.Node(n) == nil {
 		glog.Fatalf("While calling getLocationInfo, incorrect nodeID passed into graph %v\n", n)
 	}
 
-	return nav.Location{
-		Lat: g.Node(n).Lat,
-		Lon: g.Node(n).Lon}
+	return sg.querier.GetLocation(sg.g.StationID(g.Node(n).id))
 }
 
 func (sg *stationGraph) isStart(id string) bool {

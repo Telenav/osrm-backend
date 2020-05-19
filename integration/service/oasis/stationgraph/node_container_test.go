@@ -90,10 +90,10 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 						Energy: 10.0,
 					},
 				},
-				nav.Location{
-					Lat: 1.1,
-					Lon: 1.1,
-				},
+				// nav.Location{
+				// 	Lat: 1.1,
+				// 	Lon: 1.1,
+				// },
 			},
 			"station1",
 		},
@@ -105,10 +105,10 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 						Energy: 20.0,
 					},
 				},
-				nav.Location{
-					Lat: 1.1,
-					Lon: 1.1,
-				},
+				// nav.Location{
+				// 	Lat: 1.1,
+				// 	Lon: 1.1,
+				// },
 			},
 			"station1",
 		},
@@ -120,10 +120,10 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 						Energy: 30.0,
 					},
 				},
-				nav.Location{
-					Lat: 1.1,
-					Lon: 1.1,
-				},
+				// nav.Location{
+				// 	Lat: 1.1,
+				// 	Lon: 1.1,
+				// },
 			},
 			"station1",
 		},
@@ -135,10 +135,10 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 						Energy: 10.0,
 					},
 				},
-				nav.Location{
-					Lat: 2.2,
-					Lon: 2.2,
-				},
+				// nav.Location{
+				// 	Lat: 2.2,
+				// 	Lon: 2.2,
+				// },
 			},
 			"station2",
 		},
@@ -150,10 +150,10 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 						Energy: 20.0,
 					},
 				},
-				nav.Location{
-					Lat: 2.2,
-					Lon: 2.2,
-				},
+				// nav.Location{
+				// 	Lat: 2.2,
+				// 	Lon: 2.2,
+				// },
 			},
 			"station2",
 		},
@@ -165,10 +165,10 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 						Energy: 15.0,
 					},
 				},
-				nav.Location{
-					Lat: 3.3,
-					Lon: 3.3,
-				},
+				// nav.Location{
+				// 	Lat: 3.3,
+				// 	Lon: 3.3,
+				// },
 			},
 			"station3",
 		},
@@ -268,10 +268,10 @@ func TestAddDuplicateNodeForNodeContainer(t *testing.T) {
 					Energy: 10.0,
 				},
 			},
-			nav.Location{
-				Lat: 1.1,
-				Lon: 1.1,
-			},
+			// nav.Location{
+			// 	Lat: 1.1,
+			// 	Lon: 1.1,
+			// },
 		},
 		"station1",
 	}

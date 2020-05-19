@@ -25,7 +25,7 @@ func NewNodeGraph(strategy chargingstrategy.Strategy, query connectivitymap.Quer
 	return &nodeGraph{
 		nodeContainer: newNodeContainer(),
 		adjacentList:  make(nodeID2AdjacentNodes),
-		edgeMetric:    make(edgeID2EdgeData),
+		edgeMetric:    make(edgeID2EdgeData, 50000000),
 		startNodeID:   invalidNodeID,
 		endNodeID:     invalidNodeID,
 		strategy:      strategy,
@@ -110,7 +110,7 @@ func (g *nodeGraph) getPhysicalAdjacentNodes(id nodeID) []*connectivitymap.Query
 }
 
 func (g *nodeGraph) createLogicalNodes(from nodeID, toStationID string, toLocation *nav.Location, distance, duration float64) []*node {
-	results := make([]*node, 0, 10)
+	results := make([]*node, 0, 3)
 
 	endNodeID := g.EndNodeID()
 	if toStationID == g.StationID(endNodeID) {
@@ -135,13 +135,23 @@ func (g *nodeGraph) createLogicalNodes(from nodeID, toStationID string, toLocati
 }
 
 func (g *nodeGraph) buildAdjacentList(id nodeID) []nodeID {
-	adjacentNodeIDs := make([]nodeID, 0, 500)
 
 	physicalNodes := g.getPhysicalAdjacentNodes(id)
 	if physicalNodes == nil {
 		glog.Errorf("Failed to build buildAdjacentList.\n")
 		return nil
 	}
+
+	numOfPhysicalNodesNeeded := 0
+	for _, physicalNode := range physicalNodes {
+		// filter nodes which is un-reachable by current energy, nodes are sorted based on distance
+		if !g.Node(id).reachableByDistance(physicalNode.Distance) {
+			break
+		}
+		numOfPhysicalNodesNeeded++
+	}
+	adjacentNodeIDs := make([]nodeID, 0, numOfPhysicalNodesNeeded*3)
+	//adjacentNodeIDs := make([]nodeID, 0, 500)
 
 	for _, physicalNode := range physicalNodes {
 		// filter nodes which is un-reachable by current energy, nodes are sorted based on distance
@@ -157,5 +167,7 @@ func (g *nodeGraph) buildAdjacentList(id nodeID) []nodeID {
 		}
 	}
 
+	// to be removed
+	//glog.Infof("### len(physicalNodes) = %v, len(adjacentNodeIDs) = %v, numOfPhysicalNodesNeeded= %v\n", len(physicalNodes), len(adjacentNodeIDs), numOfPhysicalNodesNeeded*3)
 	return adjacentNodeIDs
 }

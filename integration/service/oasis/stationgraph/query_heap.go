@@ -20,7 +20,7 @@ type queryHeap struct {
 func newQueryHeap() *queryHeap {
 	return &queryHeap{
 		pq: newPriorityQueue(),
-		m:  make(map[nodeID]*queryHeapNodeInfo),
+		m:  make(map[nodeID]*queryHeapNodeInfo, 15000), // change to slice?
 	}
 }
 

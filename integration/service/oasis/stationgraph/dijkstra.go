@@ -18,6 +18,9 @@ func dijkstra(g Graph, start, end nodeID) []nodeID {
 			return nil
 		}
 		if currID == end {
+			// to be removed
+			//glog.Infof("+++  len(queryHeap.m) = %v \n", len(m.m))
+
 			return m.retrieve(currID)
 		}
 
@@ -31,6 +34,8 @@ func dijkstra(g Graph, start, end nodeID) []nodeID {
 			len := g.Edge(currID, targetID).distance
 			t := g.Edge(currID, targetID).duration
 
+			// todo
+			// !g.Node(currID).tooNearToCurrentNode(g.Node(targetID), len)
 			if g.Node(currID).reachableByDistance(len) {
 				chargeTimeNeeded := g.Node(targetID).calcChargeTime(node, len, g.ChargeStrategy())
 				if m.add(targetID, currID, len, chargeTimeNeeded+t) {

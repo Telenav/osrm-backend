@@ -3,7 +3,6 @@ package stationgraph
 import (
 	"math"
 
-	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
 	"github.com/golang/glog"
 )
@@ -17,7 +16,6 @@ type chargeInfo struct {
 type node struct {
 	id nodeID
 	chargeInfo
-	nav.Location
 }
 
 type nodeID uint32
@@ -40,6 +38,11 @@ func newNode() *node {
 // reachableByDistance is used to test whether target distance is reachable by current status
 func (n *node) reachableByDistance(distance float64) bool {
 	return n.targetState.Energy > distance
+}
+
+// targetNode's energy should be bigger than currentNode's energy - distance, otherwise, this charge station could be skipped
+func (n *node) tooNearToCurrentNode(targetNode *node, distance float64) bool {
+	return targetNode.targetState.Energy < n.targetState.Energy-distance
 }
 
 // calcChargeTime calculates time effort needed from enter level to exist level

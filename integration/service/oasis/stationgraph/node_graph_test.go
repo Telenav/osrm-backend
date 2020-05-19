@@ -35,19 +35,19 @@ func TestAddAndGetStartAndEndNodeForNodeGraph(t *testing.T) {
 	}
 
 	startNode := graph.Node(graph.StartNodeID())
-	if !(reflect.DeepEqual(startNode.Lat, expectStartLocation.Lat) &&
-		reflect.DeepEqual(startNode.Lon, expectStartLocation.Lon)) {
-		t.Errorf("Incorrect result for start's location, expect %#v but got %#v.\n", expectStartLocation, startNode)
-	}
+	// if !(reflect.DeepEqual(startNode.Lat, expectStartLocation.Lat) &&
+	// 	reflect.DeepEqual(startNode.Lon, expectStartLocation.Lon)) {
+	// 	t.Errorf("Incorrect result for start's location, expect %#v but got %#v.\n", expectStartLocation, startNode)
+	// }
 	if !reflect.DeepEqual(startNode.chargeInfo.targetState, expectStartChargeState) {
 		t.Errorf("Incorrect result for start's charge state, expect %#v but got %#v.\n", expectStartChargeState, startNode.chargeInfo.targetState)
 	}
 
 	endNode := graph.Node(graph.EndNodeID())
-	if !(reflect.DeepEqual(endNode.Lat, expectEndLocation.Lat) &&
-		reflect.DeepEqual(endNode.Lon, expectEndLocation.Lon)) {
-		t.Errorf("Incorrect result for end's location, expect %#v but got %#v.\n", expectEndLocation, endNode)
-	}
+	// if !(reflect.DeepEqual(endNode.Lat, expectEndLocation.Lat) &&
+	// 	reflect.DeepEqual(endNode.Lon, expectEndLocation.Lon)) {
+	// 	t.Errorf("Incorrect result for end's location, expect %#v but got %#v.\n", expectEndLocation, endNode)
+	// }
 	if !reflect.DeepEqual(endNode.chargeInfo.targetState, expectEndChargeState) {
 		t.Errorf("Incorrect result for end's charge state, expect %#v but got %#v.\n", expectEndChargeState, endNode.chargeInfo.targetState)
 	}
@@ -71,10 +71,10 @@ func TestAdjacentNodesInterfaceForNodeGraph(t *testing.T) {
 					Energy: 60.0,
 				},
 			},
-			nav.Location{
-				Lat: 2.2,
-				Lon: 2.2,
-			},
+			// nav.Location{
+			// 	Lat: 2.2,
+			// 	Lon: 2.2,
+			// },
 		},
 		{
 			2,
@@ -83,10 +83,10 @@ func TestAdjacentNodesInterfaceForNodeGraph(t *testing.T) {
 					Energy: 80.0,
 				},
 			},
-			nav.Location{
-				Lat: 2.2,
-				Lon: 2.2,
-			},
+			// nav.Location{
+			// 	Lat: 2.2,
+			// 	Lon: 2.2,
+			// },
 		},
 		{
 			3,
@@ -95,10 +95,10 @@ func TestAdjacentNodesInterfaceForNodeGraph(t *testing.T) {
 					Energy: 100.0,
 				},
 			},
-			nav.Location{
-				Lat: 2.2,
-				Lon: 2.2,
-			},
+			// nav.Location{
+			// 	Lat: 2.2,
+			// 	Lon: 2.2,
+			// },
 		},
 		{
 			4,
@@ -107,10 +107,10 @@ func TestAdjacentNodesInterfaceForNodeGraph(t *testing.T) {
 					Energy: 60.0,
 				},
 			},
-			nav.Location{
-				Lat: 3.3,
-				Lon: 3.3,
-			},
+			// nav.Location{
+			// 	Lat: 3.3,
+			// 	Lon: 3.3,
+			// },
 		},
 		{
 			5,
@@ -119,10 +119,10 @@ func TestAdjacentNodesInterfaceForNodeGraph(t *testing.T) {
 					Energy: 80.0,
 				},
 			},
-			nav.Location{
-				Lat: 3.3,
-				Lon: 3.3,
-			},
+			// nav.Location{
+			// 	Lat: 3.3,
+			// 	Lon: 3.3,
+			// },
 		},
 		{
 			6,
@@ -131,10 +131,10 @@ func TestAdjacentNodesInterfaceForNodeGraph(t *testing.T) {
 					Energy: 100.0,
 				},
 			},
-			nav.Location{
-				Lat: 3.3,
-				Lon: 3.3,
-			},
+			// nav.Location{
+			// 	Lat: 3.3,
+			// 	Lon: 3.3,
+			// },
 		},
 		{
 			7,
@@ -143,10 +143,10 @@ func TestAdjacentNodesInterfaceForNodeGraph(t *testing.T) {
 					Energy: 60.0,
 				},
 			},
-			nav.Location{
-				Lat: 4.4,
-				Lon: 4.4,
-			},
+			// nav.Location{
+			// 	Lat: 4.4,
+			// 	Lon: 4.4,
+			// },
 		},
 		{
 			8,
@@ -155,10 +155,10 @@ func TestAdjacentNodesInterfaceForNodeGraph(t *testing.T) {
 					Energy: 80.0,
 				},
 			},
-			nav.Location{
-				Lat: 4.4,
-				Lon: 4.4,
-			},
+			// nav.Location{
+			// 	Lat: 4.4,
+			// 	Lon: 4.4,
+			// },
 		},
 		{
 			9,
@@ -167,10 +167,10 @@ func TestAdjacentNodesInterfaceForNodeGraph(t *testing.T) {
 					Energy: 100.0,
 				},
 			},
-			nav.Location{
-				Lat: 4.4,
-				Lon: 4.4,
-			},
+			// nav.Location{
+			// 	Lat: 4.4,
+			// 	Lon: 4.4,
+			// },
 		},
 	}
 

@@ -22,10 +22,10 @@ func newMockGraph1() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 0.0,
-					Lon: 0.0,
-				},
+				// nav.Location{
+				// 	Lat: 0.0,
+				// 	Lon: 0.0,
+				// },
 			},
 			{
 				1,
@@ -34,10 +34,10 @@ func newMockGraph1() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 1.1,
-					Lon: 1.1,
-				},
+				// nav.Location{
+				// 	Lat: 1.1,
+				// 	Lon: 1.1,
+				// },
 			},
 			{
 				2,
@@ -46,10 +46,10 @@ func newMockGraph1() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 2.2,
-					Lon: 2.2,
-				},
+				// nav.Location{
+				// 	Lat: 2.2,
+				// 	Lon: 2.2,
+				// },
 			},
 			{
 				3,
@@ -58,10 +58,10 @@ func newMockGraph1() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 3.3,
-					Lon: 3.3,
-				},
+				// nav.Location{
+				// 	Lat: 3.3,
+				// 	Lon: 3.3,
+				// },
 			},
 			{
 				4,
@@ -70,10 +70,10 @@ func newMockGraph1() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 4.4,
-					Lon: 4.4,
-				},
+				// nav.Location{
+				// 	Lat: 4.4,
+				// 	Lon: 4.4,
+				// },
 			},
 		},
 		[]string{
@@ -135,10 +135,10 @@ func newMockGraph2() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 0.0,
-					Lon: 0.0,
-				},
+				// nav.Location{
+				// 	Lat: 0.0,
+				// 	Lon: 0.0,
+				// },
 			},
 			{
 				1,
@@ -147,10 +147,10 @@ func newMockGraph2() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 1.1,
-					Lon: 1.1,
-				},
+				// nav.Location{
+				// 	Lat: 1.1,
+				// 	Lon: 1.1,
+				// },
 			},
 			{
 				2,
@@ -159,10 +159,10 @@ func newMockGraph2() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 2.2,
-					Lon: 2.2,
-				},
+				// nav.Location{
+				// 	Lat: 2.2,
+				// 	Lon: 2.2,
+				// },
 			},
 			{
 				3,
@@ -171,10 +171,10 @@ func newMockGraph2() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 3.3,
-					Lon: 3.3,
-				},
+				// nav.Location{
+				// 	Lat: 3.3,
+				// 	Lon: 3.3,
+				// },
 			},
 			{
 				4,
@@ -183,10 +183,10 @@ func newMockGraph2() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 4.4,
-					Lon: 4.4,
-				},
+				// nav.Location{
+				// 	Lat: 4.4,
+				// 	Lon: 4.4,
+				// },
 			},
 			{
 				5,
@@ -195,10 +195,10 @@ func newMockGraph2() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 5.5,
-					Lon: 5.5,
-				},
+				// nav.Location{
+				// 	Lat: 5.5,
+				// 	Lon: 5.5,
+				// },
 			},
 			{
 				6,
@@ -207,10 +207,10 @@ func newMockGraph2() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 6.6,
-					Lon: 6.6,
-				},
+				// nav.Location{
+				// 	Lat: 6.6,
+				// 	Lon: 6.6,
+				// },
 			},
 			{
 				7,
@@ -219,10 +219,10 @@ func newMockGraph2() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 7.7,
-					Lon: 7.7,
-				},
+				// nav.Location{
+				// 	Lat: 7.7,
+				// 	Lon: 7.7,
+				// },
 			},
 			{
 				8,
@@ -231,10 +231,10 @@ func newMockGraph2() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 8.8,
-					Lon: 8.8,
-				},
+				// nav.Location{
+				// 	Lat: 8.8,
+				// 	Lon: 8.8,
+				// },
 			},
 		},
 		[]string{
@@ -461,10 +461,10 @@ func newMockGraph3() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 0.0,
-					Lon: 0.0,
-				},
+				// nav.Location{
+				// 	Lat: 0.0,
+				// 	Lon: 0.0,
+				// },
 			},
 			{
 				1,
@@ -473,10 +473,10 @@ func newMockGraph3() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 1.1,
-					Lon: 1.1,
-				},
+				// nav.Location{
+				// 	Lat: 1.1,
+				// 	Lon: 1.1,
+				// },
 			},
 			{
 				2,
@@ -485,10 +485,10 @@ func newMockGraph3() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 2.2,
-					Lon: 2.2,
-				},
+				// nav.Location{
+				// 	Lat: 2.2,
+				// 	Lon: 2.2,
+				// },
 			},
 			{
 				3,
@@ -497,10 +497,10 @@ func newMockGraph3() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 3.3,
-					Lon: 3.3,
-				},
+				// nav.Location{
+				// 	Lat: 3.3,
+				// 	Lon: 3.3,
+				// },
 			},
 			{
 				4,
@@ -509,10 +509,10 @@ func newMockGraph3() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 4.4,
-					Lon: 4.4,
-				},
+				// nav.Location{
+				// 	Lat: 4.4,
+				// 	Lon: 4.4,
+				// },
 			},
 			{
 				5,
@@ -521,10 +521,10 @@ func newMockGraph3() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 5.5,
-					Lon: 5.5,
-				},
+				// nav.Location{
+				// 	Lat: 5.5,
+				// 	Lon: 5.5,
+				// },
 			},
 			{
 				6,
@@ -533,10 +533,10 @@ func newMockGraph3() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 6.6,
-					Lon: 6.6,
-				},
+				// nav.Location{
+				// 	Lat: 6.6,
+				// 	Lon: 6.6,
+				// },
 			},
 			{
 				7,
@@ -545,10 +545,10 @@ func newMockGraph3() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 7.7,
-					Lon: 7.7,
-				},
+				// nav.Location{
+				// 	Lat: 7.7,
+				// 	Lon: 7.7,
+				// },
 			},
 			{
 				8,
@@ -557,10 +557,10 @@ func newMockGraph3() Graph {
 						Energy: 999,
 					},
 				},
-				nav.Location{
-					Lat: 8.8,
-					Lon: 8.8,
-				},
+				// nav.Location{
+				// 	Lat: 8.8,
+				// 	Lon: 8.8,
+				// },
 			},
 		},
 		[]string{
@@ -788,10 +788,10 @@ func newMockGraph4() Graph {
 						Energy: 16,
 					},
 				},
-				nav.Location{
-					Lat: 0.0,
-					Lon: 0.0,
-				},
+				// nav.Location{
+				// 	Lat: 0.0,
+				// 	Lon: 0.0,
+				// },
 			},
 			{
 				1,
@@ -800,10 +800,10 @@ func newMockGraph4() Graph {
 						Energy: 16,
 					},
 				},
-				nav.Location{
-					Lat: 1.1,
-					Lon: 1.1,
-				},
+				// nav.Location{
+				// 	Lat: 1.1,
+				// 	Lon: 1.1,
+				// },
 			},
 			{
 				2,
@@ -812,10 +812,10 @@ func newMockGraph4() Graph {
 						Energy: 16,
 					},
 				},
-				nav.Location{
-					Lat: 2.2,
-					Lon: 2.2,
-				},
+				// nav.Location{
+				// 	Lat: 2.2,
+				// 	Lon: 2.2,
+				// },
 			},
 			{
 				3,
@@ -824,10 +824,10 @@ func newMockGraph4() Graph {
 						Energy: 16,
 					},
 				},
-				nav.Location{
-					Lat: 3.3,
-					Lon: 3.3,
-				},
+				// nav.Location{
+				// 	Lat: 3.3,
+				// 	Lon: 3.3,
+				// },
 			},
 			{
 				4,
@@ -836,10 +836,10 @@ func newMockGraph4() Graph {
 						Energy: 16,
 					},
 				},
-				nav.Location{
-					Lat: 4.4,
-					Lon: 4.4,
-				},
+				// nav.Location{
+				// 	Lat: 4.4,
+				// 	Lon: 4.4,
+				// },
 			},
 			{
 				5,
@@ -848,10 +848,10 @@ func newMockGraph4() Graph {
 						Energy: 16,
 					},
 				},
-				nav.Location{
-					Lat: 5.5,
-					Lon: 5.5,
-				},
+				// nav.Location{
+				// 	Lat: 5.5,
+				// 	Lon: 5.5,
+				// },
 			},
 			{
 				6,
@@ -860,10 +860,10 @@ func newMockGraph4() Graph {
 						Energy: 16,
 					},
 				},
-				nav.Location{
-					Lat: 6.6,
-					Lon: 6.6,
-				},
+				// nav.Location{
+				// 	Lat: 6.6,
+				// 	Lon: 6.6,
+				// },
 			},
 			{
 				7,
@@ -872,10 +872,10 @@ func newMockGraph4() Graph {
 						Energy: 16,
 					},
 				},
-				nav.Location{
-					Lat: 7.7,
-					Lon: 7.7,
-				},
+				// nav.Location{
+				// 	Lat: 7.7,
+				// 	Lon: 7.7,
+				// },
 			},
 			{
 				8,
@@ -884,10 +884,10 @@ func newMockGraph4() Graph {
 						Energy: 0,
 					},
 				},
-				nav.Location{
-					Lat: 8.8,
-					Lon: 8.8,
-				},
+				// nav.Location{
+				// 	Lat: 8.8,
+				// 	Lon: 8.8,
+				// },
 			},
 		},
 		[]string{
