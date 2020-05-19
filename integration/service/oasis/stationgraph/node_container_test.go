@@ -181,7 +181,7 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 	nc := newNodeContainer()
 
 	for i := 0; i < len(input); i++ {
-		tmpNode := nc.addNode(input[i].stationID, input[i].chargeState, input[i].location)
+		tmpNode := nc.addNode(input[i].stationID, input[i].chargeState /*, input[i].location*/)
 
 		if !reflect.DeepEqual(tmpNode, expect[i].n) {
 			t.Errorf("Calling nodeContainer's addNode() generate incorrect result, expect %#v but got %#v.\n", expect[i].n, tmpNode)
@@ -279,7 +279,7 @@ func TestAddDuplicateNodeForNodeContainer(t *testing.T) {
 	nc := newNodeContainer()
 
 	for i := 0; i < len(input); i++ {
-		tmpNode := nc.addNode(input[i].stationID, input[i].chargeState, input[i].location)
+		tmpNode := nc.addNode(input[i].stationID, input[i].chargeState /*, input[i].location*/)
 
 		if !reflect.DeepEqual(tmpNode, expect.n) {
 			t.Errorf("Calling nodeContainer's addNode() generate incorrect result, expect %#v but got %#v.\n", expect.n, tmpNode)

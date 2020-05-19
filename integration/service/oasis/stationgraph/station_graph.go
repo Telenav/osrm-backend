@@ -45,15 +45,11 @@ func (sg *stationGraph) setStartAndEndForGraph(currEnergyLevel, maxEnergyLevel f
 		chargingstrategy.State{
 			Energy: currEnergyLevel,
 		},
-		nav.Location{
-			Lat: startLocation.Lat,
-			Lon: startLocation.Lon})
+		startLocation)
 
 	sg.g = sg.g.SetEnd(stationfindertype.DestLocationID,
 		chargingstrategy.State{},
-		nav.Location{
-			Lat: endLocation.Lat,
-			Lon: endLocation.Lon})
+		endLocation)
 
 	return true
 }

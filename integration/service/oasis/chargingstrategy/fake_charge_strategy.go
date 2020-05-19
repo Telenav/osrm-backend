@@ -13,7 +13,7 @@ type fakeChargeStrategy struct {
 	costFrom60PercentTo80Percent  float64
 	costFrom60PercentTo100Percent float64
 	costFrom80PercentTo100Percent float64
-	stateArray                    []State
+	stateCandidates               []State
 }
 
 // NewFakeChargingStrategy creates fake charge strategy
@@ -24,6 +24,17 @@ func NewFakeChargingStrategy(maxEnergyLevel float64) *fakeChargeStrategy {
 	costFrom60PercentTo80Percent := 3600.0
 	costFrom60PercentTo100Percent := 10800.0
 	costFrom80PercentTo100Percent := 7200.0
+	stateCandidates := []State{
+		{
+			Energy: sixtyPercentOFMaxEnergy,
+		},
+		{
+			Energy: eightyPercentOfMaxEnergy,
+		},
+		{
+			Energy: maxEnergyLevel,
+		},
+	}
 
 	return &fakeChargeStrategy{
 		maxEnergyLevel:                maxEnergyLevel,
@@ -32,17 +43,7 @@ func NewFakeChargingStrategy(maxEnergyLevel float64) *fakeChargeStrategy {
 		costFrom60PercentTo80Percent:  costFrom60PercentTo80Percent,
 		costFrom60PercentTo100Percent: costFrom60PercentTo100Percent,
 		costFrom80PercentTo100Percent: costFrom80PercentTo100Percent,
-		stateArray: []State{
-			{
-				Energy: sixtyPercentOFMaxEnergy,
-			},
-			{
-				Energy: eightyPercentOfMaxEnergy,
-			},
-			{
-				Energy: maxEnergyLevel,
-			},
-		},
+		stateCandidates:               stateCandidates,
 	}
 }
 
@@ -50,7 +51,7 @@ func NewFakeChargingStrategy(maxEnergyLevel float64) *fakeChargeStrategy {
 // - Influence of returning candidate with no charge time and additional energy
 // CreateChargingStates returns different charging strategy
 func (f *fakeChargeStrategy) CreateChargingStates() []State {
-	return f.stateArray
+	return f.stateCandidates
 }
 
 var noNeedChargeCost = ChargingCost{
@@ -116,6 +117,5 @@ func (f *fakeChargeStrategy) EvaluateCost(arrivalEnergy float64, targetState Sta
 		}
 	}
 
-	//glog.Fatalf("Invalid charging state %#v, arrivalEnergy = %v\n", targetState, arrivalEnergy)
 	return noNeedChargeCost
 }

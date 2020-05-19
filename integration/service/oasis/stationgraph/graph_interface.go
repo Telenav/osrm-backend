@@ -19,10 +19,10 @@ type Graph interface {
 	Edge(from, to nodeID) *edgeMetric
 
 	// SetStart generates start node for the graph
-	SetStart(stationID string, targetState chargingstrategy.State, location nav.Location) Graph
+	SetStart(stationID string, targetState chargingstrategy.State, location *nav.Location) Graph
 
 	// SetEnd generates end node for the graph
-	SetEnd(stationID string, targetState chargingstrategy.State, location nav.Location) Graph
+	SetEnd(stationID string, targetState chargingstrategy.State, location *nav.Location) Graph
 
 	// StartNodeID returns start node's ID for given graph
 	StartNodeID() nodeID

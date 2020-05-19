@@ -1,7 +1,6 @@
 package stationgraph
 
 import (
-	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
 )
 
@@ -25,7 +24,7 @@ func newNodeContainer() *nodeContainer {
 	}
 }
 
-func (nc *nodeContainer) addNode(stationID string, targetState chargingstrategy.State, location nav.Location) *node {
+func (nc *nodeContainer) addNode(stationID string, targetState chargingstrategy.State) *node {
 	key := logicNodeIdentifier{stationID, targetState}
 
 	if n, ok := nc.logicNode2NodePtr[key]; ok {

@@ -67,15 +67,15 @@ func (g *nodeGraph) Edge(from, to nodeID) *edgeMetric {
 }
 
 // SetStart generates start node for the nodeGraph
-func (g *nodeGraph) SetStart(stationID string, targetState chargingstrategy.State, location nav.Location) Graph {
-	n := g.nodeContainer.addNode(stationID, targetState, location)
+func (g *nodeGraph) SetStart(stationID string, targetState chargingstrategy.State, location *nav.Location) Graph {
+	n := g.nodeContainer.addNode(stationID, targetState)
 	g.startNodeID = n.id
 	return g
 }
 
 // SetEnd generates end node for the nodeGraph
-func (g *nodeGraph) SetEnd(stationID string, targetState chargingstrategy.State, location nav.Location) Graph {
-	n := g.nodeContainer.addNode(stationID, targetState, location)
+func (g *nodeGraph) SetEnd(stationID string, targetState chargingstrategy.State, location *nav.Location) Graph {
+	n := g.nodeContainer.addNode(stationID, targetState)
 	g.endNodeID = n.id
 	return g
 }
@@ -122,9 +122,7 @@ func (g *nodeGraph) createLogicalNodes(from nodeID, toStationID string, toLocati
 	}
 
 	for _, state := range g.strategy.CreateChargingStates() {
-		n := g.nodeContainer.addNode(toStationID, state, nav.Location{
-			Lat: toLocation.Lat,
-			Lon: toLocation.Lon})
+		n := g.nodeContainer.addNode(toStationID, state)
 		results = append(results, n)
 
 		g.edgeMetric[edgeID{from, n.id}] = &edgeMetric{

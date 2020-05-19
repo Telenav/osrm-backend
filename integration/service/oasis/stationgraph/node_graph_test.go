@@ -15,11 +15,11 @@ func TestAddAndGetStartAndEndNodeForNodeGraph(t *testing.T) {
 	graph := NewNodeGraph(nil, nil)
 
 	expectStartChargeState := chargingstrategy.State{Energy: 10.0}
-	expectStartLocation := nav.Location{
+	expectStartLocation := &nav.Location{
 		Lat: 33.33,
 		Lon: -122.22}
 	expectEndChargeState := chargingstrategy.State{}
-	expectEndLocation := nav.Location{
+	expectEndLocation := &nav.Location{
 		Lat: 34.44,
 		Lon: -124.44}
 
@@ -269,7 +269,7 @@ func generateMockNodeGraph() Graph {
 	graph := NewNodeGraph(strategy, querier)
 
 	origLocation := querier.GetLocation(testStationID1)
-	graph.SetStart(testStationID1, chargingstrategy.State{Energy: currEnergyLevel}, nav.Location{Lat: origLocation.Lat, Lon: origLocation.Lon})
+	graph.SetStart(testStationID1, chargingstrategy.State{Energy: currEnergyLevel}, &nav.Location{Lat: origLocation.Lat, Lon: origLocation.Lon})
 
 	return graph
 }

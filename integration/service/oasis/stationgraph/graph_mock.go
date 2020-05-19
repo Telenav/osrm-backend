@@ -1136,12 +1136,12 @@ func (graph *mockGraph) Edge(from, to nodeID) *edgeMetric {
 }
 
 // SetStart generates start node for the graph
-func (graph *mockGraph) SetStart(stationID string, targetState chargingstrategy.State, location nav.Location) Graph {
+func (graph *mockGraph) SetStart(stationID string, targetState chargingstrategy.State, location *nav.Location) Graph {
 	return graph
 }
 
 // SetEnd generates end node for the graph
-func (graph *mockGraph) SetEnd(stationID string, targetState chargingstrategy.State, location nav.Location) Graph {
+func (graph *mockGraph) SetEnd(stationID string, targetState chargingstrategy.State, location *nav.Location) Graph {
 	return graph
 }
 
