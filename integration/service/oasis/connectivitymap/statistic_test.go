@@ -3,6 +3,8 @@ package connectivitymap
 import (
 	"reflect"
 	"testing"
+
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 )
 
 var fakeDistanceLimit float64 = 123
@@ -70,99 +72,123 @@ fakeID2NearByIDsMap2 represents following station graph:
      1(Distance: 12, Duration: 12),
 */
 var fakeID2NearByIDsMap2 = ID2NearByIDsMap{
-	1: []IDAndWeight{
+	1: []*common.RankedPlaceInfo{
 		{
-			ID: 2,
-			Weight: Weight{
+			PlaceInfo: common.PlaceInfo{
+				ID: 2,
+			},
+			Weight: &common.Weight{
 				Distance: 3,
 				Duration: 3,
 			},
 		},
 		{
-			ID: 5,
-			Weight: Weight{
+			PlaceInfo: common.PlaceInfo{
+				ID: 5,
+			},
+			Weight: &common.Weight{
 				Distance: 4,
 				Duration: 4,
 			},
 		},
 		{
-			ID: 7,
-			Weight: Weight{
+			PlaceInfo: common.PlaceInfo{
+				ID: 7,
+			},
+			Weight: &common.Weight{
 				Distance: 6,
 				Duration: 61,
 			},
 		},
 		{
-			ID: 8,
-			Weight: Weight{
+			PlaceInfo: common.PlaceInfo{
+				ID: 8,
+			},
+			Weight: &common.Weight{
 				Distance: 12,
 				Duration: 12,
 			},
 		},
 	},
 
-	2: []IDAndWeight{
+	2: []*common.RankedPlaceInfo{
 		{
-			ID: 1,
-			Weight: Weight{
+			PlaceInfo: common.PlaceInfo{
+				ID: 1,
+			},
+			Weight: &common.Weight{
 				Distance: 3,
 				Duration: 3,
 			},
 		},
 		{
-			ID: 7,
-			Weight: Weight{
+			PlaceInfo: common.PlaceInfo{
+				ID: 7,
+			},
+			Weight: &common.Weight{
 				Distance: 23,
 				Duration: 23,
 			},
 		},
 	},
 
-	5: []IDAndWeight{
+	5: []*common.RankedPlaceInfo{
 		{
-			ID: 1,
-			Weight: Weight{
+			PlaceInfo: common.PlaceInfo{
+				ID: 1,
+			},
+			Weight: &common.Weight{
 				Distance: 4,
 				Duration: 4,
 			},
 		},
 		{
-			ID: 8,
-			Weight: Weight{
+			PlaceInfo: common.PlaceInfo{
+				ID: 8,
+			},
+			Weight: &common.Weight{
 				Distance: 5,
 				Duration: 5,
 			},
 		},
 	},
 
-	7: []IDAndWeight{
+	7: []*common.RankedPlaceInfo{
 		{
-			ID: 1,
-			Weight: Weight{
+			PlaceInfo: common.PlaceInfo{
+				ID: 1,
+			},
+			Weight: &common.Weight{
 				Distance: 6,
 				Duration: 6,
 			},
 		},
 		{
-			ID: 2,
-			Weight: Weight{
+			PlaceInfo: common.PlaceInfo{
+				ID: 2,
+			},
+			Weight: &common.Weight{
 				Distance: 23,
 				Duration: 23,
 			},
 		},
 	},
 
-	8: []IDAndWeight{
+	8: []*common.RankedPlaceInfo{
 		{
-			ID: 5,
-			Weight: Weight{
+			PlaceInfo: common.PlaceInfo{
+				ID: 5,
+			},
+			Weight: &common.Weight{
 				Distance: 5,
 				Duration: 5,
 			},
 		},
 		{
-			ID: 1,
-			Weight: Weight{
+			PlaceInfo: common.PlaceInfo{
+				ID: 1,
+			},
+			Weight: &common.Weight{
 				Distance: 12,
 				Duration: 12,
 			},

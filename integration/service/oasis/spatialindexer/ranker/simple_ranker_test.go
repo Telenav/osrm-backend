@@ -5,76 +5,82 @@ import (
 	"testing"
 
 	"github.com/Telenav/osrm-backend/integration/api/nav"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 )
 
 func TestRankerInterfaceViaSimpleRanker(t *testing.T) {
 	cases := []struct {
 		center  nav.Location
-		targets []*spatialindexer.PlaceInfo
-		expect  []*spatialindexer.RankedPlaceInfo
+		targets []*common.PlaceInfo
+		expect  []*common.RankedPlaceInfo
 	}{
 		{
 			center: nav.Location{
 				Lat: 37.398973,
 				Lon: -121.976633,
 			},
-			targets: []*spatialindexer.PlaceInfo{
+			targets: []*common.PlaceInfo{
 				{
 					ID: 1,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 37.388840,
 						Lon: -121.981736,
 					},
 				},
 				{
 					ID: 2,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 37.375515,
 						Lon: -121.942812,
 					},
 				},
 				{
 					ID: 3,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 37.336954,
 						Lon: -121.861624,
 					},
 				},
 			},
-			expect: []*spatialindexer.RankedPlaceInfo{
+			expect: []*common.RankedPlaceInfo{
 				{
-					PlaceInfo: spatialindexer.PlaceInfo{
+					PlaceInfo: common.PlaceInfo{
 						ID: 1,
-						Location: nav.Location{
+						Location: &nav.Location{
 							Lat: 37.388840,
 							Lon: -121.981736,
 						},
 					},
-					Distance: 1213.445757354474,
-					Duration: 54.65971879975108,
+					Weight: &common.Weight{
+						Distance: 1213.445757354474,
+						Duration: 54.65971879975108,
+					},
 				},
 				{
-					PlaceInfo: spatialindexer.PlaceInfo{
+					PlaceInfo: common.PlaceInfo{
 						ID: 2,
-						Location: nav.Location{
+						Location: &nav.Location{
 							Lat: 37.375515,
 							Lon: -121.942812,
 						},
 					},
-					Distance: 3965.986474110687,
-					Duration: 178.64803937435528,
+					Weight: &common.Weight{
+						Distance: 3965.986474110687,
+						Duration: 178.64803937435528,
+					},
 				},
 				{
-					PlaceInfo: spatialindexer.PlaceInfo{
+					PlaceInfo: common.PlaceInfo{
 						ID: 3,
-						Location: nav.Location{
+						Location: &nav.Location{
 							Lat: 37.336954,
 							Lon: -121.861624,
 						},
 					},
-					Distance: 12281.070927352637,
-					Duration: 553.2013931239927,
+					Weight: &common.Weight{
+						Distance: 12281.070927352637,
+						Duration: 553.2013931239927,
+					},
 				},
 			},
 		},

@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/Telenav/osrm-backend/integration/api/nav"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 	"github.com/golang/glog"
@@ -14,7 +15,7 @@ const defaultChargeStaionChannelSize = 500
 
 type basicLocalFinder struct {
 	localFinder spatialindexer.Finder
-	placesInfo  []*spatialindexer.PlaceInfo
+	placesInfo  []*common.PlaceInfo
 	requests    chan chan *stationfindertype.ChargeStationInfo
 	stop        chan bool
 }

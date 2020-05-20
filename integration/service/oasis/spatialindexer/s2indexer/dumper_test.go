@@ -6,20 +6,20 @@ import (
 	"testing"
 
 	"github.com/Telenav/osrm-backend/integration/api/nav"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 	"github.com/golang/geo/s2"
 )
 
 func TestDumper(t *testing.T) {
 	cases := []S2Indexer{
 		{
-			cellID2PointIDs: map[s2.CellID][]spatialindexer.PlaceID{
+			cellID2PointIDs: map[s2.CellID][]common.PlaceID{
 				9263834064756932608: {1, 2, 3}, // 4/0010133
 				9263851656942977024: {1},       // 4/00101332
 				9263847258896465920: {2},       // 4/001013321
 				9263843960361582592: {3},       // 4/0010133210
 			},
-			pointID2Location: map[spatialindexer.PlaceID]nav.Location{
+			pointID2Location: map[common.PlaceID]nav.Location{
 				1: {
 					Lat: 11.11,
 					Lon: 11.11,

@@ -2,7 +2,7 @@ package s2indexer
 
 import (
 	"github.com/Telenav/osrm-backend/integration/api/nav"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 	"github.com/golang/geo/s1"
 	"github.com/golang/geo/s2"
 	"github.com/golang/glog"
@@ -25,8 +25,8 @@ func queryNearByS2Cells(point nav.Location, radiusInMeters float64) []s2.CellID 
 	return ([]s2.CellID)(cellUnion)
 }
 
-func queryNearByPlaces(indexer *S2Indexer, point nav.Location, radius float64) []*spatialindexer.PlaceInfo {
-	var result []*spatialindexer.PlaceInfo
+func queryNearByPlaces(indexer *S2Indexer, point nav.Location, radius float64) []*common.PlaceInfo {
+	var result []*common.PlaceInfo
 
 	cellIDs := queryNearByS2Cells(point, radius)
 
@@ -43,9 +43,9 @@ func queryNearByPlaces(indexer *S2Indexer, point nav.Location, radius float64) [
 				continue
 			}
 
-			result = append(result, &spatialindexer.PlaceInfo{
+			result = append(result, &common.PlaceInfo{
 				ID:       pointID,
-				Location: location,
+				Location: &location,
 			})
 		}
 	}

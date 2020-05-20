@@ -1,24 +1,13 @@
 package connectivitymap
 
 import (
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
 	"github.com/golang/glog"
 )
 
-// Weight represent weight information
-type Weight struct {
-	Distance float64
-	Duration float64
-}
-
-// IDAndWeight wraps ID and weight information
-type IDAndWeight struct {
-	ID     spatialindexer.PlaceID
-	Weight Weight
-}
-
 // ID2NearByIDsMap is a mapping between ID and its nearby IDs
-type ID2NearByIDsMap map[spatialindexer.PlaceID][]IDAndWeight
+type ID2NearByIDsMap map[common.PlaceID][]*common.RankedPlaceInfo
 
 // Connectivity Map used to query connectivity for given placeID
 type ConnectivityMap struct {
@@ -76,7 +65,7 @@ func (cm *ConnectivityMap) Load(folderPath string) *ConnectivityMap {
 
 // QueryConnectivity answers connectivity query for given placeID
 // Return true and IDAndWeight array for given placeID, otherwise false and nil
-func (cm *ConnectivityMap) QueryConnectivity(placeID spatialindexer.PlaceID) ([]IDAndWeight, bool) {
+func (cm *ConnectivityMap) QueryConnectivity(placeID common.PlaceID) ([]*common.RankedPlaceInfo, bool) {
 	if result, ok := cm.id2nearByIDs[placeID]; ok {
 		return result, true
 	}

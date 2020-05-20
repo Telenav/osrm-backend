@@ -2,7 +2,7 @@ package ranker
 
 import (
 	"github.com/Telenav/osrm-backend/integration/api/nav"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 	"github.com/blevesearch/bleve/geo"
 	"github.com/golang/glog"
 )
@@ -11,13 +11,13 @@ import (
 // 22.2 m/s = 50 miles/hour
 const defaultSpeed = 22.2
 
-func rankPointsByGreatCircleDistanceToCenter(center nav.Location, targets []*spatialindexer.PlaceInfo) []*spatialindexer.RankedPlaceInfo {
+func rankPointsByGreatCircleDistanceToCenter(center nav.Location, targets []*common.PlaceInfo) []*common.RankedPlaceInfo {
 	if len(targets) == 0 {
 		glog.Warningf("When try to rankPointsByGreatCircleDistanceToCenter, input array is empty, center = %+v\n", center)
 		return nil
 	}
 
-	pointWithDistanceC := make(chan *spatialindexer.RankedPlaceInfo, len(targets))
+	pointWithDistanceC := make(chan *common.RankedPlaceInfo, len(targets))
 	go func() {
 		defer close(pointWithDistanceC)
 
@@ -25,13 +25,15 @@ func rankPointsByGreatCircleDistanceToCenter(center nav.Location, targets []*spa
 			// geo.Haversin's unit is kilometer, convert to meter
 			length := geo.Haversin(center.Lon, center.Lat, p.Location.Lon, p.Location.Lat) * 1000
 
-			pointWithDistanceC <- &spatialindexer.RankedPlaceInfo{
-				PlaceInfo: spatialindexer.PlaceInfo{
+			pointWithDistanceC <- &common.RankedPlaceInfo{
+				PlaceInfo: common.PlaceInfo{
 					ID:       p.ID,
 					Location: p.Location,
 				},
-				Distance: length,
-				Duration: length / defaultSpeed,
+				Weight: &common.Weight{
+					Distance: length,
+					Duration: length / defaultSpeed,
+				},
 			}
 		}
 	}()

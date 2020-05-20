@@ -11,14 +11,14 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/api/osrm"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/table"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
 )
 
 func TestGenerateTableRequest(t *testing.T) {
 	cases := []struct {
 		center     nav.Location
-		targets    []*spatialindexer.PlaceInfo
+		targets    []*common.PlaceInfo
 		startIndex int
 		endIndex   int
 		expect     *table.Request
@@ -29,38 +29,38 @@ func TestGenerateTableRequest(t *testing.T) {
 				Lat: 0,
 				Lon: 0,
 			},
-			targets: []*spatialindexer.PlaceInfo{
+			targets: []*common.PlaceInfo{
 				{
 					ID: 1,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 1.1,
 						Lon: 1.1,
 					},
 				},
 				{
 					ID: 2,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 2.2,
 						Lon: 2.2,
 					},
 				},
 				{
 					ID: 3,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 3.3,
 						Lon: 3.3,
 					},
 				},
 				{
 					ID: 4,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 4.4,
 						Lon: 4.4,
 					},
 				},
 				{
 					ID: 5,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 5.5,
 						Lon: 5.5,
 					},
@@ -117,38 +117,38 @@ func TestGenerateTableRequest(t *testing.T) {
 				Lat: 0,
 				Lon: 0,
 			},
-			targets: []*spatialindexer.PlaceInfo{
+			targets: []*common.PlaceInfo{
 				{
 					ID: 1,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 1.1,
 						Lon: 1.1,
 					},
 				},
 				{
 					ID: 2,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 2.2,
 						Lon: 2.2,
 					},
 				},
 				{
 					ID: 3,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 3.3,
 						Lon: 3.3,
 					},
 				},
 				{
 					ID: 4,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 4.4,
 						Lon: 4.4,
 					},
 				},
 				{
 					ID: 5,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 5.5,
 						Lon: 5.5,
 					},
@@ -210,124 +210,136 @@ func TestGenerateTableRequest(t *testing.T) {
 func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 	cases := []struct {
 		center  nav.Location
-		targets []*spatialindexer.PlaceInfo
-		expect  []*spatialindexer.RankedPlaceInfo
+		targets []*common.PlaceInfo
+		expect  []*common.RankedPlaceInfo
 	}{
 		{
 			center: nav.Location{
 				Lat: 0,
 				Lon: 0,
 			},
-			targets: []*spatialindexer.PlaceInfo{
+			targets: []*common.PlaceInfo{
 				{
 					ID: 1,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 1.1,
 						Lon: 1.1,
 					},
 				},
 				{
 					ID: 2,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 2.2,
 						Lon: 2.2,
 					},
 				},
 				{
 					ID: 3,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 3.3,
 						Lon: 3.3,
 					},
 				},
 				{
 					ID: 4,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 4.4,
 						Lon: 4.4,
 					},
 				},
 				{
 					ID: 5,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 5.5,
 						Lon: 5.5,
 					},
 				},
 				{
 					ID: 6,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 6.6,
 						Lon: 6.6,
 					},
 				},
 			},
-			expect: []*spatialindexer.RankedPlaceInfo{
+			expect: []*common.RankedPlaceInfo{
 				{
-					PlaceInfo: spatialindexer.PlaceInfo{
+					PlaceInfo: common.PlaceInfo{
 						ID: 1,
-						Location: nav.Location{
+						Location: &nav.Location{
 							Lat: 1.1,
 							Lon: 1.1,
 						},
 					},
-					Distance: 1.1,
-					Duration: 1.1,
+					Weight: &common.Weight{
+						Distance: 1.1,
+						Duration: 1.1,
+					},
 				},
 				{
-					PlaceInfo: spatialindexer.PlaceInfo{
+					PlaceInfo: common.PlaceInfo{
 						ID: 2,
-						Location: nav.Location{
+						Location: &nav.Location{
 							Lat: 2.2,
 							Lon: 2.2,
 						},
 					},
-					Distance: 2.2,
-					Duration: 2.2,
+					Weight: &common.Weight{
+						Distance: 2.2,
+						Duration: 2.2,
+					},
 				},
 				{
-					PlaceInfo: spatialindexer.PlaceInfo{
+					PlaceInfo: common.PlaceInfo{
 						ID: 3,
-						Location: nav.Location{
+						Location: &nav.Location{
 							Lat: 3.3,
 							Lon: 3.3,
 						},
 					},
-					Distance: 3.3,
-					Duration: 3.3,
+					Weight: &common.Weight{
+						Distance: 3.3,
+						Duration: 3.3,
+					},
 				},
 				{
-					PlaceInfo: spatialindexer.PlaceInfo{
+					PlaceInfo: common.PlaceInfo{
 						ID: 4,
-						Location: nav.Location{
+						Location: &nav.Location{
 							Lat: 4.4,
 							Lon: 4.4,
 						},
 					},
-					Distance: 4.4,
-					Duration: 4.4,
+					Weight: &common.Weight{
+						Distance: 4.4,
+						Duration: 4.4,
+					},
 				},
 				{
-					PlaceInfo: spatialindexer.PlaceInfo{
+					PlaceInfo: common.PlaceInfo{
 						ID: 5,
-						Location: nav.Location{
+						Location: &nav.Location{
 							Lat: 5.5,
 							Lon: 5.5,
 						},
 					},
-					Distance: 5.5,
-					Duration: 5.5,
+					Weight: &common.Weight{
+						Distance: 5.5,
+						Duration: 5.5,
+					},
 				},
 				{
-					PlaceInfo: spatialindexer.PlaceInfo{
+					PlaceInfo: common.PlaceInfo{
 						ID: 6,
-						Location: nav.Location{
+						Location: &nav.Location{
 							Lat: 6.6,
 							Lon: 6.6,
 						},
 					},
-					Distance: 6.6,
-					Duration: 6.6,
+					Weight: &common.Weight{
+						Distance: 6.6,
+						Duration: 6.6,
+					},
 				},
 			},
 		},

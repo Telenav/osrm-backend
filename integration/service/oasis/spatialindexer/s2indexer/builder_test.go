@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/Telenav/osrm-backend/integration/api/nav"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 	"github.com/golang/geo/s2"
 	"github.com/golang/glog"
 )
@@ -14,20 +14,20 @@ import (
 // online tool for google s2: http://s2.sidewalklabs.com/regioncoverer/
 func TestBuild(t *testing.T) {
 	cases := []struct {
-		places []spatialindexer.PlaceInfo
-		expect map[s2.CellID][]spatialindexer.PlaceID
+		places []common.PlaceInfo
+		expect map[s2.CellID][]common.PlaceID
 	}{
 		{
-			[]spatialindexer.PlaceInfo{
+			[]common.PlaceInfo{
 				{
 					ID: 1,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 37.402701,
 						Lon: -121.974096,
 					},
 				},
 			},
-			map[s2.CellID][]spatialindexer.PlaceID{
+			map[s2.CellID][]common.PlaceID{
 				9263622958524399616: {1}, // 4/001013
 				9263834064756932608: {1}, // 4/0010133
 				9263851656942977024: {1}, // 4/00101332
@@ -58,23 +58,23 @@ func TestBuild(t *testing.T) {
 
 		// Test case of 2 places, both near to 4655 Great America Pkwy
 		{
-			[]spatialindexer.PlaceInfo{
+			[]common.PlaceInfo{
 				{
 					ID: 1,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 37.402701,
 						Lon: -121.974096,
 					},
 				},
 				{
 					ID: 2,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 37.403530,
 						Lon: -121.969768,
 					},
 				},
 			},
-			map[s2.CellID][]spatialindexer.PlaceID{
+			map[s2.CellID][]common.PlaceID{
 				9263622958524399616: {1, 2}, // 4/001013
 				9263834064756932608: {1, 2}, // 4/0010133
 				9263851656942977024: {1, 2}, // 4/00101332
@@ -125,37 +125,37 @@ func TestBuild(t *testing.T) {
 		// Test case of 4 places, which distrubted in CA, US
 		// Each place have about 100km distance with each other
 		{
-			[]spatialindexer.PlaceInfo{
+			[]common.PlaceInfo{
 				{
 					ID: 1,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 37.651275,
 						Lon: -122.413744,
 					},
 				},
 				{
 					ID: 2,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 36.776215,
 						Lon: -121.733663,
 					},
 				},
 				{
 					ID: 3,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 36.122438,
 						Lon: -121.022936,
 					},
 				},
 				{
 					ID: 4,
-					Location: nav.Location{
+					Location: &nav.Location{
 						Lat: 35.365543,
 						Lon: -120.850000,
 					},
 				},
 			},
-			map[s2.CellID][]spatialindexer.PlaceID{
+			map[s2.CellID][]common.PlaceID{
 				9263622958524399616: {1, 2}, // 4/001013
 				9263411852291866624: {2},    // 4/0010130
 				9263359075733733376: {2},    // 4/00101300

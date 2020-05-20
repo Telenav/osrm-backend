@@ -1,19 +1,25 @@
 package connectivitymap
 
+import "github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
+
 var fakeID2NearByIDsMap3 = ID2NearByIDsMap{
-	1: []IDAndWeight{
+	1: []*common.RankedPlaceInfo{
 		{
-			ID: 2,
-			Weight: Weight{
+			PlaceInfo: common.PlaceInfo{
+				ID: 2,
+			},
+			Weight: &common.Weight{
 				Distance: 1,
 				Duration: 1,
 			},
 		},
 	},
-	2: []IDAndWeight{
+	2: []*common.RankedPlaceInfo{
 		{
-			ID: 3,
-			Weight: Weight{
+			PlaceInfo: common.PlaceInfo{
+				ID: 3,
+			},
+			Weight: &common.Weight{
 				Distance: 2,
 				Duration: 2,
 			},

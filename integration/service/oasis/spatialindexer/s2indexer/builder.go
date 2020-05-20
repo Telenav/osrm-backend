@@ -1,7 +1,7 @@
 package s2indexer
 
 import (
-	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 	"github.com/golang/geo/s2"
 )
 
@@ -14,9 +14,9 @@ const minS2Level = 9
 // Level = 20 means average area size is 77.32km2
 const maxS2Level = 20
 
-func build(places []spatialindexer.PlaceInfo, minLevel, maxLevel int) map[s2.CellID][]spatialindexer.PlaceID {
-	pointID2CellIDs := make(map[spatialindexer.PlaceID][]s2.CellID)
-	cellID2PointIDs := make(map[s2.CellID][]spatialindexer.PlaceID)
+func build(places []common.PlaceInfo, minLevel, maxLevel int) map[s2.CellID][]common.PlaceID {
+	pointID2CellIDs := make(map[common.PlaceID][]s2.CellID)
+	cellID2PointIDs := make(map[s2.CellID][]common.PlaceID)
 
 	for _, p := range places {
 		leafCellID := s2.CellFromLatLng(s2.LatLngFromDegrees(p.Location.Lat, p.Location.Lon)).ID()
@@ -39,7 +39,7 @@ func build(places []spatialindexer.PlaceInfo, minLevel, maxLevel int) map[s2.Cel
 	for pointID, cellIDs := range pointID2CellIDs {
 		for _, cellID := range cellIDs {
 			if _, ok := cellID2PointIDs[cellID]; !ok {
-				var pointIDs []spatialindexer.PlaceID
+				var pointIDs []common.PlaceID
 				cellID2PointIDs[cellID] = pointIDs
 			}
 

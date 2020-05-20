@@ -5,14 +5,14 @@ import (
 	"testing"
 
 	"github.com/Telenav/osrm-backend/integration/api/nav"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 	"github.com/golang/geo/s2"
 	"github.com/golang/glog"
 )
 
 func TestSpatialIndexQuery1(t *testing.T) {
 	fakeIndexer1 := S2Indexer{
-		cellID2PointIDs: map[s2.CellID][]spatialindexer.PlaceID{
+		cellID2PointIDs: map[s2.CellID][]common.PlaceID{
 			9263834064756932608: {1, 2}, // 4/0010133
 			9263851656942977024: {1, 2}, // 4/00101332
 			9263847258896465920: {1, 2}, // 4/001013321
@@ -57,7 +57,7 @@ func TestSpatialIndexQuery1(t *testing.T) {
 			9263844823130943708: {1},    // 4/00101332103210130020133120123
 			9263844823130943709: {1},    // 4/001013321032101300201331201232
 		},
-		pointID2Location: map[spatialindexer.PlaceID]nav.Location{
+		pointID2Location: map[common.PlaceID]nav.Location{
 			1: {
 				Lat: 37.402701,
 				Lon: -121.974096,
@@ -75,17 +75,17 @@ func TestSpatialIndexQuery1(t *testing.T) {
 		Lon: -121.969861,
 	}
 
-	expect := []*spatialindexer.PlaceInfo{
+	expect := []*common.PlaceInfo{
 		{
 			ID: 1,
-			Location: nav.Location{
+			Location: &nav.Location{
 				Lat: 37.402701,
 				Lon: -121.974096,
 			},
 		},
 		{
 			ID: 2,
-			Location: nav.Location{
+			Location: &nav.Location{
 				Lat: 37.40353,
 				Lon: -121.969768,
 			},

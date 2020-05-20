@@ -3,6 +3,7 @@ package connectivitymap
 import (
 	"sync"
 
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
 	"github.com/golang/glog"
 )
@@ -73,34 +74,18 @@ func (builder *connectivityMapBuilder) process() {
 	glog.Infof("builder's process is finished, start number of %d workers.\n", builder.numOfWorker)
 }
 
-func (builder *connectivityMapBuilder) work(workerID int, source <-chan spatialindexer.PlaceInfo, sink chan<- placeIDWithNearByPlaceIDs) {
+func (builder *connectivityMapBuilder) work(workerID int, source <-chan common.PlaceInfo, sink chan<- placeIDWithNearByPlaceIDs) {
 	defer builder.workerWaitGroup.Done()
 
 	counter := 0
 	for p := range source {
 		counter += 1
-		nearbyIDs := builder.finder.FindNearByPlaceIDs(p.Location, builder.distanceLimit, spatialindexer.UnlimitedCount)
-		rankedResults := builder.ranker.RankPlaceIDsByShortestDistance(p.Location, nearbyIDs)
-
-		ids := make([]IDAndWeight, 0, len(rankedResults))
-		for _, r := range rankedResults {
-			// skip connectivity to itself
-			if r.ID == p.ID {
-				continue
-			}
-
-			ids = append(ids, IDAndWeight{
-				ID: r.ID,
-				Weight: Weight{
-					Distance: r.Distance,
-					Duration: r.Duration,
-				},
-			})
-		}
+		nearbyIDs := builder.finder.FindNearByPlaceIDs(*p.Location, builder.distanceLimit, spatialindexer.UnlimitedCount)
+		rankedResults := builder.ranker.RankPlaceIDsByShortestDistance(*p.Location, nearbyIDs)
 
 		sink <- placeIDWithNearByPlaceIDs{
 			id:  p.ID,
-			ids: ids,
+			ids: rankedResults,
 		}
 	}
 
@@ -129,8 +114,8 @@ func (builder *connectivityMapBuilder) wait() {
 }
 
 type placeIDWithNearByPlaceIDs struct {
-	id  spatialindexer.PlaceID
-	ids []IDAndWeight
+	id  common.PlaceID
+	ids []*common.RankedPlaceInfo
 }
 
 func (builder *connectivityMapBuilder) buildInSerial() ID2NearByIDsMap {
@@ -140,22 +125,12 @@ func (builder *connectivityMapBuilder) buildInSerial() ID2NearByIDsMap {
 
 	go func() {
 		for p := range builder.iterator.IteratePlaces() {
-			nearbyIDs := builder.finder.FindNearByPlaceIDs(p.Location, builder.distanceLimit, spatialindexer.UnlimitedCount)
-			rankedResults := builder.ranker.RankPlaceIDsByGreatCircleDistance(p.Location, nearbyIDs)
+			nearbyIDs := builder.finder.FindNearByPlaceIDs(*p.Location, builder.distanceLimit, spatialindexer.UnlimitedCount)
+			rankedResults := builder.ranker.RankPlaceIDsByGreatCircleDistance(*p.Location, nearbyIDs)
 
-			ids := make([]IDAndWeight, 0, len(rankedResults))
-			for _, r := range rankedResults {
-				ids = append(ids, IDAndWeight{
-					ID: r.ID,
-					Weight: Weight{
-						Distance: r.Distance,
-						Duration: r.Duration,
-					},
-				})
-			}
 			internalResult <- placeIDWithNearByPlaceIDs{
 				id:  p.ID,
-				ids: ids,
+				ids: rankedResults,
 			}
 		}
 		close(internalResult)

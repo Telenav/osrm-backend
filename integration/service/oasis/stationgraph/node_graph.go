@@ -112,6 +112,7 @@ func (g *nodeGraph) getPhysicalAdjacentNodes(id nodeID) []*connectivitymap.Query
 func (g *nodeGraph) createLogicalNodes(from nodeID, toStationID string, toLocation *nav.Location, distance, duration float64) []*node {
 	results := make([]*node, 0, 3)
 
+	// if toStationID equals endNode, direct return since there is no need to create charge candidates for endNode
 	endNodeID := g.EndNodeID()
 	if toStationID == g.StationID(endNodeID) {
 		results = append(results, g.Node(endNodeID))
@@ -121,6 +122,7 @@ func (g *nodeGraph) createLogicalNodes(from nodeID, toStationID string, toLocati
 		return results
 	}
 
+	// creates logical nodes for each physical node, different logical node means charge for different level of energy at charge station
 	for _, state := range g.strategy.CreateChargingStates() {
 		n := g.nodeContainer.addNode(toStationID, state)
 		results = append(results, n)

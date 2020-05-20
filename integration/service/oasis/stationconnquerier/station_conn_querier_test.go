@@ -6,7 +6,7 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/connectivitymap"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer/ranker"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 )
@@ -312,24 +312,24 @@ func TestStationConnQuerier(t *testing.T) {
 	}
 }
 
-var mockPlaceInfo = []*spatialindexer.PlaceInfo{
+var mockPlaceInfo = []*common.PlaceInfo{
 	{
 		ID: 1,
-		Location: nav.Location{
+		Location: &nav.Location{
 			Lat: 37.355204,
 			Lon: -121.953901,
 		},
 	},
 	{
 		ID: 2,
-		Location: nav.Location{
+		Location: &nav.Location{
 			Lat: 37.399331,
 			Lon: -121.981193,
 		},
 	},
 	{
 		ID: 3,
-		Location: nav.Location{
+		Location: &nav.Location{
 			Lat: 37.401948,
 			Lon: -121.977384,
 		},
@@ -340,7 +340,7 @@ type mockFinder struct {
 }
 
 // FindNearByPlaceIDs returns mock result
-func (finder *mockFinder) FindNearByPlaceIDs(center nav.Location, radius float64, limitCount int) []*spatialindexer.PlaceInfo {
+func (finder *mockFinder) FindNearByPlaceIDs(center nav.Location, radius float64, limitCount int) []*common.PlaceInfo {
 	return mockPlaceInfo
 }
 

@@ -6,6 +6,7 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/connectivitymap"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 	"github.com/golang/glog"
@@ -52,8 +53,8 @@ func (querier *StationConnectivityQuerier) connectStartIntoStationGraph(stationF
 		tmp := &connectivitymap.QueryResult{
 			StationID:       rankedPointInfo.ID.String(),
 			StationLocation: &nav.Location{Lat: rankedPointInfo.Location.Lat, Lon: rankedPointInfo.Location.Lon},
-			Distance:        rankedPointInfo.Distance,
-			Duration:        rankedPointInfo.Duration,
+			Distance:        rankedPointInfo.Weight.Distance,
+			Duration:        rankedPointInfo.Weight.Duration,
 		}
 		reachableStationsByStart = append(reachableStationsByStart, tmp)
 	}
@@ -73,8 +74,8 @@ func (querier *StationConnectivityQuerier) connectEndIntoStationGraph(stationFin
 		reachableStationToEnd[rankedPointInfo.ID.String()] = &connectivitymap.QueryResult{
 			StationID:       stationfindertype.DestLocationID,
 			StationLocation: end,
-			Distance:        rankedPointInfo.Distance,
-			Duration:        rankedPointInfo.Duration,
+			Distance:        rankedPointInfo.Weight.Distance,
+			Duration:        rankedPointInfo.Weight.Duration,
 		}
 	}
 
@@ -103,7 +104,8 @@ func (querier *StationConnectivityQuerier) NearByStationQuery(stationID string) 
 		return nil
 	}
 
-	if connectivityResults, ok := querier.stationConnectivity.QueryConnectivity((spatialindexer.PlaceID)(placeID)); ok {
+	if connectivityResults, ok := querier.stationConnectivity.QueryConnectivity((common.PlaceID)(placeID)); ok {
+
 		size := len(connectivityResults)
 		if querier.isStationConnectsToEnd(stationID) {
 			size += 1
