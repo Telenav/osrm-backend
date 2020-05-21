@@ -3,11 +3,12 @@ package stationfinderalg
 import (
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/connectivitymap"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 	"github.com/golang/glog"
 )
 
-type stationID2QueryResults map[string][]*connectivitymap.QueryResult
+type stationID2QueryResults map[string][]*common.RankedPlaceInfo
 type stationID2Location map[string]*nav.Location
 
 type querier struct {
@@ -31,18 +32,22 @@ func NewQuerierBasedOnWeightBetweenNeighborsChan(c chan stationfindertype.Weight
 		for _, neighborInfo := range item.NeighborsInfo {
 
 			if _, ok := querier.id2QueryResults[neighborInfo.FromID]; !ok {
-				results := make([]*connectivitymap.QueryResult, 0, 10)
+				results := make([]*common.RankedPlaceInfo, 0, 10)
 				querier.id2QueryResults[neighborInfo.FromID] = results
 			}
 			querier.id2QueryResults[neighborInfo.FromID] = append(querier.id2QueryResults[neighborInfo.FromID],
-				&connectivitymap.QueryResult{
-					StationID: neighborInfo.ToID,
-					StationLocation: &nav.Location{
-						Lat: neighborInfo.ToLocation.Lat,
-						Lon: neighborInfo.ToLocation.Lon,
+				&common.RankedPlaceInfo{
+					PlaceInfo: common.PlaceInfo{
+						ID: neighborInfo.ToPlaceID(),
+						Location: &nav.Location{
+							Lat: neighborInfo.ToLocation.Lat,
+							Lon: neighborInfo.ToLocation.Lon,
+						},
 					},
-					Distance: neighborInfo.Distance,
-					Duration: neighborInfo.Duration,
+					Weight: &common.Weight{
+						Distance: neighborInfo.Distance,
+						Duration: neighborInfo.Duration,
+					},
 				})
 
 			if _, ok := querier.id2Location[neighborInfo.FromID]; !ok {
@@ -64,7 +69,7 @@ func NewQuerierBasedOnWeightBetweenNeighborsChan(c chan stationfindertype.Weight
 	return querier
 }
 
-func (q *querier) NearByStationQuery(stationID string) []*connectivitymap.QueryResult {
+func (q *querier) NearByStationQuery(stationID string) []*common.RankedPlaceInfo {
 	if results, ok := q.id2QueryResults[stationID]; ok {
 		return results
 	} else {

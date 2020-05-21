@@ -7,6 +7,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/connectivitymap"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/solution"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 	"github.com/Telenav/osrm-backend/integration/util"
@@ -67,119 +68,169 @@ start  -------   station 2  \ /           end
 - For default graph, initial energy is 20.0, max energy is 50.0
 */
 
-var testSGStationID1 = "station1"
-var testSGStationID2 = "station2"
-var testSGStationID3 = "station3"
-var testSGStationID4 = "station4"
-var testSGStationID5 = "station5"
+var testSGStationID1Str = "1"
+var testSGStationID2Str = "2"
+var testSGStationID3Str = "3"
+var testSGStationID4Str = "4"
+var testSGStationID5Str = "5"
+
+var testSGStationID1 common.PlaceID = 1
+var testSGStationID2 common.PlaceID = 2
+var testSGStationID3 common.PlaceID = 3
+var testSGStationID4 common.PlaceID = 4
+var testSGStationID5 common.PlaceID = 5
 
 type mockQuerier4StationGraph struct {
-	mockStationID2QueryResult map[string][]*connectivitymap.QueryResult
+	mockStationID2QueryResult map[string][]*common.RankedPlaceInfo
 	mockStationID2Location    map[string]*nav.Location
 }
 
 func newMockQuerier4StationGraph() connectivitymap.Querier {
 	querier := &mockQuerier4StationGraph{
-		mockStationID2QueryResult: map[string][]*connectivitymap.QueryResult{
-			stationfindertype.OrigLocationID: {
+		mockStationID2QueryResult: map[string][]*common.RankedPlaceInfo{
+			stationfindertype.OrigLocationID.String(): {
 				{
-					StationID:       testSGStationID2,
-					StationLocation: &nav.Location{Lat: 2.2, Lon: 2.2},
-					Distance:        11.1,
-					Duration:        11.1,
+					PlaceInfo: common.PlaceInfo{
+						ID:       testSGStationID2,
+						Location: &nav.Location{Lat: 2.2, Lon: 2.2},
+					},
+					Weight: &common.Weight{
+						Distance: 11.1,
+						Duration: 11.1,
+					},
 				},
 				{
-					StationID:       testSGStationID1,
-					StationLocation: &nav.Location{Lat: 1.1, Lon: 1.1},
-					Distance:        22.2,
-					Duration:        22.2,
+					PlaceInfo: common.PlaceInfo{
+						ID:       testSGStationID1,
+						Location: &nav.Location{Lat: 1.1, Lon: 1.1},
+					},
+					Weight: &common.Weight{
+						Distance: 22.2,
+						Duration: 22.2,
+					},
 				},
 				{
-					StationID:       testSGStationID3,
-					StationLocation: &nav.Location{Lat: 3.3, Lon: 3.3},
-					Distance:        33.3,
-					Duration:        33.3,
-				},
-			},
-			testSGStationID1: {
-				{
-					StationID:       testSGStationID5,
-					StationLocation: &nav.Location{Lat: 5.5, Lon: 5.5},
-					Distance:        34.4,
-					Duration:        34.4,
-				},
-				{
-					StationID:       testSGStationID4,
-					StationLocation: &nav.Location{Lat: 4.4, Lon: 4.4},
-					Distance:        44.4,
-					Duration:        44.4,
+					PlaceInfo: common.PlaceInfo{
+						ID:       testSGStationID3,
+						Location: &nav.Location{Lat: 3.3, Lon: 3.3},
+					},
+					Weight: &common.Weight{
+						Distance: 33.3,
+						Duration: 33.3,
+					},
 				},
 			},
-			testSGStationID2: {
+			testSGStationID1Str: {
 				{
-					StationID:       testSGStationID4,
-					StationLocation: &nav.Location{Lat: 4.4, Lon: 4.4},
-					Distance:        11.1,
-					Duration:        11.1,
+					PlaceInfo: common.PlaceInfo{
+						ID:       testSGStationID5,
+						Location: &nav.Location{Lat: 5.5, Lon: 5.5},
+					},
+					Weight: &common.Weight{
+						Distance: 34.4,
+						Duration: 34.4,
+					},
 				},
 				{
-					StationID:       testSGStationID5,
-					StationLocation: &nav.Location{Lat: 5.5, Lon: 5.5},
-					Distance:        14.4,
-					Duration:        14.4,
-				},
-			},
-			testSGStationID3: {
-				{
-					StationID:       testSGStationID5,
-					StationLocation: &nav.Location{Lat: 5.5, Lon: 5.5},
-					Distance:        15.5,
-					Duration:        15.5,
-				},
-				{
-					StationID:       testSGStationID4,
-					StationLocation: &nav.Location{Lat: 4.4, Lon: 4.4},
-					Distance:        22.2,
-					Duration:        22.2,
+					PlaceInfo: common.PlaceInfo{
+						ID:       testSGStationID4,
+						Location: &nav.Location{Lat: 4.4, Lon: 4.4},
+					},
+					Weight: &common.Weight{
+						Distance: 44.4,
+						Duration: 44.4,
+					},
 				},
 			},
-			testSGStationID4: {
+			testSGStationID2Str: {
 				{
-					StationID:       stationfindertype.DestLocationID,
-					StationLocation: &nav.Location{Lat: 6.6, Lon: 6.6},
-					Distance:        44.4,
-					Duration:        44.4,
+					PlaceInfo: common.PlaceInfo{
+						ID:       testSGStationID4,
+						Location: &nav.Location{Lat: 4.4, Lon: 4.4},
+					},
+					Weight: &common.Weight{
+						Distance: 11.1,
+						Duration: 11.1,
+					},
+				},
+				{
+					PlaceInfo: common.PlaceInfo{
+						ID:       testSGStationID5,
+						Location: &nav.Location{Lat: 5.5, Lon: 5.5},
+					},
+					Weight: &common.Weight{
+						Distance: 14.4,
+						Duration: 14.4,
+					},
 				},
 			},
-			testSGStationID5: {
+			testSGStationID3Str: {
 				{
-					StationID:       stationfindertype.DestLocationID,
-					StationLocation: &nav.Location{Lat: 6.6, Lon: 6.6},
-					Distance:        33.3,
-					Duration:        33.3,
+					PlaceInfo: common.PlaceInfo{
+						ID:       testSGStationID5,
+						Location: &nav.Location{Lat: 5.5, Lon: 5.5},
+					},
+					Weight: &common.Weight{
+						Distance: 15.5,
+						Duration: 15.5,
+					},
+				},
+				{
+					PlaceInfo: common.PlaceInfo{
+						ID:       testSGStationID4,
+						Location: &nav.Location{Lat: 4.4, Lon: 4.4},
+					},
+					Weight: &common.Weight{
+						Distance: 22.2,
+						Duration: 22.2,
+					},
 				},
 			},
-			stationfindertype.DestLocationID: {},
+			testSGStationID4Str: {
+				{
+					PlaceInfo: common.PlaceInfo{
+						ID:       stationfindertype.DestLocationID,
+						Location: &nav.Location{Lat: 6.6, Lon: 6.6},
+					},
+					Weight: &common.Weight{
+						Distance: 44.4,
+						Duration: 44.4,
+					},
+				},
+			},
+			testSGStationID5Str: {
+				{
+					PlaceInfo: common.PlaceInfo{
+						ID:       stationfindertype.DestLocationID,
+						Location: &nav.Location{Lat: 6.6, Lon: 6.6},
+					},
+					Weight: &common.Weight{
+						Distance: 33.3,
+						Duration: 33.3,
+					},
+				},
+			},
+			stationfindertype.DestLocationID.String(): {},
 		},
 		mockStationID2Location: map[string]*nav.Location{
-			stationfindertype.OrigLocationID: {Lat: 0.0, Lon: 0.0},
-			testSGStationID1:                 {Lat: 1.1, Lon: 1.1},
-			testSGStationID2:                 {Lat: 2.2, Lon: 2.2},
-			testSGStationID3:                 {Lat: 3.3, Lon: 3.3},
-			testSGStationID4:                 {Lat: 4.4, Lon: 4.4},
-			testSGStationID5:                 {Lat: 5.5, Lon: 5.5},
-			stationfindertype.DestLocationID: {Lat: 6.6, Lon: 6.6},
+			stationfindertype.OrigLocationID.String(): {Lat: 0.0, Lon: 0.0},
+			testSGStationID1Str:                       {Lat: 1.1, Lon: 1.1},
+			testSGStationID2Str:                       {Lat: 2.2, Lon: 2.2},
+			testSGStationID3Str:                       {Lat: 3.3, Lon: 3.3},
+			testSGStationID4Str:                       {Lat: 4.4, Lon: 4.4},
+			testSGStationID5Str:                       {Lat: 5.5, Lon: 5.5},
+			stationfindertype.DestLocationID.String(): {Lat: 6.6, Lon: 6.6},
 		},
 	}
 
 	return querier
 }
 
-func (querier *mockQuerier4StationGraph) NearByStationQuery(stationID string) []*connectivitymap.QueryResult {
+func (querier *mockQuerier4StationGraph) NearByStationQuery(stationID string) []*common.RankedPlaceInfo {
 	if queryResult, ok := querier.mockStationID2QueryResult[stationID]; ok {
 		return queryResult
 	}
-	glog.Fatal("Un-implemented mapping key for mockStationID2QueryResult.\n")
+	glog.Fatalf("Un-implemented mapping key %v for mockStationID2QueryResult.\n", stationID)
 	return nil
 }
 
@@ -187,7 +238,7 @@ func (querier *mockQuerier4StationGraph) GetLocation(stationID string) *nav.Loca
 	if location, ok := querier.mockStationID2Location[stationID]; ok {
 		return location
 	}
-	glog.Fatal("Un-implemented mapping key for mockStationID2Location.\n")
+	glog.Fatalf("Un-implemented mapping key for mockStationID2Location id = %v.\n", stationID)
 	return nil
 }
 
@@ -227,7 +278,7 @@ func TestStationGraphGenerateSolutions1(t *testing.T) {
 			Lat: 2.2,
 			Lon: 2.2,
 		},
-		StationID:     "station2",
+		StationID:     "2",
 		ArrivalEnergy: 8.9,
 		WaitTime:      0,
 		ChargeTime:    2532,
@@ -242,7 +293,7 @@ func TestStationGraphGenerateSolutions1(t *testing.T) {
 			Lat: 5.5,
 			Lon: 5.5,
 		},
-		StationID:     "station5",
+		StationID:     "5",
 		ArrivalEnergy: 15.6,
 		WaitTime:      0,
 		ChargeTime:    5328,
@@ -256,7 +307,7 @@ func TestStationGraphGenerateSolutions1(t *testing.T) {
 // mockedGraph4StationGraph defines compatible topological representation after mockQuerier4StationGraph is built
 var mockedGraph4StationGraph = mockGraph{
 	[]*node{
-		// stationfindertype.OrigLocationID,
+		// stationfindertype.OrigLocationID.String(),
 		{
 			0,
 			chargeInfo{
@@ -269,7 +320,7 @@ var mockedGraph4StationGraph = mockGraph{
 			// 	Lon: 0.0,
 			// },
 		},
-		// stationfindertype.DestLocationID,
+		// stationfindertype.DestLocationID.String(),
 		{
 			1,
 			chargeInfo{
@@ -477,8 +528,8 @@ var mockedGraph4StationGraph = mockGraph{
 		},
 	},
 	[]string{
-		stationfindertype.OrigLocationID,
-		stationfindertype.DestLocationID,
+		stationfindertype.OrigLocationID.String(),
+		stationfindertype.DestLocationID.String(),
 		"station1",
 		"station1",
 		"station1",

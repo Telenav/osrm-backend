@@ -23,7 +23,7 @@ func (oi *origIterator) IterateNearbyStations() <-chan *stationfindertype.Charge
 	go func() {
 		defer close(c)
 		station := stationfindertype.ChargeStationInfo{
-			ID:       stationfindertype.OrigLocationID,
+			ID:       stationfindertype.OrigLocationIDStr,
 			Location: *oi.location,
 		}
 		c <- &station

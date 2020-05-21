@@ -1,6 +1,7 @@
 package stationconnquerier
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -13,136 +14,208 @@ import (
 
 func TestAppendIntoSortedSlice(t *testing.T) {
 	cases := []struct {
-		sortedArray      []*connectivitymap.QueryResult
-		itemToBeInserted *connectivitymap.QueryResult
-		expectedArray    []*connectivitymap.QueryResult
+		sortedArray      []*common.RankedPlaceInfo
+		itemToBeInserted *common.RankedPlaceInfo
+		expectedArray    []*common.RankedPlaceInfo
 	}{
 		// case: insert into empty array
 		{
 			nil,
-			&connectivitymap.QueryResult{
-				StationID:       "3",
-				StationLocation: mockStation3Location,
-				Distance:        4622.08948420977,
-				Duration:        208.2022290184581,
+			&common.RankedPlaceInfo{
+				PlaceInfo: common.PlaceInfo{
+					ID:       3,
+					Location: mockStation3Location,
+				},
+				Weight: &common.Weight{
+					Distance: 4622.08948420977,
+					Duration: 208.2022290184581,
+				},
 			},
-			[]*connectivitymap.QueryResult{
+			[]*common.RankedPlaceInfo{
 				{
-					StationID:       "3",
-					StationLocation: mockStation3Location,
-					Distance:        4622.08948420977,
-					Duration:        208.2022290184581,
+					PlaceInfo: common.PlaceInfo{
+						ID:       3,
+						Location: mockStation3Location,
+					},
+					Weight: &common.Weight{
+						Distance: 4622.08948420977,
+						Duration: 208.2022290184581,
+					},
 				},
 			},
 		},
 
 		// case: insert to the head of sorted array
 		{
-			[]*connectivitymap.QueryResult{
+			[]*common.RankedPlaceInfo{
 				{
-					StationID:       "3",
-					StationLocation: mockStation3Location,
-					Distance:        4622.08948420977,
-					Duration:        208.2022290184581,
+					PlaceInfo: common.PlaceInfo{
+						ID:       3,
+						Location: mockStation3Location,
+					},
+					Weight: &common.Weight{
+						Distance: 4622.08948420977,
+						Duration: 208.2022290184581,
+					},
 				},
 				{
-					StationID:       "2",
-					StationLocation: mockStation2Location,
-					Distance:        4999.134247893073,
-					Duration:        225.18622738257085,
+					PlaceInfo: common.PlaceInfo{
+						ID:       2,
+						Location: mockStation2Location,
+					},
+					Weight: &common.Weight{
+						Distance: 4999.134247893073,
+						Duration: 225.18622738257085,
+					},
 				},
 				{
-					StationID:       "1",
-					StationLocation: mockStation1Location,
-					Distance:        6310.598332634715,
-					Duration:        284.2611861547169,
+					PlaceInfo: common.PlaceInfo{
+						ID:       1,
+						Location: mockStation1Location,
+					},
+					Weight: &common.Weight{
+						Distance: 6310.598332634715,
+						Duration: 284.2611861547169,
+					},
 				},
 			},
-			&connectivitymap.QueryResult{
-				StationID:       "4",
-				StationLocation: mockStation4Location,
-				Distance:        222.0,
-				Duration:        1.0,
+			&common.RankedPlaceInfo{
+				PlaceInfo: common.PlaceInfo{
+					ID:       4,
+					Location: mockStation4Location,
+				},
+				Weight: &common.Weight{
+					Distance: 222.0,
+					Duration: 1.0,
+				},
 			},
-			[]*connectivitymap.QueryResult{
+			[]*common.RankedPlaceInfo{
 				{
-					StationID:       "4",
-					StationLocation: mockStation4Location,
-					Distance:        222.0,
-					Duration:        1.0,
+					PlaceInfo: common.PlaceInfo{
+						ID:       4,
+						Location: mockStation4Location,
+					},
+					Weight: &common.Weight{
+						Distance: 222.0,
+						Duration: 1.0,
+					},
 				},
 				{
-					StationID:       "3",
-					StationLocation: mockStation3Location,
-					Distance:        4622.08948420977,
-					Duration:        208.2022290184581,
+					PlaceInfo: common.PlaceInfo{
+						ID:       3,
+						Location: mockStation3Location,
+					},
+					Weight: &common.Weight{
+						Distance: 4622.08948420977,
+						Duration: 208.2022290184581,
+					},
 				},
 				{
-					StationID:       "2",
-					StationLocation: mockStation2Location,
-					Distance:        4999.134247893073,
-					Duration:        225.18622738257085,
+					PlaceInfo: common.PlaceInfo{
+						ID:       2,
+						Location: mockStation2Location,
+					},
+					Weight: &common.Weight{
+						Distance: 4999.134247893073,
+						Duration: 225.18622738257085,
+					},
 				},
 				{
-					StationID:       "1",
-					StationLocation: mockStation1Location,
-					Distance:        6310.598332634715,
-					Duration:        284.2611861547169,
+					PlaceInfo: common.PlaceInfo{
+						ID:       1,
+						Location: mockStation1Location,
+					},
+					Weight: &common.Weight{
+						Distance: 6310.598332634715,
+						Duration: 284.2611861547169,
+					},
 				},
 			},
 		},
 		// case: insert into sorted array
 		{
-			[]*connectivitymap.QueryResult{
+			[]*common.RankedPlaceInfo{
 				{
-					StationID:       "3",
-					StationLocation: mockStation3Location,
-					Distance:        4622.08948420977,
-					Duration:        208.2022290184581,
+					PlaceInfo: common.PlaceInfo{
+						ID:       3,
+						Location: mockStation3Location,
+					},
+					Weight: &common.Weight{
+						Distance: 4622.08948420977,
+						Duration: 208.2022290184581,
+					},
 				},
 				{
-					StationID:       "2",
-					StationLocation: mockStation2Location,
-					Distance:        4999.134247893073,
-					Duration:        225.18622738257085,
+					PlaceInfo: common.PlaceInfo{
+						ID:       2,
+						Location: mockStation2Location,
+					},
+					Weight: &common.Weight{
+						Distance: 4999.134247893073,
+						Duration: 225.18622738257085,
+					},
 				},
 				{
-					StationID:       "1",
-					StationLocation: mockStation1Location,
-					Distance:        6310.598332634715,
-					Duration:        284.2611861547169,
+					PlaceInfo: common.PlaceInfo{
+						ID:       1,
+						Location: mockStation1Location,
+					},
+					Weight: &common.Weight{
+						Distance: 6310.598332634715,
+						Duration: 284.2611861547169,
+					},
 				},
 			},
-			&connectivitymap.QueryResult{
-				StationID:       "4",
-				StationLocation: mockStation4Location,
-				Distance:        4623.0,
-				Duration:        1.0,
+			&common.RankedPlaceInfo{
+				PlaceInfo: common.PlaceInfo{
+					ID:       4,
+					Location: mockStation4Location,
+				},
+				Weight: &common.Weight{
+					Distance: 4623.0,
+					Duration: 1.0,
+				},
 			},
-			[]*connectivitymap.QueryResult{
+			[]*common.RankedPlaceInfo{
 				{
-					StationID:       "3",
-					StationLocation: mockStation3Location,
-					Distance:        4622.08948420977,
-					Duration:        208.2022290184581,
+					PlaceInfo: common.PlaceInfo{
+						ID:       3,
+						Location: mockStation3Location,
+					},
+					Weight: &common.Weight{
+						Distance: 4622.08948420977,
+						Duration: 208.2022290184581,
+					},
 				},
 				{
-					StationID:       "4",
-					StationLocation: mockStation4Location,
-					Distance:        4623.0,
-					Duration:        1.0,
+					PlaceInfo: common.PlaceInfo{
+						ID:       4,
+						Location: mockStation4Location,
+					},
+					Weight: &common.Weight{
+						Distance: 4623.0,
+						Duration: 1.0,
+					},
 				},
 				{
-					StationID:       "2",
-					StationLocation: mockStation2Location,
-					Distance:        4999.134247893073,
-					Duration:        225.18622738257085,
+					PlaceInfo: common.PlaceInfo{
+						ID:       2,
+						Location: mockStation2Location,
+					},
+					Weight: &common.Weight{
+						Distance: 4999.134247893073,
+						Duration: 225.18622738257085,
+					},
 				},
 				{
-					StationID:       "1",
-					StationLocation: mockStation1Location,
-					Distance:        6310.598332634715,
-					Duration:        284.2611861547169,
+					PlaceInfo: common.PlaceInfo{
+						ID:       1,
+						Location: mockStation1Location,
+					},
+					Weight: &common.Weight{
+						Distance: 6310.598332634715,
+						Duration: 284.2611861547169,
+					},
 				},
 			},
 		},
@@ -193,11 +266,11 @@ func TestStationConnQuerier(t *testing.T) {
 		expectLocation *nav.Location
 	}{
 		{
-			stationfindertype.OrigLocationID,
+			stationfindertype.OrigLocationIDStr,
 			mockOrigLocation,
 		},
 		{
-			stationfindertype.DestLocationID,
+			stationfindertype.DestLocationIDStr,
 			mockDestLocation,
 		},
 		{
@@ -228,77 +301,109 @@ func TestStationConnQuerier(t *testing.T) {
 	// verify connectivity
 	connectivityCases := []struct {
 		stationID         string
-		expectQueryResult []*connectivitymap.QueryResult
+		expectQueryResult []*common.RankedPlaceInfo
 	}{
 		{
-			stationfindertype.OrigLocationID,
-			[]*connectivitymap.QueryResult{
+			stationfindertype.OrigLocationIDStr,
+			[]*common.RankedPlaceInfo{
 				{
-					StationID:       "3",
-					StationLocation: mockStation3Location,
-					Distance:        4622.08948420977,
-					Duration:        208.2022290184581,
+					PlaceInfo: common.PlaceInfo{
+						ID:       3,
+						Location: mockStation3Location,
+					},
+					Weight: &common.Weight{
+						Distance: 4622.08948420977,
+						Duration: 208.2022290184581,
+					},
 				},
 				{
-					StationID:       "2",
-					StationLocation: mockStation2Location,
-					Distance:        4999.134247893073,
-					Duration:        225.18622738257085,
+					PlaceInfo: common.PlaceInfo{
+						ID:       2,
+						Location: mockStation2Location,
+					},
+					Weight: &common.Weight{
+						Distance: 4999.134247893073,
+						Duration: 225.18622738257085,
+					},
 				},
 				{
-					StationID:       "1",
-					StationLocation: mockStation1Location,
-					Distance:        6310.598332634715,
-					Duration:        284.2611861547169,
+					PlaceInfo: common.PlaceInfo{
+						ID:       1,
+						Location: mockStation1Location,
+					},
+					Weight: &common.Weight{
+						Distance: 6310.598332634715,
+						Duration: 284.2611861547169,
+					},
 				},
 			},
 		},
 		{
-			stationfindertype.DestLocationID,
+			stationfindertype.DestLocationIDStr,
 			nil,
 		},
 		{
 			"1",
-			[]*connectivitymap.QueryResult{
+			[]*common.RankedPlaceInfo{
 				{
-					StationID:       "2",
-					StationLocation: mockStation2Location,
-					Distance:        1, // hard code value from mock ConnectivityMap
-					Duration:        1, // hard code value from mock ConnectivityMap
+					PlaceInfo: common.PlaceInfo{
+						ID:       2,
+						Location: mockStation2Location,
+					},
+					Weight: &common.Weight{
+						Distance: 1, // hard code value from mock ConnectivityMap
+						Duration: 1, // hard code value from mock ConnectivityMap
+					},
 				},
 				{
-					StationID:       stationfindertype.DestLocationID,
-					StationLocation: mockDestLocation,
-					Distance:        4873.817197753869,
-					Duration:        219.54131521413822,
+					PlaceInfo: common.PlaceInfo{
+						ID:       stationfindertype.DestLocationID,
+						Location: mockDestLocation,
+					},
+					Weight: &common.Weight{
+						Distance: 4873.817197753869,
+						Duration: 219.54131521413822,
+					},
 				},
 			},
 		},
 		{
 			"3",
-			[]*connectivitymap.QueryResult{
+			[]*common.RankedPlaceInfo{
 				{
-					StationID:       stationfindertype.DestLocationID,
-					StationLocation: mockDestLocation,
-					Distance:        7083.8672907090095,
-					Duration:        319.0931212031085,
+					PlaceInfo: common.PlaceInfo{
+						ID:       stationfindertype.DestLocationID,
+						Location: mockDestLocation,
+					},
+					Weight: &common.Weight{
+						Distance: 7083.8672907090095,
+						Duration: 319.0931212031085,
+					},
 				},
 			},
 		},
 		{
 			"2",
-			[]*connectivitymap.QueryResult{
+			[]*common.RankedPlaceInfo{
 				{
-					StationID:       "3",
-					StationLocation: mockStation3Location,
-					Distance:        2, // hard code value from mock ConnectivityMap
-					Duration:        2, // hard code value from mock ConnectivityMap
+					PlaceInfo: common.PlaceInfo{
+						ID:       3,
+						Location: mockStation3Location,
+					},
+					Weight: &common.Weight{
+						Distance: 2, // hard code value from mock ConnectivityMap
+						Duration: 2, // hard code value from mock ConnectivityMap
+					},
 				},
 				{
-					StationID:       stationfindertype.DestLocationID,
-					StationLocation: mockDestLocation,
-					Distance:        7277.313067724465,
-					Duration:        327.80689494254347,
+					PlaceInfo: common.PlaceInfo{
+						ID:       stationfindertype.DestLocationID,
+						Location: mockDestLocation,
+					},
+					Weight: &common.Weight{
+						Distance: 7277.313067724465,
+						Duration: 327.80689494254347,
+					},
 				},
 			},
 		},
@@ -307,7 +412,14 @@ func TestStationConnQuerier(t *testing.T) {
 	for _, c := range connectivityCases {
 		actualQueryResult := querier.NearByStationQuery(c.stationID)
 		if !reflect.DeepEqual(actualQueryResult, c.expectQueryResult) {
-			t.Errorf("Incorrect result for connectivitymap.Querier.NearByStationQuery, expect %+v but got %+v\n", c.expectQueryResult, actualQueryResult)
+			for _, r := range c.expectQueryResult {
+				fmt.Printf("+++ %v, %v, %v, %v, %v\n", r.ID, r.Location.Lat, r.Location.Lon, r.Weight.Distance, r.Weight.Duration)
+			}
+
+			for _, r := range actualQueryResult {
+				fmt.Printf("+++ %v, %v, %v, %v, %v\n", r.ID, r.Location.Lat, r.Location.Lon, r.Weight.Distance, r.Weight.Duration)
+			}
+			t.Errorf("Incorrect result for connectivitymap.Querier.NearByStationQuery, expect %#v but got %#v\n", c.expectQueryResult, actualQueryResult)
 		}
 	}
 }

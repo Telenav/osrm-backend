@@ -1,6 +1,13 @@
 package stationfindertype
 
-import "github.com/Telenav/osrm-backend/integration/api/nav"
+import (
+	"regexp"
+	"strconv"
+
+	"github.com/Telenav/osrm-backend/integration/api/nav"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
+	"github.com/golang/glog"
+)
 
 // NearbyStationsIterator provide interator for near by stations
 type NearbyStationsIterator interface {
@@ -34,4 +41,61 @@ type NeighborInfo struct {
 type WeightBetweenNeighbors struct {
 	NeighborsInfo []NeighborInfo
 	Err           error
+}
+
+// FromPlaceID converts from String to PlaceID for From
+func (neighbor NeighborInfo) FromPlaceID() common.PlaceID {
+	return convertIDFromStringToPlaceID(neighbor.FromID)
+}
+
+// ToPlaceID converts from String to PlaceID for To
+func (neighbor NeighborInfo) ToPlaceID() common.PlaceID {
+	return convertIDFromStringToPlaceID(neighbor.ToID)
+}
+
+// Telenav web response format b-12345678
+// While pre-processed result is value itself
+func convertIDFromStringToPlaceID(s string) common.PlaceID {
+	switch s {
+	case OrigLocationIDStr:
+		return OrigLocationID
+	case DestLocationIDStr:
+		return DestLocationID
+	case InvalidPlaceIDStr:
+		return InvalidPlaceID
+	default:
+		num, err := strconv.ParseInt(s, 10, 64)
+		if err == nil { // pre-processed result
+			placeID := (common.PlaceID)(num)
+			if !isPredefinedValueTakenPlaceIDValue(placeID) {
+				return placeID
+			}
+			// else: assert false
+		} else { // from Web Service
+			re := regexp.MustCompile("[0-9]+")
+			idStrArray := re.FindAllString(s, -1)
+			if len(idStrArray) != 1 {
+				glog.Fatalf("Assumption of ID from search response is wrong, expect format is b- with number, but got %v.\n", s)
+			}
+			if num, err := strconv.ParseInt(idStrArray[0], 10, 64); err == nil {
+				placeID := (common.PlaceID)(num)
+				if !isPredefinedValueTakenPlaceIDValue(placeID) {
+					return placeID
+				}
+				// else: assert false
+			} else {
+				glog.Fatalf("Assumption of ID from search response is wrong, expect format is b- with number, but got %v.\n", s)
+			}
+		}
+	}
+	glog.Fatalf("PlaceID %v could not be decodinged", s)
+	return InvalidPlaceID
+}
+
+func isPredefinedValueTakenPlaceIDValue(id common.PlaceID) bool {
+	if id == OrigLocationID || id == DestLocationID || id == InvalidPlaceID {
+		glog.Fatal("Predefined ID use the same value as value from PlaceID, please adjust either one of them.\n")
+		return true
+	}
+	return false
 }

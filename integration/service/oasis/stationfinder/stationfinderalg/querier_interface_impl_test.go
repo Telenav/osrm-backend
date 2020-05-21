@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/Telenav/osrm-backend/integration/api/nav"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/connectivitymap"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/mock"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 )
@@ -20,47 +20,63 @@ import (
 func TestQuerierBasedOnWeightBetweenNeighborsChan(t *testing.T) {
 	cases := []struct {
 		stationID         string
-		expectQueryResult []*connectivitymap.QueryResult
+		expectQueryResult []*common.RankedPlaceInfo
 		expectLocation    *nav.Location
 	}{
 		{
-			"orig_location",
-			[]*connectivitymap.QueryResult{
+			stationfindertype.OrigLocationIDStr,
+			[]*common.RankedPlaceInfo{
 				{
-					StationID: "station1",
-					StationLocation: &nav.Location{
-						Lat: 32.333,
-						Lon: 122.333,
+					PlaceInfo: common.PlaceInfo{
+						ID: 1,
+						Location: &nav.Location{
+							Lat: 32.333,
+							Lon: 122.333,
+						},
 					},
-					Distance: 22.2,
-					Duration: 22.2,
+					Weight: &common.Weight{
+						Distance: 22.2,
+						Duration: 22.2,
+					},
 				},
 				{
-					StationID: "station2",
-					StationLocation: &nav.Location{
-						Lat: -32.333,
-						Lon: -122.333,
+					PlaceInfo: common.PlaceInfo{
+						ID: 2,
+						Location: &nav.Location{
+							Lat: -32.333,
+							Lon: -122.333,
+						},
 					},
-					Distance: 11.1,
-					Duration: 11.1,
+					Weight: &common.Weight{
+						Distance: 11.1,
+						Duration: 11.1,
+					},
 				},
 				{
-					StationID: "station3",
-					StationLocation: &nav.Location{
-						Lat: 32.333,
-						Lon: -122.333,
+					PlaceInfo: common.PlaceInfo{
+						ID: 3,
+						Location: &nav.Location{
+							Lat: 32.333,
+							Lon: -122.333,
+						},
 					},
-					Distance: 33.3,
-					Duration: 33.3,
+					Weight: &common.Weight{
+						Distance: 33.3,
+						Duration: 33.3,
+					},
 				},
 				{
-					StationID: "station4",
-					StationLocation: &nav.Location{
-						Lat: -32.333,
-						Lon: 122.333,
+					PlaceInfo: common.PlaceInfo{
+						ID: 4,
+						Location: &nav.Location{
+							Lat: -32.333,
+							Lon: 122.333,
+						},
 					},
-					Distance: 44.4,
-					Duration: 44.4,
+					Weight: &common.Weight{
+						Distance: 44.4,
+						Duration: 44.4,
+					},
 				},
 			},
 			&nav.Location{
@@ -70,24 +86,32 @@ func TestQuerierBasedOnWeightBetweenNeighborsChan(t *testing.T) {
 		},
 		{
 			"station1",
-			[]*connectivitymap.QueryResult{
+			[]*common.RankedPlaceInfo{
 				{
-					StationID: "station6",
-					StationLocation: &nav.Location{
-						Lat: 30.333,
-						Lon: 122.333,
+					PlaceInfo: common.PlaceInfo{
+						ID: 6,
+						Location: &nav.Location{
+							Lat: 30.333,
+							Lon: 122.333,
+						},
 					},
-					Distance: 2,
-					Duration: 2,
+					Weight: &common.Weight{
+						Distance: 2,
+						Duration: 2,
+					},
 				},
 				{
-					StationID: "station7",
-					StationLocation: &nav.Location{
-						Lat: -10.333,
-						Lon: 122.333,
+					PlaceInfo: common.PlaceInfo{
+						ID: 7,
+						Location: &nav.Location{
+							Lat: -10.333,
+							Lon: 122.333,
+						},
 					},
-					Distance: 3,
-					Duration: 3,
+					Weight: &common.Weight{
+						Distance: 3,
+						Duration: 3,
+					},
 				},
 			},
 			&nav.Location{
@@ -97,24 +121,32 @@ func TestQuerierBasedOnWeightBetweenNeighborsChan(t *testing.T) {
 		},
 		{
 			"station2",
-			[]*connectivitymap.QueryResult{
+			[]*common.RankedPlaceInfo{
 				{
-					StationID: "station6",
-					StationLocation: &nav.Location{
-						Lat: 30.333,
-						Lon: 122.333,
+					PlaceInfo: common.PlaceInfo{
+						ID: 6,
+						Location: &nav.Location{
+							Lat: 30.333,
+							Lon: 122.333,
+						},
 					},
-					Distance: 4,
-					Duration: 4,
+					Weight: &common.Weight{
+						Distance: 4,
+						Duration: 4,
+					},
 				},
 				{
-					StationID: "station7",
-					StationLocation: &nav.Location{
-						Lat: -10.333,
-						Lon: 122.333,
+					PlaceInfo: common.PlaceInfo{
+						ID: 7,
+						Location: &nav.Location{
+							Lat: -10.333,
+							Lon: 122.333,
+						},
 					},
-					Distance: 5,
-					Duration: 5,
+					Weight: &common.Weight{
+						Distance: 5,
+						Duration: 5,
+					},
 				},
 			},
 			&nav.Location{
@@ -124,24 +156,32 @@ func TestQuerierBasedOnWeightBetweenNeighborsChan(t *testing.T) {
 		},
 		{
 			"station3",
-			[]*connectivitymap.QueryResult{
+			[]*common.RankedPlaceInfo{
 				{
-					StationID: "station6",
-					StationLocation: &nav.Location{
-						Lat: 30.333,
-						Lon: 122.333,
+					PlaceInfo: common.PlaceInfo{
+						ID: 6,
+						Location: &nav.Location{
+							Lat: 30.333,
+							Lon: 122.333,
+						},
 					},
-					Distance: 6,
-					Duration: 6,
+					Weight: &common.Weight{
+						Distance: 6,
+						Duration: 6,
+					},
 				},
 				{
-					StationID: "station7",
-					StationLocation: &nav.Location{
-						Lat: -10.333,
-						Lon: 122.333,
+					PlaceInfo: common.PlaceInfo{
+						ID: 7,
+						Location: &nav.Location{
+							Lat: -10.333,
+							Lon: 122.333,
+						},
 					},
-					Distance: 7,
-					Duration: 7,
+					Weight: &common.Weight{
+						Distance: 7,
+						Duration: 7,
+					},
 				},
 			},
 			&nav.Location{
@@ -151,24 +191,32 @@ func TestQuerierBasedOnWeightBetweenNeighborsChan(t *testing.T) {
 		},
 		{
 			"station4",
-			[]*connectivitymap.QueryResult{
+			[]*common.RankedPlaceInfo{
 				{
-					StationID: "station6",
-					StationLocation: &nav.Location{
-						Lat: 30.333,
-						Lon: 122.333,
+					PlaceInfo: common.PlaceInfo{
+						ID: 6,
+						Location: &nav.Location{
+							Lat: 30.333,
+							Lon: 122.333,
+						},
 					},
-					Distance: 8,
-					Duration: 8,
+					Weight: &common.Weight{
+						Distance: 8,
+						Duration: 8,
+					},
 				},
 				{
-					StationID: "station7",
-					StationLocation: &nav.Location{
-						Lat: -10.333,
-						Lon: 122.333,
+					PlaceInfo: common.PlaceInfo{
+						ID: 7,
+						Location: &nav.Location{
+							Lat: -10.333,
+							Lon: 122.333,
+						},
 					},
-					Distance: 9,
-					Duration: 9,
+					Weight: &common.Weight{
+						Distance: 9,
+						Duration: 9,
+					},
 				},
 			},
 			&nav.Location{
@@ -178,15 +226,19 @@ func TestQuerierBasedOnWeightBetweenNeighborsChan(t *testing.T) {
 		},
 		{
 			"station6",
-			[]*connectivitymap.QueryResult{
+			[]*common.RankedPlaceInfo{
 				{
-					StationID: "dest_location",
-					StationLocation: &nav.Location{
-						Lat: 4.4,
-						Lon: 4.4,
+					PlaceInfo: common.PlaceInfo{
+						ID: stationfindertype.DestLocationID,
+						Location: &nav.Location{
+							Lat: 4.4,
+							Lon: 4.4,
+						},
 					},
-					Distance: 66.6,
-					Duration: 66.6,
+					Weight: &common.Weight{
+						Distance: 66.6,
+						Duration: 66.6,
+					},
 				},
 			},
 			&nav.Location{
@@ -196,15 +248,19 @@ func TestQuerierBasedOnWeightBetweenNeighborsChan(t *testing.T) {
 		},
 		{
 			"station7",
-			[]*connectivitymap.QueryResult{
+			[]*common.RankedPlaceInfo{
 				{
-					StationID: "dest_location",
-					StationLocation: &nav.Location{
-						Lat: 4.4,
-						Lon: 4.4,
+					PlaceInfo: common.PlaceInfo{
+						ID: stationfindertype.DestLocationID,
+						Location: &nav.Location{
+							Lat: 4.4,
+							Lon: 4.4,
+						},
 					},
-					Distance: 11.1,
-					Duration: 11.1,
+					Weight: &common.Weight{
+						Distance: 11.1,
+						Duration: 11.1,
+					},
 				},
 			},
 			&nav.Location{
@@ -213,7 +269,7 @@ func TestQuerierBasedOnWeightBetweenNeighborsChan(t *testing.T) {
 			},
 		},
 		{
-			"dest_location",
+			stationfindertype.DestLocationIDStr,
 			nil,
 			&nav.Location{
 				Lat: 4.4,

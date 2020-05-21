@@ -93,7 +93,7 @@ var MockChargeStationInfo1 = []*stationfindertype.ChargeStationInfo{
 
 var NeighborInfoArray0 = []stationfindertype.NeighborInfo{
 	{
-		FromID: "orig_location",
+		FromID: stationfindertype.OrigLocationIDStr,
 		FromLocation: nav.Location{
 			Lat: 1.1,
 			Lon: 1.1,
@@ -109,7 +109,7 @@ var NeighborInfoArray0 = []stationfindertype.NeighborInfo{
 		},
 	},
 	{
-		FromID: "orig_location",
+		FromID: stationfindertype.OrigLocationIDStr,
 		FromLocation: nav.Location{
 			Lat: 1.1,
 			Lon: 1.1,
@@ -125,7 +125,7 @@ var NeighborInfoArray0 = []stationfindertype.NeighborInfo{
 		},
 	},
 	{
-		FromID: "orig_location",
+		FromID: stationfindertype.OrigLocationIDStr,
 		FromLocation: nav.Location{
 			Lat: 1.1,
 			Lon: 1.1,
@@ -141,7 +141,7 @@ var NeighborInfoArray0 = []stationfindertype.NeighborInfo{
 		},
 	},
 	{
-		FromID: "orig_location",
+		FromID: stationfindertype.OrigLocationIDStr,
 		FromLocation: nav.Location{
 			Lat: 1.1,
 			Lon: 1.1,
@@ -296,7 +296,7 @@ var NeighborInfoArray2 = []stationfindertype.NeighborInfo{
 			Lat: 30.333,
 			Lon: 122.333,
 		},
-		ToID: "dest_location",
+		ToID: stationfindertype.DestLocationIDStr,
 		ToLocation: nav.Location{
 			Lat: 4.4,
 			Lon: 4.4,
@@ -312,7 +312,7 @@ var NeighborInfoArray2 = []stationfindertype.NeighborInfo{
 			Lat: -10.333,
 			Lon: 122.333,
 		},
-		ToID: "dest_location",
+		ToID: stationfindertype.DestLocationIDStr,
 		ToLocation: nav.Location{
 			Lat: 4.4,
 			Lon: 4.4,

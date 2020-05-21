@@ -3,6 +3,7 @@ package stationgraph
 import (
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 )
 
 // node_0 -> node_1, duration = 30, distance = 30
@@ -1163,7 +1164,7 @@ func (graph *mockGraph) ChargeStrategy() chargingstrategy.Strategy {
 // StationID returns original stationID from internal nodeID
 func (graph *mockGraph) StationID(id nodeID) string {
 	if id < 0 || int(id) >= len(graph.stationIDs) {
-		return invalidStationID
+		return stationfindertype.InvalidPlaceIDStr
 	}
 	return graph.stationIDs[id]
 }

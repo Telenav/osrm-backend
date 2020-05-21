@@ -7,6 +7,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/connectivitymap"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 	"github.com/golang/glog"
 )
@@ -23,15 +24,15 @@ func TestAddAndGetStartAndEndNodeForNodeGraph(t *testing.T) {
 		Lat: 34.44,
 		Lon: -124.44}
 
-	graph.SetStart(stationfindertype.OrigLocationID, expectStartChargeState, expectStartLocation).
-		SetEnd(stationfindertype.DestLocationID, expectEndChargeState, expectEndLocation)
+	graph.SetStart(stationfindertype.OrigLocationID.String(), expectStartChargeState, expectStartLocation).
+		SetEnd(stationfindertype.DestLocationID.String(), expectEndChargeState, expectEndLocation)
 
-	if graph.StationID(graph.StartNodeID()) != stationfindertype.OrigLocationID {
-		t.Errorf("Incorrect result for start's stationID, expect %s but got %s.\n", stationfindertype.OrigLocationID, graph.StationID(graph.StartNodeID()))
+	if graph.StationID(graph.StartNodeID()) != stationfindertype.OrigLocationID.String() {
+		t.Errorf("Incorrect result for start's stationID, expect %s but got %s.\n", stationfindertype.OrigLocationID.String(), graph.StationID(graph.StartNodeID()))
 	}
 
-	if graph.StationID(graph.EndNodeID()) != stationfindertype.DestLocationID {
-		t.Errorf("Incorrect result for end's stationID, expect %s but got %s.\n", stationfindertype.DestLocationID, graph.StationID(graph.EndNodeID()))
+	if graph.StationID(graph.EndNodeID()) != stationfindertype.DestLocationID.String() {
+		t.Errorf("Incorrect result for end's stationID, expect %s but got %s.\n", stationfindertype.DestLocationID.String(), graph.StationID(graph.EndNodeID()))
 	}
 
 	startNode := graph.Node(graph.StartNodeID())
@@ -241,15 +242,15 @@ func TestStationIDInterfaceForNodeGraph(t *testing.T) {
 	nodeIDs := graph.AdjacentNodes(graph.StartNodeID())
 
 	expectStationIDs := []string{
-		testStationID2,
-		testStationID2,
-		testStationID2,
-		testStationID3,
-		testStationID3,
-		testStationID3,
-		testStationID4,
-		testStationID4,
-		testStationID4,
+		testStationID2.String(),
+		testStationID2.String(),
+		testStationID2.String(),
+		testStationID3.String(),
+		testStationID3.String(),
+		testStationID3.String(),
+		testStationID4.String(),
+		testStationID4.String(),
+		testStationID4.String(),
 	}
 
 	actualStationIDs := make([]string, 0, len(nodeIDs))
@@ -268,67 +269,84 @@ func generateMockNodeGraph() Graph {
 	querier := newMockQuerier()
 	graph := NewNodeGraph(strategy, querier)
 
-	origLocation := querier.GetLocation(testStationID1)
-	graph.SetStart(testStationID1, chargingstrategy.State{Energy: currEnergyLevel}, &nav.Location{Lat: origLocation.Lat, Lon: origLocation.Lon})
+	origLocation := querier.GetLocation(testStationID1Str)
+	graph.SetStart(testStationID1Str, chargingstrategy.State{Energy: currEnergyLevel}, &nav.Location{Lat: origLocation.Lat, Lon: origLocation.Lon})
 
 	return graph
 }
 
 type mockQuerier4NodeGraph struct {
-	mockStationID2QueryResult map[string][]*connectivitymap.QueryResult
+	mockStationID2QueryResult map[string][]*common.RankedPlaceInfo
 	mockStationID2Location    map[string]*nav.Location
 }
 
 func newMockQuerier() connectivitymap.Querier {
 	return &mockQuerier4NodeGraph{
-		mockStationID2QueryResult: map[string][]*connectivitymap.QueryResult{
-			testStationID1: {
+		mockStationID2QueryResult: map[string][]*common.RankedPlaceInfo{
+			testStationID1Str: {
 				{
-					StationID:       testStationID2,
-					StationLocation: &nav.Location{Lat: 2.2, Lon: 2.2},
-					Distance:        2,
-					Duration:        2,
+					PlaceInfo: common.PlaceInfo{
+						ID:       testStationID2,
+						Location: &nav.Location{Lat: 2.2, Lon: 2.2},
+					},
+					Weight: &common.Weight{
+						Distance: 2,
+						Duration: 2,
+					},
 				},
 				{
-					StationID:       testStationID3,
-					StationLocation: &nav.Location{Lat: 3.3, Lon: 3.3},
-					Distance:        3,
-					Duration:        3,
+					PlaceInfo: common.PlaceInfo{
+						ID:       testStationID3,
+						Location: &nav.Location{Lat: 3.3, Lon: 3.3},
+					},
+					Weight: &common.Weight{
+						Distance: 3,
+						Duration: 3,
+					},
 				},
 				{
-					StationID:       testStationID4,
-					StationLocation: &nav.Location{Lat: 4.4, Lon: 4.4},
-					Distance:        4,
-					Duration:        4,
+					PlaceInfo: common.PlaceInfo{
+						ID:       testStationID4,
+						Location: &nav.Location{Lat: 4.4, Lon: 4.4},
+					},
+					Weight: &common.Weight{
+						Distance: 4,
+						Duration: 4,
+					},
 				},
 			},
 		},
 		mockStationID2Location: map[string]*nav.Location{
-			testStationID1: {Lat: 1.1, Lon: 1.1},
-			testStationID2: {Lat: 2.2, Lon: 2.2},
-			testStationID3: {Lat: 3.3, Lon: 3.3},
-			testStationID4: {Lat: 4.4, Lon: 4.4},
+			testStationID1Str: {Lat: 1.1, Lon: 1.1},
+			testStationID2Str: {Lat: 2.2, Lon: 2.2},
+			testStationID3Str: {Lat: 3.3, Lon: 3.3},
+			testStationID4Str: {Lat: 4.4, Lon: 4.4},
 		},
 	}
 }
 
-func (querier *mockQuerier4NodeGraph) NearByStationQuery(stationID string) []*connectivitymap.QueryResult {
-	if stationID == testStationID1 {
-		return querier.mockStationID2QueryResult[testStationID1]
+func (querier *mockQuerier4NodeGraph) NearByStationQuery(stationID string) []*common.RankedPlaceInfo {
+	if stationID == testStationID1Str {
+		return querier.mockStationID2QueryResult[testStationID1Str]
 	}
-	glog.Fatal("Un-implemented mapping key for mockStationID2QueryResult.\n")
+	glog.Fatalf("Un-implemented mapping key %v for mockStationID2QueryResult.\n", stationID)
 	return nil
 }
 
 func (querier *mockQuerier4NodeGraph) GetLocation(stationID string) *nav.Location {
-	if stationID == testStationID1 {
-		return querier.mockStationID2Location[testStationID1]
+	if stationID == testStationID1Str {
+		return querier.mockStationID2Location[testStationID1Str]
 	}
-	glog.Fatal("Un-implemented mapping key for mockStationID2Location.\n")
+	glog.Fatalf("Un-implemented mapping key for mockStationID2Location id = %v.\n", stationID)
 	return nil
 }
 
+var testStationID1Str = stationfindertype.OrigLocationID.String()
+var testStationID2Str = "test_station_id_2"
+var testStationID3Str = "test_station_id_3"
+var testStationID4Str = "test_station_id_4"
+
 var testStationID1 = stationfindertype.OrigLocationID
-var testStationID2 = "test_station_id_2"
-var testStationID3 = "test_station_id_3"
-var testStationID4 = "test_station_id_4"
+var testStationID2 common.PlaceID = 2
+var testStationID3 common.PlaceID = 3
+var testStationID4 common.PlaceID = 4

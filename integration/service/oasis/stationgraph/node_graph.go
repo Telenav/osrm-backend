@@ -4,6 +4,8 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/connectivitymap"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 	"github.com/golang/glog"
 )
 
@@ -100,10 +102,10 @@ func (g *nodeGraph) StationID(id nodeID) string {
 	return g.nodeContainer.stationID(id)
 }
 
-func (g *nodeGraph) getPhysicalAdjacentNodes(id nodeID) []*connectivitymap.QueryResult {
+func (g *nodeGraph) getPhysicalAdjacentNodes(id nodeID) []*common.RankedPlaceInfo {
 	stationID := g.nodeContainer.stationID(id)
-	if stationID == invalidStationID {
-		glog.Errorf("Query getPhysicalAdjacentNodes with invalid node %#v and result %#v\n", id, invalidStationID)
+	if stationID == stationfindertype.InvalidPlaceIDStr {
+		glog.Errorf("Query getPhysicalAdjacentNodes with invalid node %#v and result %#v\n", id, stationfindertype.InvalidPlaceIDStr)
 		return nil
 	}
 	return g.querier.NearByStationQuery(stationID)
@@ -145,7 +147,7 @@ func (g *nodeGraph) buildAdjacentList(id nodeID) []nodeID {
 	numOfPhysicalNodesNeeded := 0
 	for _, physicalNode := range physicalNodes {
 		// filter nodes which is un-reachable by current energy, nodes are sorted based on distance
-		if !g.Node(id).reachableByDistance(physicalNode.Distance) {
+		if !g.Node(id).reachableByDistance(physicalNode.Weight.Distance) {
 			break
 		}
 		numOfPhysicalNodesNeeded++
@@ -155,12 +157,12 @@ func (g *nodeGraph) buildAdjacentList(id nodeID) []nodeID {
 
 	for _, physicalNode := range physicalNodes {
 		// filter nodes which is un-reachable by current energy, nodes are sorted based on distance
-		if !g.Node(id).reachableByDistance(physicalNode.Distance) {
+		if !g.Node(id).reachableByDistance(physicalNode.Weight.Distance) {
 			break
 		}
 
-		nodes := g.createLogicalNodes(id, physicalNode.StationID, physicalNode.StationLocation,
-			physicalNode.Distance, physicalNode.Duration)
+		nodes := g.createLogicalNodes(id, physicalNode.ID.String(), physicalNode.Location,
+			physicalNode.Weight.Distance, physicalNode.Weight.Duration)
 
 		for _, node := range nodes {
 			adjacentNodeIDs = append(adjacentNodeIDs, node.id)

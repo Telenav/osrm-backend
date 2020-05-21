@@ -2,6 +2,7 @@ package stationgraph
 
 import (
 	"github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 )
 
 type logicNodeIdentifier2NodePtr map[logicNodeIdentifier]*node
@@ -67,11 +68,9 @@ func (nc *nodeContainer) stationID(id nodeID) string {
 	if stationID, ok := nc.id2StationID[id]; ok {
 		return stationID
 	} else {
-		return invalidStationID
+		return stationfindertype.InvalidPlaceIDStr
 	}
 }
-
-const invalidStationID = "InvalidStationID"
 
 type logicNodeIdentifier struct {
 	stationID   string

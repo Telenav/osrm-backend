@@ -6,6 +6,10 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 )
 
+// todo codebear801 change to a more variable name
+// PlaceInfo -> PlaceWithLocation
+// RankedPlaceInfo -> TransferInfo
+
 // PlaceInfo records place related information such as ID and location
 type PlaceInfo struct {
 	ID       PlaceID
