@@ -29,25 +29,25 @@ func NewStationGraph(currEnergyLevel, maxEnergyLevel float64, strategy chargings
 }
 
 func (sg *stationGraph) setStartAndEndForGraph(currEnergyLevel, maxEnergyLevel float64) bool {
-	startLocation := sg.querier.GetLocation(stationfindertype.OrigLocationID.String())
+	startLocation := sg.querier.GetLocation(stationfindertype.OrigLocationID)
 	if startLocation == nil {
 		glog.Errorf("Failed to find %#v from Querier GetLocation()\n", stationfindertype.OrigLocationID.String())
 		return false
 	}
 
-	endLocation := sg.querier.GetLocation(stationfindertype.DestLocationID.String())
+	endLocation := sg.querier.GetLocation(stationfindertype.DestLocationID)
 	if startLocation == nil {
 		glog.Errorf("Failed to find %#v from Querier GetLocation()\n", stationfindertype.DestLocationID.String())
 		return false
 	}
 
-	sg.g = sg.g.SetStart(stationfindertype.OrigLocationID.String(),
+	sg.g = sg.g.SetStart(stationfindertype.OrigLocationID,
 		chargingstrategy.State{
 			Energy: currEnergyLevel,
 		},
 		startLocation)
 
-	sg.g = sg.g.SetEnd(stationfindertype.DestLocationID.String(),
+	sg.g = sg.g.SetEnd(stationfindertype.DestLocationID,
 		chargingstrategy.State{},
 		endLocation)
 
@@ -57,10 +57,6 @@ func (sg *stationGraph) setStartAndEndForGraph(currEnergyLevel, maxEnergyLevel f
 // GenerateChargeSolutions creates charge solutions for staion graph
 func (sg *stationGraph) GenerateChargeSolutions() []*solution.Solution {
 	stationNodes := dijkstra(sg.g, sg.g.StartNodeID(), sg.g.EndNodeID())
-
-	// to be removed
-	//nodeGraph := sg.g.(*nodeGraph)
-	//glog.Infof("+++ len(nodeGraph.adjacentList) = %v, len(nodeGraph.edgeMetric) = %v\n", len(nodeGraph.adjacentList), len(nodeGraph.edgeMetric))
 
 	if nil == stationNodes {
 		glog.Warning("Failed to generate charge stations for stationGraph.\n")
@@ -99,7 +95,7 @@ func (sg *stationGraph) generateSolutionsBasedOnStationCandidates(stationNodes [
 			Lat: sg.getLocationInfo(sg.g, stationNodes[i]).Lat,
 			Lon: sg.getLocationInfo(sg.g, stationNodes[i]).Lon,
 		}
-		station.StationID = sg.g.StationID(stationNodes[i])
+		station.PlaceID = sg.g.PlaceID(stationNodes[i]).String()
 
 		sol.ChargeStations = append(sol.ChargeStations, station)
 	}
@@ -154,7 +150,7 @@ func (sg *stationGraph) getLocationInfo(g Graph, n nodeID) *nav.Location {
 		glog.Fatalf("While calling getLocationInfo, incorrect nodeID passed into graph %v\n", n)
 	}
 
-	return sg.querier.GetLocation(sg.g.StationID(g.Node(n).id))
+	return sg.querier.GetLocation(sg.g.PlaceID(g.Node(n).id))
 }
 
 func (sg *stationGraph) isStart(id string) bool {

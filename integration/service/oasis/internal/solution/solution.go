@@ -18,7 +18,7 @@ type Solution struct {
 // ChargeStation contains all information related with specific charge station
 type ChargeStation struct {
 	Location      nav.Location
-	StationID     string
+	PlaceID       string
 	ArrivalEnergy float64
 	WaitTime      float64
 	ChargeTime    float64

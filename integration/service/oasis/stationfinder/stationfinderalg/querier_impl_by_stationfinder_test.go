@@ -19,12 +19,12 @@ import (
 // station7 -> destination
 func TestQuerierBasedOnWeightBetweenNeighborsChan(t *testing.T) {
 	cases := []struct {
-		stationID         string
+		placeID           common.PlaceID
 		expectQueryResult []*common.RankedPlaceInfo
 		expectLocation    *nav.Location
 	}{
 		{
-			stationfindertype.OrigLocationIDStr,
+			stationfindertype.OrigLocationID,
 			[]*common.RankedPlaceInfo{
 				{
 					PlaceInfo: common.PlaceInfo{
@@ -85,7 +85,7 @@ func TestQuerierBasedOnWeightBetweenNeighborsChan(t *testing.T) {
 			},
 		},
 		{
-			"station1",
+			1,
 			[]*common.RankedPlaceInfo{
 				{
 					PlaceInfo: common.PlaceInfo{
@@ -120,7 +120,7 @@ func TestQuerierBasedOnWeightBetweenNeighborsChan(t *testing.T) {
 			},
 		},
 		{
-			"station2",
+			2,
 			[]*common.RankedPlaceInfo{
 				{
 					PlaceInfo: common.PlaceInfo{
@@ -155,7 +155,7 @@ func TestQuerierBasedOnWeightBetweenNeighborsChan(t *testing.T) {
 			},
 		},
 		{
-			"station3",
+			3,
 			[]*common.RankedPlaceInfo{
 				{
 					PlaceInfo: common.PlaceInfo{
@@ -190,7 +190,7 @@ func TestQuerierBasedOnWeightBetweenNeighborsChan(t *testing.T) {
 			},
 		},
 		{
-			"station4",
+			4,
 			[]*common.RankedPlaceInfo{
 				{
 					PlaceInfo: common.PlaceInfo{
@@ -225,7 +225,7 @@ func TestQuerierBasedOnWeightBetweenNeighborsChan(t *testing.T) {
 			},
 		},
 		{
-			"station6",
+			6,
 			[]*common.RankedPlaceInfo{
 				{
 					PlaceInfo: common.PlaceInfo{
@@ -247,7 +247,7 @@ func TestQuerierBasedOnWeightBetweenNeighborsChan(t *testing.T) {
 			},
 		},
 		{
-			"station7",
+			7,
 			[]*common.RankedPlaceInfo{
 				{
 					PlaceInfo: common.PlaceInfo{
@@ -269,7 +269,7 @@ func TestQuerierBasedOnWeightBetweenNeighborsChan(t *testing.T) {
 			},
 		},
 		{
-			stationfindertype.DestLocationIDStr,
+			stationfindertype.DestLocationID,
 			nil,
 			&nav.Location{
 				Lat: 4.4,
@@ -283,12 +283,12 @@ func TestQuerierBasedOnWeightBetweenNeighborsChan(t *testing.T) {
 	q := NewQuerierBasedOnWeightBetweenNeighborsChan(c)
 
 	for _, c := range cases {
-		acturalQueryResult := q.NearByStationQuery(c.stationID)
+		acturalQueryResult := q.NearByStationQuery(c.placeID)
 		if !reflect.DeepEqual(acturalQueryResult, c.expectQueryResult) {
 			t.Errorf("Generate incorrect for NearByStationQuery, expect \n%#v\n but got \n%#v\n", c.expectQueryResult, acturalQueryResult)
 		}
 
-		actualLocation := q.GetLocation(c.stationID)
+		actualLocation := q.GetLocation(c.placeID)
 		if !reflect.DeepEqual(actualLocation, c.expectLocation) {
 			t.Errorf("Generate incorrect for GetLocation, expect \n%#v\n but got \n%#v\n", c.expectLocation, actualLocation)
 		}

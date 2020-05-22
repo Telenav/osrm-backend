@@ -69,15 +69,15 @@ func (g *nodeGraph) Edge(from, to nodeID) *edgeMetric {
 }
 
 // SetStart generates start node for the nodeGraph
-func (g *nodeGraph) SetStart(stationID string, targetState chargingstrategy.State, location *nav.Location) Graph {
-	n := g.nodeContainer.addNode(stationID, targetState)
+func (g *nodeGraph) SetStart(placeID common.PlaceID, targetState chargingstrategy.State, location *nav.Location) Graph {
+	n := g.nodeContainer.addNode(placeID, targetState)
 	g.startNodeID = n.id
 	return g
 }
 
 // SetEnd generates end node for the nodeGraph
-func (g *nodeGraph) SetEnd(stationID string, targetState chargingstrategy.State, location *nav.Location) Graph {
-	n := g.nodeContainer.addNode(stationID, targetState)
+func (g *nodeGraph) SetEnd(placeID common.PlaceID, targetState chargingstrategy.State, location *nav.Location) Graph {
+	n := g.nodeContainer.addNode(placeID, targetState)
 	g.endNodeID = n.id
 	return g
 }
@@ -97,26 +97,26 @@ func (g *nodeGraph) ChargeStrategy() chargingstrategy.Strategy {
 	return g.strategy
 }
 
-// StationID returns original stationID from internal nodeID
-func (g *nodeGraph) StationID(id nodeID) string {
-	return g.nodeContainer.stationID(id)
+// PlaceID returns original placeID from internal nodeID
+func (g *nodeGraph) PlaceID(id nodeID) common.PlaceID {
+	return g.nodeContainer.nodeID2PlaceID(id)
 }
 
 func (g *nodeGraph) getPhysicalAdjacentNodes(id nodeID) []*common.RankedPlaceInfo {
-	stationID := g.nodeContainer.stationID(id)
-	if stationID == stationfindertype.InvalidPlaceIDStr {
+	placeID := g.nodeContainer.nodeID2PlaceID(id)
+	if placeID == stationfindertype.InvalidPlaceID {
 		glog.Errorf("Query getPhysicalAdjacentNodes with invalid node %#v and result %#v\n", id, stationfindertype.InvalidPlaceIDStr)
 		return nil
 	}
-	return g.querier.NearByStationQuery(stationID)
+	return g.querier.NearByStationQuery(placeID)
 }
 
-func (g *nodeGraph) createLogicalNodes(from nodeID, toStationID string, toLocation *nav.Location, distance, duration float64) []*node {
+func (g *nodeGraph) createLogicalNodes(from nodeID, toPlaceID common.PlaceID, toLocation *nav.Location, distance, duration float64) []*node {
 	results := make([]*node, 0, 3)
 
-	// if toStationID equals endNode, direct return since there is no need to create charge candidates for endNode
+	// if toPlaceID equals endNode, direct return since there is no need to create charge candidates for endNode
 	endNodeID := g.EndNodeID()
-	if toStationID == g.StationID(endNodeID) {
+	if toPlaceID == g.PlaceID(endNodeID) {
 		results = append(results, g.Node(endNodeID))
 		g.edgeMetric[edgeID{from, endNodeID}] = &edgeMetric{
 			distance: distance,
@@ -126,7 +126,7 @@ func (g *nodeGraph) createLogicalNodes(from nodeID, toStationID string, toLocati
 
 	// creates logical nodes for each physical node, different logical node means charge for different level of energy at charge station
 	for _, state := range g.strategy.CreateChargingStates() {
-		n := g.nodeContainer.addNode(toStationID, state)
+		n := g.nodeContainer.addNode(toPlaceID, state)
 		results = append(results, n)
 
 		g.edgeMetric[edgeID{from, n.id}] = &edgeMetric{
@@ -161,7 +161,7 @@ func (g *nodeGraph) buildAdjacentList(id nodeID) []nodeID {
 			break
 		}
 
-		nodes := g.createLogicalNodes(id, physicalNode.ID.String(), physicalNode.Location,
+		nodes := g.createLogicalNodes(id, physicalNode.ID, physicalNode.Location,
 			physicalNode.Weight.Distance, physicalNode.Weight.Duration)
 
 		for _, node := range nodes {

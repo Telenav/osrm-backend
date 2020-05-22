@@ -8,16 +8,17 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 )
 
 func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 	input := []struct {
-		stationID   string
+		placeID     common.PlaceID
 		chargeState chargingstrategy.State
 		location    nav.Location
 	}{
 		{
-			"station1",
+			1,
 			chargingstrategy.State{
 				Energy: 10.0,
 			},
@@ -27,7 +28,7 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 			},
 		},
 		{
-			"station1",
+			1,
 			chargingstrategy.State{
 				Energy: 20.0,
 			},
@@ -37,7 +38,7 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 			},
 		},
 		{
-			"station1",
+			1,
 			chargingstrategy.State{
 				Energy: 30.0,
 			},
@@ -47,7 +48,7 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 			},
 		},
 		{
-			"station2",
+			2,
 			chargingstrategy.State{
 				Energy: 10.0,
 			},
@@ -57,7 +58,7 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 			},
 		},
 		{
-			"station2",
+			2,
 			chargingstrategy.State{
 				Energy: 20.0,
 			},
@@ -67,7 +68,7 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 			},
 		},
 		{
-			"station3",
+			3,
 			chargingstrategy.State{
 				Energy: 15.0,
 			},
@@ -79,8 +80,8 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 	}
 
 	expect := []struct {
-		n         *node
-		stationID string
+		n       *node
+		placeID common.PlaceID
 	}{
 		{
 			&node{
@@ -95,7 +96,7 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 				// 	Lon: 1.1,
 				// },
 			},
-			"station1",
+			1,
 		},
 		{
 			&node{
@@ -110,7 +111,7 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 				// 	Lon: 1.1,
 				// },
 			},
-			"station1",
+			1,
 		},
 		{
 			&node{
@@ -125,7 +126,7 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 				// 	Lon: 1.1,
 				// },
 			},
-			"station1",
+			1,
 		},
 		{
 			&node{
@@ -140,7 +141,7 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 				// 	Lon: 2.2,
 				// },
 			},
-			"station2",
+			2,
 		},
 		{
 			&node{
@@ -155,7 +156,7 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 				// 	Lon: 2.2,
 				// },
 			},
-			"station2",
+			2,
 		},
 		{
 			&node{
@@ -170,7 +171,7 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 				// 	Lon: 3.3,
 				// },
 			},
-			"station3",
+			3,
 		},
 	}
 
@@ -181,7 +182,7 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 	nc := newNodeContainer()
 
 	for i := 0; i < len(input); i++ {
-		tmpNode := nc.addNode(input[i].stationID, input[i].chargeState /*, input[i].location*/)
+		tmpNode := nc.addNode(input[i].placeID, input[i].chargeState /*, input[i].location*/)
 
 		if !reflect.DeepEqual(tmpNode, expect[i].n) {
 			t.Errorf("Calling nodeContainer's addNode() generate incorrect result, expect %#v but got %#v.\n", expect[i].n, tmpNode)
@@ -199,9 +200,9 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 			t.Errorf("Calling nodeContainer's getNode() generate incorrect result, expect %#v but got %#v.\n", expect[i].n, tmpNode)
 		}
 
-		tmpStationID := nc.stationID((nodeID)(i))
-		if !reflect.DeepEqual(tmpStationID, expect[i].stationID) {
-			t.Errorf("Calling nodeContainer's stationID() generate incorrect result, expect %#v but got %#v.\n", expect[i].stationID, tmpStationID)
+		tmpStationID := nc.nodeID2PlaceID((nodeID)(i))
+		if !reflect.DeepEqual(tmpStationID, expect[i].placeID) {
+			t.Errorf("Calling nodeContainer's placeID() generate incorrect result, expect %#v but got %#v.\n", expect[i].placeID, tmpStationID)
 		}
 	}
 
@@ -221,12 +222,12 @@ func TestAddAndGetFunctionsForNodeContainer(t *testing.T) {
 
 func TestAddDuplicateNodeForNodeContainer(t *testing.T) {
 	input := []struct {
-		stationID   string
+		placeID     common.PlaceID
 		chargeState chargingstrategy.State
 		location    nav.Location
 	}{
 		{
-			"station1",
+			1,
 			chargingstrategy.State{
 				Energy: 10.0,
 			},
@@ -236,7 +237,7 @@ func TestAddDuplicateNodeForNodeContainer(t *testing.T) {
 			},
 		},
 		{
-			"station1",
+			1,
 			chargingstrategy.State{
 				Energy: 10.0,
 			},
@@ -246,7 +247,7 @@ func TestAddDuplicateNodeForNodeContainer(t *testing.T) {
 			},
 		},
 		{
-			"station1",
+			1,
 			chargingstrategy.State{
 				Energy: 10.0,
 			},
@@ -258,8 +259,8 @@ func TestAddDuplicateNodeForNodeContainer(t *testing.T) {
 	}
 
 	expect := struct {
-		n         *node
-		stationID string
+		n       *node
+		placeID common.PlaceID
 	}{
 		&node{
 			0,
@@ -273,13 +274,13 @@ func TestAddDuplicateNodeForNodeContainer(t *testing.T) {
 			// 	Lon: 1.1,
 			// },
 		},
-		"station1",
+		1,
 	}
 
 	nc := newNodeContainer()
 
 	for i := 0; i < len(input); i++ {
-		tmpNode := nc.addNode(input[i].stationID, input[i].chargeState /*, input[i].location*/)
+		tmpNode := nc.addNode(input[i].placeID, input[i].chargeState /*, input[i].location*/)
 
 		if !reflect.DeepEqual(tmpNode, expect.n) {
 			t.Errorf("Calling nodeContainer's addNode() generate incorrect result, expect %#v but got %#v.\n", expect.n, tmpNode)

@@ -8,19 +8,19 @@ import (
 	"github.com/golang/glog"
 )
 
-type stationID2QueryResults map[string][]*common.RankedPlaceInfo
-type stationID2Location map[string]*nav.Location
+type placeID2QueryResults map[common.PlaceID][]*common.RankedPlaceInfo
+type placeID2Location map[common.PlaceID]*nav.Location
 
 type querier struct {
-	id2QueryResults stationID2QueryResults
-	id2Location     stationID2Location
+	id2QueryResults placeID2QueryResults
+	id2Location     placeID2Location
 }
 
 // NewQuerierBasedOnWeightBetweenNeighborsChan creates connectivitymap.Querier based on channel of charge station's WeightBetweenNeighbors
 func NewQuerierBasedOnWeightBetweenNeighborsChan(c chan stationfindertype.WeightBetweenNeighbors) connectivitymap.Querier {
 	querier := &querier{
-		id2QueryResults: make(stationID2QueryResults),
-		id2Location:     make(stationID2Location),
+		id2QueryResults: make(placeID2QueryResults),
+		id2Location:     make(placeID2Location),
 	}
 
 	for item := range c {
@@ -31,11 +31,11 @@ func NewQuerierBasedOnWeightBetweenNeighborsChan(c chan stationfindertype.Weight
 
 		for _, neighborInfo := range item.NeighborsInfo {
 
-			if _, ok := querier.id2QueryResults[neighborInfo.FromID]; !ok {
+			if _, ok := querier.id2QueryResults[neighborInfo.FromPlaceID()]; !ok {
 				results := make([]*common.RankedPlaceInfo, 0, 10)
-				querier.id2QueryResults[neighborInfo.FromID] = results
+				querier.id2QueryResults[neighborInfo.FromPlaceID()] = results
 			}
-			querier.id2QueryResults[neighborInfo.FromID] = append(querier.id2QueryResults[neighborInfo.FromID],
+			querier.id2QueryResults[neighborInfo.FromPlaceID()] = append(querier.id2QueryResults[neighborInfo.FromPlaceID()],
 				&common.RankedPlaceInfo{
 					PlaceInfo: common.PlaceInfo{
 						ID: neighborInfo.ToPlaceID(),
@@ -50,15 +50,15 @@ func NewQuerierBasedOnWeightBetweenNeighborsChan(c chan stationfindertype.Weight
 					},
 				})
 
-			if _, ok := querier.id2Location[neighborInfo.FromID]; !ok {
-				querier.id2Location[neighborInfo.FromID] = &nav.Location{
+			if _, ok := querier.id2Location[neighborInfo.FromPlaceID()]; !ok {
+				querier.id2Location[neighborInfo.FromPlaceID()] = &nav.Location{
 					Lat: neighborInfo.FromLocation.Lat,
 					Lon: neighborInfo.FromLocation.Lon,
 				}
 			}
 
-			if _, ok := querier.id2Location[neighborInfo.ToID]; !ok {
-				querier.id2Location[neighborInfo.ToID] = &nav.Location{
+			if _, ok := querier.id2Location[neighborInfo.ToPlaceID()]; !ok {
+				querier.id2Location[neighborInfo.ToPlaceID()] = &nav.Location{
 					Lat: neighborInfo.ToLocation.Lat,
 					Lon: neighborInfo.ToLocation.Lon,
 				}
@@ -69,16 +69,16 @@ func NewQuerierBasedOnWeightBetweenNeighborsChan(c chan stationfindertype.Weight
 	return querier
 }
 
-func (q *querier) NearByStationQuery(stationID string) []*common.RankedPlaceInfo {
-	if results, ok := q.id2QueryResults[stationID]; ok {
+func (q *querier) NearByStationQuery(placeID common.PlaceID) []*common.RankedPlaceInfo {
+	if results, ok := q.id2QueryResults[placeID]; ok {
 		return results
 	} else {
 		return nil
 	}
 }
 
-func (q *querier) GetLocation(stationID string) *nav.Location {
-	if location, ok := q.id2Location[stationID]; ok {
+func (q *querier) GetLocation(placeID common.PlaceID) *nav.Location {
+	if location, ok := q.id2Location[placeID]; ok {
 		return location
 	} else {
 		return nil

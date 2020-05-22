@@ -69,26 +69,24 @@ func convertIDFromStringToPlaceID(s string) common.PlaceID {
 			placeID := (common.PlaceID)(num)
 			if !isPredefinedValueTakenPlaceIDValue(placeID) {
 				return placeID
-			}
-			// else: assert false
+			} // else: Fatal assert inside isPredefinedValueTakenPlaceIDValue
 		} else { // from Web Service
 			re := regexp.MustCompile("[0-9]+")
 			idStrArray := re.FindAllString(s, -1)
 			if len(idStrArray) != 1 {
-				glog.Fatalf("Assumption of ID from search response is wrong, expect format is b- with number, but got %v.\n", s)
+				glog.Fatalf("Assumption of ID from search response is wrong, expect pattern is b- with single group of number, but got %v.\n", s)
 			}
 			if num, err := strconv.ParseInt(idStrArray[0], 10, 64); err == nil {
 				placeID := (common.PlaceID)(num)
 				if !isPredefinedValueTakenPlaceIDValue(placeID) {
 					return placeID
-				}
-				// else: assert false
+				} // else: Fatal assert inside isPredefinedValueTakenPlaceIDValue
 			} else {
-				glog.Fatalf("Assumption of ID from search response is wrong, expect format is b- with number, but got %v.\n", s)
+				glog.Fatalf("Assumption of ID from search response is wrong, expect format is b- with number, but when converting %v got error %#v.\n", s, err)
 			}
 		}
 	}
-	glog.Fatalf("PlaceID %v could not be decodinged", s)
+	glog.Fatalf("PlaceID %v could not be decodinged\n", s)
 	return InvalidPlaceID
 }
 

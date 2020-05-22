@@ -262,37 +262,37 @@ func TestStationConnQuerier(t *testing.T) {
 
 	// verify location
 	locationCases := []struct {
-		queryStr       string
+		queryID        common.PlaceID
 		expectLocation *nav.Location
 	}{
 		{
-			stationfindertype.OrigLocationIDStr,
+			stationfindertype.OrigLocationID,
 			mockOrigLocation,
 		},
 		{
-			stationfindertype.DestLocationIDStr,
+			stationfindertype.DestLocationID,
 			mockDestLocation,
 		},
 		{
-			"1",
+			1,
 			mockStation1Location,
 		},
 		{
-			"2",
+			2,
 			mockStation2Location,
 		},
 		{
-			"3",
+			3,
 			mockStation3Location,
 		},
 		{
-			"incorrect_station_id",
+			stationfindertype.InvalidPlaceID,
 			nil,
 		},
 	}
 
 	for _, c := range locationCases {
-		actualLocation := querier.GetLocation(c.queryStr)
+		actualLocation := querier.GetLocation(c.queryID)
 		if !reflect.DeepEqual(actualLocation, c.expectLocation) {
 			t.Errorf("Incorrect result for connectivitymap.Querier.GetLocation, expect %+v but got %+v\n", c.expectLocation, actualLocation)
 		}
@@ -300,11 +300,11 @@ func TestStationConnQuerier(t *testing.T) {
 
 	// verify connectivity
 	connectivityCases := []struct {
-		stationID         string
+		placeID           common.PlaceID
 		expectQueryResult []*common.RankedPlaceInfo
 	}{
 		{
-			stationfindertype.OrigLocationIDStr,
+			stationfindertype.OrigLocationID,
 			[]*common.RankedPlaceInfo{
 				{
 					PlaceInfo: common.PlaceInfo{
@@ -339,11 +339,11 @@ func TestStationConnQuerier(t *testing.T) {
 			},
 		},
 		{
-			stationfindertype.DestLocationIDStr,
+			stationfindertype.DestLocationID,
 			nil,
 		},
 		{
-			"1",
+			1,
 			[]*common.RankedPlaceInfo{
 				{
 					PlaceInfo: common.PlaceInfo{
@@ -368,7 +368,7 @@ func TestStationConnQuerier(t *testing.T) {
 			},
 		},
 		{
-			"3",
+			3,
 			[]*common.RankedPlaceInfo{
 				{
 					PlaceInfo: common.PlaceInfo{
@@ -383,7 +383,7 @@ func TestStationConnQuerier(t *testing.T) {
 			},
 		},
 		{
-			"2",
+			2,
 			[]*common.RankedPlaceInfo{
 				{
 					PlaceInfo: common.PlaceInfo{
@@ -410,7 +410,7 @@ func TestStationConnQuerier(t *testing.T) {
 	}
 
 	for _, c := range connectivityCases {
-		actualQueryResult := querier.NearByStationQuery(c.stationID)
+		actualQueryResult := querier.NearByStationQuery(c.placeID)
 		if !reflect.DeepEqual(actualQueryResult, c.expectQueryResult) {
 			for _, r := range c.expectQueryResult {
 				fmt.Printf("+++ %v, %v, %v, %v, %v\n", r.ID, r.Location.Lat, r.Location.Lon, r.Weight.Distance, r.Weight.Duration)

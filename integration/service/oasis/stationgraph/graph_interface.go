@@ -3,6 +3,7 @@ package stationgraph
 import (
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 )
 
 // Graph defines interface used for Graph
@@ -19,10 +20,10 @@ type Graph interface {
 	Edge(from, to nodeID) *edgeMetric
 
 	// SetStart generates start node for the graph
-	SetStart(stationID string, targetState chargingstrategy.State, location *nav.Location) Graph
+	SetStart(placeID common.PlaceID, targetState chargingstrategy.State, location *nav.Location) Graph
 
 	// SetEnd generates end node for the graph
-	SetEnd(stationID string, targetState chargingstrategy.State, location *nav.Location) Graph
+	SetEnd(placeID common.PlaceID, targetState chargingstrategy.State, location *nav.Location) Graph
 
 	// StartNodeID returns start node's ID for given graph
 	StartNodeID() nodeID
@@ -33,6 +34,6 @@ type Graph interface {
 	// ChargeStrategy returns charge strategy used for graph construction
 	ChargeStrategy() chargingstrategy.Strategy
 
-	// StationID returns original stationID from internal nodeID
-	StationID(id nodeID) string
+	// PlaceID returns original placeID from internal nodeID
+	PlaceID(id nodeID) common.PlaceID
 }

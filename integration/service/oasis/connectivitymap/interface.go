@@ -8,11 +8,11 @@ import (
 // Querier used to return topological information of charge stations
 type Querier interface {
 
-	// NearByStationQuery finds near by stations by given stationID and return them in recorded sequence
-	// Returns nil if given stationID is not found or no connectivity
-	NearByStationQuery(stationID string) []*common.RankedPlaceInfo
+	// NearByStationQuery finds near by stations by given placeID and return them in recorded sequence
+	// Returns nil if given placeID is not found or no connectivity
+	NearByStationQuery(placeID common.PlaceID) []*common.RankedPlaceInfo
 
 	// GetLocation returns location of given station id
-	// Returns nil if given stationID is not found
-	GetLocation(stationID string) *nav.Location
+	// Returns nil if given placeID is not found
+	GetLocation(placeID common.PlaceID) *nav.Location
 }

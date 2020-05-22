@@ -24,7 +24,8 @@ type RankedPlaceInfo struct {
 }
 
 // PlaceID defines ID for given place(location, point of interest)
-// The data used for pre-processing should contain valid PlaceID
+// The data used for pre-processing must contain valid PlaceID, which means it
+// either a int64 directly or be processed as int64
 type PlaceID int64
 
 // String converts PlaceID to string

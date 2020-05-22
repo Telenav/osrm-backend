@@ -24,15 +24,15 @@ func TestAddAndGetStartAndEndNodeForNodeGraph(t *testing.T) {
 		Lat: 34.44,
 		Lon: -124.44}
 
-	graph.SetStart(stationfindertype.OrigLocationID.String(), expectStartChargeState, expectStartLocation).
-		SetEnd(stationfindertype.DestLocationID.String(), expectEndChargeState, expectEndLocation)
+	graph.SetStart(stationfindertype.OrigLocationID, expectStartChargeState, expectStartLocation).
+		SetEnd(stationfindertype.DestLocationID, expectEndChargeState, expectEndLocation)
 
-	if graph.StationID(graph.StartNodeID()) != stationfindertype.OrigLocationID.String() {
-		t.Errorf("Incorrect result for start's stationID, expect %s but got %s.\n", stationfindertype.OrigLocationID.String(), graph.StationID(graph.StartNodeID()))
+	if graph.PlaceID(graph.StartNodeID()) != stationfindertype.OrigLocationID {
+		t.Errorf("Incorrect result for start's placeID, expect %s but got %s.\n", stationfindertype.OrigLocationID.String(), graph.PlaceID(graph.StartNodeID()))
 	}
 
-	if graph.StationID(graph.EndNodeID()) != stationfindertype.DestLocationID.String() {
-		t.Errorf("Incorrect result for end's stationID, expect %s but got %s.\n", stationfindertype.DestLocationID.String(), graph.StationID(graph.EndNodeID()))
+	if graph.PlaceID(graph.EndNodeID()) != stationfindertype.DestLocationID {
+		t.Errorf("Incorrect result for end's placeID, expect %s but got %s.\n", stationfindertype.DestLocationID.String(), graph.PlaceID(graph.EndNodeID()))
 	}
 
 	startNode := graph.Node(graph.StartNodeID())
@@ -241,24 +241,24 @@ func TestStationIDInterfaceForNodeGraph(t *testing.T) {
 	graph := generateMockNodeGraph()
 	nodeIDs := graph.AdjacentNodes(graph.StartNodeID())
 
-	expectStationIDs := []string{
-		testStationID2.String(),
-		testStationID2.String(),
-		testStationID2.String(),
-		testStationID3.String(),
-		testStationID3.String(),
-		testStationID3.String(),
-		testStationID4.String(),
-		testStationID4.String(),
-		testStationID4.String(),
+	expectStationIDs := []common.PlaceID{
+		testStationID2,
+		testStationID2,
+		testStationID2,
+		testStationID3,
+		testStationID3,
+		testStationID3,
+		testStationID4,
+		testStationID4,
+		testStationID4,
 	}
 
-	actualStationIDs := make([]string, 0, len(nodeIDs))
+	actualStationIDs := make([]common.PlaceID, 0, len(nodeIDs))
 	for _, nodeID := range nodeIDs {
-		actualStationIDs = append(actualStationIDs, graph.StationID(nodeID))
+		actualStationIDs = append(actualStationIDs, graph.PlaceID(nodeID))
 	}
 	if !reflect.DeepEqual(actualStationIDs, expectStationIDs) {
-		t.Errorf("Incorrect StationID() result for NodeGraph, expect %#v but got %#v\n", expectStationIDs, actualStationIDs)
+		t.Errorf("Incorrect PlaceID() result for NodeGraph, expect %#v but got %#v\n", expectStationIDs, actualStationIDs)
 	}
 }
 
@@ -269,21 +269,21 @@ func generateMockNodeGraph() Graph {
 	querier := newMockQuerier()
 	graph := NewNodeGraph(strategy, querier)
 
-	origLocation := querier.GetLocation(testStationID1Str)
-	graph.SetStart(testStationID1Str, chargingstrategy.State{Energy: currEnergyLevel}, &nav.Location{Lat: origLocation.Lat, Lon: origLocation.Lon})
+	origLocation := querier.GetLocation(testStationID1)
+	graph.SetStart(testStationID1, chargingstrategy.State{Energy: currEnergyLevel}, &nav.Location{Lat: origLocation.Lat, Lon: origLocation.Lon})
 
 	return graph
 }
 
 type mockQuerier4NodeGraph struct {
-	mockStationID2QueryResult map[string][]*common.RankedPlaceInfo
-	mockStationID2Location    map[string]*nav.Location
+	mockStationID2QueryResult map[common.PlaceID][]*common.RankedPlaceInfo
+	mockStationID2Location    map[common.PlaceID]*nav.Location
 }
 
 func newMockQuerier() connectivitymap.Querier {
 	return &mockQuerier4NodeGraph{
-		mockStationID2QueryResult: map[string][]*common.RankedPlaceInfo{
-			testStationID1Str: {
+		mockStationID2QueryResult: map[common.PlaceID][]*common.RankedPlaceInfo{
+			testStationID1: {
 				{
 					PlaceInfo: common.PlaceInfo{
 						ID:       testStationID2,
@@ -316,28 +316,28 @@ func newMockQuerier() connectivitymap.Querier {
 				},
 			},
 		},
-		mockStationID2Location: map[string]*nav.Location{
-			testStationID1Str: {Lat: 1.1, Lon: 1.1},
-			testStationID2Str: {Lat: 2.2, Lon: 2.2},
-			testStationID3Str: {Lat: 3.3, Lon: 3.3},
-			testStationID4Str: {Lat: 4.4, Lon: 4.4},
+		mockStationID2Location: map[common.PlaceID]*nav.Location{
+			testStationID1: {Lat: 1.1, Lon: 1.1},
+			testStationID2: {Lat: 2.2, Lon: 2.2},
+			testStationID3: {Lat: 3.3, Lon: 3.3},
+			testStationID4: {Lat: 4.4, Lon: 4.4},
 		},
 	}
 }
 
-func (querier *mockQuerier4NodeGraph) NearByStationQuery(stationID string) []*common.RankedPlaceInfo {
-	if stationID == testStationID1Str {
-		return querier.mockStationID2QueryResult[testStationID1Str]
+func (querier *mockQuerier4NodeGraph) NearByStationQuery(placeID common.PlaceID) []*common.RankedPlaceInfo {
+	if placeID == testStationID1 {
+		return querier.mockStationID2QueryResult[testStationID1]
 	}
-	glog.Fatalf("Un-implemented mapping key %v for mockStationID2QueryResult.\n", stationID)
+	glog.Fatalf("Un-implemented mapping key %v for mockStationID2QueryResult.\n", placeID)
 	return nil
 }
 
-func (querier *mockQuerier4NodeGraph) GetLocation(stationID string) *nav.Location {
-	if stationID == testStationID1Str {
-		return querier.mockStationID2Location[testStationID1Str]
+func (querier *mockQuerier4NodeGraph) GetLocation(placeID common.PlaceID) *nav.Location {
+	if placeID == testStationID1 {
+		return querier.mockStationID2Location[testStationID1]
 	}
-	glog.Fatalf("Un-implemented mapping key for mockStationID2Location id = %v.\n", stationID)
+	glog.Fatalf("Un-implemented mapping key for mockStationID2Location id = %v.\n", placeID)
 	return nil
 }
 

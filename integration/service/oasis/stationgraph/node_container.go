@@ -2,17 +2,18 @@ package stationgraph
 
 import (
 	"github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 )
 
 type logicNodeIdentifier2NodePtr map[logicNodeIdentifier]*node
 type nodeID2NodePtr []*node
-type nodeID2StationID map[nodeID]string
+type nodeID2PlaceID map[nodeID]common.PlaceID
 
 type nodeContainer struct {
 	logicNode2NodePtr logicNodeIdentifier2NodePtr
 	id2NodePtr        nodeID2NodePtr
-	id2StationID      nodeID2StationID
+	id2StationID      nodeID2PlaceID
 	counter           int
 }
 
@@ -20,13 +21,13 @@ func newNodeContainer() *nodeContainer {
 	return &nodeContainer{
 		logicNode2NodePtr: make(logicNodeIdentifier2NodePtr, 15000),
 		id2NodePtr:        make(nodeID2NodePtr, 0, 15000),
-		id2StationID:      make(nodeID2StationID, 15000),
+		id2StationID:      make(nodeID2PlaceID, 15000),
 		counter:           0,
 	}
 }
 
-func (nc *nodeContainer) addNode(stationID string, targetState chargingstrategy.State) *node {
-	key := logicNodeIdentifier{stationID, targetState}
+func (nc *nodeContainer) addNode(placeID common.PlaceID, targetState chargingstrategy.State) *node {
+	key := logicNodeIdentifier{placeID, targetState}
 
 	if n, ok := nc.logicNode2NodePtr[key]; ok {
 		return n
@@ -40,9 +41,8 @@ func (nc *nodeContainer) addNode(stationID string, targetState chargingstrategy.
 			},
 		}
 		nc.logicNode2NodePtr[key] = n
-		//nc.id2NodePtr[n.id] = n
 		nc.id2NodePtr = append(nc.id2NodePtr, n)
-		nc.id2StationID[n.id] = stationID
+		nc.id2StationID[n.id] = placeID
 		nc.counter++
 
 		return n
@@ -64,15 +64,15 @@ func (nc *nodeContainer) isNodeVisited(id nodeID) bool {
 	return false
 }
 
-func (nc *nodeContainer) stationID(id nodeID) string {
-	if stationID, ok := nc.id2StationID[id]; ok {
-		return stationID
+func (nc *nodeContainer) nodeID2PlaceID(id nodeID) common.PlaceID {
+	if placeID, ok := nc.id2StationID[id]; ok {
+		return placeID
 	} else {
-		return stationfindertype.InvalidPlaceIDStr
+		return stationfindertype.InvalidPlaceID
 	}
 }
 
 type logicNodeIdentifier struct {
-	stationID   string
+	placeID     common.PlaceID
 	targetState chargingstrategy.State
 }

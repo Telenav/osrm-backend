@@ -3,6 +3,7 @@ package stationgraph
 import (
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 )
 
@@ -77,12 +78,12 @@ func newMockGraph1() Graph {
 				// },
 			},
 		},
-		[]string{
-			"node_0",
-			"node_1",
-			"node_2",
-			"node_3",
-			"node_4",
+		[]common.PlaceID{
+			0,
+			1,
+			2,
+			3,
+			4,
 		},
 		map[nodeID][]*edge{
 			// node_0 -> node_1, duration = 30, distance = 30
@@ -238,16 +239,16 @@ func newMockGraph2() Graph {
 				// },
 			},
 		},
-		[]string{
-			"node_0",
-			"node_1",
-			"node_2",
-			"node_3",
-			"node_4",
-			"node_5",
-			"node_6",
-			"node_7",
-			"node_8",
+		[]common.PlaceID{
+			0,
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
 		},
 		map[nodeID][]*edge{
 			// node_0 -> node_1, duration = 30, distance = 30
@@ -564,16 +565,16 @@ func newMockGraph3() Graph {
 				// },
 			},
 		},
-		[]string{
-			"node_0",
-			"node_1",
-			"node_2",
-			"node_3",
-			"node_4",
-			"node_5",
-			"node_6",
-			"node_7",
-			"node_8",
+		[]common.PlaceID{
+			0,
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
 		},
 		map[nodeID][]*edge{
 			// node_0 -> node_1, duration = 15, distance = 15
@@ -891,16 +892,16 @@ func newMockGraph4() Graph {
 				// },
 			},
 		},
-		[]string{
-			"node_0",
-			"node_1",
-			"node_2",
-			"node_3",
-			"node_4",
-			"node_5",
-			"node_6",
-			"node_7",
-			"node_8",
+		[]common.PlaceID{
+			0,
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
 		},
 		map[nodeID][]*edge{
 			// node_0 -> node_1, duration = 15, distance = 15
@@ -1090,10 +1091,10 @@ func newMockGraph4() Graph {
 }
 
 type mockGraph struct {
-	nodes      []*node
-	stationIDs []string
-	edges      map[nodeID][]*edge
-	strategy   chargingstrategy.Strategy
+	nodes    []*node
+	placeIDs []common.PlaceID
+	edges    map[nodeID][]*edge
+	strategy chargingstrategy.Strategy
 }
 
 // Node returns node object by its nodeID
@@ -1137,12 +1138,12 @@ func (graph *mockGraph) Edge(from, to nodeID) *edgeMetric {
 }
 
 // SetStart generates start node for the graph
-func (graph *mockGraph) SetStart(stationID string, targetState chargingstrategy.State, location *nav.Location) Graph {
+func (graph *mockGraph) SetStart(placeID common.PlaceID, targetState chargingstrategy.State, location *nav.Location) Graph {
 	return graph
 }
 
 // SetEnd generates end node for the graph
-func (graph *mockGraph) SetEnd(stationID string, targetState chargingstrategy.State, location *nav.Location) Graph {
+func (graph *mockGraph) SetEnd(placeID common.PlaceID, targetState chargingstrategy.State, location *nav.Location) Graph {
 	return graph
 }
 
@@ -1161,12 +1162,12 @@ func (graph *mockGraph) ChargeStrategy() chargingstrategy.Strategy {
 	return graph.strategy
 }
 
-// StationID returns original stationID from internal nodeID
-func (graph *mockGraph) StationID(id nodeID) string {
-	if id < 0 || int(id) >= len(graph.stationIDs) {
-		return stationfindertype.InvalidPlaceIDStr
+// PlaceID returns original placeID from internal nodeID
+func (graph *mockGraph) PlaceID(id nodeID) common.PlaceID {
+	if id < 0 || int(id) >= len(graph.placeIDs) {
+		return stationfindertype.InvalidPlaceID
 	}
-	return graph.stationIDs[id]
+	return graph.placeIDs[id]
 }
 
 func (graph *mockGraph) isValidNodeID(id nodeID) bool {
