@@ -17,7 +17,7 @@ type Graph interface {
 	AdjacentNodes(id nodeID) []nodeID
 
 	// Edge returns edge information between given two nodes
-	Edge(from, to nodeID) *edgeMetric
+	Edge(from, to nodeID) *common.Weight
 
 	// SetStart generates start node for the graph
 	SetStart(placeID common.PlaceID, targetState chargingstrategy.State, location *nav.Location) Graph

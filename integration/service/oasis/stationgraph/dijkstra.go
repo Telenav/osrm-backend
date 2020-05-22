@@ -18,9 +18,6 @@ func dijkstra(g Graph, start, end nodeID) []nodeID {
 			return nil
 		}
 		if currID == end {
-			// to be removed
-			//glog.Infof("+++  len(queryHeap.m) = %v \n", len(m.m))
-
 			return m.retrieve(currID)
 		}
 
@@ -31,8 +28,8 @@ func dijkstra(g Graph, start, end nodeID) []nodeID {
 				glog.Errorf("No connectivity between %+v and %+v which is unexpected, check your logic.\n", currID, targetID)
 			}
 
-			len := g.Edge(currID, targetID).distance
-			t := g.Edge(currID, targetID).duration
+			len := g.Edge(currID, targetID).Distance
+			t := g.Edge(currID, targetID).Duration
 
 			// todo
 			// !g.Node(currID).tooNearToCurrentNode(g.Node(targetID), len)

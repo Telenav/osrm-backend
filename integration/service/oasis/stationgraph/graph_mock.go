@@ -89,22 +89,22 @@ func newMockGraph1() Graph {
 			// node_0 -> node_1, duration = 30, distance = 30
 			// node_0 -> node_2, duration = 20, distance = 20
 			0: {
-				{edgeID{0, 1}, &edgeMetric{30, 30}},
-				{edgeID{0, 2}, &edgeMetric{20, 20}},
+				{edgeID{0, 1}, &common.Weight{30, 30}},
+				{edgeID{0, 2}, &common.Weight{20, 20}},
 			},
 			// node_1 -> node_3, duration = 10, distance = 10
 			1: {
-				{edgeID{1, 3}, &edgeMetric{10, 10}},
+				{edgeID{1, 3}, &common.Weight{10, 10}},
 			},
 			// node_2 -> node_4, duration = 50, distance = 50
 			// node_2 -> node_3, duration = 50, distance = 50
 			2: {
-				{edgeID{2, 4}, &edgeMetric{50, 50}},
-				{edgeID{2, 3}, &edgeMetric{50, 50}},
+				{edgeID{2, 4}, &common.Weight{50, 50}},
+				{edgeID{2, 3}, &common.Weight{50, 50}},
 			},
 			// node_3 -> node_4, duration = 10, distance = 10
 			3: {
-				{edgeID{3, 4}, &edgeMetric{10, 10}},
+				{edgeID{3, 4}, &common.Weight{10, 10}},
 			},
 		},
 		chargingstrategy.NewNullChargeStrategy(),
@@ -259,7 +259,7 @@ func newMockGraph2() Graph {
 						0,
 						1,
 					},
-					&edgeMetric{
+					&common.Weight{
 						30,
 						30,
 					},
@@ -269,7 +269,7 @@ func newMockGraph2() Graph {
 						0,
 						2,
 					},
-					&edgeMetric{
+					&common.Weight{
 						20,
 						20,
 					},
@@ -283,7 +283,7 @@ func newMockGraph2() Graph {
 						1,
 						3,
 					},
-					&edgeMetric{
+					&common.Weight{
 						20,
 						20,
 					},
@@ -293,7 +293,7 @@ func newMockGraph2() Graph {
 						1,
 						4,
 					},
-					&edgeMetric{
+					&common.Weight{
 						15,
 						15,
 					},
@@ -307,7 +307,7 @@ func newMockGraph2() Graph {
 						2,
 						3,
 					},
-					&edgeMetric{
+					&common.Weight{
 						30,
 						30,
 					},
@@ -317,7 +317,7 @@ func newMockGraph2() Graph {
 						2,
 						4,
 					},
-					&edgeMetric{
+					&common.Weight{
 						20,
 						20,
 					},
@@ -332,7 +332,7 @@ func newMockGraph2() Graph {
 						3,
 						5,
 					},
-					&edgeMetric{
+					&common.Weight{
 						10,
 						10,
 					},
@@ -342,7 +342,7 @@ func newMockGraph2() Graph {
 						3,
 						6,
 					},
-					&edgeMetric{
+					&common.Weight{
 						10,
 						10,
 					},
@@ -352,7 +352,7 @@ func newMockGraph2() Graph {
 						3,
 						7,
 					},
-					&edgeMetric{
+					&common.Weight{
 						10,
 						10,
 					},
@@ -367,7 +367,7 @@ func newMockGraph2() Graph {
 						4,
 						5,
 					},
-					&edgeMetric{
+					&common.Weight{
 						15,
 						15,
 					},
@@ -377,7 +377,7 @@ func newMockGraph2() Graph {
 						4,
 						6,
 					},
-					&edgeMetric{
+					&common.Weight{
 						15,
 						15,
 					},
@@ -387,7 +387,7 @@ func newMockGraph2() Graph {
 						4,
 						7,
 					},
-					&edgeMetric{
+					&common.Weight{
 						15,
 						15,
 					},
@@ -400,7 +400,7 @@ func newMockGraph2() Graph {
 						5,
 						8,
 					},
-					&edgeMetric{
+					&common.Weight{
 						10,
 						10,
 					},
@@ -413,7 +413,7 @@ func newMockGraph2() Graph {
 						6,
 						8,
 					},
-					&edgeMetric{
+					&common.Weight{
 						20,
 						20,
 					},
@@ -426,7 +426,7 @@ func newMockGraph2() Graph {
 						7,
 						8,
 					},
-					&edgeMetric{
+					&common.Weight{
 						30,
 						30,
 					},
@@ -585,7 +585,7 @@ func newMockGraph3() Graph {
 						0,
 						1,
 					},
-					&edgeMetric{
+					&common.Weight{
 						15,
 						15,
 					},
@@ -595,7 +595,7 @@ func newMockGraph3() Graph {
 						0,
 						2,
 					},
-					&edgeMetric{
+					&common.Weight{
 						20,
 						20,
 					},
@@ -609,7 +609,7 @@ func newMockGraph3() Graph {
 						1,
 						3,
 					},
-					&edgeMetric{
+					&common.Weight{
 						20,
 						20,
 					},
@@ -619,7 +619,7 @@ func newMockGraph3() Graph {
 						1,
 						4,
 					},
-					&edgeMetric{
+					&common.Weight{
 						15,
 						15,
 					},
@@ -633,7 +633,7 @@ func newMockGraph3() Graph {
 						2,
 						3,
 					},
-					&edgeMetric{
+					&common.Weight{
 						30,
 						30,
 					},
@@ -643,7 +643,7 @@ func newMockGraph3() Graph {
 						2,
 						4,
 					},
-					&edgeMetric{
+					&common.Weight{
 						20,
 						20,
 					},
@@ -658,7 +658,7 @@ func newMockGraph3() Graph {
 						3,
 						5,
 					},
-					&edgeMetric{
+					&common.Weight{
 						10,
 						10,
 					},
@@ -668,7 +668,7 @@ func newMockGraph3() Graph {
 						3,
 						6,
 					},
-					&edgeMetric{
+					&common.Weight{
 						10,
 						10,
 					},
@@ -678,7 +678,7 @@ func newMockGraph3() Graph {
 						3,
 						7,
 					},
-					&edgeMetric{
+					&common.Weight{
 						10,
 						10,
 					},
@@ -693,7 +693,7 @@ func newMockGraph3() Graph {
 						4,
 						5,
 					},
-					&edgeMetric{
+					&common.Weight{
 						15,
 						15,
 					},
@@ -703,7 +703,7 @@ func newMockGraph3() Graph {
 						4,
 						6,
 					},
-					&edgeMetric{
+					&common.Weight{
 						15,
 						15,
 					},
@@ -713,7 +713,7 @@ func newMockGraph3() Graph {
 						4,
 						7,
 					},
-					&edgeMetric{
+					&common.Weight{
 						15,
 						15,
 					},
@@ -726,7 +726,7 @@ func newMockGraph3() Graph {
 						5,
 						8,
 					},
-					&edgeMetric{
+					&common.Weight{
 						10,
 						10,
 					},
@@ -739,7 +739,7 @@ func newMockGraph3() Graph {
 						6,
 						8,
 					},
-					&edgeMetric{
+					&common.Weight{
 						20,
 						20,
 					},
@@ -752,7 +752,7 @@ func newMockGraph3() Graph {
 						7,
 						8,
 					},
-					&edgeMetric{
+					&common.Weight{
 						30,
 						30,
 					},
@@ -912,7 +912,7 @@ func newMockGraph4() Graph {
 						0,
 						1,
 					},
-					&edgeMetric{
+					&common.Weight{
 						15,
 						15,
 					},
@@ -922,7 +922,7 @@ func newMockGraph4() Graph {
 						0,
 						2,
 					},
-					&edgeMetric{
+					&common.Weight{
 						20,
 						20,
 					},
@@ -936,7 +936,7 @@ func newMockGraph4() Graph {
 						1,
 						3,
 					},
-					&edgeMetric{
+					&common.Weight{
 						20,
 						20,
 					},
@@ -946,7 +946,7 @@ func newMockGraph4() Graph {
 						1,
 						4,
 					},
-					&edgeMetric{
+					&common.Weight{
 						15,
 						15,
 					},
@@ -960,7 +960,7 @@ func newMockGraph4() Graph {
 						2,
 						3,
 					},
-					&edgeMetric{
+					&common.Weight{
 						30,
 						30,
 					},
@@ -970,7 +970,7 @@ func newMockGraph4() Graph {
 						2,
 						4,
 					},
-					&edgeMetric{
+					&common.Weight{
 						5,
 						5,
 					},
@@ -985,7 +985,7 @@ func newMockGraph4() Graph {
 						3,
 						5,
 					},
-					&edgeMetric{
+					&common.Weight{
 						10,
 						10,
 					},
@@ -995,7 +995,7 @@ func newMockGraph4() Graph {
 						3,
 						6,
 					},
-					&edgeMetric{
+					&common.Weight{
 						10,
 						10,
 					},
@@ -1005,7 +1005,7 @@ func newMockGraph4() Graph {
 						3,
 						7,
 					},
-					&edgeMetric{
+					&common.Weight{
 						10,
 						10,
 					},
@@ -1020,7 +1020,7 @@ func newMockGraph4() Graph {
 						4,
 						5,
 					},
-					&edgeMetric{
+					&common.Weight{
 						15,
 						15,
 					},
@@ -1030,7 +1030,7 @@ func newMockGraph4() Graph {
 						4,
 						6,
 					},
-					&edgeMetric{
+					&common.Weight{
 						15,
 						15,
 					},
@@ -1040,7 +1040,7 @@ func newMockGraph4() Graph {
 						4,
 						7,
 					},
-					&edgeMetric{
+					&common.Weight{
 						15,
 						15,
 					},
@@ -1053,7 +1053,7 @@ func newMockGraph4() Graph {
 						5,
 						8,
 					},
-					&edgeMetric{
+					&common.Weight{
 						10,
 						10,
 					},
@@ -1066,7 +1066,7 @@ func newMockGraph4() Graph {
 						6,
 						8,
 					},
-					&edgeMetric{
+					&common.Weight{
 						20,
 						20,
 					},
@@ -1079,7 +1079,7 @@ func newMockGraph4() Graph {
 						7,
 						8,
 					},
-					&edgeMetric{
+					&common.Weight{
 						30,
 						30,
 					},
@@ -1122,7 +1122,7 @@ func (graph *mockGraph) AdjacentNodes(id nodeID) []nodeID {
 }
 
 // Edge returns edge information between given two nodes
-func (graph *mockGraph) Edge(from, to nodeID) *edgeMetric {
+func (graph *mockGraph) Edge(from, to nodeID) *common.Weight {
 	if graph.isValidNodeID(from) && graph.isValidNodeID(to) {
 		edges, ok := graph.edges[from]
 		if ok {

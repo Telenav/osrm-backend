@@ -121,8 +121,8 @@ func accumulateDistanceAndDuration(g Graph, from nodeID, to nodeID, distance, du
 		glog.Errorf("Passing un-connect fromNodeID %#v and toNodeID %#v into accumulateDistanceAndDuration.\n", from, to)
 	}
 
-	*distance += g.Edge(from, to).distance
-	*duration += g.Edge(from, to).duration + g.Node(to).chargeTime
+	*distance += g.Edge(from, to).Distance
+	*duration += g.Edge(from, to).Duration + g.Node(to).chargeTime
 
 }
 

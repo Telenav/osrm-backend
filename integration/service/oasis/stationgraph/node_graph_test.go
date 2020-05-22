@@ -187,46 +187,46 @@ func TestEdgeInterfaceForNodeGraph(t *testing.T) {
 	graph := generateMockNodeGraph()
 	nodeIDs := graph.AdjacentNodes(graph.StartNodeID())
 
-	expectEdges := []*edgeMetric{
+	expectEdges := []*common.Weight{
 		{
-			distance: 2,
-			duration: 2,
+			Distance: 2,
+			Duration: 2,
 		},
 		{
-			distance: 2,
-			duration: 2,
+			Distance: 2,
+			Duration: 2,
 		},
 		{
-			distance: 2,
-			duration: 2,
+			Distance: 2,
+			Duration: 2,
 		},
 		{
-			distance: 3,
-			duration: 3,
+			Distance: 3,
+			Duration: 3,
 		},
 		{
-			distance: 3,
-			duration: 3,
+			Distance: 3,
+			Duration: 3,
 		},
 		{
-			distance: 3,
-			duration: 3,
+			Distance: 3,
+			Duration: 3,
 		},
 		{
-			distance: 4,
-			duration: 4,
+			Distance: 4,
+			Duration: 4,
 		},
 		{
-			distance: 4,
-			duration: 4,
+			Distance: 4,
+			Duration: 4,
 		},
 		{
-			distance: 4,
-			duration: 4,
+			Distance: 4,
+			Duration: 4,
 		},
 	}
 
-	actualEdges := make([]*edgeMetric, 0, len(nodeIDs))
+	actualEdges := make([]*common.Weight, 0, len(nodeIDs))
 	fromNodeID := graph.StartNodeID()
 	for _, toNodeID := range nodeIDs {
 		actualEdges = append(actualEdges, graph.Edge(fromNodeID, toNodeID))

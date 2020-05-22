@@ -10,7 +10,11 @@ import (
 )
 
 type nodeID2AdjacentNodes map[nodeID][]nodeID
-type edgeID2EdgeData map[edgeID]*edgeMetric
+type place2placeID struct {
+	from common.PlaceID
+	to   common.PlaceID
+}
+type edgeID2EdgeData map[place2placeID]*common.Weight
 
 type nodeGraph struct {
 	nodeContainer *nodeContainer
@@ -59,13 +63,10 @@ func (g *nodeGraph) AdjacentNodes(id nodeID) []nodeID {
 }
 
 // Edge returns edge information between given two nodes
-func (g *nodeGraph) Edge(from, to nodeID) *edgeMetric {
-	edgeID := edgeID{
-		fromNodeID: from,
-		toNodeID:   to,
-	}
-
-	return g.edgeMetric[edgeID]
+func (g *nodeGraph) Edge(from, to nodeID) *common.Weight {
+	return g.edgeMetric[place2placeID{
+		from: g.nodeContainer.nodeID2PlaceID(from),
+		to:   g.nodeContainer.nodeID2PlaceID(to)}]
 }
 
 // SetStart generates start node for the nodeGraph
@@ -111,16 +112,16 @@ func (g *nodeGraph) getPhysicalAdjacentNodes(id nodeID) []*common.RankedPlaceInf
 	return g.querier.NearByStationQuery(placeID)
 }
 
-func (g *nodeGraph) createLogicalNodes(from nodeID, toPlaceID common.PlaceID, toLocation *nav.Location, distance, duration float64) []*node {
+func (g *nodeGraph) createLogicalNodes(from nodeID, toPlaceID common.PlaceID, toLocation *nav.Location, weight *common.Weight) []*node {
 	results := make([]*node, 0, 3)
 
 	// if toPlaceID equals endNode, direct return since there is no need to create charge candidates for endNode
 	endNodeID := g.EndNodeID()
 	if toPlaceID == g.PlaceID(endNodeID) {
 		results = append(results, g.Node(endNodeID))
-		g.edgeMetric[edgeID{from, endNodeID}] = &edgeMetric{
-			distance: distance,
-			duration: duration}
+		g.edgeMetric[place2placeID{
+			from: g.nodeContainer.nodeID2PlaceID(from),
+			to:   g.nodeContainer.nodeID2PlaceID(endNodeID)}] = weight
 		return results
 	}
 
@@ -129,9 +130,9 @@ func (g *nodeGraph) createLogicalNodes(from nodeID, toPlaceID common.PlaceID, to
 		n := g.nodeContainer.addNode(toPlaceID, state)
 		results = append(results, n)
 
-		g.edgeMetric[edgeID{from, n.id}] = &edgeMetric{
-			distance: distance,
-			duration: duration}
+		g.edgeMetric[place2placeID{
+			from: g.nodeContainer.nodeID2PlaceID(from),
+			to:   g.nodeContainer.nodeID2PlaceID(n.id)}] = weight
 	}
 	return results
 }
@@ -153,7 +154,6 @@ func (g *nodeGraph) buildAdjacentList(id nodeID) []nodeID {
 		numOfPhysicalNodesNeeded++
 	}
 	adjacentNodeIDs := make([]nodeID, 0, numOfPhysicalNodesNeeded*3)
-	//adjacentNodeIDs := make([]nodeID, 0, 500)
 
 	for _, physicalNode := range physicalNodes {
 		// filter nodes which is un-reachable by current energy, nodes are sorted based on distance
@@ -162,7 +162,7 @@ func (g *nodeGraph) buildAdjacentList(id nodeID) []nodeID {
 		}
 
 		nodes := g.createLogicalNodes(id, physicalNode.ID, physicalNode.Location,
-			physicalNode.Weight.Distance, physicalNode.Weight.Duration)
+			physicalNode.Weight)
 
 		for _, node := range nodes {
 			adjacentNodeIDs = append(adjacentNodeIDs, node.id)
