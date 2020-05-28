@@ -69,6 +69,8 @@ func NewQuerierBasedOnWeightBetweenNeighborsChan(c chan stationfindertype.Weight
 	return querier
 }
 
+// NearByStationQuery finds near by stations by given placeID and return them in recorded sequence
+// Returns nil if given placeID is not found or no connectivity
 func (q *querier) NearByStationQuery(placeID common.PlaceID) []*common.RankedPlaceInfo {
 	if results, ok := q.id2QueryResults[placeID]; ok {
 		return results
@@ -77,6 +79,8 @@ func (q *querier) NearByStationQuery(placeID common.PlaceID) []*common.RankedPla
 	}
 }
 
+// GetLocation returns location of given station id
+// Returns nil if given placeID is not found
 func (q *querier) GetLocation(placeID common.PlaceID) *nav.Location {
 	if location, ok := q.id2Location[placeID]; ok {
 		return location

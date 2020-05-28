@@ -164,7 +164,5 @@ func (g *nodeGraph) buildAdjacentList(id nodeID) []nodeID {
 		}
 	}
 
-	// to be removed
-	//glog.Infof("### len(physicalNodes) = %v, len(adjacentNodeIDs) = %v, numOfPhysicalNodesNeeded= %v\n", len(physicalNodes), len(adjacentNodeIDs), numOfPhysicalNodesNeeded*3)
 	return adjacentNodeIDs
 }

@@ -54,7 +54,7 @@ func (f *fakeChargeStrategy) CreateChargingStates() []State {
 	return f.stateCandidates
 }
 
-var noNeedChargeCost = ChargingCost{
+var zeroChargeCost = ChargingCost{
 	Duration: 0.0,
 }
 
@@ -69,7 +69,7 @@ func (f *fakeChargeStrategy) EvaluateCost(arrivalEnergy float64, targetState Sta
 
 	if arrivalEnergy > targetState.Energy ||
 		util.Float64Equal(targetState.Energy, 0.0) {
-		return noNeedChargeCost
+		return zeroChargeCost
 	}
 
 	totalTime := 0.0
@@ -117,5 +117,5 @@ func (f *fakeChargeStrategy) EvaluateCost(arrivalEnergy float64, targetState Sta
 		}
 	}
 
-	return noNeedChargeCost
+	return zeroChargeCost
 }

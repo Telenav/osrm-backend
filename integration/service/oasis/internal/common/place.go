@@ -6,7 +6,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 )
 
-// todo codebear801 change to a more variable name
+// todo @codebear801 change to a more reasonable name
 // PlaceInfo -> PlaceWithLocation
 // RankedPlaceInfo -> TransferInfo
 
