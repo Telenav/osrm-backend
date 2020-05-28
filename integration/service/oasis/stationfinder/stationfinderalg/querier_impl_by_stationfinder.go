@@ -74,9 +74,9 @@ func NewQuerierBasedOnWeightBetweenNeighborsChan(c chan stationfindertype.Weight
 func (q *querier) NearByStationQuery(placeID common.PlaceID) []*common.RankedPlaceInfo {
 	if results, ok := q.id2QueryResults[placeID]; ok {
 		return results
-	} else {
-		return nil
 	}
+
+	return nil
 }
 
 // GetLocation returns location of given station id
