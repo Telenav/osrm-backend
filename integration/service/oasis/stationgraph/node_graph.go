@@ -10,11 +10,6 @@ import (
 )
 
 type nodeID2AdjacentNodes map[nodeID][]nodeID
-type place2placeID struct {
-	from common.PlaceID
-	to   common.PlaceID
-}
-type edgeID2EdgeData map[place2placeID]*common.Weight
 
 type nodeGraph struct {
 	nodeContainer *nodeContainer
@@ -31,7 +26,7 @@ func NewNodeGraph(strategy chargingstrategy.Strategy, query connectivitymap.Quer
 	return &nodeGraph{
 		nodeContainer: newNodeContainer(),
 		adjacentList:  make(nodeID2AdjacentNodes),
-		edgeMetric:    make(edgeID2EdgeData, 50000000),
+		edgeMetric:    newEdgeID2EdgeData(),
 		startNodeID:   invalidNodeID,
 		endNodeID:     invalidNodeID,
 		strategy:      strategy,
@@ -64,9 +59,9 @@ func (g *nodeGraph) AdjacentNodes(id nodeID) []nodeID {
 
 // Edge returns edge information between given two nodes
 func (g *nodeGraph) Edge(from, to nodeID) *common.Weight {
-	return g.edgeMetric[place2placeID{
+	return g.edgeMetric.get(place2placeID{
 		from: g.nodeContainer.nodeID2PlaceID(from),
-		to:   g.nodeContainer.nodeID2PlaceID(to)}]
+		to:   g.nodeContainer.nodeID2PlaceID(to)})
 }
 
 // SetStart generates start node for the nodeGraph
@@ -119,9 +114,9 @@ func (g *nodeGraph) createLogicalNodes(from nodeID, toPlaceID common.PlaceID, to
 	endNodeID := g.EndNodeID()
 	if toPlaceID == g.PlaceID(endNodeID) {
 		results = append(results, g.Node(endNodeID))
-		g.edgeMetric[place2placeID{
+		g.edgeMetric.add(place2placeID{
 			from: g.nodeContainer.nodeID2PlaceID(from),
-			to:   g.nodeContainer.nodeID2PlaceID(endNodeID)}] = weight
+			to:   g.nodeContainer.nodeID2PlaceID(endNodeID)}, weight)
 		return results
 	}
 
@@ -130,9 +125,9 @@ func (g *nodeGraph) createLogicalNodes(from nodeID, toPlaceID common.PlaceID, to
 		n := g.nodeContainer.addNode(toPlaceID, state)
 		results = append(results, n)
 
-		g.edgeMetric[place2placeID{
+		g.edgeMetric.add(place2placeID{
 			from: g.nodeContainer.nodeID2PlaceID(from),
-			to:   g.nodeContainer.nodeID2PlaceID(n.id)}] = weight
+			to:   g.nodeContainer.nodeID2PlaceID(n.id)}, weight)
 	}
 	return results
 }
