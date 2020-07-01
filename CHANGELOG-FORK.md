@@ -6,12 +6,12 @@ Changes from v10.3.0
   - CHANGED for integration of pre-generated connectivity data with OASIS service [#339](https://github.com/Telenav/osrm-backend/pull/339)
   - CHANGED for internal refactoring, replace `Location` in `spatialindexer` to nav.Location, replace all name of `point` to `place` [#341](https://github.com/Telenav/osrm-backend/pull/341)
   - CHANGED for internal refactoring, move package oasis/solution, oasis/osrmhelper and oasis/searchhelper into oasis/internal [#343](https://github.com/Telenav/osrm-backend/pull/343)
-   - CHANGED for internal refactoring, improve performance for OASIS service, more information please go to [#344](https://github.com/Telenav/osrm-backend/issues/344) [#353](https://github.com/Telenav/osrm-backend/pull/353)
+  - CHANGED for internal refactoring, improve performance for OASIS service, more information please go to [#344](https://github.com/Telenav/osrm-backend/issues/344) [#353](https://github.com/Telenav/osrm-backend/pull/353)
 - Bugfix:    
 - Performance:    
 - Tools:    
 - Docs:    
-
+   - ADDED document `oasis architecture design` [#360](https://github.com/Telenav/osrm-backend/pull/360)
 
 # v10.3.0      
 Changes from v10.2.0      
