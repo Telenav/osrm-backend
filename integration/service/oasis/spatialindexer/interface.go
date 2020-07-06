@@ -10,7 +10,7 @@ import (
 // UnlimitedCount means all spatial search result will be returned
 const UnlimitedCount = math.MaxInt32
 
-// Finder answers special query
+// Finder answers spatial query
 type Finder interface {
 
 	// FindNearByPlaceIDs returns a group of places near to given center location

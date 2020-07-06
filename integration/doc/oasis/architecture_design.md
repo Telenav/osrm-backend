@@ -13,7 +13,7 @@
 - `Solution` is the layer contains logic for how to select charge stations, such as
   * whether need charge or not
   * is destination reachable by single charge
-  * multiple charge station solution finding, which could be search along route or charge station based routing, implemented by lower layer
+  * multiple charge station solution finding, which could be search along route or charge station based routing, implemented by internal layer
 - `GenerateSolution` abstract the interface for how to generate multiple charge station solution
 
 
@@ -66,7 +66,7 @@ type TopoQuerier interface {
 
 Definition of `SpatialQuerier` interface
 ```go
-// SpatialQuerier answers special query
+// SpatialQuerier answers spatial query
 type SpatialQuerier interface {
 
    // GetNearByPlaceIDs returns a group of places near to given center location
