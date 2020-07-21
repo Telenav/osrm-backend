@@ -49,6 +49,6 @@ RUN chmod +x /docker-entrypoint.sh
 ARG IMAGE_TAG
 ENV IMAGE_TAG ${IMAGE_TAG}
 
-EXPOSE 5000
+EXPOSE 5000 8090
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
