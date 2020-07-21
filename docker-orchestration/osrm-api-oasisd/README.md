@@ -7,7 +7,7 @@ Image within build `osrm-api-oasisd` binaries, excluding generating pre-processi
 - [Dockerfile](./Dockerfile)
 
 ```bash
-$ cd docker-orchestration/osrm-api-oasisd
+$ cd docker-orchestration/osrm-backend
 $ docker build -t osrm-api-oasisd .   
 ```
 
