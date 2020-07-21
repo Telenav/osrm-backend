@@ -4,4 +4,6 @@ For example, OASIS might suggest user spend 1 hour to charge at station A for x 
 Documents
 - [api document](./api.md)
 - [architecture design](./architecture_design.md)
- 
+- Detail design
+  + [search charge stations along route](./search_chargestations_along_route.md)
+  + [charge station based routing](./charge_station_based_routing.md)
