@@ -12,6 +12,7 @@ Changes from v10.3.0
 - Tools:    
 - Docs:    
    - ADDED document `oasis architecture design` [#360](https://github.com/Telenav/osrm-backend/pull/360)
+   - ADDED document `charge station based routing` [#367](https://github.com/Telenav/osrm-backend/pull/367)
 
 # v10.3.0      
 Changes from v10.2.0      
