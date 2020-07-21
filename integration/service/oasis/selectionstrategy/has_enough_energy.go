@@ -1,10 +1,8 @@
 package selectionstrategy
 
 import (
-	"encoding/json"
 	"fmt"
 	"math"
-	"net/http"
 
 	"github.com/Telenav/osrm-backend/integration/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/route"
@@ -42,21 +40,16 @@ func HasEnoughEnergy(currRange, destRange float64, routeResp *route.Response) (b
 	return false, remainRange, nil
 }
 
-// GenerateOASISResponse4NoChargeNeeded generates response for no charge needed
-func GenerateOASISResponse4NoChargeNeeded(w http.ResponseWriter, routeResp *route.Response, remainRange float64) {
-	w.WriteHeader(http.StatusOK)
-
+// GenerateSolution4NoChargeNeeded generates response for no charge needed
+func GenerateSolution4NoChargeNeeded(routeResp *route.Response, remainRange float64) ([]*oasis.Solution, error) {
+	solutions := make([]*oasis.Solution, 0, 1)
 	solution := new(oasis.Solution)
 	solution.Distance = routeResp.Routes[0].Distance
 	solution.Duration = routeResp.Routes[0].Duration
 	solution.Weight = routeResp.Routes[0].Weight
 	solution.RemainingRage = remainRange
 	solution.WeightName = routeResp.Routes[0].WeightName
+	solutions = append(solutions, solution)
 
-	r := new(oasis.Response)
-	r.Code = "200"
-	r.Message = "Success."
-	r.Solutions = append(r.Solutions, solution)
-
-	json.NewEncoder(w).Encode(r)
+	return solutions, nil
 }

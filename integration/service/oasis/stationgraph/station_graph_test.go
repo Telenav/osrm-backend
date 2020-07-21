@@ -8,7 +8,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/connectivitymap"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/solution"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/entity"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 	"github.com/Telenav/osrm-backend/integration/util"
 	"github.com/golang/glog"
@@ -273,7 +273,7 @@ func TestStationGraphGenerateSolutions1(t *testing.T) {
 		t.Errorf("Expect to have 2 charge stations for fakeGraph1 but got %d.\n", len(sol.ChargeStations))
 	}
 
-	expectStation1 := &solution.ChargeStation{
+	expectStation1 := &entity.ChargeStation{
 		Location: nav.Location{
 			Lat: 2.2,
 			Lon: 2.2,
@@ -288,7 +288,7 @@ func TestStationGraphGenerateSolutions1(t *testing.T) {
 		t.Errorf("Expect first charge stations info for fakeGraph1 is %#v but got %#v\n", expectStation1, sol.ChargeStations[0])
 	}
 
-	expectStation2 := &solution.ChargeStation{
+	expectStation2 := &entity.ChargeStation{
 		Location: nav.Location{
 			Lat: 5.5,
 			Lon: 5.5,
@@ -549,143 +549,143 @@ var mockedGraph4StationGraph = mockGraph{
 	map[nodeID][]*edge{
 		0: {
 			// orig -> station 1
-			{edgeID{0, 2}, &common.Weight{22.2, 22.2}},
-			{edgeID{0, 3}, &common.Weight{22.2, 22.2}},
-			{edgeID{0, 4}, &common.Weight{22.2, 22.2}},
+			{edgeID{0, 2}, &common.Weight{Duration: 22.2, Distance: 22.2}},
+			{edgeID{0, 3}, &common.Weight{Duration: 22.2, Distance: 22.2}},
+			{edgeID{0, 4}, &common.Weight{Duration: 22.2, Distance: 22.2}},
 			// orig -> station 2
-			{edgeID{0, 5}, &common.Weight{11.1, 11.1}},
-			{edgeID{0, 6}, &common.Weight{11.1, 11.1}},
-			{edgeID{0, 7}, &common.Weight{11.1, 11.1}},
+			{edgeID{0, 5}, &common.Weight{Duration: 11.1, Distance: 11.1}},
+			{edgeID{0, 6}, &common.Weight{Duration: 11.1, Distance: 11.1}},
+			{edgeID{0, 7}, &common.Weight{Duration: 11.1, Distance: 11.1}},
 			// orig -> station 3
-			{edgeID{0, 8}, &common.Weight{33.3, 33.3}},
-			{edgeID{0, 9}, &common.Weight{33.3, 33.3}},
-			{edgeID{0, 10}, &common.Weight{33.3, 33.3}},
+			{edgeID{0, 8}, &common.Weight{Duration: 33.3, Distance: 33.3}},
+			{edgeID{0, 9}, &common.Weight{Duration: 33.3, Distance: 33.3}},
+			{edgeID{0, 10}, &common.Weight{Duration: 33.3, Distance: 33.3}},
 		},
 		2: {
 			// station 1 -> station 4
-			{edgeID{2, 11}, &common.Weight{44.4, 44.4}},
-			{edgeID{2, 12}, &common.Weight{44.4, 44.4}},
-			{edgeID{2, 13}, &common.Weight{44.4, 44.4}},
+			{edgeID{2, 11}, &common.Weight{Duration: 44.4, Distance: 44.4}},
+			{edgeID{2, 12}, &common.Weight{Duration: 44.4, Distance: 44.4}},
+			{edgeID{2, 13}, &common.Weight{Duration: 44.4, Distance: 44.4}},
 			// station 1 -> station 5
-			{edgeID{2, 14}, &common.Weight{34.4, 34.4}},
-			{edgeID{2, 15}, &common.Weight{34.4, 34.4}},
-			{edgeID{2, 16}, &common.Weight{34.4, 34.4}},
+			{edgeID{2, 14}, &common.Weight{Duration: 34.4, Distance: 34.4}},
+			{edgeID{2, 15}, &common.Weight{Duration: 34.4, Distance: 34.4}},
+			{edgeID{2, 16}, &common.Weight{Duration: 34.4, Distance: 34.4}},
 		},
 		3: {
 			// station 1 -> station 4
-			{edgeID{3, 11}, &common.Weight{44.4, 44.4}},
-			{edgeID{3, 12}, &common.Weight{44.4, 44.4}},
-			{edgeID{3, 13}, &common.Weight{44.4, 44.4}},
+			{edgeID{3, 11}, &common.Weight{Duration: 44.4, Distance: 44.4}},
+			{edgeID{3, 12}, &common.Weight{Duration: 44.4, Distance: 44.4}},
+			{edgeID{3, 13}, &common.Weight{Duration: 44.4, Distance: 44.4}},
 			// station 1 -> station 5
-			{edgeID{3, 14}, &common.Weight{34.4, 34.4}},
-			{edgeID{3, 15}, &common.Weight{34.4, 34.4}},
-			{edgeID{3, 16}, &common.Weight{34.4, 34.4}},
+			{edgeID{3, 14}, &common.Weight{Duration: 34.4, Distance: 34.4}},
+			{edgeID{3, 15}, &common.Weight{Duration: 34.4, Distance: 34.4}},
+			{edgeID{3, 16}, &common.Weight{Duration: 34.4, Distance: 34.4}},
 		},
 		4: {
 			// station 1 -> station 4
-			{edgeID{4, 11}, &common.Weight{44.4, 44.4}},
-			{edgeID{4, 12}, &common.Weight{44.4, 44.4}},
-			{edgeID{4, 13}, &common.Weight{44.4, 44.4}},
+			{edgeID{4, 11}, &common.Weight{Duration: 44.4, Distance: 44.4}},
+			{edgeID{4, 12}, &common.Weight{Duration: 44.4, Distance: 44.4}},
+			{edgeID{4, 13}, &common.Weight{Duration: 44.4, Distance: 44.4}},
 			// station 1 -> station 5
-			{edgeID{4, 14}, &common.Weight{34.4, 34.4}},
-			{edgeID{4, 15}, &common.Weight{34.4, 34.4}},
-			{edgeID{4, 16}, &common.Weight{34.4, 34.4}},
+			{edgeID{4, 14}, &common.Weight{Duration: 34.4, Distance: 34.4}},
+			{edgeID{4, 15}, &common.Weight{Duration: 34.4, Distance: 34.4}},
+			{edgeID{4, 16}, &common.Weight{Duration: 34.4, Distance: 34.4}},
 		},
 		5: {
 			// station 2 -> station 4
-			{edgeID{5, 11}, &common.Weight{11.1, 11.1}},
-			{edgeID{5, 12}, &common.Weight{11.1, 11.1}},
-			{edgeID{5, 13}, &common.Weight{11.1, 11.1}},
+			{edgeID{5, 11}, &common.Weight{Duration: 11.1, Distance: 11.1}},
+			{edgeID{5, 12}, &common.Weight{Duration: 11.1, Distance: 11.1}},
+			{edgeID{5, 13}, &common.Weight{Duration: 11.1, Distance: 11.1}},
 			// station 2 -> station 5
-			{edgeID{5, 14}, &common.Weight{14.4, 14.4}},
-			{edgeID{5, 15}, &common.Weight{14.4, 14.4}},
-			{edgeID{5, 16}, &common.Weight{14.4, 14.4}},
+			{edgeID{5, 14}, &common.Weight{Duration: 14.4, Distance: 14.4}},
+			{edgeID{5, 15}, &common.Weight{Duration: 14.4, Distance: 14.4}},
+			{edgeID{5, 16}, &common.Weight{Duration: 14.4, Distance: 14.4}},
 		},
 		6: {
 			// station 2 -> station 4
-			{edgeID{6, 11}, &common.Weight{11.1, 11.1}},
-			{edgeID{6, 12}, &common.Weight{11.1, 11.1}},
-			{edgeID{6, 13}, &common.Weight{11.1, 11.1}},
+			{edgeID{6, 11}, &common.Weight{Duration: 11.1, Distance: 11.1}},
+			{edgeID{6, 12}, &common.Weight{Duration: 11.1, Distance: 11.1}},
+			{edgeID{6, 13}, &common.Weight{Duration: 11.1, Distance: 11.1}},
 			// station 2 -> station 5
-			{edgeID{6, 14}, &common.Weight{14.4, 14.4}},
-			{edgeID{6, 15}, &common.Weight{14.4, 14.4}},
-			{edgeID{6, 16}, &common.Weight{14.4, 14.4}},
+			{edgeID{6, 14}, &common.Weight{Duration: 14.4, Distance: 14.4}},
+			{edgeID{6, 15}, &common.Weight{Duration: 14.4, Distance: 14.4}},
+			{edgeID{6, 16}, &common.Weight{Duration: 14.4, Distance: 14.4}},
 		},
 		7: {
 			// station 2 -> station 4
-			{edgeID{7, 11}, &common.Weight{11.1, 11.1}},
-			{edgeID{7, 12}, &common.Weight{11.1, 11.1}},
-			{edgeID{7, 13}, &common.Weight{11.1, 11.1}},
+			{edgeID{7, 11}, &common.Weight{Duration: 11.1, Distance: 11.1}},
+			{edgeID{7, 12}, &common.Weight{Duration: 11.1, Distance: 11.1}},
+			{edgeID{7, 13}, &common.Weight{Duration: 11.1, Distance: 11.1}},
 			// station 2 -> station 5
-			{edgeID{7, 14}, &common.Weight{14.4, 14.4}},
-			{edgeID{7, 15}, &common.Weight{14.4, 14.4}},
-			{edgeID{7, 16}, &common.Weight{14.4, 14.4}},
+			{edgeID{7, 14}, &common.Weight{Duration: 14.4, Distance: 14.4}},
+			{edgeID{7, 15}, &common.Weight{Duration: 14.4, Distance: 14.4}},
+			{edgeID{7, 16}, &common.Weight{Duration: 14.4, Distance: 14.4}},
 		},
 		8: {
 			// station 3 -> station 4
-			{edgeID{8, 11}, &common.Weight{22.2, 22.2}},
-			{edgeID{8, 12}, &common.Weight{22.2, 22.2}},
-			{edgeID{8, 13}, &common.Weight{22.2, 22.2}},
+			{edgeID{8, 11}, &common.Weight{Duration: 22.2, Distance: 22.2}},
+			{edgeID{8, 12}, &common.Weight{Duration: 22.2, Distance: 22.2}},
+			{edgeID{8, 13}, &common.Weight{Duration: 22.2, Distance: 22.2}},
 			// station 3 -> station 5
-			{edgeID{8, 14}, &common.Weight{15.5, 15.5}},
-			{edgeID{8, 15}, &common.Weight{15.5, 15.5}},
-			{edgeID{8, 16}, &common.Weight{15.5, 15.5}},
+			{edgeID{8, 14}, &common.Weight{Duration: 15.5, Distance: 15.5}},
+			{edgeID{8, 15}, &common.Weight{Duration: 15.5, Distance: 15.5}},
+			{edgeID{8, 16}, &common.Weight{Duration: 15.5, Distance: 15.5}},
 		},
 		9: {
 			// station 3 -> station 4
-			{edgeID{9, 11}, &common.Weight{22.2, 22.2}},
-			{edgeID{9, 12}, &common.Weight{22.2, 22.2}},
-			{edgeID{9, 13}, &common.Weight{22.2, 22.2}},
+			{edgeID{9, 11}, &common.Weight{Duration: 22.2, Distance: 22.2}},
+			{edgeID{9, 12}, &common.Weight{Duration: 22.2, Distance: 22.2}},
+			{edgeID{9, 13}, &common.Weight{Duration: 22.2, Distance: 22.2}},
 			// station 3 -> station 5
-			{edgeID{9, 14}, &common.Weight{15.5, 15.5}},
-			{edgeID{9, 15}, &common.Weight{15.5, 15.5}},
-			{edgeID{9, 16}, &common.Weight{15.5, 15.5}},
+			{edgeID{9, 14}, &common.Weight{Duration: 15.5, Distance: 15.5}},
+			{edgeID{9, 15}, &common.Weight{Duration: 15.5, Distance: 15.5}},
+			{edgeID{9, 16}, &common.Weight{Duration: 15.5, Distance: 15.5}},
 		},
 		10: {
 			// station 3 -> station 4
-			{edgeID{10, 11}, &common.Weight{22.2, 22.2}},
-			{edgeID{10, 12}, &common.Weight{22.2, 22.2}},
-			{edgeID{10, 13}, &common.Weight{22.2, 22.2}},
+			{edgeID{10, 11}, &common.Weight{Duration: 22.2, Distance: 22.2}},
+			{edgeID{10, 12}, &common.Weight{Duration: 22.2, Distance: 22.2}},
+			{edgeID{10, 13}, &common.Weight{Duration: 22.2, Distance: 22.2}},
 			// station 3 -> station 5
-			{edgeID{10, 14}, &common.Weight{15.5, 15.5}},
-			{edgeID{10, 15}, &common.Weight{15.5, 15.5}},
-			{edgeID{10, 16}, &common.Weight{15.5, 15.5}},
+			{edgeID{10, 14}, &common.Weight{Duration: 15.5, Distance: 15.5}},
+			{edgeID{10, 15}, &common.Weight{Duration: 15.5, Distance: 15.5}},
+			{edgeID{10, 16}, &common.Weight{Duration: 15.5, Distance: 15.5}},
 		},
 		11: {
 			// station 4 -> end
-			{edgeID{11, 1}, &common.Weight{44.4, 44.4}},
-			{edgeID{11, 1}, &common.Weight{44.4, 44.4}},
-			{edgeID{11, 1}, &common.Weight{44.4, 44.4}},
+			{edgeID{11, 1}, &common.Weight{Duration: 44.4, Distance: 44.4}},
+			{edgeID{11, 1}, &common.Weight{Duration: 44.4, Distance: 44.4}},
+			{edgeID{11, 1}, &common.Weight{Duration: 44.4, Distance: 44.4}},
 		},
 		12: {
 			// station 4 -> end
-			{edgeID{12, 1}, &common.Weight{44.4, 44.4}},
-			{edgeID{12, 1}, &common.Weight{44.4, 44.4}},
-			{edgeID{12, 1}, &common.Weight{44.4, 44.4}},
+			{edgeID{12, 1}, &common.Weight{Duration: 44.4, Distance: 44.4}},
+			{edgeID{12, 1}, &common.Weight{Duration: 44.4, Distance: 44.4}},
+			{edgeID{12, 1}, &common.Weight{Duration: 44.4, Distance: 44.4}},
 		},
 		13: {
 			// station 4 -> end
-			{edgeID{13, 1}, &common.Weight{44.4, 44.4}},
-			{edgeID{13, 1}, &common.Weight{44.4, 44.4}},
-			{edgeID{13, 1}, &common.Weight{44.4, 44.4}},
+			{edgeID{13, 1}, &common.Weight{Duration: 44.4, Distance: 44.4}},
+			{edgeID{13, 1}, &common.Weight{Duration: 44.4, Distance: 44.4}},
+			{edgeID{13, 1}, &common.Weight{Duration: 44.4, Distance: 44.4}},
 		},
 		14: {
 			// station 5 -> end
-			{edgeID{14, 1}, &common.Weight{33.3, 33.3}},
-			{edgeID{14, 1}, &common.Weight{33.3, 33.3}},
-			{edgeID{14, 1}, &common.Weight{33.3, 33.3}},
+			{edgeID{14, 1}, &common.Weight{Duration: 33.3, Distance: 33.3}},
+			{edgeID{14, 1}, &common.Weight{Duration: 33.3, Distance: 33.3}},
+			{edgeID{14, 1}, &common.Weight{Duration: 33.3, Distance: 33.3}},
 		},
 		15: {
 			// station 5 -> end
-			{edgeID{15, 1}, &common.Weight{33.3, 33.3}},
-			{edgeID{15, 1}, &common.Weight{33.3, 33.3}},
-			{edgeID{15, 1}, &common.Weight{33.3, 33.3}},
+			{edgeID{15, 1}, &common.Weight{Duration: 33.3, Distance: 33.3}},
+			{edgeID{15, 1}, &common.Weight{Duration: 33.3, Distance: 33.3}},
+			{edgeID{15, 1}, &common.Weight{Duration: 33.3, Distance: 33.3}},
 		},
 		16: {
 			// station 5 -> end
-			{edgeID{16, 1}, &common.Weight{33.3, 33.3}},
-			{edgeID{16, 1}, &common.Weight{33.3, 33.3}},
-			{edgeID{16, 1}, &common.Weight{33.3, 33.3}},
+			{edgeID{16, 1}, &common.Weight{Duration: 33.3, Distance: 33.3}},
+			{edgeID{16, 1}, &common.Weight{Duration: 33.3, Distance: 33.3}},
+			{edgeID{16, 1}, &common.Weight{Duration: 33.3, Distance: 33.3}},
 		},
 	},
 	chargingstrategy.NewFakeChargingStrategy(50.0),

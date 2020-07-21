@@ -4,7 +4,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/connectivitymap"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/solution"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/entity"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
 	"github.com/golang/glog"
 )
@@ -55,7 +55,7 @@ func (sg *stationGraph) setStartAndEndForGraph(currEnergyLevel, maxEnergyLevel f
 }
 
 // GenerateChargeSolutions creates charge solutions for staion graph
-func (sg *stationGraph) GenerateChargeSolutions() []*solution.Solution {
+func (sg *stationGraph) GenerateChargeSolutions() []*entity.Solution {
 	stationNodes := dijkstra(sg.g, sg.g.StartNodeID(), sg.g.EndNodeID())
 
 	if nil == stationNodes {
@@ -66,11 +66,11 @@ func (sg *stationGraph) GenerateChargeSolutions() []*solution.Solution {
 	return sg.generateSolutionsBasedOnStationCandidates(stationNodes)
 }
 
-func (sg *stationGraph) generateSolutionsBasedOnStationCandidates(stationNodes []nodeID) []*solution.Solution {
-	var result []*solution.Solution
+func (sg *stationGraph) generateSolutionsBasedOnStationCandidates(stationNodes []nodeID) []*entity.Solution {
+	var result []*entity.Solution
 
-	sol := &solution.Solution{}
-	sol.ChargeStations = make([]*solution.ChargeStation, 0)
+	sol := &entity.Solution{}
+	sol.ChargeStations = make([]*entity.ChargeStation, 0)
 	var totalDistance, totalDuration float64
 
 	// accumulate information: start node -> first charge station
@@ -87,7 +87,7 @@ func (sg *stationGraph) generateSolutionsBasedOnStationCandidates(stationNodes [
 		}
 
 		// construct station information
-		station := &solution.ChargeStation{}
+		station := &entity.ChargeStation{}
 		station.ArrivalEnergy = getChargeInfo(sg.g, stationNodes[i]).arrivalEnergy
 		station.ChargeRange = getChargeInfo(sg.g, stationNodes[i]).targetState.Energy
 		station.ChargeTime = getChargeInfo(sg.g, stationNodes[i]).chargeTime
