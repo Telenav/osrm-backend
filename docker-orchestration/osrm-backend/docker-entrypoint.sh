@@ -10,7 +10,7 @@ WAYID2NODEIDS_MAPPING_FILE=wayid2nodeids.csv
 NODES2WAY_DB_FILE="nodes2way.db"
 INPUT_STATION_DATA_JSON_FORMAT=input.json
 MOUNT_PATH=/workspace/mnt # mounted host folder
-OASIS_DATA_RELATIVE_PATH="oasisdata"
+OASIS_DATA_RELATIVE_PATH="oasis-data"
 
 _sig() {
   kill -TERM $child 2>/dev/null
