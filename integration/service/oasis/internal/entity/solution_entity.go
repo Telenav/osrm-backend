@@ -1,4 +1,4 @@
-package solution
+package entity
 
 import (
 	"github.com/Telenav/osrm-backend/integration/api/nav"

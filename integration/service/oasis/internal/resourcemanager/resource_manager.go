@@ -1,4 +1,4 @@
-package selectionstrategy
+package resourcemanager
 
 import (
 	"fmt"
@@ -10,16 +10,6 @@ import (
 	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer/s2indexer"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder"
 	"github.com/golang/glog"
-)
-
-// StaionSelectionStrategy defines enum of how to select optimal charge stations
-type StaionSelectionStrategy int
-
-const (
-	// FindChargeStaionsAlongRoute means first calculate a route, then try to find charge stations along the route when energy is low
-	FindChargeStaionsAlongRoute = StaionSelectionStrategy(iota) + 1
-	// ChargeStaionBasedRouting builds a graph of charge stations and apply shortest-path-algorithm on to it
-	ChargeStaionBasedRouting
 )
 
 // ResourceMgr defines strategy be used by charge station selection
@@ -71,6 +61,28 @@ func NewResourceMgr(osrmBackend, finderType, searchEndpoint, apiKey, apiSignatur
 	}, nil
 }
 
+// OSRMConnector gets osrmConnector used for communicating with OSRM backend
 func (r *ResourceMgr) OSRMConnector() *osrmconnector.OSRMConnector {
 	return r.osrmConnector
+}
+
+// StationFinder returns interface of StationFinder used for finding nearby stations
+// based cloud search or local spatial index
+func (r *ResourceMgr) StationFinder() stationfinder.StationFinder {
+	return r.stationFinder
+}
+
+// SpatialIndexerFinder answers spatial query based on pre-generated spatial data
+func (r *ResourceMgr) SpatialIndexerFinder() spatialindexer.Finder {
+	return r.spatialIndexerFinder
+}
+
+// ConnectivityMap returns connectivity information for stations
+func (r *ResourceMgr) ConnectivityMap() *connectivitymap.ConnectivityMap {
+	return r.connectivityMap
+}
+
+// StationLocationQuerier answers location information for specific station
+func (r *ResourceMgr) StationLocationQuerier() spatialindexer.PlaceLocationQuerier {
+	return r.stationLocationQuerier
 }

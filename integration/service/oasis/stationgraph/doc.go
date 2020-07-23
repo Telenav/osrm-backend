@@ -11,7 +11,7 @@ Package stationgraph builds charge station based graph and provide optimum charg
          * querier must provide ways to integrate stationfindertype.OrigLocationIDStr and stationfindertype.DestLocationIDStr into connectivity graph
 
 - station graph returns
-    + solution.Solution via GenerateChargeSolutions()
+    + entity.Solution via GenerateChargeSolutions()
     + station graph will call algorithm and built certain type of Graph to calculate result
 
 Data structure

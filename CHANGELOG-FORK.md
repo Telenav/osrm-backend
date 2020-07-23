@@ -8,11 +8,13 @@ Changes from v10.3.0
   - CHANGED for internal refactoring, move package oasis/solution, oasis/osrmhelper and oasis/searchhelper into oasis/internal [#343](https://github.com/Telenav/osrm-backend/pull/343)
   - CHANGED for internal refactoring, improve performance for OASIS service, more information please go to [#344](https://github.com/Telenav/osrm-backend/issues/344) [#353](https://github.com/Telenav/osrm-backend/pull/353)
   - ADDED **Dockerfile** to generate OASIS data [#362](https://github.com/Telenav/osrm-backend/pull/362)
+  - CHANGED for internal refactoring, Create the layer of `entrypoint` and `solution`, more information please go to [#363](https://github.com/Telenav/osrm-backend/issues/363#issuecomment-662020248) [#365](https://github.com/Telenav/osrm-backend/pull/365)
 - Bugfix:    
 - Performance:    
 - Tools:    
 - Docs:    
    - ADDED document `oasis architecture design` [#360](https://github.com/Telenav/osrm-backend/pull/360)
+   - ADDED document `charge station based routing` [#367](https://github.com/Telenav/osrm-backend/pull/367)
 
 # v10.3.0      
 Changes from v10.2.0      

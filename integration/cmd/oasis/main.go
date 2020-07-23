@@ -8,9 +8,9 @@ import (
 	"runtime/pprof"
 	"strconv"
 
+	"github.com/Telenav/osrm-backend/integration/service/oasis/entrypoint"
 	"github.com/Telenav/osrm-backend/integration/util/appversion"
 
-	"github.com/Telenav/osrm-backend/integration/service/oasis"
 	"github.com/golang/glog"
 )
 
@@ -33,7 +33,7 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	oasisService, err := oasis.New(flags.osrmBackendEndpoint, flags.finderType, flags.tnSearchEndpoint,
+	oasisService, err := entrypoint.NewHttpHandler(flags.osrmBackendEndpoint, flags.finderType, flags.tnSearchEndpoint,
 		flags.tnSearchAPIKey, flags.tnSearchAPISignature, flags.localDataPath)
 	if err != nil {
 		glog.Errorf("Failed to create oasis handler due to err %+v.\n", err)
