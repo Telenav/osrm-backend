@@ -13,7 +13,7 @@ We could find all charge stations which could be reached for start point and all
 
 ![](../graph/charge_station_based_routing.png)
 
-If we pro-process all charge stations in the graph and record the `connectivity` for each charge station, which means for each single charge station, we could retrieve  **all reachable charge stations sorted by distance or energy needed**, then we could calculate optimal result based on classic algorithm.
+If we pre-process all charge stations in the graph and record the `connectivity` for each charge station, which means for each single charge station, we could retrieve  **all reachable charge stations sorted by distance or energy needed**, then we could calculate optimal result based on classic algorithm.
 
 
 ## Design
@@ -68,11 +68,11 @@ Electricity charge stations, expect input in JSON format follow OSM's tag defini
    + For Dest, check all charge station needed to reach destination
         *  Check whether there is overlap between those two, if yes, then go to next step
         * For all reachable stations from start, generate a reachable cellids by combine each charge station's 1-time-charge reachable cells result, see whether there is any overlap with dest's stations(or cellids contain those stations), if yes, go to next step
-        * For each reachable charge station of start, they have their unique value of `arrival energy`, this value need to be considered during calculating `charge times`, but the exist status of each charge station is fixed: such as charge to 60% of energy, 80% of energy, etc.
-        *<del> For all reachable stations from start, generate a reachable cellids by combine each charge station's 2-times-charge reachable cells result, see whether there is any overlap with dest's stations(or cellids contain those stations), if yes, go to next step  </del>
+        * For each reachable charge station of start, they have their unique value of `arrival energy`, this value need to be considered during calculating `charge times`, but the `target status` of the vehicle can be predicted: such as charge to 60% of energy, 80% of energy, etc. 
+        * <del> For all reachable stations from start, generate a reachable cellids by combine each charge station's 2-times-charge reachable cells result, see whether there is any overlap with dest's stations(or cellids contain those stations), if yes, go to next step  </del>
    + Construct graph to calculate most suitable charge stations
-               * Except `start` and `end`, `nodes` are charge stations, `edge` is the connection between stations. 
-               * `charge time` value need to be assigned properly
+        * Except `start` and `end`, `nodes` are charge stations, `edge` is the connection between stations. 
+        * `charge time` value need to be assigned properly
 
 - The algorithm used for calculating shortest path between two points in geo-graphical map still works here, just with some adjustment on `node` and `edge`'s definition
     + `nodes` are charge stations, and each charge station might have several status: charge to 60%, charge to 80%, charge to 100% of total energy
