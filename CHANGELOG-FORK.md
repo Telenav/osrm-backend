@@ -8,6 +8,7 @@ Changes from v10.3.0
   - CHANGED for internal refactoring, move package oasis/solution, oasis/osrmhelper and oasis/searchhelper into oasis/internal [#343](https://github.com/Telenav/osrm-backend/pull/343)
   - CHANGED for internal refactoring, improve performance for OASIS service, more information please go to [#344](https://github.com/Telenav/osrm-backend/issues/344) [#353](https://github.com/Telenav/osrm-backend/pull/353)
   - CHANGED for internal refactoring, Create the layer of `entrypoint` and `solution`, more information please go to [#363](https://github.com/Telenav/osrm-backend/issues/363#issuecomment-662020248) [#365](https://github.com/Telenav/osrm-backend/pull/365)
+  - CHANGED for internal refactoring, Create the layer of `graph` and `place`, more information please go to [#352](https://github.com/Telenav/osrm-backend/issues/352) [#368](https://github.com/Telenav/osrm-backend/pull/368)
 - Bugfix:    
 - Performance:    
 - Tools:    
