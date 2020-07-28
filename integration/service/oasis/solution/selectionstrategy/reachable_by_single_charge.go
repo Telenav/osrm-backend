@@ -11,7 +11,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api/search/nearbychargestation"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/osrmhelper"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/resourcemanager"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/place/stationfinder/stationfinderalg"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/place/iterator/iteratoralg"
 	"github.com/Telenav/osrm-backend/integration/util/osrmconnector"
 	"github.com/golang/glog"
 )
@@ -30,9 +30,9 @@ func GetOverlapChargeStations4OrigDest(req *oasis.Request, routedistance float64
 		return nil
 	}
 
-	origStations := resourceMgr.IteratorGenerator().NewOrigStationFinder(req)
-	destStations := resourceMgr.IteratorGenerator().NewDestStationFinder(req)
-	overlap := stationfinderalg.FindOverlapBetweenStations(origStations, destStations)
+	origStations := resourceMgr.IteratorGenerator().NewIterator4Orig(req)
+	destStations := resourceMgr.IteratorGenerator().NewIterator4Dest(req)
+	overlap := iteratoralg.FindOverlapBetweenStations(origStations, destStations)
 
 	if len(overlap) == 0 {
 		return nil

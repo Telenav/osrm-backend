@@ -6,26 +6,17 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 )
 
-// Weight represent weight information between stations
-type Weight struct {
-	Duration float64
-	Distance float64
-}
-
-// todo @codebear801 change to a more reasonable name
-// PlaceInfo -> PlaceWithLocation
-// RankedPlaceInfo -> TransferInfo
-
-// PlaceInfo records place related information such as ID and location
-type PlaceInfo struct {
+// PlaceWithLocation records place related information such as ID and location
+type PlaceWithLocation struct {
 	ID       PlaceID
 	Location *nav.Location
 }
 
-// RankedPlaceInfo records PlaceInfo and information used for ranking
-// e.g. use distance to specific place rank a group of PlaceInfo
-type RankedPlaceInfo struct {
-	PlaceInfo
+// TransferInfo records target PlaceWithLocation and Weight information used
+// for ranking
+// e.g. use distance to specific place rank a group of PlaceWithLocation
+type TransferInfo struct {
+	PlaceWithLocation
 	Weight *Weight
 }
 
@@ -37,4 +28,10 @@ type PlaceID int64
 // String converts PlaceID to string
 func (p PlaceID) String() string {
 	return strconv.FormatInt((int64)(p), 10)
+}
+
+// Weight represent weight information between stations
+type Weight struct {
+	Duration float64
+	Distance float64
 }

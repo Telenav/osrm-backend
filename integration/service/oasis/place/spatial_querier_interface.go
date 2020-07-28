@@ -14,17 +14,17 @@ const UnlimitedCount = math.MaxInt32
 type Finder interface {
 
 	// FindNearByPlaceIDs returns a group of places near to given center location
-	FindNearByPlaceIDs(center nav.Location, radius float64, limitCount int) []*entity.PlaceInfo
+	FindNearByPlaceIDs(center nav.Location, radius float64, limitCount int) []*entity.PlaceWithLocation
 }
 
 // Ranker used to ranking a group of places
 type Ranker interface {
 
 	// RankPlaceIDsByGreatCircleDistance ranks a group of places based on great circle distance to given location
-	RankPlaceIDsByGreatCircleDistance(center nav.Location, targets []*entity.PlaceInfo) []*entity.RankedPlaceInfo
+	RankPlaceIDsByGreatCircleDistance(center nav.Location, targets []*entity.PlaceWithLocation) []*entity.TransferInfo
 
 	// RankPlaceIDsByShortestDistance ranks a group of places based on shortest path distance to given location
-	RankPlaceIDsByShortestDistance(center nav.Location, targets []*entity.PlaceInfo) []*entity.RankedPlaceInfo
+	RankPlaceIDsByShortestDistance(center nav.Location, targets []*entity.PlaceWithLocation) []*entity.TransferInfo
 }
 
 // LocationQuerier returns *nav.location for given location
@@ -35,9 +35,9 @@ type LocationQuerier interface {
 	GetLocation(placeID string) *nav.Location
 }
 
-// PlacesIterator provides iterateability for PlaceInfo
-type PlacesIterator interface {
+// Iterator provides iterateability for PlaceWithLocation
+type Iterator interface {
 
-	// IteratePlaces returns channel for PlaceInfo
-	IteratePlaces() <-chan entity.PlaceInfo
+	// IteratePlaces returns channel for PlaceWithLocation
+	IteratePlaces() <-chan entity.PlaceWithLocation
 }

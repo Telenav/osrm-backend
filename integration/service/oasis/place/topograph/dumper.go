@@ -13,7 +13,7 @@ import (
 
 const id2NearByIDsMapFileName = "id2nearbyidsmap.gob"
 
-func serializeConnectivityMap(cm *ConnectivityMap, folderPath string) error {
+func serializeConnectivityMap(cm *MemoryTopoGraph, folderPath string) error {
 	glog.Info("Start serializeConnectivityMap()\n")
 
 	if !strings.HasSuffix(folderPath, api.Slash) {
@@ -33,7 +33,7 @@ func serializeConnectivityMap(cm *ConnectivityMap, folderPath string) error {
 	return nil
 }
 
-func deSerializeConnectivityMap(cm *ConnectivityMap, folderPath string) error {
+func deSerializeConnectivityMap(cm *MemoryTopoGraph, folderPath string) error {
 	glog.Info("Start deSerializeConnectivityMap()")
 
 	if !strings.HasSuffix(folderPath, api.Slash) {
@@ -84,28 +84,28 @@ func removeAllDumpFiles(folderPath string) error {
 	return nil
 }
 
-func serializeID2NearByIDsMap(cm *ConnectivityMap, folderPath string) error {
+func serializeID2NearByIDsMap(cm *MemoryTopoGraph, folderPath string) error {
 	buf := new(bytes.Buffer)
 	encoder := gob.NewEncoder(buf)
 	err := encoder.Encode(cm.id2nearByIDs)
 
 	if err != nil {
-		glog.Errorf("During encode ConnectivityMap's ID2NearByIDsMap met error %v", err)
+		glog.Errorf("During encode MemoryTopoGraph's ID2NearByIDsMap met error %v", err)
 		return err
 	}
 
 	if err = ioutil.WriteFile(folderPath+id2NearByIDsMapFileName, buf.Bytes(), 0644); err != nil {
-		glog.Errorf("During dump ConnectivityMap's ID2NearByIDsMap to %s met error %v", folderPath+id2NearByIDsMapFileName, err)
+		glog.Errorf("During dump MemoryTopoGraph's ID2NearByIDsMap to %s met error %v", folderPath+id2NearByIDsMapFileName, err)
 		return err
 	}
 
 	return nil
 }
 
-func deSerializeID2NearByIDsMap(cm *ConnectivityMap, folderPath string) error {
+func deSerializeID2NearByIDsMap(cm *MemoryTopoGraph, folderPath string) error {
 	byteArray, err := ioutil.ReadFile(folderPath + id2NearByIDsMapFileName)
 	if err != nil {
-		glog.Errorf("During load ConnectivityMap's ID2NearByIDsMap from %s met error %v",
+		glog.Errorf("During load MemoryTopoGraph's ID2NearByIDsMap from %s met error %v",
 			folderPath+id2NearByIDsMapFileName, err)
 		return err
 	}
@@ -115,7 +115,7 @@ func deSerializeID2NearByIDsMap(cm *ConnectivityMap, folderPath string) error {
 	err = decoder.Decode(&cm.id2nearByIDs)
 
 	if err != nil {
-		glog.Errorf("During decode ConnectivityMap's ID2NearByIDsMap from %s met error %v",
+		glog.Errorf("During decode MemoryTopoGraph's ID2NearByIDsMap from %s met error %v",
 			folderPath+id2NearByIDsMapFileName, err)
 		return err
 	}

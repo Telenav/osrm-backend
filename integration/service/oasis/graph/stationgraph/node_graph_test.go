@@ -8,7 +8,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/service/oasis/graph/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/entity"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/place"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/place/stationfinder/stationfindertype"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/place/iterator/iteratortype"
 	"github.com/golang/glog"
 )
 
@@ -24,15 +24,15 @@ func TestAddAndGetStartAndEndNodeForNodeGraph(t *testing.T) {
 		Lat: 34.44,
 		Lon: -124.44}
 
-	graph.SetStart(stationfindertype.OrigLocationID, expectStartChargeState, expectStartLocation).
-		SetEnd(stationfindertype.DestLocationID, expectEndChargeState, expectEndLocation)
+	graph.SetStart(iteratortype.OrigLocationID, expectStartChargeState, expectStartLocation).
+		SetEnd(iteratortype.DestLocationID, expectEndChargeState, expectEndLocation)
 
-	if graph.PlaceID(graph.StartNodeID()) != stationfindertype.OrigLocationID {
-		t.Errorf("Incorrect result for start's placeID, expect %s but got %s.\n", stationfindertype.OrigLocationID.String(), graph.PlaceID(graph.StartNodeID()))
+	if graph.PlaceID(graph.StartNodeID()) != iteratortype.OrigLocationID {
+		t.Errorf("Incorrect result for start's placeID, expect %s but got %s.\n", iteratortype.OrigLocationID.String(), graph.PlaceID(graph.StartNodeID()))
 	}
 
-	if graph.PlaceID(graph.EndNodeID()) != stationfindertype.DestLocationID {
-		t.Errorf("Incorrect result for end's placeID, expect %s but got %s.\n", stationfindertype.DestLocationID.String(), graph.PlaceID(graph.EndNodeID()))
+	if graph.PlaceID(graph.EndNodeID()) != iteratortype.DestLocationID {
+		t.Errorf("Incorrect result for end's placeID, expect %s but got %s.\n", iteratortype.DestLocationID.String(), graph.PlaceID(graph.EndNodeID()))
 	}
 
 	startNode := graph.Node(graph.StartNodeID())
@@ -265,7 +265,7 @@ func TestStationIDInterfaceForNodeGraph(t *testing.T) {
 func generateMockNodeGraph() Graph {
 	maxEnergyLevel := 100.0
 	currEnergyLevel := 10.0
-	strategy := chargingstrategy.NewFakeChargingStrategy(maxEnergyLevel)
+	strategy := chargingstrategy.NewSimpleChargingStrategy(maxEnergyLevel)
 	querier := newMockQuerier()
 	graph := NewNodeGraph(strategy, querier)
 
@@ -276,16 +276,16 @@ func generateMockNodeGraph() Graph {
 }
 
 type mockQuerier4NodeGraph struct {
-	mockStationID2QueryResult map[entity.PlaceID][]*entity.RankedPlaceInfo
+	mockStationID2QueryResult map[entity.PlaceID][]*entity.TransferInfo
 	mockStationID2Location    map[entity.PlaceID]*nav.Location
 }
 
 func newMockQuerier() place.TopoQuerier {
 	return &mockQuerier4NodeGraph{
-		mockStationID2QueryResult: map[entity.PlaceID][]*entity.RankedPlaceInfo{
+		mockStationID2QueryResult: map[entity.PlaceID][]*entity.TransferInfo{
 			testStationID1: {
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID:       testStationID2,
 						Location: &nav.Location{Lat: 2.2, Lon: 2.2},
 					},
@@ -295,7 +295,7 @@ func newMockQuerier() place.TopoQuerier {
 					},
 				},
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID:       testStationID3,
 						Location: &nav.Location{Lat: 3.3, Lon: 3.3},
 					},
@@ -305,7 +305,7 @@ func newMockQuerier() place.TopoQuerier {
 					},
 				},
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID:       testStationID4,
 						Location: &nav.Location{Lat: 4.4, Lon: 4.4},
 					},
@@ -325,7 +325,7 @@ func newMockQuerier() place.TopoQuerier {
 	}
 }
 
-func (querier *mockQuerier4NodeGraph) NearByStationQuery(placeID entity.PlaceID) []*entity.RankedPlaceInfo {
+func (querier *mockQuerier4NodeGraph) GetConnectedPlaces(placeID entity.PlaceID) []*entity.TransferInfo {
 	if placeID == testStationID1 {
 		return querier.mockStationID2QueryResult[testStationID1]
 	}
@@ -341,12 +341,12 @@ func (querier *mockQuerier4NodeGraph) GetLocation(placeID entity.PlaceID) *nav.L
 	return nil
 }
 
-var testStationID1Str = stationfindertype.OrigLocationID.String()
+var testStationID1Str = iteratortype.OrigLocationID.String()
 var testStationID2Str = "test_station_id_2"
 var testStationID3Str = "test_station_id_3"
 var testStationID4Str = "test_station_id_4"
 
-var testStationID1 = stationfindertype.OrigLocationID
+var testStationID1 = iteratortype.OrigLocationID
 var testStationID2 entity.PlaceID = 2
 var testStationID3 entity.PlaceID = 3
 var testStationID4 entity.PlaceID = 4

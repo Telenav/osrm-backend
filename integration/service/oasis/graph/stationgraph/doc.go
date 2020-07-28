@@ -7,8 +7,8 @@ Package stationgraph builds charge station based graph and provide optimum charg
     + strategy: Charge strategy be used for each charge station, it hides logic of different strategy of {time used for charging/wating, new energy got}.
     + querier: topological querier which generates connectivity for building graph
          * querier could be implemented by querying OSRM or pre-build conductivities
-         * querier must contains stationfindertype.OrigLocationIDStr and stationfindertype.DestLocationIDStr
-         * querier must provide ways to integrate stationfindertype.OrigLocationIDStr and stationfindertype.DestLocationIDStr into connectivity graph
+         * querier must contains iteratortype.OrigLocationIDStr and iteratortype.DestLocationIDStr
+         * querier must provide ways to integrate iteratortype.OrigLocationIDStr and iteratortype.DestLocationIDStr into connectivity graph
 
 - station graph returns
     + entity.Solution via GenerateChargeSolutions()

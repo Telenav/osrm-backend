@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/Telenav/osrm-backend/integration/service/oasis/place"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/place/iterator"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/place/spatialindexer/s2indexer"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/place/stationfinder"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/place/topograph"
 	"github.com/Telenav/osrm-backend/integration/util/osrmconnector"
 	"github.com/golang/glog"
@@ -17,7 +17,7 @@ type ResourceMgr struct {
 	osrmConnector          *osrmconnector.OSRMConnector // osrmConnector represents communication with OSRM backend
 	stationFinder          place.IteratorGenerator      // stationFinder generates nearby stations based cloud search or local spatial index
 	spatialIndexerFinder   place.Finder                 // spatialIndexerFinder answers spatial query based on pre-generated spatial data
-	connectivityMap        *topograph.ConnectivityMap   // connectivityMap contains connectivity information for stations
+	connectivityMap        *topograph.MemoryTopoGraph   // connectivityMap contains connectivity information for stations
 	stationLocationQuerier place.LocationQuerier        // stationLocationQuerier answers location information for specific station
 }
 
@@ -38,15 +38,15 @@ func NewResourceMgr(osrmBackend, finderType, searchEndpoint, apiKey, apiSignatur
 		return nil, err
 	}
 
-	stationFinder, err := stationfinder.CreateStationsFinder(finderType, searchEndpoint, apiKey, apiSignature, s2indexer)
+	stationFinder, err := iterator.CreateIteratorGenerator(finderType, searchEndpoint, apiKey, apiSignature, s2indexer)
 	if err != nil {
-		glog.Errorf("Failed to call stationfinder.CreateStationsFinder, met error = %+v\n", err)
+		glog.Errorf("Failed to call iterator.CreateIteratorGenerator, met error = %+v\n", err)
 		return nil, err
 	}
 
 	connectivityMap := topograph.New(0.0).Load(dataFolderPath)
 	if connectivityMap == nil {
-		err := fmt.Errorf("failed to load ConnectivityMap")
+		err := fmt.Errorf("failed to load MemoryTopoGraph")
 		return nil, err
 	}
 
@@ -77,8 +77,8 @@ func (r *ResourceMgr) SpatialIndexerFinder() place.Finder {
 	return r.spatialIndexerFinder
 }
 
-// ConnectivityMap returns connectivity information for stations
-func (r *ResourceMgr) ConnectivityMap() *topograph.ConnectivityMap {
+// MemoryTopoGraph returns connectivity information for stations
+func (r *ResourceMgr) MemoryTopoGraph() *topograph.MemoryTopoGraph {
 	return r.connectivityMap
 }
 

@@ -3,7 +3,7 @@ package mock
 import (
 	"github.com/Telenav/osrm-backend/integration/api/osrm"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/table"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/place/stationfinder/stationfindertype"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/place/iterator/iteratortype"
 )
 
 // 1 * 4
@@ -17,7 +17,7 @@ var Mock1To4TableResponse1 = table.Response{
 	},
 	Sources: []*osrm.Waypoint{
 		{
-			Name: stationfindertype.OrigLocationID.String(),
+			Name: iteratortype.OrigLocationID.String(),
 		},
 	},
 	Destinations: []*osrm.Waypoint{
@@ -67,7 +67,7 @@ var Mock4To1TableResponse1 = table.Response{
 	},
 	Destinations: []*osrm.Waypoint{
 		{
-			Name: stationfindertype.DestLocationID.String(),
+			Name: iteratortype.DestLocationID.String(),
 		},
 	},
 }

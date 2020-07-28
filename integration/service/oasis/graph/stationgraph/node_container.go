@@ -3,7 +3,7 @@ package stationgraph
 import (
 	"github.com/Telenav/osrm-backend/integration/service/oasis/graph/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/entity"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/place/stationfinder/stationfindertype"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/place/iterator/iteratortype"
 )
 
 type logicNodeIdentifier2NodePtr map[logicNodeIdentifier]*node
@@ -68,7 +68,7 @@ func (nc *nodeContainer) nodeID2PlaceID(id nodeID) entity.PlaceID {
 	if (int)(id) < len(nc.id2NodePtr) {
 		return nc.id2StationID[id]
 	}
-	return stationfindertype.InvalidPlaceID
+	return iteratortype.InvalidPlaceID
 }
 
 type logicNodeIdentifier struct {

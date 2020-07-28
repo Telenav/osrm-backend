@@ -18,7 +18,7 @@ import (
 func TestGenerateTableRequest(t *testing.T) {
 	cases := []struct {
 		center     nav.Location
-		targets    []*entity.PlaceInfo
+		targets    []*entity.PlaceWithLocation
 		startIndex int
 		endIndex   int
 		expect     *table.Request
@@ -29,7 +29,7 @@ func TestGenerateTableRequest(t *testing.T) {
 				Lat: 0,
 				Lon: 0,
 			},
-			targets: []*entity.PlaceInfo{
+			targets: []*entity.PlaceWithLocation{
 				{
 					ID: 1,
 					Location: &nav.Location{
@@ -117,7 +117,7 @@ func TestGenerateTableRequest(t *testing.T) {
 				Lat: 0,
 				Lon: 0,
 			},
-			targets: []*entity.PlaceInfo{
+			targets: []*entity.PlaceWithLocation{
 				{
 					ID: 1,
 					Location: &nav.Location{
@@ -210,15 +210,15 @@ func TestGenerateTableRequest(t *testing.T) {
 func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 	cases := []struct {
 		center  nav.Location
-		targets []*entity.PlaceInfo
-		expect  []*entity.RankedPlaceInfo
+		targets []*entity.PlaceWithLocation
+		expect  []*entity.TransferInfo
 	}{
 		{
 			center: nav.Location{
 				Lat: 0,
 				Lon: 0,
 			},
-			targets: []*entity.PlaceInfo{
+			targets: []*entity.PlaceWithLocation{
 				{
 					ID: 1,
 					Location: &nav.Location{
@@ -262,9 +262,9 @@ func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 					},
 				},
 			},
-			expect: []*entity.RankedPlaceInfo{
+			expect: []*entity.TransferInfo{
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID: 1,
 						Location: &nav.Location{
 							Lat: 1.1,
@@ -277,7 +277,7 @@ func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 					},
 				},
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID: 2,
 						Location: &nav.Location{
 							Lat: 2.2,
@@ -290,7 +290,7 @@ func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 					},
 				},
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID: 3,
 						Location: &nav.Location{
 							Lat: 3.3,
@@ -303,7 +303,7 @@ func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 					},
 				},
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID: 4,
 						Location: &nav.Location{
 							Lat: 4.4,
@@ -316,7 +316,7 @@ func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 					},
 				},
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID: 5,
 						Location: &nav.Location{
 							Lat: 5.5,
@@ -329,7 +329,7 @@ func TestRankPointsByOSRMShortestPathWithDifferentPointThreshold(t *testing.T) {
 					},
 				},
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID: 6,
 						Location: &nav.Location{
 							Lat: 6.6,

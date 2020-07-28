@@ -40,10 +40,10 @@ func (indexer *S2Indexer) Build(filePath string) *S2Indexer {
 		return nil
 	}
 
-	var pointInfos []entity.PlaceInfo
+	var pointInfos []entity.PlaceWithLocation
 
 	for _, record := range records {
-		pointInfo := entity.PlaceInfo{
+		pointInfo := entity.PlaceWithLocation{
 			ID: elementID2PointID(record.ID),
 			Location: &nav.Location{
 				Lat: record.Lat,
@@ -89,13 +89,13 @@ func (indexer *S2Indexer) Dump(folderPath string) {
 	glog.Infof("Finished S2Indexer's Dump() to folder %s.\n", folderPath)
 }
 
-// IteratePlaces returns PlaceInfo in channel
-// It implements interface of PlacesIterator
-func (indexer *S2Indexer) IteratePlaces() <-chan entity.PlaceInfo {
-	placesC := make(chan entity.PlaceInfo, len(indexer.pointID2Location))
+// IteratePlaces returns PlaceWithLocation in channel
+// It implements interface of Iterator
+func (indexer *S2Indexer) IteratePlaces() <-chan entity.PlaceWithLocation {
+	placesC := make(chan entity.PlaceWithLocation, len(indexer.pointID2Location))
 	go func() {
 		for pointID, location := range indexer.pointID2Location {
-			placesC <- entity.PlaceInfo{
+			placesC <- entity.PlaceWithLocation{
 				ID:       pointID,
 				Location: &location,
 			}
@@ -107,7 +107,7 @@ func (indexer *S2Indexer) IteratePlaces() <-chan entity.PlaceInfo {
 }
 
 // FindNearByPlaceIDs returns nearby places for given center and conditions
-func (indexer *S2Indexer) FindNearByPlaceIDs(center nav.Location, radius float64, limitCount int) []*entity.PlaceInfo {
+func (indexer *S2Indexer) FindNearByPlaceIDs(center nav.Location, radius float64, limitCount int) []*entity.PlaceWithLocation {
 	if !indexer.isInitialized() {
 		glog.Warning("S2Indexer is empty, try to Build() with correct input file first.\n")
 		return nil
@@ -126,7 +126,7 @@ func (indexer *S2Indexer) FindNearByPlaceIDs(center nav.Location, radius float64
 func (indexer *S2Indexer) GetLocation(placeID string) *nav.Location {
 	id, err := strconv.Atoi(placeID)
 	if err != nil {
-		glog.Errorf("Incorrect station ID passed to NearByStationQuery %+v, got error %#v", placeID, err)
+		glog.Errorf("Incorrect station ID passed to GetConnectedPlaces %+v, got error %#v", placeID, err)
 		return nil
 	}
 	if location, ok := indexer.pointID2Location[(entity.PlaceID)(id)]; ok {

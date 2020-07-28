@@ -11,13 +11,13 @@ import (
 // 22.2 m/s = 50 miles/hour
 const defaultSpeed = 22.2
 
-func rankPointsByGreatCircleDistanceToCenter(center nav.Location, targets []*entity.PlaceInfo) []*entity.RankedPlaceInfo {
+func rankPointsByGreatCircleDistanceToCenter(center nav.Location, targets []*entity.PlaceWithLocation) []*entity.TransferInfo {
 	if len(targets) == 0 {
 		glog.Warningf("When try to rankPointsByGreatCircleDistanceToCenter, input array is empty, center = %+v\n", center)
 		return nil
 	}
 
-	pointWithDistanceC := make(chan *entity.RankedPlaceInfo, len(targets))
+	pointWithDistanceC := make(chan *entity.TransferInfo, len(targets))
 	go func() {
 		defer close(pointWithDistanceC)
 
@@ -25,8 +25,8 @@ func rankPointsByGreatCircleDistanceToCenter(center nav.Location, targets []*ent
 			// geo.Haversin's unit is kilometer, convert to meter
 			length := geo.Haversin(center.Lon, center.Lat, p.Location.Lon, p.Location.Lat) * 1000
 
-			pointWithDistanceC <- &entity.RankedPlaceInfo{
-				PlaceInfo: entity.PlaceInfo{
+			pointWithDistanceC <- &entity.TransferInfo{
+				PlaceWithLocation: entity.PlaceWithLocation{
 					ID:       p.ID,
 					Location: p.Location,
 				},

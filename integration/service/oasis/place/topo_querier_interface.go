@@ -8,9 +8,9 @@ import (
 // TopoQuerier used to return topological information of charge stations
 type TopoQuerier interface {
 
-	// NearByStationQuery finds near by stations by given placeID and return them in recorded sequence
+	// GetConnectedPlaces finds connected places by given placeID and return them in recorded sequence
 	// Returns nil if given placeID is not found or no connectivity
-	NearByStationQuery(placeID entity.PlaceID) []*entity.RankedPlaceInfo
+	GetConnectedPlaces(placeID entity.PlaceID) []*entity.TransferInfo
 
 	// GetLocation returns location of given station id
 	// Returns nil if given placeID is not found

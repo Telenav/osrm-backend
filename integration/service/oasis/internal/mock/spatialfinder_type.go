@@ -4,11 +4,11 @@ import (
 	"strconv"
 
 	"github.com/Telenav/osrm-backend/integration/api/nav"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/place/stationfinder/stationfindertype"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/place/iterator/iteratortype"
 )
 
 // MockChargeStationInfo1 mocks array of *ChargeStationInfo which is compatible with MockPlaceInfo1
-var MockChargeStationInfo1 = []*stationfindertype.ChargeStationInfo{
+var MockChargeStationInfo1 = []*iteratortype.ChargeStationInfo{
 	{
 		ID: strconv.FormatInt((int64)(MockPlaceInfo1[0].ID), 10),
 		Location: nav.Location{
@@ -91,9 +91,9 @@ var MockChargeStationInfo1 = []*stationfindertype.ChargeStationInfo{
 	},
 }
 
-var NeighborInfoArray0 = []stationfindertype.NeighborInfo{
+var NeighborInfoArray0 = []iteratortype.NeighborInfo{
 	{
-		FromID: stationfindertype.OrigLocationIDStr,
+		FromID: iteratortype.OrigLocationIDStr,
 		FromLocation: nav.Location{
 			Lat: 1.1,
 			Lon: 1.1,
@@ -103,13 +103,13 @@ var NeighborInfoArray0 = []stationfindertype.NeighborInfo{
 			Lat: 32.333,
 			Lon: 122.333,
 		},
-		Weight: stationfindertype.Weight{
+		Weight: iteratortype.Weight{
 			Duration: 22.2,
 			Distance: 22.2,
 		},
 	},
 	{
-		FromID: stationfindertype.OrigLocationIDStr,
+		FromID: iteratortype.OrigLocationIDStr,
 		FromLocation: nav.Location{
 			Lat: 1.1,
 			Lon: 1.1,
@@ -119,13 +119,13 @@ var NeighborInfoArray0 = []stationfindertype.NeighborInfo{
 			Lat: -32.333,
 			Lon: -122.333,
 		},
-		Weight: stationfindertype.Weight{
+		Weight: iteratortype.Weight{
 			Duration: 11.1,
 			Distance: 11.1,
 		},
 	},
 	{
-		FromID: stationfindertype.OrigLocationIDStr,
+		FromID: iteratortype.OrigLocationIDStr,
 		FromLocation: nav.Location{
 			Lat: 1.1,
 			Lon: 1.1,
@@ -135,13 +135,13 @@ var NeighborInfoArray0 = []stationfindertype.NeighborInfo{
 			Lat: 32.333,
 			Lon: -122.333,
 		},
-		Weight: stationfindertype.Weight{
+		Weight: iteratortype.Weight{
 			Duration: 33.3,
 			Distance: 33.3,
 		},
 	},
 	{
-		FromID: stationfindertype.OrigLocationIDStr,
+		FromID: iteratortype.OrigLocationIDStr,
 		FromLocation: nav.Location{
 			Lat: 1.1,
 			Lon: 1.1,
@@ -151,14 +151,14 @@ var NeighborInfoArray0 = []stationfindertype.NeighborInfo{
 			Lat: -32.333,
 			Lon: 122.333,
 		},
-		Weight: stationfindertype.Weight{
+		Weight: iteratortype.Weight{
 			Duration: 44.4,
 			Distance: 44.4,
 		},
 	},
 }
 
-var NeighborInfoArray1 = []stationfindertype.NeighborInfo{
+var NeighborInfoArray1 = []iteratortype.NeighborInfo{
 	{
 		FromID: "station1",
 		FromLocation: nav.Location{
@@ -170,7 +170,7 @@ var NeighborInfoArray1 = []stationfindertype.NeighborInfo{
 			Lat: 30.333,
 			Lon: 122.333,
 		},
-		Weight: stationfindertype.Weight{
+		Weight: iteratortype.Weight{
 			Duration: 2,
 			Distance: 2,
 		},
@@ -186,7 +186,7 @@ var NeighborInfoArray1 = []stationfindertype.NeighborInfo{
 			Lat: -10.333,
 			Lon: 122.333,
 		},
-		Weight: stationfindertype.Weight{
+		Weight: iteratortype.Weight{
 			Duration: 3,
 			Distance: 3,
 		},
@@ -202,7 +202,7 @@ var NeighborInfoArray1 = []stationfindertype.NeighborInfo{
 			Lat: 30.333,
 			Lon: 122.333,
 		},
-		Weight: stationfindertype.Weight{
+		Weight: iteratortype.Weight{
 			Duration: 4,
 			Distance: 4,
 		},
@@ -218,7 +218,7 @@ var NeighborInfoArray1 = []stationfindertype.NeighborInfo{
 			Lat: -10.333,
 			Lon: 122.333,
 		},
-		Weight: stationfindertype.Weight{
+		Weight: iteratortype.Weight{
 			Duration: 5,
 			Distance: 5,
 		},
@@ -234,7 +234,7 @@ var NeighborInfoArray1 = []stationfindertype.NeighborInfo{
 			Lat: 30.333,
 			Lon: 122.333,
 		},
-		Weight: stationfindertype.Weight{
+		Weight: iteratortype.Weight{
 			Duration: 6,
 			Distance: 6,
 		},
@@ -250,7 +250,7 @@ var NeighborInfoArray1 = []stationfindertype.NeighborInfo{
 			Lat: -10.333,
 			Lon: 122.333,
 		},
-		Weight: stationfindertype.Weight{
+		Weight: iteratortype.Weight{
 			Duration: 7,
 			Distance: 7,
 		},
@@ -266,7 +266,7 @@ var NeighborInfoArray1 = []stationfindertype.NeighborInfo{
 			Lat: 30.333,
 			Lon: 122.333,
 		},
-		Weight: stationfindertype.Weight{
+		Weight: iteratortype.Weight{
 			Duration: 8,
 			Distance: 8,
 		},
@@ -282,26 +282,26 @@ var NeighborInfoArray1 = []stationfindertype.NeighborInfo{
 			Lat: -10.333,
 			Lon: 122.333,
 		},
-		Weight: stationfindertype.Weight{
+		Weight: iteratortype.Weight{
 			Duration: 9,
 			Distance: 9,
 		},
 	},
 }
 
-var NeighborInfoArray2 = []stationfindertype.NeighborInfo{
+var NeighborInfoArray2 = []iteratortype.NeighborInfo{
 	{
 		FromID: "station6",
 		FromLocation: nav.Location{
 			Lat: 30.333,
 			Lon: 122.333,
 		},
-		ToID: stationfindertype.DestLocationIDStr,
+		ToID: iteratortype.DestLocationIDStr,
 		ToLocation: nav.Location{
 			Lat: 4.4,
 			Lon: 4.4,
 		},
-		Weight: stationfindertype.Weight{
+		Weight: iteratortype.Weight{
 			Duration: 66.6,
 			Distance: 66.6,
 		},
@@ -312,12 +312,12 @@ var NeighborInfoArray2 = []stationfindertype.NeighborInfo{
 			Lat: -10.333,
 			Lon: 122.333,
 		},
-		ToID: stationfindertype.DestLocationIDStr,
+		ToID: iteratortype.DestLocationIDStr,
 		ToLocation: nav.Location{
 			Lat: 4.4,
 			Lon: 4.4,
 		},
-		Weight: stationfindertype.Weight{
+		Weight: iteratortype.Weight{
 			Duration: 11.1,
 			Distance: 11.1,
 		},

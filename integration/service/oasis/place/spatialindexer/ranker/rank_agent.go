@@ -8,16 +8,16 @@ import (
 
 // rankAgent accepts items to be ranked then returns ranking result
 type rankAgent struct {
-	rankedPoints []*entity.RankedPlaceInfo
+	rankedPoints []*entity.TransferInfo
 }
 
 func newRankAgent(pointNum int) *rankAgent {
 	return &rankAgent{
-		rankedPoints: make([]*entity.RankedPlaceInfo, 0, pointNum),
+		rankedPoints: make([]*entity.TransferInfo, 0, pointNum),
 	}
 }
 
-type rankItems []*entity.RankedPlaceInfo
+type rankItems []*entity.TransferInfo
 
 func (r rankItems) Len() int {
 	return len(r)
@@ -31,7 +31,7 @@ func (r rankItems) Swap(i, j int) {
 	r[i], r[j] = r[j], r[i]
 }
 
-func (r *rankAgent) RankByDistance(input <-chan *entity.RankedPlaceInfo) []*entity.RankedPlaceInfo {
+func (r *rankAgent) RankByDistance(input <-chan *entity.TransferInfo) []*entity.TransferInfo {
 	for p := range input {
 		r.rankedPoints = append(r.rankedPoints, p)
 	}

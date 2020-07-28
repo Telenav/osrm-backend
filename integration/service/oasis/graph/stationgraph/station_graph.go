@@ -5,7 +5,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/service/oasis/graph/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/entity"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/place"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/place/stationfinder/stationfindertype"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/place/iterator/iteratortype"
 	"github.com/golang/glog"
 )
 
@@ -29,25 +29,25 @@ func NewStationGraph(currEnergyLevel, maxEnergyLevel float64, strategy chargings
 }
 
 func (sg *stationGraph) setStartAndEndForGraph(currEnergyLevel, maxEnergyLevel float64) bool {
-	startLocation := sg.querier.GetLocation(stationfindertype.OrigLocationID)
+	startLocation := sg.querier.GetLocation(iteratortype.OrigLocationID)
 	if startLocation == nil {
-		glog.Errorf("Failed to find %#v from TopoQuerier GetLocation()\n", stationfindertype.OrigLocationID)
+		glog.Errorf("Failed to find %#v from TopoQuerier GetLocation()\n", iteratortype.OrigLocationID)
 		return false
 	}
 
-	endLocation := sg.querier.GetLocation(stationfindertype.DestLocationID)
+	endLocation := sg.querier.GetLocation(iteratortype.DestLocationID)
 	if startLocation == nil {
-		glog.Errorf("Failed to find %#v from TopoQuerier GetLocation()\n", stationfindertype.DestLocationID)
+		glog.Errorf("Failed to find %#v from TopoQuerier GetLocation()\n", iteratortype.DestLocationID)
 		return false
 	}
 
-	sg.g = sg.g.SetStart(stationfindertype.OrigLocationID,
+	sg.g = sg.g.SetStart(iteratortype.OrigLocationID,
 		chargingstrategy.State{
 			Energy: currEnergyLevel,
 		},
 		startLocation)
 
-	sg.g = sg.g.SetEnd(stationfindertype.DestLocationID,
+	sg.g = sg.g.SetEnd(iteratortype.DestLocationID,
 		chargingstrategy.State{},
 		endLocation)
 
@@ -154,9 +154,9 @@ func (sg *stationGraph) getLocationInfo(g Graph, n nodeID) *nav.Location {
 }
 
 func (sg *stationGraph) isStart(id string) bool {
-	return id == stationfindertype.OrigLocationID.String()
+	return id == iteratortype.OrigLocationID.String()
 }
 
 func (sg *stationGraph) isEnd(id string) bool {
-	return id == stationfindertype.DestLocationID.String()
+	return id == iteratortype.DestLocationID.String()
 }

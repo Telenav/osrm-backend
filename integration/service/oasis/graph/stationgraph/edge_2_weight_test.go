@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/entity"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/place/stationfinder/stationfindertype"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/place/iterator/iteratortype"
 )
 
 func TestEdgeID2EdgeDataGetResultShouldEqualsToSetValue(t *testing.T) {
@@ -27,8 +27,8 @@ func TestEdgeID2EdgeDataGetResultShouldEqualsToSetValue(t *testing.T) {
 		// case 2
 		{
 			place2placeID{
-				stationfindertype.OrigLocationID,
-				stationfindertype.DestLocationID,
+				iteratortype.OrigLocationID,
+				iteratortype.DestLocationID,
 			},
 			&entity.Weight{
 				Duration: 333.0,
@@ -53,8 +53,8 @@ func TestEdgeID2EdgeDataGetResultShouldEqualsToSetValue(t *testing.T) {
 func TestEdgeID2EdgeDataWhenGetUnsettedKeyShouldGetNil(t *testing.T) {
 	edgeID2Data := newEdgeID2EdgeData()
 	actualValue := edgeID2Data.get(place2placeID{
-		stationfindertype.OrigLocationID,
-		stationfindertype.DestLocationID})
+		iteratortype.OrigLocationID,
+		iteratortype.DestLocationID})
 	if actualValue != nil {
 		t.Errorf("Expect to get nil for unsetted key but got %#v\n", actualValue)
 	}

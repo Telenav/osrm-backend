@@ -4,7 +4,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api/nav"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/graph/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/entity"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/place/stationfinder/stationfindertype"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/place/iterator/iteratortype"
 )
 
 // node_0 -> node_1, duration = 30, distance = 30
@@ -107,7 +107,7 @@ func newMockGraph1() Graph {
 				{edgeID{3, 4}, &entity.Weight{10, 10}},
 			},
 		},
-		chargingstrategy.NewNullChargeStrategy(),
+		chargingstrategy.NewFakeChargeStrategy(),
 	}
 }
 
@@ -433,7 +433,7 @@ func newMockGraph2() Graph {
 				},
 			},
 		},
-		chargingstrategy.NewNullChargeStrategy(),
+		chargingstrategy.NewFakeChargeStrategy(),
 	}
 }
 
@@ -759,7 +759,7 @@ func newMockGraph3() Graph {
 				},
 			},
 		},
-		chargingstrategy.NewNullChargeStrategy(),
+		chargingstrategy.NewFakeChargeStrategy(),
 	}
 }
 
@@ -1086,7 +1086,7 @@ func newMockGraph4() Graph {
 				},
 			},
 		},
-		chargingstrategy.NewNullChargeStrategy(),
+		chargingstrategy.NewFakeChargeStrategy(),
 	}
 }
 
@@ -1165,7 +1165,7 @@ func (graph *mockGraph) ChargeStrategy() chargingstrategy.Strategy {
 // PlaceID returns original placeID from internal nodeID
 func (graph *mockGraph) PlaceID(id nodeID) entity.PlaceID {
 	if id < 0 || int(id) >= len(graph.placeIDs) {
-		return stationfindertype.InvalidPlaceID
+		return iteratortype.InvalidPlaceID
 	}
 	return graph.placeIDs[id]
 }

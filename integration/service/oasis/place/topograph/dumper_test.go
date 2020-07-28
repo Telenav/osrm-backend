@@ -10,8 +10,8 @@ import (
 )
 
 func TestDumpGivenObjectThenLoadAndThenCompareWithOriginalObject(t *testing.T) {
-	cases := []ConnectivityMap{
-		ConnectivityMap{
+	cases := []MemoryTopoGraph{
+		MemoryTopoGraph{
 			id2nearByIDs: fakeID2NearByIDsMap1,
 			maxRange:     fakeDistanceLimit,
 			statistic:    &fakeStatisticResult1,
@@ -83,9 +83,9 @@ fakeID2NearByIDsMap1 represents following station graph:
      1(Distance: 12, Duration: 12),
 */
 var fakeID2NearByIDsMap1 = ID2NearByIDsMap{
-	1: []*entity.RankedPlaceInfo{
+	1: []*entity.TransferInfo{
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 2,
 			},
 			Weight: &entity.Weight{
@@ -94,7 +94,7 @@ var fakeID2NearByIDsMap1 = ID2NearByIDsMap{
 			},
 		},
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 5,
 			},
 			Weight: &entity.Weight{
@@ -103,7 +103,7 @@ var fakeID2NearByIDsMap1 = ID2NearByIDsMap{
 			},
 		},
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 7,
 			},
 			Weight: &entity.Weight{
@@ -112,7 +112,7 @@ var fakeID2NearByIDsMap1 = ID2NearByIDsMap{
 			},
 		},
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 8,
 			},
 			Weight: &entity.Weight{
@@ -122,9 +122,9 @@ var fakeID2NearByIDsMap1 = ID2NearByIDsMap{
 		},
 	},
 
-	2: []*entity.RankedPlaceInfo{
+	2: []*entity.TransferInfo{
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 1,
 			},
 			Weight: &entity.Weight{
@@ -133,7 +133,7 @@ var fakeID2NearByIDsMap1 = ID2NearByIDsMap{
 			},
 		},
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 7,
 			},
 			Weight: &entity.Weight{
@@ -143,9 +143,9 @@ var fakeID2NearByIDsMap1 = ID2NearByIDsMap{
 		},
 	},
 
-	5: []*entity.RankedPlaceInfo{
+	5: []*entity.TransferInfo{
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 1,
 			},
 			Weight: &entity.Weight{
@@ -154,7 +154,7 @@ var fakeID2NearByIDsMap1 = ID2NearByIDsMap{
 			},
 		},
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 8,
 			},
 			Weight: &entity.Weight{
@@ -164,9 +164,9 @@ var fakeID2NearByIDsMap1 = ID2NearByIDsMap{
 		},
 	},
 
-	7: []*entity.RankedPlaceInfo{
+	7: []*entity.TransferInfo{
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 1,
 			},
 			Weight: &entity.Weight{
@@ -175,7 +175,7 @@ var fakeID2NearByIDsMap1 = ID2NearByIDsMap{
 			},
 		},
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 2,
 			},
 			Weight: &entity.Weight{
@@ -185,9 +185,9 @@ var fakeID2NearByIDsMap1 = ID2NearByIDsMap{
 		},
 	},
 
-	8: []*entity.RankedPlaceInfo{
+	8: []*entity.TransferInfo{
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 5,
 			},
 			Weight: &entity.Weight{
@@ -196,7 +196,7 @@ var fakeID2NearByIDsMap1 = ID2NearByIDsMap{
 			},
 		},
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 1,
 			},
 			Weight: &entity.Weight{

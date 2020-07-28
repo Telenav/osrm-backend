@@ -14,7 +14,7 @@ const minS2Level = 9
 // Level = 20 means average area size is 77.32km2
 const maxS2Level = 20
 
-func build(places []entity.PlaceInfo, minLevel, maxLevel int) map[s2.CellID][]entity.PlaceID {
+func build(places []entity.PlaceWithLocation, minLevel, maxLevel int) map[s2.CellID][]entity.PlaceID {
 	pointID2CellIDs := make(map[entity.PlaceID][]s2.CellID)
 	cellID2PointIDs := make(map[s2.CellID][]entity.PlaceID)
 

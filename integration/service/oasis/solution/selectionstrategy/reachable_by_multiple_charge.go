@@ -10,9 +10,9 @@ import (
 	"github.com/Telenav/osrm-backend/integration/service/oasis/graph/stationgraph"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/resourcemanager"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/place"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/place/iterator/iteratoralg"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/place/spatialindexer/ranker"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/place/stationconnquerier"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/place/stationfinder/stationfinderalg"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/place/topoquerier"
 	"github.com/Telenav/osrm-backend/integration/util/osrmconnector"
 	"github.com/blevesearch/bleve/geo"
 	"github.com/golang/glog"
@@ -26,16 +26,16 @@ func GenerateSolutions4ChargeStationBasedRoute(oasisReq *oasis.Request,
 
 	startTime := time.Now()
 	targetSolutions := make([]*oasis.Solution, 0, 10)
-	querier := stationconnquerier.New(resourceMgr.SpatialIndexerFinder(),
+	querier := topoquerier.New(resourceMgr.SpatialIndexerFinder(),
 		ranker.CreateRanker(ranker.SimpleRanker, resourceMgr.OSRMConnector()),
 		resourceMgr.StationLocationQuerier(),
-		resourceMgr.ConnectivityMap(),
+		resourceMgr.MemoryTopoGraph(),
 		&nav.Location{Lat: oasisReq.Coordinates[0].Lat, Lon: oasisReq.Coordinates[0].Lon},
 		&nav.Location{Lat: oasisReq.Coordinates[1].Lat, Lon: oasisReq.Coordinates[1].Lon},
 		oasisReq.CurrRange,
 		oasisReq.MaxRange)
 	internalSolutions := stationgraph.NewStationGraph(oasisReq.CurrRange, oasisReq.MaxRange,
-		chargingstrategy.NewFakeChargingStrategy(oasisReq.MaxRange),
+		chargingstrategy.NewSimpleChargingStrategy(oasisReq.MaxRange),
 		querier).GenerateChargeSolutions()
 
 	for _, sol := range internalSolutions {
@@ -55,10 +55,10 @@ func generateSolutions4SearchAlongRoute(oasisReq *oasis.Request, routeResp *rout
 
 	chargeLocations := chargeLocationSelection(oasisReq, routeResp)
 	for _, locations := range chargeLocations {
-		c := stationfinderalg.CalculateWeightBetweenNeighbors(locations, oc, finder)
-		querier := stationfinderalg.NewQuerierBasedOnWeightBetweenNeighborsChan(c)
+		c := iteratoralg.CalculateWeightBetweenNeighbors(locations, oc, finder)
+		querier := iteratoralg.NewQuerierBasedOnWeightBetweenNeighborsChan(c)
 		internalSolutions := stationgraph.NewStationGraph(oasisReq.CurrRange, oasisReq.MaxRange,
-			chargingstrategy.NewFakeChargingStrategy(oasisReq.MaxRange),
+			chargingstrategy.NewSimpleChargingStrategy(oasisReq.MaxRange),
 			querier).GenerateChargeSolutions()
 
 		for _, sol := range internalSolutions {

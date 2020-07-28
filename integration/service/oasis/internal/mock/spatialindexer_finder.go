@@ -11,12 +11,12 @@ type MockFinder struct {
 
 // FindNearByPlaceIDs returns mock result
 // It returns 10 places defined in MockPlaceInfo1
-func (finder *MockFinder) FindNearByPlaceIDs(center nav.Location, radius float64, limitCount int) []*entity.PlaceInfo {
+func (finder *MockFinder) FindNearByPlaceIDs(center nav.Location, radius float64, limitCount int) []*entity.PlaceWithLocation {
 	return MockPlaceInfo1
 }
 
-// MockPlaceInfo1 contains 10 PlaceInfo items
-var MockPlaceInfo1 = []*entity.PlaceInfo{
+// MockPlaceInfo1 contains 10 PlaceWithLocation items
+var MockPlaceInfo1 = []*entity.PlaceWithLocation{
 	{
 		ID: 1,
 		Location: &nav.Location{

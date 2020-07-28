@@ -33,9 +33,9 @@ func TestBuilderWithMockIteratorAndFinder(t *testing.T) {
 	// construct expect map
 	expect := make(ID2NearByIDsMap)
 
-	var idAndWeightArray = []*entity.RankedPlaceInfo{
+	var idAndWeightArray = []*entity.TransferInfo{
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 3,
 				Location: &nav.Location{
 					Lat: 37.401948,
@@ -48,7 +48,7 @@ func TestBuilderWithMockIteratorAndFinder(t *testing.T) {
 			},
 		},
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 2,
 				Location: &nav.Location{
 					Lat: 37.399331,
@@ -61,7 +61,7 @@ func TestBuilderWithMockIteratorAndFinder(t *testing.T) {
 			},
 		},
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 4,
 				Location: &nav.Location{
 					Lat: 37.407082,
@@ -74,7 +74,7 @@ func TestBuilderWithMockIteratorAndFinder(t *testing.T) {
 			},
 		},
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 5,
 				Location: &nav.Location{
 					Lat: 37.407277,
@@ -87,7 +87,7 @@ func TestBuilderWithMockIteratorAndFinder(t *testing.T) {
 			},
 		},
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 1,
 				Location: &nav.Location{
 					Lat: 37.355204,
@@ -100,7 +100,7 @@ func TestBuilderWithMockIteratorAndFinder(t *testing.T) {
 			},
 		},
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 6,
 				Location: &nav.Location{
 					Lat: 37.375024,
@@ -113,7 +113,7 @@ func TestBuilderWithMockIteratorAndFinder(t *testing.T) {
 			},
 		},
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 7,
 				Location: &nav.Location{
 					Lat: 37.359592,
@@ -126,7 +126,7 @@ func TestBuilderWithMockIteratorAndFinder(t *testing.T) {
 			},
 		},
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 10,
 				Location: &nav.Location{
 					Lat: 37.373546,
@@ -139,7 +139,7 @@ func TestBuilderWithMockIteratorAndFinder(t *testing.T) {
 			},
 		},
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 9,
 				Location: &nav.Location{
 					Lat: 37.368453,
@@ -152,7 +152,7 @@ func TestBuilderWithMockIteratorAndFinder(t *testing.T) {
 			},
 		},
 		{
-			PlaceInfo: entity.PlaceInfo{
+			PlaceWithLocation: entity.PlaceWithLocation{
 				ID: 8,
 				Location: &nav.Location{
 					Lat: 37.366023,

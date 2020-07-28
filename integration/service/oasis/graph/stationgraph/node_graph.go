@@ -5,7 +5,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/service/oasis/graph/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/entity"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/place"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/place/stationfinder/stationfindertype"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/place/iterator/iteratortype"
 	"github.com/golang/glog"
 )
 
@@ -98,13 +98,13 @@ func (g *nodeGraph) PlaceID(id nodeID) entity.PlaceID {
 	return g.nodeContainer.nodeID2PlaceID(id)
 }
 
-func (g *nodeGraph) getPhysicalAdjacentNodes(id nodeID) []*entity.RankedPlaceInfo {
+func (g *nodeGraph) getPhysicalAdjacentNodes(id nodeID) []*entity.TransferInfo {
 	placeID := g.nodeContainer.nodeID2PlaceID(id)
-	if placeID == stationfindertype.InvalidPlaceID {
-		glog.Errorf("Query getPhysicalAdjacentNodes with invalid node %#v and result %#v\n", id, stationfindertype.InvalidPlaceIDStr)
+	if placeID == iteratortype.InvalidPlaceID {
+		glog.Errorf("Query getPhysicalAdjacentNodes with invalid node %#v and result %#v\n", id, iteratortype.InvalidPlaceIDStr)
 		return nil
 	}
-	return g.querier.NearByStationQuery(placeID)
+	return g.querier.GetConnectedPlaces(placeID)
 }
 
 func (g *nodeGraph) createLogicalNodes(from nodeID, toPlaceID entity.PlaceID, toLocation *nav.Location, weight *entity.Weight) []*node {

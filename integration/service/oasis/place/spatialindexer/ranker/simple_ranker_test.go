@@ -11,15 +11,15 @@ import (
 func TestRankerInterfaceViaSimpleRanker(t *testing.T) {
 	cases := []struct {
 		center  nav.Location
-		targets []*entity.PlaceInfo
-		expect  []*entity.RankedPlaceInfo
+		targets []*entity.PlaceWithLocation
+		expect  []*entity.TransferInfo
 	}{
 		{
 			center: nav.Location{
 				Lat: 37.398973,
 				Lon: -121.976633,
 			},
-			targets: []*entity.PlaceInfo{
+			targets: []*entity.PlaceWithLocation{
 				{
 					ID: 1,
 					Location: &nav.Location{
@@ -42,9 +42,9 @@ func TestRankerInterfaceViaSimpleRanker(t *testing.T) {
 					},
 				},
 			},
-			expect: []*entity.RankedPlaceInfo{
+			expect: []*entity.TransferInfo{
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID: 1,
 						Location: &nav.Location{
 							Lat: 37.388840,
@@ -57,7 +57,7 @@ func TestRankerInterfaceViaSimpleRanker(t *testing.T) {
 					},
 				},
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID: 2,
 						Location: &nav.Location{
 							Lat: 37.375515,
@@ -70,7 +70,7 @@ func TestRankerInterfaceViaSimpleRanker(t *testing.T) {
 					},
 				},
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID: 3,
 						Location: &nav.Location{
 							Lat: 37.336954,

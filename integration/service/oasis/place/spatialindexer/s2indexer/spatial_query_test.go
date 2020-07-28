@@ -75,7 +75,7 @@ func TestSpatialIndexQuery1(t *testing.T) {
 		Lon: -121.969861,
 	}
 
-	expect := []*entity.PlaceInfo{
+	expect := []*entity.PlaceWithLocation{
 		{
 			ID: 1,
 			Location: &nav.Location{

@@ -9,7 +9,7 @@ import (
 )
 
 type connectivityMapBuilder struct {
-	iterator      place.PlacesIterator
+	iterator      place.Iterator
 	finder        place.Finder
 	ranker        place.Ranker
 	distanceLimit float64
@@ -21,7 +21,7 @@ type connectivityMapBuilder struct {
 	aggregatorC         chan placeIDWithNearByPlaceIDs
 }
 
-func newConnectivityMapBuilder(iterator place.PlacesIterator, finder place.Finder,
+func newConnectivityMapBuilder(iterator place.Iterator, finder place.Finder,
 	ranker place.Ranker, distanceLimit float64, numOfWorker int) *connectivityMapBuilder {
 	builder := &connectivityMapBuilder{
 		iterator:      iterator,
@@ -74,7 +74,7 @@ func (builder *connectivityMapBuilder) process() {
 	glog.Infof("builder's process is finished, start number of %d workers.\n", builder.numOfWorker)
 }
 
-func (builder *connectivityMapBuilder) work(workerID int, source <-chan entity.PlaceInfo, sink chan<- placeIDWithNearByPlaceIDs) {
+func (builder *connectivityMapBuilder) work(workerID int, source <-chan entity.PlaceWithLocation, sink chan<- placeIDWithNearByPlaceIDs) {
 	defer builder.workerWaitGroup.Done()
 
 	counter := 0
@@ -115,7 +115,7 @@ func (builder *connectivityMapBuilder) wait() {
 
 type placeIDWithNearByPlaceIDs struct {
 	id  entity.PlaceID
-	ids []*entity.RankedPlaceInfo
+	ids []*entity.TransferInfo
 }
 
 func (builder *connectivityMapBuilder) buildInSerial() ID2NearByIDsMap {

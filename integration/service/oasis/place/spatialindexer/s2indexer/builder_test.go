@@ -14,11 +14,11 @@ import (
 // online tool for google s2: http://s2.sidewalklabs.com/regioncoverer/
 func TestBuild(t *testing.T) {
 	cases := []struct {
-		places []entity.PlaceInfo
+		places []entity.PlaceWithLocation
 		expect map[s2.CellID][]entity.PlaceID
 	}{
 		{
-			[]entity.PlaceInfo{
+			[]entity.PlaceWithLocation{
 				{
 					ID: 1,
 					Location: &nav.Location{
@@ -58,7 +58,7 @@ func TestBuild(t *testing.T) {
 
 		// Test case of 2 places, both near to 4655 Great America Pkwy
 		{
-			[]entity.PlaceInfo{
+			[]entity.PlaceWithLocation{
 				{
 					ID: 1,
 					Location: &nav.Location{
@@ -125,7 +125,7 @@ func TestBuild(t *testing.T) {
 		// Test case of 4 places, which distrubted in CA, US
 		// Each place have about 100km distance with each other
 		{
-			[]entity.PlaceInfo{
+			[]entity.PlaceWithLocation{
 				{
 					ID: 1,
 					Location: &nav.Location{

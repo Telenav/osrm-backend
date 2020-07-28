@@ -13,11 +13,11 @@ func newSimpleRanker() *simpleRanker {
 }
 
 func (ranker *simpleRanker) RankPlaceIDsByGreatCircleDistance(center nav.Location,
-	targets []*entity.PlaceInfo) []*entity.RankedPlaceInfo {
+	targets []*entity.PlaceWithLocation) []*entity.TransferInfo {
 	return rankPointsByGreatCircleDistanceToCenter(center, targets)
 }
 
 func (ranker *simpleRanker) RankPlaceIDsByShortestDistance(center nav.Location,
-	targets []*entity.PlaceInfo) []*entity.RankedPlaceInfo {
+	targets []*entity.PlaceWithLocation) []*entity.TransferInfo {
 	return ranker.RankPlaceIDsByGreatCircleDistance(center, targets)
 }

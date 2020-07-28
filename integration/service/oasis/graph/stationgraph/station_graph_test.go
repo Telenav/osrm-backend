@@ -8,7 +8,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/service/oasis/graph/chargingstrategy"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/entity"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/place"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/place/stationfinder/stationfindertype"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/place/iterator/iteratortype"
 	"github.com/Telenav/osrm-backend/integration/util"
 	"github.com/golang/glog"
 )
@@ -80,16 +80,16 @@ var testSGStationID4 entity.PlaceID = 4
 var testSGStationID5 entity.PlaceID = 5
 
 type mockQuerier4StationGraph struct {
-	mockStationID2QueryResult map[entity.PlaceID][]*entity.RankedPlaceInfo
+	mockStationID2QueryResult map[entity.PlaceID][]*entity.TransferInfo
 	mockStationID2Location    map[entity.PlaceID]*nav.Location
 }
 
 func newMockQuerier4StationGraph() place.TopoQuerier {
 	querier := &mockQuerier4StationGraph{
-		mockStationID2QueryResult: map[entity.PlaceID][]*entity.RankedPlaceInfo{
-			stationfindertype.OrigLocationID: {
+		mockStationID2QueryResult: map[entity.PlaceID][]*entity.TransferInfo{
+			iteratortype.OrigLocationID: {
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID:       testSGStationID2,
 						Location: &nav.Location{Lat: 2.2, Lon: 2.2},
 					},
@@ -99,7 +99,7 @@ func newMockQuerier4StationGraph() place.TopoQuerier {
 					},
 				},
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID:       testSGStationID1,
 						Location: &nav.Location{Lat: 1.1, Lon: 1.1},
 					},
@@ -109,7 +109,7 @@ func newMockQuerier4StationGraph() place.TopoQuerier {
 					},
 				},
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID:       testSGStationID3,
 						Location: &nav.Location{Lat: 3.3, Lon: 3.3},
 					},
@@ -121,7 +121,7 @@ func newMockQuerier4StationGraph() place.TopoQuerier {
 			},
 			testSGStationID1: {
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID:       testSGStationID5,
 						Location: &nav.Location{Lat: 5.5, Lon: 5.5},
 					},
@@ -131,7 +131,7 @@ func newMockQuerier4StationGraph() place.TopoQuerier {
 					},
 				},
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID:       testSGStationID4,
 						Location: &nav.Location{Lat: 4.4, Lon: 4.4},
 					},
@@ -143,7 +143,7 @@ func newMockQuerier4StationGraph() place.TopoQuerier {
 			},
 			testSGStationID2: {
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID:       testSGStationID4,
 						Location: &nav.Location{Lat: 4.4, Lon: 4.4},
 					},
@@ -153,7 +153,7 @@ func newMockQuerier4StationGraph() place.TopoQuerier {
 					},
 				},
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID:       testSGStationID5,
 						Location: &nav.Location{Lat: 5.5, Lon: 5.5},
 					},
@@ -165,7 +165,7 @@ func newMockQuerier4StationGraph() place.TopoQuerier {
 			},
 			testSGStationID3: {
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID:       testSGStationID5,
 						Location: &nav.Location{Lat: 5.5, Lon: 5.5},
 					},
@@ -175,7 +175,7 @@ func newMockQuerier4StationGraph() place.TopoQuerier {
 					},
 				},
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID:       testSGStationID4,
 						Location: &nav.Location{Lat: 4.4, Lon: 4.4},
 					},
@@ -187,8 +187,8 @@ func newMockQuerier4StationGraph() place.TopoQuerier {
 			},
 			testSGStationID4: {
 				{
-					PlaceInfo: entity.PlaceInfo{
-						ID:       stationfindertype.DestLocationID,
+					PlaceWithLocation: entity.PlaceWithLocation{
+						ID:       iteratortype.DestLocationID,
 						Location: &nav.Location{Lat: 6.6, Lon: 6.6},
 					},
 					Weight: &entity.Weight{
@@ -199,8 +199,8 @@ func newMockQuerier4StationGraph() place.TopoQuerier {
 			},
 			testSGStationID5: {
 				{
-					PlaceInfo: entity.PlaceInfo{
-						ID:       stationfindertype.DestLocationID,
+					PlaceWithLocation: entity.PlaceWithLocation{
+						ID:       iteratortype.DestLocationID,
 						Location: &nav.Location{Lat: 6.6, Lon: 6.6},
 					},
 					Weight: &entity.Weight{
@@ -209,23 +209,23 @@ func newMockQuerier4StationGraph() place.TopoQuerier {
 					},
 				},
 			},
-			stationfindertype.DestLocationID: {},
+			iteratortype.DestLocationID: {},
 		},
 		mockStationID2Location: map[entity.PlaceID]*nav.Location{
-			stationfindertype.OrigLocationID: {Lat: 0.0, Lon: 0.0},
-			testSGStationID1:                 {Lat: 1.1, Lon: 1.1},
-			testSGStationID2:                 {Lat: 2.2, Lon: 2.2},
-			testSGStationID3:                 {Lat: 3.3, Lon: 3.3},
-			testSGStationID4:                 {Lat: 4.4, Lon: 4.4},
-			testSGStationID5:                 {Lat: 5.5, Lon: 5.5},
-			stationfindertype.DestLocationID: {Lat: 6.6, Lon: 6.6},
+			iteratortype.OrigLocationID: {Lat: 0.0, Lon: 0.0},
+			testSGStationID1:            {Lat: 1.1, Lon: 1.1},
+			testSGStationID2:            {Lat: 2.2, Lon: 2.2},
+			testSGStationID3:            {Lat: 3.3, Lon: 3.3},
+			testSGStationID4:            {Lat: 4.4, Lon: 4.4},
+			testSGStationID5:            {Lat: 5.5, Lon: 5.5},
+			iteratortype.DestLocationID: {Lat: 6.6, Lon: 6.6},
 		},
 	}
 
 	return querier
 }
 
-func (querier *mockQuerier4StationGraph) NearByStationQuery(placeID entity.PlaceID) []*entity.RankedPlaceInfo {
+func (querier *mockQuerier4StationGraph) GetConnectedPlaces(placeID entity.PlaceID) []*entity.TransferInfo {
 	if queryResult, ok := querier.mockStationID2QueryResult[placeID]; ok {
 		return queryResult
 	}
@@ -244,7 +244,7 @@ func (querier *mockQuerier4StationGraph) GetLocation(placeID entity.PlaceID) *na
 func TestStationGraphGenerateSolutions1(t *testing.T) {
 	maxEnergyLevel := 50.0
 	currEnergyLevel := 20.0
-	strategy := chargingstrategy.NewFakeChargingStrategy(maxEnergyLevel)
+	strategy := chargingstrategy.NewSimpleChargingStrategy(maxEnergyLevel)
 	querier := newMockQuerier4StationGraph()
 
 	solutions := NewStationGraph(currEnergyLevel, maxEnergyLevel, strategy, querier).GenerateChargeSolutions()
@@ -306,7 +306,7 @@ func TestStationGraphGenerateSolutions1(t *testing.T) {
 // mockedGraph4StationGraph defines compatible topological representation after mockQuerier4StationGraph is built
 var mockedGraph4StationGraph = mockGraph{
 	[]*node{
-		// stationfindertype.OrigLocationID.String(),
+		// iteratortype.OrigLocationID.String(),
 		{
 			0,
 			chargeInfo{
@@ -319,7 +319,7 @@ var mockedGraph4StationGraph = mockGraph{
 			// 	Lon: 0.0,
 			// },
 		},
-		// stationfindertype.DestLocationID.String(),
+		// iteratortype.DestLocationID.String(),
 		{
 			1,
 			chargeInfo{
@@ -527,8 +527,8 @@ var mockedGraph4StationGraph = mockGraph{
 		},
 	},
 	[]entity.PlaceID{
-		stationfindertype.OrigLocationID,
-		stationfindertype.DestLocationID,
+		iteratortype.OrigLocationID,
+		iteratortype.DestLocationID,
 		1,
 		1,
 		1,
@@ -687,5 +687,5 @@ var mockedGraph4StationGraph = mockGraph{
 			{edgeID{16, 1}, &entity.Weight{Duration: 33.3, Distance: 33.3}},
 		},
 	},
-	chargingstrategy.NewFakeChargingStrategy(50.0),
+	chargingstrategy.NewSimpleChargingStrategy(50.0),
 }

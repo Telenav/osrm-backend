@@ -12,13 +12,13 @@ import (
 
 func TestRankAgent(t *testing.T) {
 	cases := []struct {
-		input  []*entity.RankedPlaceInfo
-		expect []*entity.RankedPlaceInfo
+		input  []*entity.TransferInfo
+		expect []*entity.TransferInfo
 	}{
 		{
-			input: []*entity.RankedPlaceInfo{
+			input: []*entity.TransferInfo{
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID: 3,
 						Location: &nav.Location{
 							Lat: 3.3,
@@ -30,7 +30,7 @@ func TestRankAgent(t *testing.T) {
 					},
 				},
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID: 1,
 						Location: &nav.Location{
 							Lat: 1.1,
@@ -42,7 +42,7 @@ func TestRankAgent(t *testing.T) {
 					},
 				},
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID: 22,
 						Location: &nav.Location{
 							Lat: 22.22,
@@ -54,7 +54,7 @@ func TestRankAgent(t *testing.T) {
 					},
 				},
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID: 4,
 						Location: &nav.Location{
 							Lat: 4.4,
@@ -66,9 +66,9 @@ func TestRankAgent(t *testing.T) {
 					},
 				},
 			},
-			expect: []*entity.RankedPlaceInfo{
+			expect: []*entity.TransferInfo{
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID: 1,
 						Location: &nav.Location{
 							Lat: 1.1,
@@ -80,7 +80,7 @@ func TestRankAgent(t *testing.T) {
 					},
 				},
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID: 3,
 						Location: &nav.Location{
 							Lat: 3.3,
@@ -92,7 +92,7 @@ func TestRankAgent(t *testing.T) {
 					},
 				},
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID: 4,
 						Location: &nav.Location{
 							Lat: 4.4,
@@ -104,7 +104,7 @@ func TestRankAgent(t *testing.T) {
 					},
 				},
 				{
-					PlaceInfo: entity.PlaceInfo{
+					PlaceWithLocation: entity.PlaceWithLocation{
 						ID: 22,
 						Location: &nav.Location{
 							Lat: 22.22,
@@ -121,7 +121,7 @@ func TestRankAgent(t *testing.T) {
 
 	for _, c := range cases {
 		var wg sync.WaitGroup
-		pointWithDistanceC := make(chan *entity.RankedPlaceInfo, len(c.input))
+		pointWithDistanceC := make(chan *entity.TransferInfo, len(c.input))
 		wg.Add(1)
 		go func(wg *sync.WaitGroup) {
 			defer wg.Done()
@@ -144,7 +144,7 @@ func TestRankAgent(t *testing.T) {
 	}
 }
 
-func printRankedPointInfoArray(arr []*entity.RankedPlaceInfo) string {
+func printRankedPointInfoArray(arr []*entity.TransferInfo) string {
 	var str string
 	for _, item := range arr {
 		str += fmt.Sprintf("%#v ", item)

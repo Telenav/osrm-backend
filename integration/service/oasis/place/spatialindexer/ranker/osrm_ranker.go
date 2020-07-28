@@ -16,10 +16,10 @@ func newOsrmRanker(oc *osrmconnector.OSRMConnector) *osrmRanker {
 	}
 }
 
-func (ranker *osrmRanker) RankPlaceIDsByGreatCircleDistance(center nav.Location, targets []*entity.PlaceInfo) []*entity.RankedPlaceInfo {
+func (ranker *osrmRanker) RankPlaceIDsByGreatCircleDistance(center nav.Location, targets []*entity.PlaceWithLocation) []*entity.TransferInfo {
 	return rankPointsByGreatCircleDistanceToCenter(center, targets)
 }
 
-func (ranker *osrmRanker) RankPlaceIDsByShortestDistance(center nav.Location, targets []*entity.PlaceInfo) []*entity.RankedPlaceInfo {
+func (ranker *osrmRanker) RankPlaceIDsByShortestDistance(center nav.Location, targets []*entity.PlaceWithLocation) []*entity.TransferInfo {
 	return rankPointsByOSRMShortestPath(center, targets, ranker.oc, pointsThresholdPerRequest)
 }
