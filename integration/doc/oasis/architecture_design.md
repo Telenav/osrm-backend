@@ -57,7 +57,7 @@ type TopoQuerier interface {
 
    // GetNearByPlaces finds near by stations by given placeID and return them in recorded sequence
    // Returns nil if given placeID is not found or no connectivity
-   GetNearByPlaces(placeID common.PlaceID) []*common.RankedPlaceInfo
+   GetNearByPlaces(placeID entity.PlaceID) []*entity.RankedPlaceInfo
 
    // LocationQuerier returns *nav.location for given placeID
    LocationQuerier
@@ -70,7 +70,7 @@ Definition of `SpatialQuerier` interface
 type SpatialQuerier interface {
 
    // GetNearByPlaceIDs returns a group of places near to given center location
-   GetNearByPlaceIDs(center nav.Location, radius float64, limitCount int) []*common.PlaceInfo
+   GetNearByPlaceIDs(center nav.Location, radius float64, limitCount int) []*entity.PlaceInfo
 }
 ```
 Definition of `LocationQuerier` interface

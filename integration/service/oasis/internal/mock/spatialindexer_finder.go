@@ -2,7 +2,7 @@ package mock
 
 import (
 	"github.com/Telenav/osrm-backend/integration/api/nav"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/common"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/entity"
 )
 
 // MockFinder implements Finder's interface
@@ -11,12 +11,12 @@ type MockFinder struct {
 
 // FindNearByPlaceIDs returns mock result
 // It returns 10 places defined in MockPlaceInfo1
-func (finder *MockFinder) FindNearByPlaceIDs(center nav.Location, radius float64, limitCount int) []*common.PlaceInfo {
+func (finder *MockFinder) FindNearByPlaceIDs(center nav.Location, radius float64, limitCount int) []*entity.PlaceInfo {
 	return MockPlaceInfo1
 }
 
 // MockPlaceInfo1 contains 10 PlaceInfo items
-var MockPlaceInfo1 = []*common.PlaceInfo{
+var MockPlaceInfo1 = []*entity.PlaceInfo{
 	{
 		ID: 1,
 		Location: &nav.Location{

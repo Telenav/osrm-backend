@@ -4,7 +4,7 @@ import (
 	"strconv"
 
 	"github.com/Telenav/osrm-backend/integration/api/nav"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/place/stationfinder/stationfindertype"
 )
 
 // MockChargeStationInfo1 mocks array of *ChargeStationInfo which is compatible with MockPlaceInfo1

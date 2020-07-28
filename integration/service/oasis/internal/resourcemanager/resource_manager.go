@@ -4,21 +4,21 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Telenav/osrm-backend/integration/service/oasis/connectivitymap"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/spatialindexer/s2indexer"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/place"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/place/spatialindexer/s2indexer"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/place/stationfinder"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/place/topograph"
+	"github.com/Telenav/osrm-backend/integration/util/osrmconnector"
 	"github.com/golang/glog"
 )
 
 // ResourceMgr defines strategy be used by charge station selection
 type ResourceMgr struct {
-	osrmConnector          *osrmconnector.OSRMConnector        // osrmConnector represents communication with OSRM backend
-	stationFinder          stationfinder.StationFinder         // stationFinder generates nearby stations based cloud search or local spatial index
-	spatialIndexerFinder   spatialindexer.Finder               // spatialIndexerFinder answers spatial query based on pre-generated spatial data
-	connectivityMap        *connectivitymap.ConnectivityMap    // connectivityMap contains connectivity information for stations
-	stationLocationQuerier spatialindexer.PlaceLocationQuerier // stationLocationQuerier answers location information for specific station
+	osrmConnector          *osrmconnector.OSRMConnector // osrmConnector represents communication with OSRM backend
+	stationFinder          place.IteratorGenerator      // stationFinder generates nearby stations based cloud search or local spatial index
+	spatialIndexerFinder   place.Finder                 // spatialIndexerFinder answers spatial query based on pre-generated spatial data
+	connectivityMap        *topograph.ConnectivityMap   // connectivityMap contains connectivity information for stations
+	stationLocationQuerier place.LocationQuerier        // stationLocationQuerier answers location information for specific station
 }
 
 // NewResourceMgr creates ResourceMgr object
@@ -44,7 +44,7 @@ func NewResourceMgr(osrmBackend, finderType, searchEndpoint, apiKey, apiSignatur
 		return nil, err
 	}
 
-	connectivityMap := connectivitymap.New(0.0).Load(dataFolderPath)
+	connectivityMap := topograph.New(0.0).Load(dataFolderPath)
 	if connectivityMap == nil {
 		err := fmt.Errorf("failed to load ConnectivityMap")
 		return nil, err
@@ -66,23 +66,23 @@ func (r *ResourceMgr) OSRMConnector() *osrmconnector.OSRMConnector {
 	return r.osrmConnector
 }
 
-// StationFinder returns interface of StationFinder used for finding nearby stations
+// IteratorGenerator returns interface of IteratorGenerator used for finding nearby stations
 // based cloud search or local spatial index
-func (r *ResourceMgr) StationFinder() stationfinder.StationFinder {
+func (r *ResourceMgr) IteratorGenerator() place.IteratorGenerator {
 	return r.stationFinder
 }
 
 // SpatialIndexerFinder answers spatial query based on pre-generated spatial data
-func (r *ResourceMgr) SpatialIndexerFinder() spatialindexer.Finder {
+func (r *ResourceMgr) SpatialIndexerFinder() place.Finder {
 	return r.spatialIndexerFinder
 }
 
 // ConnectivityMap returns connectivity information for stations
-func (r *ResourceMgr) ConnectivityMap() *connectivitymap.ConnectivityMap {
+func (r *ResourceMgr) ConnectivityMap() *topograph.ConnectivityMap {
 	return r.connectivityMap
 }
 
 // StationLocationQuerier answers location information for specific station
-func (r *ResourceMgr) StationLocationQuerier() spatialindexer.PlaceLocationQuerier {
+func (r *ResourceMgr) StationLocationQuerier() place.LocationQuerier {
 	return r.stationLocationQuerier
 }

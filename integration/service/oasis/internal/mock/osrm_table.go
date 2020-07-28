@@ -3,7 +3,7 @@ package mock
 import (
 	"github.com/Telenav/osrm-backend/integration/api/osrm"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/table"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/stationfinder/stationfindertype"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/place/stationfinder/stationfindertype"
 )
 
 // 1 * 4

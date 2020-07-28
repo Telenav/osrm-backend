@@ -9,7 +9,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api/osrm"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/route"
 	"github.com/Telenav/osrm-backend/integration/api/osrm/table"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/osrmconnector"
+	"github.com/Telenav/osrm-backend/integration/util/osrmconnector"
 )
 
 // GenerateTableReq4Points accept two group of points and generate osrm table request

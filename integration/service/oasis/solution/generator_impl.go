@@ -6,7 +6,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/api/oasis"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/osrmhelper"
 	"github.com/Telenav/osrm-backend/integration/service/oasis/internal/resourcemanager"
-	"github.com/Telenav/osrm-backend/integration/service/oasis/selectionstrategy"
+	"github.com/Telenav/osrm-backend/integration/service/oasis/solution/selectionstrategy"
 )
 
 type generatorImpl struct {
