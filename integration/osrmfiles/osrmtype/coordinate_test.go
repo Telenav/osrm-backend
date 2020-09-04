@@ -54,7 +54,7 @@ func TestWriteCoordinates(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		if len(c.p)-writeLen != len(c.p)%coordinateBytes {
+		if len(c.p)-writeLen != len(c.p)%CoordinateBytes {
 			t.Errorf("len(p) %d but write len %d", len(c.p), writeLen)
 		}
 		if !reflect.DeepEqual(coordinates, c.Coordinates) {

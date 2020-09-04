@@ -8,10 +8,12 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/osrmfiles"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/dotcnbg"
+	"github.com/Telenav/osrm-backend/integration/osrmfiles/dotcnbgtoebg"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/dotnames"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/dotnbgnodes"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/dotosrm"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/dotproperties"
+	"github.com/Telenav/osrm-backend/integration/osrmfiles/dotrestrictions"
 	"github.com/Telenav/osrm-backend/integration/osrmfiles/dottimestamp"
 
 	"github.com/golang/glog"
@@ -34,6 +36,12 @@ const (
 
 	dotCNBGSuffix        = ".cnbg"
 	dotOSRMDotCNBGSuffix = dotOSRMSuffix + dotCNBGSuffix
+
+	dotCNBGToEBGSuffix        = ".cnbg_to_ebg"
+	dotOSRMDotCNBGToEBGSuffix = dotOSRMSuffix + dotCNBGToEBGSuffix
+
+	dotRestrictionsSuffix        = ".restrictions"
+	dotOSRMDotRestrictionsSuffix = dotOSRMSuffix + dotRestrictionsSuffix
 )
 
 // osrmBasefilePath should be 'xxx.osrm'
@@ -46,6 +54,8 @@ func createEmptyOSRMFilesContents(osrmBasefilePath string) map[string]osrmfiles.
 	m[dotOSRMDotPropertiesSuffix] = dotproperties.New(osrmBasefilePath + dotPropertiesSuffix)
 	m[dotOSRMDotNamesSuffix] = dotnames.New(osrmBasefilePath + dotNamesSuffix)
 	m[dotOSRMDotCNBGSuffix] = dotcnbg.New(osrmBasefilePath + dotCNBGSuffix)
+	m[dotOSRMDotCNBGToEBGSuffix] = dotcnbgtoebg.New(osrmBasefilePath + dotCNBGToEBGSuffix)
+	m[dotOSRMDotRestrictionsSuffix] = dotrestrictions.New(osrmBasefilePath + dotRestrictionsSuffix)
 
 	return m
 }

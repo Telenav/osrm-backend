@@ -23,9 +23,9 @@ type Coordinate struct {
 type Coordinates []Coordinate
 
 const (
-	fixedLonBytes   = 4 // int32
-	fixedLatBytes   = 4 // int32
-	coordinateBytes = fixedLonBytes + fixedLatBytes
+	FixedLonBytes   = 4 // int32
+	FixedLatBytes   = 4 // int32
+	CoordinateBytes = FixedLonBytes + FixedLatBytes
 )
 
 func (c *Coordinates) Write(p []byte) (int, error) {
@@ -33,18 +33,18 @@ func (c *Coordinates) Write(p []byte) (int, error) {
 	var writeLen int
 	writeP := p
 	for {
-		if len(writeP) < coordinateBytes {
+		if len(writeP) < CoordinateBytes {
 			break
 		}
 
 		var coordinate Coordinate
 		coordinate.FixedLon = FixedLon(binary.LittleEndian.Uint32(writeP))
-		coordinate.FixedLat = FixedLat(binary.LittleEndian.Uint32(writeP[fixedLonBytes:]))
+		coordinate.FixedLat = FixedLat(binary.LittleEndian.Uint32(writeP[FixedLonBytes:]))
 
 		*c = append(*c, coordinate)
 
-		writeP = writeP[coordinateBytes:]
-		writeLen += coordinateBytes
+		writeP = writeP[CoordinateBytes:]
+		writeLen += CoordinateBytes
 	}
 
 	return writeLen, nil
