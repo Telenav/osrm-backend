@@ -2,7 +2,7 @@
 FROM debian:buster-slim
 
 # Install necessary packages for proper system state
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
   build-essential \
   cmake \
   curl \
@@ -20,7 +20,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteract
   lua5.2 \
   liblua5.2-dev \
   libluabind-dev \
-  pkg-config
+  pkg-config \
+  && rm -rf /var/lib/apt/lists/*
+
 
 # install go
 RUN wget --progress=dot:mega https://golang.org/dl/go1.15.3.linux-amd64.tar.gz && \
