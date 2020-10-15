@@ -9,6 +9,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteract
   wget \
   vim \
   git \
+  zip \
+  unzip \
+  tree \
   libboost-all-dev \
   libbz2-dev \
   libtbb-dev \
