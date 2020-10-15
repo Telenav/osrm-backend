@@ -25,7 +25,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteract
 
 
 # install go
-RUN wget --progress=dot:mega https://golang.org/dl/go1.15.3.linux-amd64.tar.gz && \
+RUN wget --progress=dot:mega --no-check-certificate https://golang.org/dl/go1.15.3.linux-amd64.tar.gz && \
   tar -zxf go1.15.3.linux-amd64.tar.gz && \
   mv go /usr/local/ && \
   rm -f go1.15.3.linux-amd64.tar.gz && \
