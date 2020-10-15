@@ -1,5 +1,5 @@
 
-FROM debian:stretch-slim
+FROM debian:buster-slim
 
 # Install necessary packages for proper system state
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
