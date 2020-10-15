@@ -14,6 +14,7 @@ Changes from v10.3.0
 - Bugfix:    
 - Performance:    
 - Tools:    
+   - CHANGED osrm-backend-dev base image to `debian:buster-slim` and `go1.15.3`(has NOT been enabled for `osrm-backend` yet) [#374](https://github.com/Telenav/osrm-backend/issues/374)
 - Docs:    
    - ADDED document `oasis architecture design` [#360](https://github.com/Telenav/osrm-backend/pull/360)
    - ADDED document `charge station based routing` [#367](https://github.com/Telenav/osrm-backend/pull/367)
