@@ -20,10 +20,10 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteract
   pkg-config
 
 # install go
-RUN wget --progress=dot:mega https://dl.google.com/go/go1.13.3.linux-amd64.tar.gz && \
-  tar -zxf go1.13.3.linux-amd64.tar.gz && \
+RUN wget --progress=dot:mega https://golang.org/dl/go1.15.3.linux-amd64.tar.gz && \
+  tar -zxf go1.15.3.linux-amd64.tar.gz && \
   mv go /usr/local/ && \
-  rm -f go1.13.3.linux-amd64.tar.gz && \
+  rm -f go1.15.3.linux-amd64.tar.gz && \
   mkdir -p /workspace/go/bin /workspace/go/src /workspace/go/pkg
 
 # set env
