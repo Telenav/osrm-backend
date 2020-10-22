@@ -12,6 +12,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteract
   zip \
   unzip \
   tree \
+  clang-format-3.8 \
   libboost-all-dev \
   libbz2-dev \
   libtbb-dev \
