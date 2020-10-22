@@ -22,6 +22,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteract
   liblua5.2-dev \
   libluabind-dev \
   pkg-config \
+  ca-certificates \
   && rm -rf /var/lib/apt/lists/*
 
 
@@ -36,6 +37,11 @@ RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.36.0/install.sh | 
   # nvm install node && \
   node --version && \
   npm --version
+# Appending below nvm source string to your ~/.bashrc to let nvm/node/npm available 
+#  export NVM_DIR="$HOME/.nvm"
+#  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+#  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
 
 # install go
 RUN wget --progress=dot:mega --no-check-certificate https://golang.org/dl/go1.15.3.linux-amd64.tar.gz && \
