@@ -1,6 +1,6 @@
 
 
-FROM telenavmap/osrm-backend-dev:v1 as builder
+FROM telenavmap/osrm-backend-dev:v2 as builder
 
 RUN mkdir -p /osrm-build
 WORKDIR /workspace/
@@ -30,7 +30,7 @@ RUN cd /workspace/osrm-backend/integration && \
   ls -lh /workspace/go/bin
 
 
-FROM telenavmap/osrm-backend-dev:v1 as runstage
+FROM telenavmap/osrm-backend-dev:v2 as runstage
 #FROM debian:stretch-slim as runstage
 #RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
 #  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends libboost-program-options1.62.0 libboost-regex1.62.0 \
