@@ -12,6 +12,7 @@ Changes from v10.3.0
   - CHANGED for internal refactoring, Create the layer of `graph` and `place`, more information please go to [#352](https://github.com/Telenav/osrm-backend/issues/352) [#368](https://github.com/Telenav/osrm-backend/pull/368)
   - ADDED parser for `.osrm.restrictions` and `.osrm.cnbg_to_ebg` files [#371](https://github.com/Telenav/osrm-backend/pull/371)
   - ADDED Merge changes of [Project-osrm/osrm-backend v5.23.0 release](https://github.com/Project-OSRM/osrm-backend/releases/tag/v5.23.0) [#377](https://github.com/Telenav/osrm-backend/pull/377)
+  - ADDED filter invalid OSM ways [#387](https://github.com/Telenav/osrm-backend/issues/387)
 - Bugfix:    
   - FIXED build error on macOS with `Apple Clang 12` [#386](https://github.com/Telenav/osrm-backend/pull/386)
 - Performance:    
