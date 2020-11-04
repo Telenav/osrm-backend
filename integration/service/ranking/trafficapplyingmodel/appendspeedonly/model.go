@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/util/speedunit"
 
 	"github.com/Telenav/osrm-backend/integration/api/osrm/route"
 	"github.com/Telenav/osrm-backend/integration/service/ranking/trafficapplyingmodel"
@@ -75,7 +76,7 @@ func (m Model) applyTrafficOnAnnotation(a *route.Annotation, enableLiveTraffic b
 
 		if m.LiveTrafficQuerier != nil && enableLiveTraffic {
 			if f := m.LiveTrafficQuerier.QueryFlow(wayID); f != nil {
-				liveTrafficSpeeds[i] = float64(f.GetSpeed())
+				liveTrafficSpeeds[i] = speedunit.ConvertMPS2KPH(float64(f.GetSpeed())) // osrm expect km/h but flow stores m/s, see more in https://github.com/Project-OSRM/osrm-backend/wiki/Traffic#traffic-updates
 				liveTrafficlevels[i] = int(f.GetTrafficLevel())
 			} else {
 				liveTrafficSpeeds[i] = float64(trafficapplyingmodel.InvalidLiveTrafficSpeed)

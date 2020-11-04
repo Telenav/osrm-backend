@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/util/speedunit"
 )
 
 // NormalTraffic implements both traffic.HistoricalSpeedQuerier and traffic.LiveTrafficQuerier for the OSRMRouteNormal.
@@ -26,8 +27,8 @@ func NewNormalTrafficNoBlock() NormalTraffic {
 		map[int64]struct{}{}, map[int64]*trafficproxy.Flow{}, map[int64]float64{},
 	}
 
-	n.flows[851242314] = &trafficproxy.Flow{WayID: 851242314, Speed: 6.110000, TrafficLevel: trafficproxy.TrafficLevel_SLOW_SPEED, Timestamp: 1579419488000}
-	n.flows[-23704643] = &trafficproxy.Flow{WayID: -23704643, Speed: 106.11, TrafficLevel: trafficproxy.TrafficLevel_FREE_FLOW, Timestamp: 1579419488000}
+	n.flows[851242314] = &trafficproxy.Flow{WayID: 851242314, Speed: float32(speedunit.ConvertKPH2MPS(6.110000)), TrafficLevel: trafficproxy.TrafficLevel_SLOW_SPEED, Timestamp: 1579419488000}
+	n.flows[-23704643] = &trafficproxy.Flow{WayID: -23704643, Speed: float32(speedunit.ConvertKPH2MPS(106.11)), TrafficLevel: trafficproxy.TrafficLevel_FREE_FLOW, Timestamp: 1579419488000}
 	n.historicalspeeds[1234704366] = 20.5
 	n.historicalspeeds[-23704642] = 70.0
 	return n

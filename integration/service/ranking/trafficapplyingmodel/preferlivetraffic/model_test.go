@@ -11,6 +11,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/service/ranking/trafficapplyingmodel/preferlivetraffic"
 	"github.com/Telenav/osrm-backend/integration/traffic"
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/util/speedunit"
 )
 
 func TestApplyTrafficErrors(t *testing.T) {
@@ -59,7 +60,7 @@ func TestApplyNormalTrafficNoBlock(t *testing.T) {
 	appliedDataSourceNamesNone := append(r.Legs[0].Annotation.Metadata.DataSourceNames)
 
 	appliedLiveTrafficSpeed := []float64{
-		float64(float32(6.110000)), // flow uses float32 to store the speed that will lose some precision
+		speedunit.ConvertMPS2KPH(float64(float32(speedunit.ConvertKPH2MPS(6.110000)))), // flow uses float32 to store the speed that will lose some precision
 		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
 		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
 		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
@@ -73,8 +74,8 @@ func TestApplyNormalTrafficNoBlock(t *testing.T) {
 		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
 		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
 		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
-		float64(float32(106.11)),
-		float64(float32(106.11)),
+		speedunit.ConvertMPS2KPH(float64(float32(speedunit.ConvertKPH2MPS(106.11)))),
+		speedunit.ConvertMPS2KPH(float64(float32(speedunit.ConvertKPH2MPS(106.11)))),
 		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
 		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
 	}
@@ -129,7 +130,7 @@ func TestApplyNormalTrafficNoBlock(t *testing.T) {
 			mock.NewOSRMRouteNormal(),
 			true, true,
 			appliedLiveTrafficSpeed, appliedLiveTrafficLevel, appliedBlockIncident, appliedHistoricalSpeed,
-			[]float64{float64(float32(6.110000)), 8.9, 20.5, 8.9, 14.3, 14.2, 14.4, 14.6, 14.7, 14, 14.4, 14.7, 14, 14.6, float64(float32(106.11)), float64(float32(106.11)), 70.0, 70.0},
+			[]float64{speedunit.ConvertMPS2KPH(float64(float32(speedunit.ConvertKPH2MPS(6.110000)))), 8.9, 20.5, 8.9, 14.3, 14.2, 14.4, 14.6, 14.7, 14, 14.4, 14.7, 14, 14.6, speedunit.ConvertMPS2KPH(float64(float32(speedunit.ConvertKPH2MPS(106.11)))), speedunit.ConvertMPS2KPH(float64(float32(speedunit.ConvertKPH2MPS(106.11)))), 70.0, 70.0},
 			appliedDataSourceNamesBoth,
 			[]int{2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 1, 1},
 			60.3 + liveTrafficDurationWeightChanges + historicalSpeedDurationWeightChanges,
@@ -149,7 +150,7 @@ func TestApplyNormalTrafficNoBlock(t *testing.T) {
 			mock.NewOSRMRouteNormal(),
 			true, false,
 			appliedLiveTrafficSpeed, appliedLiveTrafficLevel, appliedBlockIncident, nil,
-			[]float64{float64(float32(6.110000)), 8.9, 8.9, 8.9, 14.3, 14.2, 14.4, 14.6, 14.7, 14, 14.4, 14.7, 14, 14.6, float64(float32(106.11)), float64(float32(106.11)), 9, 9},
+			[]float64{speedunit.ConvertMPS2KPH(float64(float32(speedunit.ConvertKPH2MPS(6.110000)))), 8.9, 8.9, 8.9, 14.3, 14.2, 14.4, 14.6, 14.7, 14, 14.4, 14.7, 14, 14.6, speedunit.ConvertMPS2KPH(float64(float32(speedunit.ConvertKPH2MPS(106.11)))), speedunit.ConvertMPS2KPH(float64(float32(speedunit.ConvertKPH2MPS(106.11)))), 9, 9},
 			appliedDataSourceNamesLiveTraffic,
 			[]int{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0},
 			60.3 + liveTrafficDurationWeightChanges,

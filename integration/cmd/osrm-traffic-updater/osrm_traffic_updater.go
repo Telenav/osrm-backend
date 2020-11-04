@@ -8,6 +8,7 @@ import (
 
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxy"
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxyclient"
+	"github.com/Telenav/osrm-backend/integration/util/speedunit"
 	"github.com/golang/glog"
 )
 
@@ -101,7 +102,7 @@ func trafficData2map(trafficData trafficproxy.TrafficResponse, m map[int64]int) 
 		}
 
 		wayid := flow.Flow.WayID
-		m[wayid] = int(flow.Flow.Speed)
+		m[wayid] = int(speedunit.ConvertMPS2KPH(float64(flow.Flow.GetSpeed()))) // osrm expect km/h but flow stores m/s, see more in https://github.com/Project-OSRM/osrm-backend/wiki/Traffic#traffic-updates
 
 		if wayid > 0 {
 			fwdCnt++

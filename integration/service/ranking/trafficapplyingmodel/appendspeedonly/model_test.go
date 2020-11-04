@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/util/speedunit"
 
 	"github.com/Telenav/osrm-backend/integration/traffic"
 
@@ -63,7 +64,7 @@ func TestApplyFixedTraffic(t *testing.T) {
 	appliedBlockIncident := make([]bool, waysCount)
 	appliedHistoricalSpeed := make([]float64, waysCount)
 	for i := 0; i < waysCount; i++ {
-		appliedLiveTrafficSpeed[i] = mockFixedSpeed
+		appliedLiveTrafficSpeed[i] = speedunit.ConvertMPS2KPH(float64(float32(speedunit.ConvertKPH2MPS(mockFixedSpeed))))
 		appliedLiveTrafficLevel[i] = int(mockFixedLevel)
 		appliedBlockIncident[i] = false
 		appliedHistoricalSpeed[i] = mockFixedSpeed
@@ -134,7 +135,7 @@ func TestApplyNormalTraffic(t *testing.T) {
 	mockTraffic := mock.NewNormalTraffic()
 
 	appliedLiveTrafficSpeed := []float64{
-		float64(float32(6.110000)), // flow uses float32 to store the speed that will lose some precision
+		speedunit.ConvertMPS2KPH(float64(float32(speedunit.ConvertKPH2MPS(6.110000)))), // flow uses float32 to store the speed and stores m/s inside, which will lose some precision
 		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
 		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
 		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
@@ -148,8 +149,8 @@ func TestApplyNormalTraffic(t *testing.T) {
 		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
 		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
 		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
-		float64(float32(106.11)),
-		float64(float32(106.11)),
+		speedunit.ConvertMPS2KPH(float64(float32(speedunit.ConvertKPH2MPS(106.11)))),
+		speedunit.ConvertMPS2KPH(float64(float32(speedunit.ConvertKPH2MPS(106.11)))),
 		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
 		float64(trafficapplyingmodel.InvalidLiveTrafficSpeed),
 	}

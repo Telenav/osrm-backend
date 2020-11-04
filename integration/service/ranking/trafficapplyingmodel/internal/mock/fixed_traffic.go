@@ -4,15 +4,16 @@ import (
 	"time"
 
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxy"
+	"github.com/Telenav/osrm-backend/integration/util/speedunit"
 )
 
 // FixedTraffic implements both traffic.HistoricalSpeedQuerier and traffic.LiveTrafficQuerier but always return fixed speed/level.
 type FixedTraffic struct {
-	fixedSpeed        float64
+	fixedSpeed        float64 // km/h
 	fixedTrafficLevel trafficproxy.TrafficLevel
 }
 
-// NewFixedTraffic creates a new fixed traffic mock object.
+// NewFixedTraffic creates a new fixed traffic mock object.The input speed unit is km/h.
 func NewFixedTraffic(fixedSpeed float64, fixedTrafficLevel trafficproxy.TrafficLevel) FixedTraffic {
 	return FixedTraffic{fixedSpeed, fixedTrafficLevel}
 }
@@ -26,7 +27,7 @@ func (f FixedTraffic) BlockedByIncident(wayID int64) bool {
 func (f FixedTraffic) QueryFlow(wayID int64) *trafficproxy.Flow {
 	return &trafficproxy.Flow{
 		WayID:        wayID,
-		Speed:        float32(f.fixedSpeed),
+		Speed:        float32(speedunit.ConvertKPH2MPS(f.fixedSpeed)), // km/h -> m/s since traffic flow's speed unit is m/s.
 		TrafficLevel: f.fixedTrafficLevel,
 		Timestamp:    1588840770,
 	}
