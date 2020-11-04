@@ -14,6 +14,7 @@ Changes from v10.3.0
   - ADDED Merge changes of [Project-osrm/osrm-backend v5.23.0 release](https://github.com/Project-OSRM/osrm-backend/releases/tag/v5.23.0) [#377](https://github.com/Telenav/osrm-backend/pull/377)
 - Bugfix:    
   - FIXED build error on macOS with `Apple Clang 12` [#386](https://github.com/Telenav/osrm-backend/pull/386)
+  - FIXED unmatched speed unit between traffic flow(m/s) and OSRM traffic injection(km/h) [#389](https://github.com/Telenav/osrm-backend/issues/389)
 - Performance:    
 - Tools:    
    - CHANGED osrm-backend-dev base image to `debian:buster-slim` and `go1.15.3`(has NOT been enabled for `osrm-backend` yet) [#374](https://github.com/Telenav/osrm-backend/issues/374)
