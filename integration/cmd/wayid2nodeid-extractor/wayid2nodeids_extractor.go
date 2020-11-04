@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/Telenav/osrm-backend/integration/util/mapsource"
+	"github.com/Telenav/osrm-backend/integration/util/osmpatch"
 
 	"github.com/Telenav/osrm-backend/integration/util/unidbpatch"
 
@@ -75,6 +76,11 @@ func wayid2nodeids(infile io.Reader, outfile io.Writer) {
 						continue
 					}
 					wayID = unidbpatch.TrimValidWayIDSuffix(wayID)
+				} else if flags.mapSource == mapsource.OSM {
+					if !osmpatch.IsValidWay(v) {
+						invalidWaysCount++
+						continue
+					}
 				}
 
 				// Transform
