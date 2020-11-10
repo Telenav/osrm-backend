@@ -22,12 +22,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Set IMAGE_TAG env # env IMAGE_TAG=BranchName-CommitID-Timestamp
-      run: echo ::set-env name=IMAGE_TAG::$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev )-$(echo ${GITHUB_SHA} | cut -c 1-7)-$(date -u +"%Y%m%d")
+      run: echo IMAGE_TAG=$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev )-$(echo ${GITHUB_SHA} | cut -c 1-7)-$(date -u +"%Y%m%d") >> ${GITHUB_ENV}
     - name: Environment Printer
       uses: managedkaos/print-env@v1.0
     - name: Append latest if master branches # env '${IMAGE_TAG},latest'
       if: endsWith(github.ref, 'master')
-      run: echo ::set-env name=IMAGE_TAG::${IMAGE_TAG},latest
+      run: echo IMAGE_TAG=${IMAGE_TAG},latest >> ${GITHUB_ENV}
     - name: Environment Printer
       uses: managedkaos/print-env@v1.0
 
