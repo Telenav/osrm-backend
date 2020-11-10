@@ -1,6 +1,6 @@
 %% Call below command to convert .mmd to .png
 %%  Adjust -w or -H if necessary
-%% mmdc -p puppeteer-config.json -i osrm-with-telenav-traffic-architecture.mmd -o osrm-with-telenav-traffic-architecture.mmd.png
+%% mmdc -p puppeteer-config.json -i customize-traffic-into-data.mmg -o customize-traffic-into-data.mmg.png
 
 graph LR
 
@@ -14,10 +14,12 @@ User["User"] -- request --> OSRM_ROUTED["osrm-routed"]
 subgraph OSRM Containers
 OSRM_Traffic_Updater["osrm-traffic-updater"] 
 OSRM_Customize["osrm-customize"]
+OSRM_DataStore["osrm-datastore"]
 OSRM_ROUTED
 
 style OSRM_Traffic_Updater fill:#acbfff,stroke-dasharray: 5, 5
 style OSRM_Customize fill:#acbfff,stroke-dasharray: 5, 5
+style OSRM_DataStore fill:#acbfff,stroke-dasharray: 5, 5
 
 end
 
