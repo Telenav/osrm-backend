@@ -16,28 +16,63 @@ _sig() {
   kill -TERM $child 2>/dev/null
 }
 
-if [ "$1" = 'routed_startup' ] || [ "$1" = 'routed_blocking_traffic_startup' ]; then
-  #trap _sig SIGKILL SIGTERM SIGHUP SIGINT EXIT
-
+if [ "$1" = 'routed_startup' ]; then
   TRAFFIC_FILE=traffic.csv
-  TRAFFIC_PROXY_IP=${2:-"10.189.102.81"}
-  REGION=${3}
-  MAP_PROVIDER=${4}
-  TRAFFIC_PROVIDER=${5}
-  if [ "$1" = 'routed_blocking_traffic_startup' ]; then
-    BLOCKING_ONLY="-blocking-only"
+
+  # vars from env
+  if [ "${ENABLE_INCREMENTAL_CUSTOMIZE}" = "true" ]; then # set ENABLE_INCREMENTAL_CUSTOMIZE=true explicitly by env vars.
+    CUSTOMIZE_EXTRA_ARGS="--incremental true"
   fi
-  if [ "$6" = 'incremental' ]; then
-    INCREMENTAL_CUSTOMIZE="--incremental true"
-  fi
+  TRAFFIC_PROXY_ENDPOINT=${TRAFFIC_PROXY_ENDPOINT:-"10.189.103.239:10086"}
+  MAP_PROVIDER=${MAP_PROVIDER:-"osm"}                       
+  TRAFFIC_PROVIDER=${TRAFFIC_PROVIDER:-""}                   
+  REGION=${REGION:-"na"}          
+  FETCH_TRAFFIC_EXTRA_ARGS=${FETCH_TRAFFIC_EXTRA_ARGS}  # for debugging, e.g., `-v 2`                  
 
   cd ${DATA_PATH}
-  ${BUILD_PATH}/osrm-traffic-updater -c ${TRAFFIC_PROXY_IP} -m ${WAYID2NODEIDS_MAPPING_FILE}${SNAPPY_SUFFIX} -f ${TRAFFIC_FILE} -map ${MAP_PROVIDER} -traffic ${TRAFFIC_PROVIDER} -region ${REGION} ${BLOCKING_ONLY}
   ls -lh
-  ${BUILD_PATH}/osrm-customize ${MAPDATA_NAME_WITH_SUFFIX}.osrm  --segment-speed-file ${TRAFFIC_FILE} ${OSRM_EXTRA_COMMAND} ${INCREMENTAL_CUSTOMIZE}
-  ${BUILD_PATH}/osrm-routed ${MAPDATA_NAME_WITH_SUFFIX}.osrm ${OSRM_ROUTED_STARTUP_COMMAND} &
-  child=$!
-  wait "$child"
+
+  # prepare map data backup, since we need clean data for every customization
+  # only backup metric related updatable files: https://github.com/Telenav/osrm-backend/blob/40015847054011efbd61c2912e7ff4c135b6a570/src/storage/storage.cpp#L328
+  MAP_DATA_BACKUP_FOLDER="backup"
+  mkdir -p ${MAP_DATA_BACKUP_FOLDER}
+  METRIC_FILES_SUFFIX="datasource_names geometry turn_weight_penalties turn_duration_penalties mldgr cell_metrics hsgr"
+  for ARRAY_ITEM in ${METRIC_FILES_SUFFIX}; do
+    if [ -f "${MAPDATA_NAME_WITH_SUFFIX}.osrm.${ARRAY_ITEM}" ] && [ ! -L "${MAPDATA_NAME_WITH_SUFFIX}.osrm.${ARRAY_ITEM}" ]; then
+      cp ${MAPDATA_NAME_WITH_SUFFIX}.osrm.${ARRAY_ITEM} ${MAP_DATA_BACKUP_FOLDER}/
+    fi
+  done
+
+  # first round up
+  ${BUILD_PATH}/osrm-datastore ${MAPDATA_NAME_WITH_SUFFIX}.osrm
+  ${BUILD_PATH}/osrm-routed -s ${OSRM_ROUTED_STARTUP_COMMAND} &
+  sleep 3 # wait a while for osrm-routed initialization via shared memory
+
+  # Ongoing traffic updates, refer to https://github.com/Project-OSRM/osrm-backend/issues/5420#issuecomment-482471618
+  START_UPDATE_TRAFFIC_TIME=`date +%s`
+  while /bin/true; do
+    # fetch-latest-traffic-somehow > traffic.csv
+    # able to append more options for osrm-traffic-updater, e.g., `-v 2`
+    set +e # fetch traffic errors will be handled by return value
+    ${BUILD_PATH}/osrm-traffic-updater -logtostderr -m ${WAYID2NODEIDS_MAPPING_FILE}${SNAPPY_SUFFIX} -c ${TRAFFIC_PROXY_ENDPOINT} -f ${TRAFFIC_FILE} -map ${MAP_PROVIDER} -traffic ${TRAFFIC_PROVIDER} -region ${REGION} ${FETCH_TRAFFIC_EXTRA_ARGS} 
+    if [ $? -eq 0 ]; then
+      set -e  # make sure no error on below commands
+      cp ${MAP_DATA_BACKUP_FOLDER}/${MAPDATA_NAME_WITH_SUFFIX}.osrm* ./
+      ${BUILD_PATH}/osrm-customize ${MAPDATA_NAME_WITH_SUFFIX}.osrm  --segment-speed-file ${TRAFFIC_FILE} ${OSRM_EXTRA_COMMAND} ${CUSTOMIZE_EXTRA_ARGS}
+      ${BUILD_PATH}/osrm-datastore ${MAPDATA_NAME_WITH_SUFFIX}.osrm  --only-metric
+
+      # clean up traffic file
+      ls -lh
+      rm -f ${TRAFFIC_FILE} 
+    fi
+
+    END_UPDATE_TRAFFIC_TIME=`date +%s`
+    UPDATE_TRAFFIC_COST_SECONDS=$[ $END_UPDATE_TRAFFIC_TIME - $START_UPDATE_TRAFFIC_TIME ]
+    (set +x; echo "{\"fetch_and_apply_traffic_cost_seconds\":${UPDATE_TRAFFIC_COST_SECONDS}}")
+    START_UPDATE_TRAFFIC_TIME=${END_UPDATE_TRAFFIC_TIME}
+
+    sleep 5 # sleep a while. It's necessary if something error.
+  done
 
 elif [ "$1" = 'routed_no_traffic_startup' ]; then
   #trap _sig SIGKILL SIGTERM SIGHUP SIGINT EXIT
