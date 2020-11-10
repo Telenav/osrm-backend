@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxy"
@@ -58,12 +59,14 @@ func main() {
 	go loadWay2NodeidsTable(flags.mappingFile, sources)
 
 	isFlowDone := wait4PreConditions(isFlowDoneChan)
-	if isFlowDone {
-		var ds dumperStatistic
-		ds.Init(TASKNUM)
-		dumpSpeedTable4Customize(wayid2speed, sources, flags.csvFile, &ds)
-		ds.Output()
+	if !isFlowDone {
+		os.Exit(1)
 	}
+
+	var ds dumperStatistic
+	ds.Init(TASKNUM)
+	dumpSpeedTable4Customize(wayid2speed, sources, flags.csvFile, &ds)
+	ds.Output()
 }
 
 func wait4PreConditions(flowChan <-chan bool) bool {
