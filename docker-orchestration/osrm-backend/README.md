@@ -122,4 +122,3 @@ total 6812660
 ## Example By Manual
 
 - [Build Berlin Server with OSM data](./example-berlin-osm.md)
-
