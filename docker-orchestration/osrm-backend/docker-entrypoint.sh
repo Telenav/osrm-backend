@@ -23,6 +23,9 @@ if [ "$1" = 'routed_startup' ]; then
   if [ "${ENABLE_INCREMENTAL_CUSTOMIZE}" = "true" ]; then # set ENABLE_INCREMENTAL_CUSTOMIZE=true explicitly by env vars.
     CUSTOMIZE_EXTRA_ARGS="--incremental true"
   fi
+  if [ x"${CUSTOMIZE_THREADS}" != x ]; then
+    CUSTOMIZE_EXTRA_ARGS="${CUSTOMIZE_EXTRA_ARGS} -t ${CUSTOMIZE_THREADS}"
+  fi 
   TRAFFIC_PROXY_ENDPOINT=${TRAFFIC_PROXY_ENDPOINT:-"10.189.103.239:10086"}
   MAP_PROVIDER=${MAP_PROVIDER:-"osm"}                       
   TRAFFIC_PROVIDER=${TRAFFIC_PROVIDER:-""}                   

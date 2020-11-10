@@ -23,6 +23,7 @@ See details in [osrm-backend docker](./osrm-backend/)
 ### osrm-backend-within-mapdata
 Image based on [osrm-backend docker image](#osrm-backend) and put compiled mapdata inside.          
 NOTE: It's a temporary workaround for easily run in k8s. It's NOT a good idea to put mapdata in image directly since the map data is too big. For long-term, discussing in [#93](https://github.com/Telenav/osrm-backend/issues/93).      
+See more details in [osrm-backend-within-mapdata docker](./osrm-backend-within-mapdata/)    
 
 ### osrm-frontend
 Image contains web tool to check routing and guidance result.  
