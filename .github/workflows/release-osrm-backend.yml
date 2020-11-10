@@ -20,14 +20,14 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Set IMAGE_TAG env # env IMAGE_TAG=tag-name
-      run: echo ::set-env name=IMAGE_TAG::$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev )
+      run: echo IMAGE_TAG=$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev ) >> ${GITHUB_ENV}
     - name: Environment Printer
       uses: managedkaos/print-env@v1.0
       
     - name: Comma-separated image tags 
-      run: echo ::set-env name=COMMA_SEPARATED_IMAGE_TAGS::${IMAGE_TAG}
+      run: echo COMMA_SEPARATED_IMAGE_TAGS=${IMAGE_TAG} >> ${GITHUB_ENV}
     - name: Append latest tag for release # env '${IMAGE_TAG},latest'
-      run: echo ::set-env name=COMMA_SEPARATED_IMAGE_TAGS::${COMMA_SEPARATED_IMAGE_TAGS},latest
+      run: echo COMMA_SEPARATED_IMAGE_TAGS=${COMMA_SEPARATED_IMAGE_TAGS},latest >> ${GITHUB_ENV}
     - name: Environment Printer
       uses: managedkaos/print-env@v1.0
 

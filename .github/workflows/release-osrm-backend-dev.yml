@@ -20,11 +20,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Set IMAGE_TAG env # env IMAGE_TAG=tag-name
-      run: echo ::set-env name=IMAGE_TAG::$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev )
+      run: echo IMAGE_TAG=$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev ) >> ${GITHUB_ENV}
     - name: Environment Printer
       uses: managedkaos/print-env@v1.0
     - name: Append latest tag for release # env '${IMAGE_TAG},latest'
-      run: echo ::set-env name=IMAGE_TAG::${IMAGE_TAG},latest
+      run: echo IMAGE_TAG=${IMAGE_TAG},latest >> ${GITHUB_ENV}
     - name: Environment Printer
       uses: managedkaos/print-env@v1.0
 

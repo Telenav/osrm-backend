@@ -34,14 +34,14 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Set IMAGE_TAG env # env IMAGE_TAG=BranchName-CommitID-Timestamp
-      run: echo ::set-env name=IMAGE_TAG::$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev )-$(echo ${GITHUB_SHA} | cut -c 1-7)-$(date -u +"%Y%m%d")
+      run: echo IMAGE_TAG=$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev )-$(echo ${GITHUB_SHA} | cut -c 1-7)-$(date -u +"%Y%m%d") >> ${GITHUB_ENV}
     - id: step-output-image-tag
       run: echo "::set-output name=output_var::${{ env.IMAGE_TAG }}"      
     - name: Comma-separated image tags 
-      run: echo ::set-env name=COMMA_SEPARATED_IMAGE_TAGS::${IMAGE_TAG}
+      run: echo COMMA_SEPARATED_IMAGE_TAGS=${IMAGE_TAG} >> ${GITHUB_ENV}
     - name: Append latest if on master branch # env '${IMAGE_TAG},latest'
       if: endsWith(github.ref, 'master')
-      run: echo ::set-env name=COMMA_SEPARATED_IMAGE_TAGS::${COMMA_SEPARATED_IMAGE_TAGS},latest
+      run: echo COMMA_SEPARATED_IMAGE_TAGS=${COMMA_SEPARATED_IMAGE_TAGS},latest >> ${GITHUB_ENV}
     - name: Environment Printer
       uses: managedkaos/print-env@v1.0
     - name: Build & Publish to DockerHub
@@ -66,12 +66,12 @@ jobs:
       SAMPLE_OSM_MAPDATA: https://download.geofabrik.de/north-america/us/nevada-latest.osm.pbf
     steps: 
       - name: Set DATA_IMAGE_TAG env
-        run: echo ::set-env name=DATA_IMAGE_TAG::$(echo ${BUILT_OSRM_BACKEND_IMAGE_TAG} )-$(basename ${SAMPLE_OSM_MAPDATA%.osm.pbf})
+        run: echo DATA_IMAGE_TAG=$(echo ${BUILT_OSRM_BACKEND_IMAGE_TAG} )-$(basename ${SAMPLE_OSM_MAPDATA%.osm.pbf}) >> ${GITHUB_ENV}
       - name: Comma-separated image tags 
-        run: echo ::set-env name=COMMA_SEPARATED_DATA_IMAGE_TAGS::${DATA_IMAGE_TAG}
+        run: echo COMMA_SEPARATED_DATA_IMAGE_TAGS=${DATA_IMAGE_TAG} >> ${GITHUB_ENV}
       - name: Append latest if on master branch # env '${IMAGE_TAG},latest'
         if: endsWith(github.ref, 'master')
-        run: echo ::set-env name=COMMA_SEPARATED_DATA_IMAGE_TAGS::${COMMA_SEPARATED_DATA_IMAGE_TAGS},latest
+        run: echo COMMA_SEPARATED_DATA_IMAGE_TAGS=${COMMA_SEPARATED_DATA_IMAGE_TAGS},latest >> ${GITHUB_ENV}
       - name: Environment Printer
         uses: managedkaos/print-env@v1.0
 
