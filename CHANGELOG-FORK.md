@@ -22,6 +22,7 @@ Changes from v10.3.0
    - CHANGED osrm-backend-dev base image to support Cucumber test(downgrade to `debian:stretch-slim` for `gcc-6`, install `node 10`) [#379](https://github.com/Telenav/osrm-backend/issues/379)
    - ADDED source code format check [#383](https://github.com/Telenav/osrm-backend/issues/383)
    - CHANGED osrm-backend base image to `osrm-backend-dev:v2` [#381](https://github.com/Telenav/osrm-backend/issues/381)
+   - FIXED GitHub `set-env` deprecated warning [#393](https://github.com/Telenav/osrm-backend/issues/393)
 - Docs:    
    - ADDED document `oasis architecture design` [#360](https://github.com/Telenav/osrm-backend/pull/360)
    - ADDED document `charge station based routing` [#367](https://github.com/Telenav/osrm-backend/pull/367)
