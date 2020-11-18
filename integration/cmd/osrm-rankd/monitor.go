@@ -12,7 +12,6 @@ type monitorContents struct {
 	appversion.VersionInfo         `json:"version"`
 	HistoricalSpeedMonitorContents *historicalSpeedMonitorContents `json:"historical speed"`
 	TrafficCacheMonitorContents    *trafficCacheMonitorContents    `json:"live traffic"`
-	Nodes2WayDB                    string                          `json:"nodes2way"`
 	CmdlineArgs                    []string                        `json:"cmdline"`
 }
 
@@ -29,7 +28,7 @@ type historicalSpeedMonitorContents struct {
 
 func newMonitorContents() *monitorContents {
 	return &monitorContents{
-		0, appversion.VersionInfo{}, &historicalSpeedMonitorContents{}, &trafficCacheMonitorContents{}, "", nil,
+		0, appversion.VersionInfo{}, &historicalSpeedMonitorContents{}, &trafficCacheMonitorContents{}, nil,
 	}
 }
 
