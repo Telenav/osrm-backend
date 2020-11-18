@@ -12,6 +12,7 @@ import (
 	"github.com/Telenav/osrm-backend/integration/service/ranking"
 	"github.com/Telenav/osrm-backend/integration/service/ranking/trafficapplyingmodel"
 	"github.com/Telenav/osrm-backend/integration/service/ranking/trafficapplyingmodel/modelfactory"
+	"github.com/Telenav/osrm-backend/integration/traffic"
 	"github.com/Telenav/osrm-backend/integration/traffic/historicalspeed"
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficcache"
 	"github.com/Telenav/osrm-backend/integration/traffic/livetraffic/trafficproxyclient"
@@ -40,9 +41,9 @@ func main() {
 	}
 
 	// prepare historical speeds if available
-	var historicalSpeedCache *historicalspeed.Speeds
+	var historicalSpeedQuerier traffic.HistoricalSpeedQuerier
 	if flags.historicalSpeed {
-		historicalSpeedCache = historicalspeed.New(strings.Split(flags.historicalSpeedDailyPatternFile, ","), strings.Split(flags.historicalSpeedWaysMappingFile, ","))
+		historicalSpeedCache := historicalspeed.New(strings.Split(flags.historicalSpeedDailyPatternFile, ","), strings.Split(flags.historicalSpeedWaysMappingFile, ","))
 		if err := historicalSpeedCache.Load(); err != nil {
 			glog.Errorf("Load historical speed failed, err: %v", err)
 			return
@@ -50,6 +51,7 @@ func main() {
 		glog.Infof("Historical speeds loaded: daily patterns count %d, ways(directed) count %d.", historicalSpeedCache.DailyPatternsCount(), historicalSpeedCache.WaysCount())
 		monitorContents.HistoricalSpeedMonitorContents.DailyPatterns = historicalSpeedCache.DailyPatternsCount()
 		monitorContents.HistoricalSpeedMonitorContents.Way2PatternsMapping = historicalSpeedCache.WaysCount()
+		historicalSpeedQuerier = historicalSpeedCache
 	}
 
 	// prepare traffic cache
@@ -92,10 +94,14 @@ func main() {
 	})
 
 	//start ranking service
+	var liveTrafficQuerier traffic.LiveTrafficQuerier
+	if liveTrafficCache != nil {
+		liveTrafficQuerier = liveTrafficCache
+	}
 	var trafficApplier trafficapplyingmodel.Applier
-	if liveTrafficCache != nil || historicalSpeedCache != nil {
+	if liveTrafficQuerier != nil || historicalSpeedQuerier != nil {
 		var err error
-		trafficApplier, err = modelfactory.NewApplier(flags.trafficApplyingModel, liveTrafficCache, historicalSpeedCache)
+		trafficApplier, err = modelfactory.NewApplier(flags.trafficApplyingModel, liveTrafficQuerier, historicalSpeedQuerier)
 		if err != nil {
 			glog.Errorf("New traffic applying model failed, err %v", err)
 			return
