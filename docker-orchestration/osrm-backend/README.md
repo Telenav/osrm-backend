@@ -81,6 +81,12 @@ $ docker logs -f 5b54931c035abaa0d0635cae4539da91e91fca02d1b37426451aa73476dd53f
 [info] running and waiting for requests
 ```
 
+### Ranking service
+
+```bash
+$ docker run -d -p 5001:5000 --shm-size=64g telenavmap/osrm-backend rankd_startup -osrm 127.0.0.1:5000
+```
+
 ### Oasisd service
 
 Image builds `osrm-api-oasisd` binaries, including generating pre-processing data by `place-connectivity-gen`, or start web service of `oasisd`.  

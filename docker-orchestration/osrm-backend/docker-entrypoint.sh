@@ -85,6 +85,11 @@ elif [ "$1" = 'routed_no_traffic_startup' ]; then
   child=$!
   wait "$child"
 
+elif [ "$1" = 'rankd_startup' ]; then
+  SHM_PATH=${SHM_PATH:="/dev/shm"}
+  ${BUILD_PATH}/snappy -i ${DATA_PATH}/${NODES2WAY_DB_FILE}${SNAPPY_SUFFIX} -o ${SHM_PATH}/${NODES2WAY_DB_FILE}
+  ${BUILD_PATH}/osrm-rankd -logtostderr -p 5000 -nodes2way ${SHM_PATH}/${NODES2WAY_DB_FILE} ${@:2}
+
 elif [ "$1" = 'compile_mapdata' ]; then
   #trap _sig SIGKILL SIGTERM SIGHUP SIGINT EXIT
 
