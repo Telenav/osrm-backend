@@ -14,6 +14,7 @@ Changes from v10.3.0
   - ADDED Merge changes of [Project-osrm/osrm-backend v5.23.0 release](https://github.com/Project-OSRM/osrm-backend/releases/tag/v5.23.0) [#377](https://github.com/Telenav/osrm-backend/pull/377)
   - ADDED filter invalid OSM ways [#387](https://github.com/Telenav/osrm-backend/issues/387)
   - ADDED re-customize traffic [#395](https://github.com/Telenav/osrm-backend/pull/395)
+  - ADDED `osrm-rankd` launch script [#396](https://github.com/Telenav/osrm-backend/pull/396)
 - Bugfix:    
   - FIXED build error on macOS with `Apple Clang 12` [#386](https://github.com/Telenav/osrm-backend/pull/386)
   - FIXED unmatched speed unit between traffic flow(m/s) and OSRM traffic injection(km/h) [#389](https://github.com/Telenav/osrm-backend/issues/389)
