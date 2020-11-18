@@ -76,3 +76,13 @@ $ docker run -d -p 5000:5000 [ENV_OPTIONS] telenavmap/osrm-backend-within-mapdat
 $ # example
 $ docker run -d -p 5000:5000 -e TRAFFIC_PROXY_ENDPOINT=${YOUR_TRAFFIC_PROXY_ENDPOINT} -e TRAFFIC_PROVIDER=${YOUR_TRAFFIC_PROVIDER} -e REGION=${YOUR_REGION} telenavmap/osrm-backend-within-mapdata routed_startup
 ```
+
+## Run osrm-rankd
+
+
+```bash
+$ docker run -d -p 5001:5000 --shm-size=64g telenavmap/osrm-backend-within-mapdata rankd_startup -osrm 127.0.0.1:5000
+$ 
+$ # get route with ways in annotations
+$ curl "http://127.0.0.1:5001/route/v1/driving/-115.130556,36.126124;-115.151499,-36.163968?annotations=true"
+```
