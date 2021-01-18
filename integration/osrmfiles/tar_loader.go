@@ -36,7 +36,12 @@ func Load(contents ContentsOperator) error {
 			continue
 		}
 
-		if _, err := io.Copy(writer, tr); err != nil {
+		// The `io.Write()` will be called many times in `io.Copy()` due to fixed buffer size.
+		// Defaultly the copy buffer size is 32*1024 bytes, see line 391 `copyBuffer()` in https://golang.org/src/io/io.go.
+		// Unfortunetly, sometimes we expect to parse the packed data which can not be divided by 32*1024, e.g., 32*1024 / 12 != 0.
+		// So we simply to use the Greatest common divisor to solve the issue.
+		buf := make([]byte, 12*32*1024)
+		if _, err := io.CopyBuffer(writer, tr, buf); err != nil {
 			glog.Errorf("parsing content %s from tar file %s failed, err: %v", hdr.Name, contents.FilePath(), err)
 			continue
 		}

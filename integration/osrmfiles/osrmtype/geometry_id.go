@@ -12,10 +12,12 @@ type GeometryID struct {
 	Forward bool   // only uses 1 bit in C++ implementation
 }
 
+const geometryIDBytes = 4
+
 func (g *GeometryID) tryParse(p []byte) error {
 
-	if len(p) < 4 {
-		return fmt.Errorf("at least 4 bytes for GeometryID but only got %d bytes", len(p))
+	if len(p) < geometryIDBytes {
+		return fmt.Errorf("at least %d bytes for GeometryID but only got %d bytes", geometryIDBytes, len(p))
 	}
 
 	idBytes := []byte{p[0], p[1], p[2], p[3] & 0x7F}

@@ -136,14 +136,14 @@ func (u *Uint64Vector) parseBlock(p []byte) (int, error) {
 
 		// construct first value: consume with last cached
 		firstConsumeBits := u.bits - cachedBits
-		upper := (word & (^(1 << firstConsumeBits))) << cachedBits
+		upper := (word & (uint64(1)<<firstConsumeBits - 1)) << cachedBits
 		newValue := upper | cachedLower
 		u.Values = append(u.Values, newValue)
 		word = word >> firstConsumeBits
 
 		consumedBits := firstConsumeBits
 		for wordBits-consumedBits >= u.bits { // more values may still available
-			newValue = word & (^(1 << u.bits))
+			newValue = word & (uint64(1)<<u.bits - 1)
 			u.Values = append(u.Values, newValue)
 			word = word >> u.bits
 			consumedBits += u.bits
