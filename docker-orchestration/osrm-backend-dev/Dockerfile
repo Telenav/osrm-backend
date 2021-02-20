@@ -12,7 +12,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteract
   zip \
   unzip \
   tree \
-  #clang-format-3.8 \
+  #clang-format-3.8 \ # it's clang-format-7 by default on debian:buster
   libboost-all-dev \
   libbz2-dev \
   libtbb-dev \
