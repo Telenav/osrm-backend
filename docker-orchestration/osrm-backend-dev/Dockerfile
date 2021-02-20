@@ -28,12 +28,12 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteract
 
 # install nvm and nodejs
 # https://github.com/nvm-sh/nvm#install--update-script
-RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.36.0/install.sh | bash && \
+RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash && \
   export NVM_DIR="$HOME/.nvm" && \
   # This loads nvm
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  && \
-  # we can only use node 10 for now, see https://github.com/Project-OSRM/osrm-backend/issues/5720
-  nvm install 10 && \
+  # https://github.com/Project-OSRM/osrm-backend/pull/5918
+  nvm install 14 && \
   # nvm install node && \
   node --version && \
   npm --version
