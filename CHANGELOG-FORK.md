@@ -26,6 +26,7 @@ Changes from v10.3.0
    - ADDED source code format check [#383](https://github.com/Telenav/osrm-backend/issues/383)
    - CHANGED osrm-backend base image to `osrm-backend-dev:v2` [#381](https://github.com/Telenav/osrm-backend/issues/381)
    - FIXED GitHub `set-env` deprecated warning [#393](https://github.com/Telenav/osrm-backend/issues/393)
+   - CHANGED upgrade dev docker env to `debian:buster(gcc 8.3)`, also upgrade `node` version to `14` and `go` version to `1.16`, disable `clang-format` [#398](https://github.com/Telenav/osrm-backend/issues/398)    
 - Docs:    
    - ADDED document `oasis architecture design` [#360](https://github.com/Telenav/osrm-backend/pull/360)
    - ADDED document `charge station based routing` [#367](https://github.com/Telenav/osrm-backend/pull/367)
