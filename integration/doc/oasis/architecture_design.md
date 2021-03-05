@@ -3,6 +3,8 @@
 ## Overview
 <img src="https://user-images.githubusercontent.com/16873751/87997709-b483a980-caaa-11ea-93ac-f7d152b02a65.png" alt="overview" width="600"/><br/>
 
+Notes: each layer is not a wraper of inner layer, it just depends on interface of inner layer.
+
 ## Entrypoint layer
 <img src="https://user-images.githubusercontent.com/16873751/87997740-daa94980-caaa-11ea-8301-4d60e56df1da.png" alt="overview" width="600"/><br/>
 
